@@ -14,7 +14,7 @@
 
 <!-- HOW TO FILL: one paragraph each. Start a new book at Phase 0 — Foundation; update as the pipeline advances. The chapter count is canonical in FINAL_INDEX.md (point to it, never hardcode it here). -->
 
-**Current phase:** Phase 1 — RESEARCH (Parts I, II, III done via multi-agent workflow). **25/110 dossiers banked** (keys 01–25), each with a SOURCE-VERIFY `_VERIFY.md`; all workflow verdicts PASS_WITH_FLAGS, 0 blockers. SOURCE-PIN tool versions still `TO-PIN` (atoms flagged "verify at pin" pending `/pin-source`). Next: continue Part IV (keys 26–40, static analysis) — one Part per workflow run.
+**Current phase:** Phase 1 — RESEARCH (Parts I–IV done via multi-agent workflow). **40/110 dossiers banked** (keys 01–40), each with a SOURCE-VERIFY `_VERIFY.md`; all workflow verdicts PASS_WITH_FLAGS, 0 blockers. Two banned-phrasing breaches ("beats") found in the sweep and fixed (keys 03, 28). SOURCE-PIN tool versions still `TO-PIN` (atoms flagged "verify at pin" pending `/pin-source`). Next: Part V (keys 41–52, testing).
 **Authority pin:** multi-authority set in `00-strategy/SOURCE-PIN.md` (Java 21+25 LTS anchor; each tool pinned per row). Exact tool versions are `TO-PIN` — run `/pin-source` before drafting. Until pinned, facts from a `TO-PIN` row are `⚠ UNVERIFIED`.
 **Repo state:** under git on `main`; remote `origin` = https://github.com/Pratiyush/book-java-code-quality (PUBLIC). Working dir `/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality`. No blocker.
 **Last updated:** 2026-06-15 — Parts I–III research banked (25 dossiers); git repo wired to the public GitHub remote; first push.

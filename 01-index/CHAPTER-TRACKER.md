@@ -59,9 +59,30 @@
 | — | 17 | Comments, Javadoc & self-documenting code (contested) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 18 | Defensive coding & input validation | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 19 | Code smells & Java anti-patterns | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 20 | Thread-safety & the Java Memory Model | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 21 | Immutability & safe publication | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 22 | Virtual threads & structured concurrency | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 23 | Concurrency utilities (j.u.c) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 24 | Testing & reproducing concurrency bugs (JCStress) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 25 | Static detection of concurrency issues | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 26 | How static analysis works | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 27 | Checkstyle | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 28 | PMD & CPD | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 29 | SpotBugs (+ FindSecBugs, fb-contrib) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 30 | Error Prone (+ Refaster) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 31 | NullAway | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 32 | Null-safety annotation landscape (JSpecify…) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 33 | ArchUnit | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 34 | Formatters (Spotless, google-java-format…) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 35 | SonarQube / SonarLint | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 36 | IDE inspections (IntelliJ, Eclipse) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 37 | Comparing & layering the analyzers | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 38 | Writing custom rules | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 39 | Living with findings (false positives, ratcheting) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 40 | Annotation processors & the Lombok debate | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 
 ¹ Keys 01–06 (pilot) self-verify inline (sources + `⚠ UNVERIFIED` flags) but no separate Step-2 `_VERIFY.md` yet. Open flag: `09-flags/01_iso25010_2023_subtree_unverified.md`.
-² Keys 07–19 each have a Step-2 `_VERIFY.md` (source-verifier gate): all **PASS_WITH_FLAGS, 0 blockers**. Flags are "verify-at-pin" atoms (resolve at `/pin-source`) + minor citation-lint; tracked in `09-flags/`.
+² Keys 07–40 each have a Step-2 `_VERIFY.md` (source-verifier gate): all **PASS_WITH_FLAGS, 0 blockers**. Flags are "verify-at-pin" atoms (resolve at `/pin-source`) + minor citation-lint; two banned-phrasing breaches fixed (keys 03, 28). Tracked in `09-flags/`.
 
 ---
 

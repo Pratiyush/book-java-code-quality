@@ -34,6 +34,25 @@
 
 ## Changelog
 
+## 2026-06-15 — SOURCE-VERIFY (key 40): clean pre-pin pass; "generate source from source" quote-drift + "framing"-in-quotes trap
+- **Trigger:** key 40 step-2 SOURCE-VERIFY (annotation processors & the Lombok debate). Pin ABSENT/unhealable
+  (multi-authority, `{URL}`, all `TO-PIN`, `/pin-source` never run); `check_source_pin.sh`/`verify_sources.sh`
+  FAIL by construction; atom byte-verification DEFERRED to `/pin-source`.
+- **Verdict:** PASS_WITH_FLAGS, 0 blockers. JEP fields match verified list (JEP 395 records=16; JEP 440
+  record-patterns=21); folklore "records-make-immutability-obsolete" stated-and-corrected (not asserted); no
+  FindBugs/`apt`-as-current; neutrality blocklist clean + records-vs-Lombok framed as "different approaches,
+  no crowning" with the analyzer-stack verdict routed to key 37; HONEST-LIMITATIONS floor met per approach
+  (record / generate-new-files / Lombok 3 objections + shared limits); both required flag files present & accurate;
+  all version/GAV/JDK-boundary atoms `⚠ verify at pin` (Lombok/AutoValue/Immutables/MapStruct unpinned).
+- **Findings (minor, draft-fix):** (F1) "generate source from source … an entirely new class … with its own
+  name" (§2.2) vs "… with its own name" (§3) — two spellings of one quoted span (key-19/25 quote-drift trap).
+  (F2) "never loads Lombok's processor at all" is a quoted span tagged "verified framing" — a quote needs a
+  verbatim source, not framing; make verbatim or demote to paraphrase. (F3) lint_citations 19 = known
+  table-cell/`☐`-row false positives. (F4) em-dash 18/1000 → CLARITY/draft.
+- **Lesson:** extend the (verified)-without-pin overclaim guard to **double-quoted spans tagged "framing"** —
+  a quoted span must trace to a verbatim source or be un-quoted. Reinforces the same-quote-drift lint (keys 19/25).
+- **Promoted to:** not yet — reinforces proposed `lint_citations.sh` same-quote + quoted-span-needs-verbatim checks.
+
 ## 2026-06-15 — Standards/spec edition trap (ISO 25010:2023 vs 2011)
 - **Trigger:** key 01 research — two blog posts titled "ISO 25010**:2023**" actually printed the **2011** 8-characteristic model; the real 2023 model has 9 characteristics (Safety added; Usability→Interaction Capability; Portability→Flexibility).
 - **Lesson:** for edition-specific facts, secondary sources are corroboration only; the edition's own text is required. Filed the unconfirmable 2023 sub-tree to `09-flags/01_iso25010_2023_subtree_unverified.md`.
@@ -245,7 +264,158 @@
   Same pre-pin caveat as keys 11/12/13/15/16/19/20. Fixes carried in `23_..._VERIFY.md`.
 - **Promoted to:** not yet — reinforces the key-15 §2.7-matrix-coverage rule (now: extend to prose-named IDs).
 
+## 2026-06-15 — "target × guarantee" shape + 4-spelling @Nullable trap (key 32, null-safety annotation landscape)
+- **Trigger:** key 32 (JSpecify / Checker Framework / JSR-305 legacy; comparison-sensitive `⚠`, cluster 11/31/32).
+- **Lesson 1 (reusable shape — "what it attaches to × what the consumer guarantees"):** for a "competing
+  annotation families" chapter, organize on a 2-axis table: (1) the **annotation target** — declaration vs
+  type-use (`ElementType.TYPE_USE`, JSR 308/Java 8) which IS the precision difference (only type-use can write
+  `List<@Nullable String>`, nullable bounds, array-component nullness); × (2) the **guarantee the consuming
+  checker offers** (Checker FW = sound; NullAway/EP = heuristic; bare annotations = none without a tool). Each
+  family = a cell, no winner crowned, HONEST-LIMITATIONS falls out (the target choice IS the limit). Sibling
+  of the key-25 "approximation-of-a-spec-property" shape. Durable teaching point: **annotations alone do
+  nothing — the checker is the enforcement** (separates vocabulary from tool; cross-refs keys 11/30/31).
+- **Lesson 2 (atom trap — extends the key-25 4-package `@GuardedBy` rule to nullness):** `@Nullable` is ≥4
+  fully-qualified annotations with different *targets/semantics* — `org.jspecify.annotations` (type-use,
+  standardized 1.0.0), `org.checkerframework.checker.nullness.qual` (type-use, sound), `javax.annotation`
+  (JSR-305, **declaration**, JSR Dormant since May 2012, JPMS split-package on Java 9+), deprecated
+  `org.springframework.lang` (declaration). ALWAYS name the package; never cite `@Nullable` generically.
+- **Lesson 3 (separate annotation stability from tool conformance):** "JSpecify 1.0.0 + compatibility
+  guarantee" ≠ "checkable everywhere" — its own conformance page documents generics gaps (NullAway "does not
+  yet analyze generics", IntelliJ generics issues, Checker FW "only @Nullable/@NonNull"). Treat as two facts.
+- **Lesson 4 (AHEAD-OF-PIN, reinforces key 11):** the whole *current* story (JSpecify in Spring 7 / Boot 4
+  Nov 2025 + Spring annotation deprecation, IntelliJ 2025.3, Kotlin 1.8.20+, Valhalla null-restricted types)
+  is past the Java 21 anchor — cite as direction only. Filed `09-flags/32_nullsafety_adoption_ahead_of_pin.md`,
+  `09-flags/32_versions_conformance_unverified.md`.
+- **Tooling:** `jspecify.dev/docs/*` + `checkerframework.org/manual#nullness-checker` read cleanly via WebFetch
+  (verbatim semantics + soundness sentence captured) — no openjdk-403 problem here.
+- **Promoted to:** not yet — propose the "target × guarantee" shape for `templates/` (pairs with key-25 shape)
+  and the 4-spelling-`@Nullable` note for SOURCE-PIN never-invent emphasis.
+
+## 2026-06-15 — SOURCE-VERIFY (key 30): clean pre-pin pass; `unlike`-token + body-"(verified)" overclaim recur
+- **Trigger:** key 30 step-2 SOURCE-VERIFY (Error Prone + Refaster). Pin unhealable (`{URL}` placeholder,
+  multi-authority, all `TO-PIN`, `/pin-source` never run); `check_source_pin.sh`/`verify_sources.sh` FAIL by
+  construction; atom byte-verification DEFERRED to `/pin-source`.
+- **Verdict:** PASS_WITH_FLAGS, 0 blockers. No invented/unflagged atom; folklore clean ("2012 origin"
+  marked `⚠ UNVERIFIED` color-only, repo-cited; no FindBugs-as-current); no off-pin/SNAPSHOT/version
+  asserted (all `TO-PIN`); HONEST-LIMITATIONS floor met (every-compile cost / JDK-21 coupling /
+  build-failing-default adoption tax / FP-suppression / Refaster syntactic-not-semantic + when-NOT-to-use);
+  sibling-tool positions framed as approaches with the layering verdict routed to key 37 (9×); flag file
+  present & accurate.
+- **Recurring findings (not blockers):** (F1) `check_neutrality.sh` FAILs on ONE `unlike` token (§9 line
+  566) that contrasts WebFetch fetchability of two DOC SITES (no 403 vs openjdk JEP 403s), not a tool-quality
+  crowning — same false-positive class as keys 20/23; reword anyway. (F2) ~38 body "(verified)" annotations
+  read as pin-verified though no pin exists, while §8 correctly demotes all to "⚠ live-line, verify at pin" —
+  the `(verified)/(confirmed)-without-pin` overclaim recurring from keys 07/10/11/13/15/19/25; demote body to
+  "live-line." (F3) sibling-position claims (SpotBugs=bytecode, Checkstyle/PMD=source) cite-deferred to each
+  tool's source at draft. Em-dash density 18/1000 → CLARITY/draft, not VERIFY.
+- **Promoted to:** not yet — reinforces (a) whitelist a tooling/doc-site `unlike` context in the scripted
+  neutrality pre-pass; (b) lint: body "verified/confirmed" requires a pinned identifier (pre-pin → "live-line").
+
+## 2026-06-15 — "first line, not the gate" shape + IDE/Qodana SOURCE-PIN gap (key 36, IDE inspections)
+- **Trigger:** key 36 research (IDE inspections — IntelliJ IDEA, Eclipse, save-actions; Part IV cluster 27–36, `⚠` comparison-sensitive; relates 37/82).
+- **Lesson 1 (NEW reusable shape — "first line, not the gate"):** for any *author-time* tool (IDE inspections,
+  save-actions, pre-commit) organize on the axis — (1) **fastest feedback** (strongest case, "as you type"); (2)
+  runs on the **author's machine with the author's settings** → **local & optional** (hardest limitation, by
+  construction — it is the *first* line, never the gate); (3) the fix is to **commit the config** (inspection
+  profile XML / `.editorconfig` / project `.settings/`) **and** back it with a build-time/CI equivalent. Makes
+  NEUTRALITY structural (each IDE = a different delivery of the same local-first-line idea) and the
+  HONEST-LIMITATIONS floor falls out (the "not a gate" limit is intrinsic). Reuse for key 82 (pre-commit) and the
+  IDE-plugin angle of keys 27/28/35. Sibling of key-25 approximation-of-a-spec-property + key-11 layered-defense.
+- **Lesson 2 (SOURCE-PIN gap, recurring class):** the IDEs (IntelliJ IDEA, Eclipse/JDT) and **Qodana** are
+  legitimate primaries for key 36 (Qodana again for CI 75–80 / overlaps 35) but SOURCE-PIN §2 pins only
+  analyzers/linters/formatters — no IDE rows. Same shape as key-24 "JCStress not pinned." Propose an "IDEs /
+  IDE-platform analyzers" sub-group in §2 (IntelliJ IDEA, Eclipse JDT, Qodana). Filed
+  `09-flags/36_ide_authorities_not_pinned.md`, `09-flags/36_ide_versions_and_defaults_unverified.md`.
+- **Lesson 3 (identity-vs-version, extended to UI/option atoms):** feature/option **identity** — severity *set*
+  (Error/Warning/Weak Warning/Server Problem/Grammar Error/Typo/Consideration/No-highlighting, verbatim),
+  Save-Action option *names*, CLI *flags* (`inspect.sh` `-format` xml/json/plain, `-v0/1/2`, `-d`, `-changes`) —
+  is stable + citeable now; **default-profile membership, default severity, exact Clean-Up set, IDE version**
+  move per release → `verify at pin`. Same granularity as keys 09/16, applied to UI/option atoms not rule IDs.
+- **Tooling:** JetBrains `jetbrains.com/help/idea/*.html` and Eclipse `help.eclipse.org` topic pages read cleanly
+  via WebFetch (verbatim atoms captured) — no 403/curl workaround needed (contrast openjdk JEP 403 pattern).
+- **Promoted to:** not yet — (1) → candidate `templates/` shape; (2) → SOURCE-PIN open item (add IDE/Qodana rows).
+
+## 2026-06-15 — SOURCE-VERIFY (key 32): clean pre-pin pass; FindBugs-as-history OK + conformance-version-in-prose trap
+- **Trigger:** key 32 step-2 SOURCE-VERIFY (null-safety annotation landscape; `⚠` comparison, cluster 11/31/32).
+  Pin ABSENT/unhealable (multi-authority, `{URL}`, tag `n/a-multi-authority`, all rows `TO-PIN`);
+  `check_source_pin.sh`/`verify_sources.sh` FAIL by construction; `lint_citations.sh` = 17 known bare-domain/
+  `☐`-status false positives. Atom byte-verification DEFERRED to `/pin-source`.
+- **Verdict:** PASS_WITH_FLAGS, 0 blockers. 4-spelling `@Nullable` package-qualified throughout; version/GAV
+  atoms (`jspecify 1.0.0`, `jsr305:3.0.2`, EP `≥2.14.0`, NullAway `0.12.11`, pre-JDK-22 bug) flagged; AHEAD-OF-PIN
+  (Spring 7/Boot 4 Nov-2025, IntelliJ 2025.3, Valhalla null-restricted) dated + both flag files present/consistent;
+  neutrality blocklist clean + no crowning (cross-stack verdict routed to key 37, 8×); HONEST-LIMITATIONS floor met
+  per family + shared centre. **FindBugs correctly history-only** ("FindBugs-shipped jar"/"lineage") — no
+  FindBugs-as-current folklore. Valhalla = exploratory/AHEAD-OF-PIN (key-11/14 guard).
+- **Recurring findings (minor):** (F1) "(still) under development" NullAway quote in TWO spellings (key-19/25
+  quote-drift). (F2) elided JSpecify goal quote (`…`) needs verbatim re-check marker (key-20).
+- **New small trap:** a **conformance version atom** (Kotlin `1.8.20+`) stated flat in §3/§5 prose but only
+  flagged in the §7 queue + flag — same shape as key-23 "rule-ID in prose not in §2.7 matrix," applied to a
+  *consumer version*. Extend the rule: every version atom named in prose carries `⚠ verify at pin` at first use.
+- **Promoted to:** not yet — reinforces quote-drift lint + "version-in-prose must be flagged at first use."
+
+## 2026-06-15 — SOURCE-VERIFY (key 28): banned verb "beats" is a TRUE positive (not the `unlike` false-positive class)
+- **Trigger:** key 28 step-2 SOURCE-VERIFY (PMD & CPD). Pin unhealable (`{URL}`, multi-authority, all `TO-PIN`);
+  `check_source_pin.sh`/`verify_sources.sh` FAIL by construction; atom byte-verification DEFERRED to `/pin-source`.
+- **Verdict:** PASS_WITH_FLAGS, 0 blockers. No invented/unflagged atom; folklore clean (no FindBugs-as-current;
+  CPD `--minimum-tokens` "never print a number" + complexity "convention not law" per key-19); no off-pin asserted
+  (all versions "observed" + `⚠ verify at pin`; both SNAPSHOT mentions are negative examples); no crowning, verdict
+  routed to key 37; HONEST-LIMITATIONS floor met per spine (PMD syntactic-proxy/reflection-FP; CPD textual-only/
+  minimum-tokens) + when-NOT-to-use; both flag files present & accurate.
+- **Finding (real, draft-fix):** §2.3 line 230 "the reason CPD **beats** `diff`" — "beats" IS a blocklist verb
+  (NEUTRALITY §30). Unlike the keys 20/23/30 `unlike`-token FALSE positives (tooling/doc-site contrasts), this is a
+  TRUE positive: a banned word the author even annotated "not a crowning" — the annotation does not rescue it. `diff`
+  is a generic Bucket-i utility so the underlying capability claim is sound; only the verb fails. §3 line 295 already
+  states the same fact cleanly ("copy-paste `diff`/grep cannot").
+- **Lesson:** a blocklist word fails neutrality even when self-flagged as harmless; the scripted pre-pass is the gate
+  of record. Propose authors run a `beats|outperforms|superior|unlike|better than` grep before submission.
+- **Promoted to:** not yet — reinforces the scripted neutrality pre-pass + a draft-time author grep.
+
+## 2026-06-15 — "import-then-assert" shape + dependency-governance Bucket-i/ii split (key 33, ArchUnit)
+- **Trigger:** key 33 (ArchUnit — architecture & dependency rules as unit tests; cluster 33/55/56).
+- **Lesson 1 (reusable shape — "import-then-assert"):** for an architecture-as-test tool, organize on the
+  pipeline — (1) **import** compiled bytecode into a queryable model (`ClassFileImporter` → `JavaClasses`;
+  reads `.class`, NOT source, and does not class-load for analysis); (2) **express** the invariant in a DSL
+  (`ArchRuleDefinition.classes()/noClasses()`, `Architectures.layeredArchitecture()/onionArchitecture()`,
+  `SlicesRuleDefinition.slices()…beFreeOfCycles()`, `GeneralCodingRules.*` constants); (3) **drive** from the
+  existing harness (`@AnalyzeClasses`/`@ArchTest`); (4) **adopt on legacy** via a ratchet
+  (`FreezingArchRule.freeze` + `ViolationStore`). Each stage hosts a limitation (import cost; rules catch only
+  what you encode; bytecode-only → reflection/DI edges invisible). HONEST-LIMITATIONS falls out by stage.
+  Reuse for keys 55/56/57.
+- **Lesson 2 (governance neutrality split):** dependency governance mixes Bucket i + Bucket ii — **JPMS** is an
+  *underlying-layer* mechanism (Bucket i, free with a JLS/JEP cite), while **jQAssistant** (Neo4j/Cypher) and
+  **JDepend** (metrics) are *comparison targets* (Bucket ii — name as different approaches, cite each to its
+  own source, route the layering verdict to key 37). Keeps a single-tool chapter neutral without omission.
+- **Lesson 3 (version vs identity, reconfirms 09/16/19/25):** ArchUnit API names + `GeneralCodingRules`
+  constants are stable/citeable; **GAV version** (live-line **1.4.2**, NOT the pin) and `archunit.properties`
+  defaults (`cycles.maxNumberToDetect=100`, `cycles.maxNumberOfDependenciesPerEdge=20`) move → `verify at pin`.
+  Repo page did not state a JDK floor → filed `09-flags/33_archunit_version_and_jdk_unverified.md`.
+- **Catalog gap:** no `33_archunit` row in `DEMO-CATALOG.md` (proposed storefront layered-breach demo).
+- **Promoted to:** not yet — propose the "import-then-assert" shape for `templates/`.
+
 ---
+
+## 2026-06-15 — "compiler-plugin analyzer / detection-time position" shape (key 30, Error Prone + Refaster)
+- **Trigger:** key 30 research (Error Prone + Refaster; Part IV analyzer cluster 27/28/29/30, `⚠` comparison-sensitive; relates 37/38/94).
+- **Lesson 1 (reusable shape, extends key-25):** organize each Part IV analyzer by **where in the build it
+  runs** → *what that position lets it see* → *what it costs*. Error Prone = type-attributed AST **inside
+  `javac`** (full types; inline `javac` diagnostics; many ON_BY_DEFAULT **ERROR** ⇒ build-failing) — vs
+  source AST pre-types (Checkstyle/PMD) vs post-compile bytecode (SpotBugs). The §4 honest limitation and the
+  NEUTRALITY non-crowning fall out of the *position*; hands key 37 a ready detection-time axis. Reuse 27/28/29/36.
+- **Lesson 2 (atom split reconfirmed, keys 09/16):** Error Prone **flag names** (`-Xep`/`-XepPatch*`/install
+  flags) + **check identities** are verbatim-stable, safe to cite now; **GAV version**, the **`net.ltgt.errorprone`
+  Gradle-plugin version** (independent community cadence), and **per-check default-on/severity** move →
+  `⚠ verify at pin`. Filed `09-flags/30_error_prone_versions_and_defaults_unverified.md`.
+- **Lesson 3 (tool-JDK-floor as never-invent atom):** Error Prone install doc says it **"must be run on JDK
+  21 or newer"** (+ floor history 2.10.0→8 / 2.31.0→11 / 2.42.0→17 / current→21+) — aligns the tool to the
+  book's Java 21 anchor; cite the table instead of folklore "needs a recent JDK." Extends the key-23 "library
+  `Since:` is the never-invent atom" to a *tool's JDK floor*.
+- **Lesson 4 (routing for `⚠` comparison keys):** kept the cross-analyzer overlap/layering **verdict** in
+  **key 37**, custom `BugChecker` depth in **key 38**, large-scale Refaster migration in **key 94**; this
+  chapter = deep single-tool + Refaster mechanism, sibling-tool mentions neutral/approach-framed.
+- **Tooling:** all `errorprone.info` doc pages + the Gradle plugin repo were directly WebFetch-readable
+  (no 403) — a clean primary-fetch source for the analyzer cluster (contrast openjdk JEP 403s).
+- **Promoted to:** not yet — propose the "detection-time position" shape for `templates/` (pairs with the
+  key-25 approximation-of-a-spec-property shape).
 
 ## 2026-06-15 — SOURCE-VERIFY (key 25): clean pre-pin pass; IS2 quote-drift + ☑/"@the pin" overclaim recur
 - **Trigger:** key 25 step-2 SOURCE-VERIFY (static concurrency detection — Error Prone @GuardedBy / SpotBugs
@@ -305,7 +475,93 @@
   pin." (F3) lint_citations 21 violations = known bare-domain/glyph/print-canon false positives.
 - **Promoted to:** not yet — reinforces "reserve ☑/@the-pin for post-`/pin-source`" + "every named JEP carries its URL."
 
+## 2026-06-15 — "four-lever scope ladder" + suppression-justification atom + Sonar rename trap (key 39)
+- **Trigger:** key 39 research (living with findings — false positives, suppression, baselines, ratcheting;
+  Part-IV cross-cutting practice over the 27/28/29/30/31/32/34/35 analyzers). Comparison-aware though
+  `CANDIDATE_POOL` row 39 has no `⚠` glyph (it surveys the suppression/baseline surface of ≥5 tools).
+- **Lesson 1 (NEW reusable shape — four-lever scope ladder):** any cross-cutting "operating the tools" chapter
+  organizes as a narrow→broad ladder — (1) per-finding suppression, (2) rule/ruleset tuning, (3) baseline,
+  (4) ratchet/clean-as-you-code — where each lever's strongest case AND hardest limitation is "what it
+  silences vs the future risk it creates." Makes NEUTRALITY structural (each tool = a different surface for the
+  SAME four levers, no winner) and HONEST-LIMITATIONS falls out per lever. Reuse for keys 76 (gate policy),
+  80 (coverage ratchet), 87 (legacy adoption), 65/70 (security-finding triage). Sibling of key-25
+  "approximation-of-a-spec-property" / key-11 "layered-defense".
+- **Lesson 2 (atom trap):** the `justification`/report-text slot is itself a never-invent atom AND the chapter's
+  honest centre — SpotBugs `@SuppressFBWarnings(justification=...)` and PMD `// NOPMD <text>`→report prove the
+  tools intend *documented* suppression; "an unjustified suppression is indistinguishable from hiding a bug."
+  Extends the key-18/25 fully-qualified-atom rule to suppression-annotation **packages**
+  (`edu.umd.cs.findbugs.annotations` — SpotBugs, NOT FindBugs).
+- **Lesson 3 (Sonar rename trap, NEW instance):** SonarQube "Won't Fix" → "Accepted" is a user-visible relabel
+  across server lines; like ISO-25010:2023 (key 01) and Jakarta Validation (key 18), assert the label only from
+  the pinned server version. `//NOSONAR` is rule-blind (suppresses ALL issues on the line) — present as a sharp
+  edge, not a recommendation. Filed `09-flags/39_sonar_wontfix_accepted_rename_unverified.md`,
+  `09-flags/39_tool_versions_and_suppression_defaults_unverified.md`.
+- **Tooling:** SpotBugs `filter.html` reads cleanly via WebFetch (full `FindBugsFilter` element/attr table);
+  Sonar facts come from `docs.sonarsource.com` directly (issue lifecycle + clean-as-you-code) — `rules.sonarsource.com`
+  not needed for this chapter. PMD/Checkstyle suppression pages stable across SourceForge/github.io mirrors.
+- **Promoted to:** not yet — propose the "four-lever scope ladder" shape for `templates/` + a `⚠`-glyph pass for
+  index rows surveying ≥3 tools (extends the key-25 ≥2-tool note).
+
+## 2026-06-15 — key 28 (PMD & CPD): "two-spines/two-proxies" + CPD no-default-threshold trap + Gradle-CPD seam
+- **Trigger:** key 28 research (PMD rules + bundled CPD; Part-IV analyzer cluster 27/28/29/30; `⚠` row).
+- **Lesson 1 (reusable shape, extends key 25):** when ONE tool ships TWO analyzers (PMD = AST/metric rules + token-based CPD), treat each **spine** under the key-25 frame — the (undecidable) property it approximates, the **decidable proxy** it actually checks (AST-pattern/metric vs token sub-sequence >= N), and the proxy choice IS its strongest case + FP/FN limit. Makes NEUTRALITY structural per spine. Reuse for any linter + duplication/complexity sub-tool.
+- **Lesson 2 (threshold trap, sibling of key-19):** CPD `--minimum-tokens` is **required with NO engine default** (verified on `pmd_userdocs_cpd.html`) — so "the default duplication threshold is N" is always a *plugin* default (Maven `maven-pmd-plugin` = **100**), never the tool's. Always name the layer that sets a threshold and mark `⚠ verify at pin`.
+- **Lesson 3 (build-portability seam):** **Gradle core has NO CPD task** — duplication on Gradle is the community `de.aaschmid.cpd` plugin (`cpdCheck`, `toolVersion>=7.0.0`); the Gradle core `pmd` plugin runs *rules only*. Maven's `maven-pmd-plugin` bundles CPD goals (`pmd:cpd`/`pmd:cpd-check`). State the seam honestly. Candidate build-integration note for Part-IV tool chapters.
+- **Lesson 4 (re-pin landmine):** PMD **6->7** was a rewrite (ruleset syntax, category layout, some rule names) — anchor on PMD 7; PMD-6 web examples are invalid for the pin; a future PMD 8 forces re-trace of every cited rule ID.
+- **Atom split (confirms key 09/16):** rule **identity + category + ruleset XML schema + CPD flag names** citeable now; **priority, default thresholds, quickstart membership, GAV versions, Maven CPD `minimumTokens`=100** are `⚠ verify at pin`.
+- **Tooling:** PMD docs fetch cleanly via WebFetch (no openjdk-style 403). Filed `09-flags/28_pmd_versions_and_defaults_unverified.md`, `09-flags/28_demo_catalog_missing.md`.
+- **Promoted to:** not yet — propose "two-spines/two-proxies" shape + "threshold layer" note for templates.
+
+## 2026-06-15 — SOURCE-VERIFY (key 36): clean pre-pin pass; folklore-adjacent "orders of magnitude" trap + ☑-without-pin recur
+- **Trigger:** key 36 step-2 SOURCE-VERIFY (IDE inspections — IntelliJ IDEA / Eclipse JDT / save-actions /
+  Qodana; `⚠` comparison-aware, Part-IV cluster 27–36). Pin ABSENT/unhealable (multi-authority, all `TO-PIN`,
+  `{URL}` placeholder); `check_source_pin.sh`/`verify_sources.sh` FAIL by construction; `lint_citations.sh` = 13
+  known bare-domain/☐-☑-status false positives. Manual flag-discipline audit; atom bytes DEFERRED to `/pin-source`.
+- **Verdict:** PASS_WITH_FLAGS, 0 blockers. Neutrality blocklist clean (every "crown/winner/wins" token is an
+  explicit *no-crowning* statement); no folklore-as-fact (no FindBugs-as-current, no 1:10:100/MI/coverage numeric);
+  HONEST-LIMITATIONS floor met (IntelliJ / Eclipse / save-actions-both / shared-centre each get hardest objection +
+  when-NOT-to-use); cross-cutting layering verdict consistently routed to key 37, not asserted; severity-set / CLI
+  flags / Save-Action option names identity-verified with version/default-membership correctly `verify at pin`; both
+  flag files present + consistent.
+- **New trap (F1, minor draft-fix):** §3 "a fix at the keystroke costs **orders of magnitude** less attention than
+  at PR time" is folklore-ADJACENT — qualitative + tied to shift-left (key 06), not a cited numeric, but it sits one
+  step from the debunked 1:10:100 cost curve. Author-time/left-shift chapters (05/06/82/36) invite this; keep it
+  qualitative or attribute to key-06's cited shift-left framing. Flag to clarity/audit for left-shift chapters.
+- **Recurring (F2):** §8 "(verbatim ☑)/(identity ☑)" while pin column = "☐ verify at pin" — the ☑-without-pin
+  overclaim seen at keys 19/22/25; means "live-line identity confirmed," reserve ☑/"verified" for post-`/pin-source`.
+- **Promoted to:** not yet — (1) folklore-adjacent "orders of magnitude" guard for left-shift chapters; (2) reinforces
+  the standing "reserve ☑/@the-pin for post-`/pin-source`" rule; (3) reinforces SOURCE-PIN IDE-row open item (key 36/24 class).
+
 ---
+
+## 2026-06-15 — key 40 (compile-time codegen & the Lombok debate): "relation-to-the-standard-contract" shape + SOURCE-PIN codegen gap
+- **Trigger:** key 40 research (Part IV `⚠` comparison-aware — annotation processors; Lombok vs records vs AutoValue/Immutables/MapStruct).
+- **Lesson 1 (NEW reusable shape — "relation-to-the-standard-contract"):** for a "tool that generates/extends X" chapter, organize on the axis — (1) the **standard mechanism + its documented contract** (JSR 269: a `Processor` *creates new files* via the `Filer`, SE 21 package summary, verbatim — no documented mutate-existing method); (2) place each option by **how it relates to that contract** — *uses it as-is* (AutoValue/Immutables/MapStruct -> new generated files), *sidesteps at the language level* (`record`, JEP 395), or *extends past it via internals* (Lombok edits javac's internal AST via `com.sun.tools.javac.*`, forces rounds with a dummy file + patched `Filer`). The contract-relation IS each option's strongest case AND its hardest limitation -> NEUTRALITY structural, HONEST-LIMITATIONS falls out. Sibling of the key-25 "approximation-of-a-spec-property" shape; reuse for keys 38, 94/95.
+- **Lesson 2 (atom trap — `@Generated` is two annotations):** Lombok's coverage-exclusion marker is **`lombok.Generated`** (via `lombok.addLombokGeneratedAnnotation`), distinct from `javax/jakarta.annotation.processing.Generated`. JaCoCo >= 0.8.1 / Lombok >= 1.16.20 recognize the lombok one. Always name the package — extends the key-25 fully-qualified-annotation rule to generated-code markers.
+- **Lesson 3 (SOURCE-PIN gap, material):** Lombok, AutoValue, Immutables, MapStruct (+`lombok-mapstruct-binding`) have **no SOURCE-PIN §2 rows** despite being key 40's subject. Filed `09-flags/40_lombok_and_codegen_tools_not_pinned.md`.
+- **Lesson 4 (version-boundary, reinforces key 22):** the same codegen build behaves differently across the JDK window — JDK 16 tightened `jdk.compiler` exports (-> `--add-opens`); `annotationProcessorPaths` registration became mandatory at **JDK 23**; javac `-proc:*` defaults shifted. Any codegen-build advice MUST carry the JDK version. Filed `09-flags/40_jdk_internal_api_and_processing_defaults_unverified.md`.
+- **Tooling:** `openjdk.org/jeps/395` 403s WebFetch (known JEP pattern) — curl+browser-UA at draft for the records verbatim summary; the Oracle SE-21 `javax.annotation.processing` package summary reads via WebFetch.
+- **Promoted to:** not yet — propose the "relation-to-the-standard-contract" shape for `templates/`; add codegen-tool SOURCE-PIN rows (Lombok/AutoValue/Immutables/MapStruct) as an open item.
+
+## 2026-06-15 — SOURCE-VERIFY (key 37): clean pre-pin pass; synthesis-node HONEST-LIMITATIONS coverage gap
+- **Trigger:** key 37 step-2 SOURCE-VERIFY (comparing & layering the analyzers — the `⚠` Part-IV synthesis node).
+  Pin unhealable by construction (multi-authority, all `TO-PIN`, `{URL}` placeholder, ephemeral clone absent);
+  `check_source_pin.sh`/`verify_sources.sh` FAIL by construction; `lint_citations.sh` = 13 known bare-domain/
+  `☐`-status false positives; `check_neutrality.sh` blocklist CLEAN. Atom byte-verification DEFERRED to `/pin-source`.
+- **Verdict:** PASS_WITH_FLAGS, 0 blockers. FindBugs framing exemplary (every mention superseded→SpotBugs + dated,
+  never current — the live instance of the dating-discipline guard); substrate map (source/bytecode/`javac`/platform)
+  each routed to that tool's OWN docs; Error Prone javac atoms (`-Xplugin:ErrorProne`/`-XDcompilePolicy=simple`/
+  `annotationProcessorPaths`/`--should-stop=ifError=FLOW`) internally consistent + verify-at-pin; no concrete Sonar
+  `java:S###` ID asserted (family pattern only); no off-pin/SNAPSHOT cite; synthesized "additive coverage" claim backed
+  by the cited (dated) low-agreement study; both flag files present + accurate.
+- **NEW finding (F2) — synthesis-node HONEST-LIMITATIONS coverage gap:** a `⚠` synthesis chapter names many tools in its
+  matrix/ownership tables (ArchUnit, formatters, IDE, NullAway) but gives a hardest-objection+when-NOT-to-use only to the
+  core deep tools (Checkstyle/PMD/SpotBugs/Error Prone/Sonar). Defensible (limits delegated to 33/34/36/31) but should be
+  decided explicitly: one-line limitation here, or an explicit "limit delegated to key NN" note.
+- **Recurring (not blockers):** `☑`/`✅` against live-line docs with no pin (reserve `☑` for post-`/pin-source` —
+  keys 07/10/11/13/25); quoted-abstract `…` ellipsis needs a byte-identical re-check marker (key-19/20); arxiv finding
+  verified from abstract only (PDF undecoded) → web/`pdftotext` re-check at draft, per-tool numbers deferred.
+- **Promoted to:** not yet — propose a GATE-REPORT/CHAPTER-TEMPLATE note for the synthesis-node HONEST-LIMITATIONS scope decision.
 
 ## OPEN ITEMS (standing to-dos — strike through when resolved, do not delete)
 
@@ -516,3 +772,314 @@
   Preview AHEAD-OF-PIN); folklore "constructor finished ⇒ visible" defused not asserted; neutrality blocklist
   clean; HONEST-LIMITATIONS floor met per lever; both required flags filed/accurate. Fixes in `21_..._VERIFY.md`.
 - **Promoted to:** not yet — reinforces ☑-post-pin + matrix-coverage candidate rules.
+
+## 2026-06-15 — key 31 (NullAway): "comparative figures live in the subject's own paper" + simple-name @Nullable + version-ahead-of-pin
+- **Trigger:** key 31 research (NullAway — build-time null-safety; cluster 11/31/32, Cmp-sensitive Part IV).
+- **Lesson 1 (NEUTRALITY gift — own-paper benchmark):** NullAway's FSE'19 paper (`arxiv.org/abs/1907.02127`)
+  reports the cross-tool overhead figures itself — NullAway **1.15×** vs Eradicate **2.8×** vs CFNullness
+  **5.1×**. So a comparison/positioning diagram (Fig 31.2, soundness×overhead axis) can cite ONE pinned
+  source for all three points, satisfy the cited-source requirement, and crown no winner (axes carry the
+  message). Durable rule: when a tool's OWN peer-reviewed paper benchmarks named rivals, that figure is
+  citeable for the comparison; the rival's own strongest case + cost still belong to the rival's chapter
+  (here key 32 Checker Framework, key 37 the verdict). Reuse for any Part-IV Cmp chapter.
+- **Lesson 2 (reusable shape confirmed):** the key-25 "approximation-of-a-spec-property" + key-11
+  "layered-defense" shapes compose for single-tool null chapters — NullAway = a *modular, optimistic proxy*
+  for "no `null` deref"; its three documented assumptions (annotated=non-null / unannotated=optimistic /
+  library models) ARE both its strongest case (1.15×, low annotation burden) and its hardest limitation
+  (documented unsoundness: "callees perform no mutation (unsound)"). NEUTRALITY falls out structurally.
+  Anchors key 32 at the *sound* end of the same axis.
+- **Lesson 3 (atom trap — simple-name recognition):** NullAway recognizes "any annotation whose simple name
+  is `@Nullable`" — so for RECOGNITION the package is not load-bearing (extends/contrasts the key-25
+  4-package `@GuardedBy` trap), but for the RECOMMENDATION it is (`org.jspecify.annotations.Nullable`). State
+  both. Candidate SOURCE-PIN never-invent note.
+- **Lesson 4 (version-ahead-of-pin + flag since-versions):** NullAway **0.13.6** released **5 Jun 2026** —
+  newer than any pinned line and past the assistant cutoff; flagged all version/minimum/overhead atoms
+  `⚠ verify at pin`, 0.13.x-only behavior `⚠ AHEAD-OF-PIN`. NullAway flags carry *since-versions*
+  (`OnlyNullMarked` 0.12.3+, `SuppressionNameAliases` 0.12.8+, `LegacyAnnotationLocations`/type-use change
+  0.12.0) — extend the key-09 "cite ID, defer severity" rule to "cite flag, defer since-version." Min JDK 17
+  / Error Prone 2.36.0 documented but version-sensitive. Filed
+  `09-flags/31_nullaway_version_and_minimums_unverified.md`, `09-flags/31_nullaway_overhead_figures_unverified.md`.
+- **Tooling:** the NullAway wiki pages (Configuration, How-NullAway-Works, Error-Messages,
+  Supported-Annotations, JSpecify-Support) are individually WebFetch-able by full URL; the wiki *home* page
+  returns only the nav menu ("error while loading") — fetch each wiki page by its own URL, not via the home.
+- **Cluster boundary:** 11 = design, 31 = NullAway tool (this), 32 = annotation ecosystem (`⚠`), 37 =
+  cross-tool verdict. Kept the soundness comparison shallow (NullAway's own paper figure only); routed
+  verdict→37, Checker-Framework case→32. DEMO-CATALOG row `31_nullaway` missing (cluster 11/31/32 likely all
+  missing — mirrors key-15) → flag example-builder.
+- **Promoted to:** not yet — "own-paper benchmark is citeable for the comparison" candidate NEUTRALITY note;
+  "cite flag, defer since-version" candidate SOURCE-VERIFY rule.
+
+## 2026-06-15 — Checkstyle: "encodes-a-written-standard" frame + the "plugin bundles an OLD engine" two-pin trap (key 27)
+- **Trigger:** key 27 research (Checkstyle — style/convention enforcement, ruleset design; analyzer cluster 27/28/29/30 +36; comparison-sensitive cluster though row 27 has no `⚠` glyph).
+- **Lesson 1 (reusable shape):** the key-25 "approximation-of-a-spec-property" frame generalizes to STYLE tools as "encodes-a-written-standard." For Checkstyle the "property" is *a written coding standard* (Google/Sun/house config), the hard boundary is **single-file, source-only, no type/cross-file knowledge** — stated verbatim in its own docs (`writingchecks.html`: "one file only … cannot determine the type of an expression … cannot determine the full inheritance hierarchy"). That boundary IS its strongest case (sees whitespace/naming/Javadoc the compiler discards) AND its limit (silent on bugs/types/dataflow). Reuse for keys 28 (PMD) / 34 (formatters); contrast with type/dataflow tools (29/30/35).
+- **Lesson 2 (NEW durable trap — "plugin bundles an old engine"):** `maven-checkstyle-plugin` 3.6.0 ships **Checkstyle 9.3 by default** (verbatim, plugin docs); a config relying on a newer check/property silently mismatches unless the build overrides `com.puppycrawl.tools:checkstyle`. So the ANALYZER version and the BUILD-PLUGIN version are TWO separate pins. Recurs for PMD/SpotBugs wrapper plugins (keys 28/29). -> propose SOURCE-PIN/section 4 (build): pin engine and plugin as separate rows + a draft-time check that the companion overrides the bundled engine.
+- **Lesson 3 (atom discipline reconfirmed, keys 09/15/16/19):** cite module IDENTITY + category + the `Checker`/`TreeWalker`/severity structure now (stable); defer DEFAULT property values (`LineLength max=80`, `ConstantName` regex `^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$`, complexity thresholds) to `/pin-source` (`⚠ verify at pin`; defaults move across versions). Verified the two headline defaults verbatim from the per-check pages; flagged the rest.
+- **Lesson 4 (style-value neutrality, key 07 reuse):** `LineLength` default 80 (Checkstyle) vs 100 (Google config) is the exact "the right column limit" landmine — always a NAMED guide's cited choice, never correct-value. Boundary routing kept clean: cross-tool overlap/layering -> key 37; custom-`Check` authoring (`AbstractCheck`/`DetailAST`) -> key 38; this dossier teaches the ruleset-design skill only.
+- **Tooling:** `checkstyle.org/...` fetches cleanly via WebFetch; fetch the SPECIFIC per-check page (`/checks/<cat>/<name>.html`) for verbatim defaults, not just the index; `writingchecks.html` is the canonical single-file LIMITATIONS source (verbatim). Live latest 13.6.0 (2026-06-15).
+- **Flag raised:** `09-flags/27_checkstyle_versions_and_defaults_unverified.md` (version 13.6.0 + most defaults + plugin GAV/bundled-9.3 + Gradle ext props all `TO-PIN`). **DEMO-CATALOG.md** has no `27_checkstyle` row — flag to catalog owner (shared domain `org.acme.storefront`).
+- **Promoted to:** not yet — propose the "encodes-a-written-standard" shape + the "plugin-bundles-old-engine two-pin" note for SOURCE-PIN/templates.
+
+## 2026-06-15 — "substrate × moment matrix" shape for tool-comparison/synthesis chapters + FindBugs-dated study trap (key 37)
+- **Trigger:** key 37 (comparing & layering the analyzers — overlap, redundancy, a coherent stack). `⚠`
+  comparison-sensitive synthesis node; per `CANDIDATE_POOL` cluster note, 37 owns the cross-cutting comparison +
+  layered stack, 27–36 own per-tool depth, 109 owns the end-to-end gate, 39 owns findings, 05 owns the map.
+- **Lesson 1 (reusable shape, generalizes key-25):** position each analyzer by TWO axes — (a) **substrate** it reads
+  (source text / source AST / bytecode / `javac` AST / platform) and (b) **moment** it runs (author-time → compile →
+  post-compile → CI → platform). Substrate explains coverage diversity (what is even visible — SpotBugs sees bytecode
+  Checkstyle discards; Checkstyle sees layout SpotBugs discarded; Error Prone has full `javac` type info); moment
+  explains feedback latency. Makes NEUTRALITY structural (each tool = a different cell, no winner) and turns "coherent
+  stack" into "cover each cell once = one-owner-per-concern." Reuse for keys 70 (SAST), 65/73 (security), 47/48, 109.
+  Dovetails with the key-30 "detection-time position" axis (which hands its layering verdict here).
+- **Lesson 2 (synthesis-scope discipline, extends key-05 "map stays thin"):** a `⚠` synthesis node (05/37/109) must NOT
+  re-teach per-tool rule config — drift symptom = it starts listing rule IDs. 05=map, 37=comparison+composition principle,
+  109=worked end-to-end gate, 39=findings, 27–36=tool depth. Record routing in merge notes to avoid 4× duplication.
+- **Lesson 3 (dated-empirical trap):** the standard Java six-tool comparison (Lenarduzzi et al. 2021,
+  `arxiv.org/abs/2101.08832`: Better Code Hub/Checkstyle/Coverity/**FindBugs**/PMD/SonarQube, 47 projects, "little to no
+  agreement … low precision") still uses **FindBugs** (SOURCE-PIN records dead → SpotBugs). Cite for the qualitative
+  low-agreement finding (the layering rationale) WITH a dating caveat; never promote its per-tool numbers as current.
+  A peer-reviewed paper can carry a superseded tool — pairs with the folklore guard. Filed
+  `09-flags/37_empirical_overlap_findbugs_dated.md`.
+- **Verified atoms (identity/mechanism, versions TO-PIN):** GAVs `org.apache.maven.plugins:maven-checkstyle-plugin`/
+  `:maven-pmd-plugin`, `com.github.spotbugs:spotbugs-maven-plugin`, `com.google.errorprone:error_prone_core`,
+  `com.diffplug.spotless:spotless-maven-plugin`; Error Prone javac wiring `-Xplugin:ErrorProne` + `annotationProcessorPaths`
+  + `-XDcompilePolicy=simple` + `--should-stop=ifError=FLOW` (errorprone.info/docs/installation).
+- **Tooling:** arxiv `/abs/NN` reads via WebFetch; arxiv `/pdf/NN` returns FlateDecode binary WebFetch cannot decode —
+  use the abstract for the headline finding, defer exact numbers to a draft-time full-paper read (`pdftotext`).
+  Reconfirms `rules.sonarsource.com` offline (cite RSPEC). Filed `09-flags/37_tool_gavs_and_defaults_unverified.md`.
+- **Promoted to:** not yet — propose the "substrate × moment matrix" shape for `templates/` (sibling of the key-25
+  approximation + key-30 detection-time shapes) + the synthesis-scope routing note.
+
+## 2026-06-15 — key 34 (formatters: Spotless / google-java-format / palantir / EditorConfig): "format/lint split" shape + tooling version-delta + SOURCE-PIN gaps
+- **Trigger:** key 34 research (Part-IV `⚠` comparison chapter, cluster 07/34; key 37 owns the cross-tool verdict).
+- **Lesson 1 (reusable shape — format/lint split):** organize any auto-formatter chapter on the axis — (1)
+  formatting is **decidable** (one canonical rendering per AST), so a formatter *rewrites* where a linter
+  only *flags*; (2) the formatter owns the **typographical** layer, the linter + human own the **semantic**
+  layer (key 07 convention-vs-meaning); (3) trade-off = **opinionated-and-uniform vs. configurable-and-tunable**
+  (google-java-format = no knobs, "no configurability … deliberate design decision" verbatim; palantir = a
+  different *fixed* opinion at 120 cols; Eclipse formatter = config-driven). NEUTRALITY becomes structural,
+  HONEST-LIMITATIONS ("format != quality") falls out. Reuse for any "tool that auto-fixes X" chapter.
+- **Lesson 2 (version-delta applies to TOOLING, extends key 22):** the *same* `spotless:check` config can pass
+  on one JDK and fail to launch on another, because google-/palantir-java-format need a formatter-version<->JDK
+  match and `--add-exports` on newer JDKs (they parse via `jdk.compiler` internals). Any "format Java 21/25"
+  advice MUST carry the formatter-version<->JDK pair. Filed `09-flags/34_formatter_jdk_version_matrix_unverified.md`.
+- **Lesson 3 (two SOURCE-PIN gaps):** (a) **EditorConfig/`spec.editorconfig.org` is not a SOURCE-PIN §2 row**
+  though it is key 34's primary authority -> propose adding it (sibling of key-24 JCStress gap); (b)
+  `max_line_length` is editor-supported but **not in the core spec's listed properties** -> never assert as a
+  spec guarantee. Filed `09-flags/34_editorconfig_not_pinned_and_maxlinelength.md`.
+- **Lesson 4 (conflicting primary reads -> flag, don't pick):** two fetches of the Spotless docs returned
+  different default Maven phases for the `check` goal (`check` vs `verify`); recorded both, asserted neither,
+  filed `09-flags/34_spotless_default_phase_unverified.md`. Reinforces "no atom from one ambiguous read."
+- **Style-value landmine reconfirmed (key 07):** 100 (Google) vs 120 (palantir) columns are the exact spot a
+  draft says "the right width" — state each as a *cited choice of a named guide*, never correct; the choosing
+  verdict is key 37's, kept out of 34.
+- **Folklore addition:** "A formatter makes the code good / formatted code is quality code" — false; an
+  auto-formatter makes code *uniform* (typography only), not *good*. (key 34)
+- **Promoted to:** not yet — propose the "format/lint split" shape for `templates/`; SOURCE-PIN open items
+  (add EditorConfig row; note `max_line_length` non-spec status).
+
+## 2026-06-15 — key 26 (how static analysis works): "technique-ladder + soundness quadrant" framing shape + route-the-verdict rule
+- **Trigger:** key 26 research (Part IV framing chapter — AST / data-flow / taint / false-positive problem).
+  Names many tools by nature but is a *technique* chapter, not a single-tool deep dive; key 37 owns the verdict.
+- **Lesson 1 (NEW reusable shape — "technique-ladder + soundness quadrant"):** a "how analysis works" /
+  framing chapter is cleanest as a four-rung ladder (AST -> symbols/types -> CFG/data-flow -> taint) crossed
+  with the FP/FN four-quadrant (sound = no FN/accepts FP; complete = no FP/accepts FN; undecidable so never
+  both). Each per-tool chapter (27-35) is then ONE/TWO rungs of the same ladder -> NEUTRALITY becomes
+  structural (each tool = a technique illustration, no winner) and HONEST-LIMITATIONS falls out (each rung's
+  blind spot = its objection). Generalizes the key-25 "approximation-of-a-spec-property" shape to the technique level.
+- **Lesson 2 (NEW NEUTRALITY rule — "illustrate here, verdict there"):** a framing/map chapter that names
+  many tools stays neutral by using each tool ONLY to illustrate a technique (cited to that tool's own doc)
+  and EXPLICITLY routing the "which tool to choose" verdict to the comparison owner (key 37). Pairs with the
+  key-05 map chapter. Propose adding to NEUTRALITY for Part-IV framing/map chapters.
+- **Lesson 3 (NEW flag pattern — foundational CS theorems need a PRIMARY text):** the undecidability spine
+  (Rice's theorem / halting problem -> no sound∧complete analyzer) is "common knowledge" but still requires a
+  primary PL/compilers text citation; orientation-only secondaries (PVS-Studio/Medium/SIGPLAN blog) are not
+  enough. Filed `09-flags/26_undecidability_primary_citation_unverified.md`. Propose GUIDELINES §5 addition.
+  Also filed `09-flags/26_tool_versions_and_defaults_unverified.md`.
+- **Verbatim atoms captured (live-line, verify at pin):** PMD "root AST node" / "DFA (data flow analysis)
+  visitor … building control flow graphs and data flow nodes"; Error Prone "augment the compiler's type
+  analysis"; CodeQL data-flow graph "models the way data flows through the program at runtime" + taint
+  "extends data flow analysis …"; Semgrep AST->IL + "No path sensitivity / No pointer or shape analysis / No
+  soundness guarantees" (intraprocedural; Pro adds interprocedural — confirm tier at pin); Checker Framework
+  "values soundness over limiting false positives"; SpotBugs `OpcodeStackDetector` / `BytecodeScanningDetector`
+  + filter file + `@SuppressFBWarnings(value, justification)`; SonarQube "False positive"/"Won't fix".
+- **Tooling:** `errorprone.info/docs/criticism` 404'd -> homepage carried the verbatim; `semgrep.dev/docs/...`
+  301-redirects cross-host to `docs.semgrep.dev/...`; PMD how-PMD-works + CodeQL about-data-flow-analysis are
+  clean WebFetch primaries; SpotBugs detector class names live in versioned `javadoc.io` API pages.
+- **Promoted to:** not yet — propose technique-ladder shape for `templates/`, "illustrate-here/verdict-there"
+  for NEUTRALITY, and "foundational-theorem needs primary text" for GUIDELINES §5.
+
+## 2026-06-15 — key 38 (writing custom rules): "one invariant, N artifacts" shape + API-identity-vs-version split
+- **Trigger:** key 38 (custom Checkstyle/PMD/Error Prone/SpotBugs checks + ArchUnit rules; deep-dive over
+  27–33). Comparison-aware though `CANDIDATE_POOL` row 38 has no `⚠` glyph (names FIVE tools).
+- **Lesson 1 (NEW reusable shape — "one invariant, N artifacts"):** every custom rule, in every tool, is the
+  same skeleton — **select → predicate → report → register/gate** — instantiated once per tool over the
+  *artifact that tool reasons about* (Checkstyle = source-token AST; PMD = source-node AST or XPath; Error
+  Prone = typed `javac` `Tree`; SpotBugs = compiled bytecode; ArchUnit = imported class graph). The artifact
+  dictates each tool's strongest case AND its hardest limit, so NEUTRALITY becomes structural (each tool = the
+  same shape over a different artifact, no winner) and the HONEST-LIMITATIONS floor falls out. Sibling of the
+  key-25 "approximation-of-a-spec-property" shape. Reuse for any "extend tool X" chapter.
+- **Lesson 2 (atom-granularity inversion):** a *stock-rule* chapter's never-invent atom is the rule ID (key
+  18); a *custom-rule* chapter's never-invent atoms are the **authoring API names** (base classes / override
+  methods / annotations / config elements — `AbstractCheck.visitToken`, `AbstractJavaRule.visit`,
+  `BugChecker`+`@BugPattern`+`matchMethodInvocation`, `OpcodeStackDetector.sawOpcode`+`findbugs.xml`,
+  `ArchCondition.check`), which ARE verifiable now from each tool's own docs — while **versions, GAVs, default
+  severities, and PMD's cross-major AST node renames** are version-sensitive, deferred to `/pin-source`.
+- **Lesson 3 (PMD = upgrade-tax outlier):** of the five, PMD's custom-rule API churned most across majors (7.x
+  AST/rulechain rework + XPath wrapper class moves) — most re-pin-sensitive surface. Filed
+  `09-flags/38_pmd_api_churn_unverified.md` + `09-flags/38_tool_versions_and_apis_unverified.md`.
+- **Lesson 4 (Refaster ↔ OpenRewrite boundary):** Refaster (`@BeforeTemplate`/`@AfterTemplate`) is the
+  expression-shaped rewrite path *inside* Error Prone; OpenRewrite (keys 94/95) is the dedicated structural
+  rewrite engine (and can consume Refaster templates). Route large rewrites to 94/95, expression rewrites to
+  Refaster; crown neither. Cross-tool "which tool owns this rule" verdict goes to **key 37**, not 38.
+- **Tooling:** the PMD `_intro` doc URL 404s — canonical page is
+  `pmd_userdocs_extending_writing_java_rules.html` (no `_intro`). Checkstyle/Error Prone/SpotBugs/ArchUnit
+  authoring docs all WebFetch cleanly (no 403, unlike openjdk JEP pages).
+- **Comparison-aware-without-glyph recurs (key 25/26):** reinforces the standing proposal to add `⚠` to any
+  candidate row whose title names ≥2 tools (row 38 names five). → index owner.
+- **Promoted to:** not yet — propose the "one invariant, N artifacts" shape for `templates/` and the
+  "authoring-API identity vs version" granularity note (alongside the key-9/16 rule-ID-vs-severity split).
+
+## 2026-06-15 — "platform = rule engine + a layer above it" shape + Sonar product-rename trap (key 35)
+- **Trigger:** key 35 (the Sonar quality platform & its rule engine; Part IV, comparison-sensitive; relates 37/78/80/88).
+- **Lesson 1 (NEW reusable shape — "platform = rule engine + the layer above"):** a quality *platform*
+  (Sonar; later Codacy key 88) organizes as TWO halves — (1) the **rule engine** (its analyzer's findings +
+  rule classification; here `java:S####` keys + the Clean Code taxonomy) and (2) the **platform layer**
+  (quality profiles, the quality gate / "Clean as You Code" new-code scope, SQALE debt/trend, PR decoration)
+  that a bare analyzer (Checkstyle/SpotBugs) lacks. Keeps NEUTRALITY structural — Sonar's distinct value is
+  the layer above, not "a better linter" — and routes the which-to-run/overlap verdict cleanly to key 37.
+- **Lesson 2 (NEW durable atom trap — product names):** Sonar renamed EVERY product Oct 2024 —
+  SonarQube→**SonarQube Server**, SonarCloud→**SonarQube Cloud**, SonarLint→**SonarQube for IDE**, Community
+  Edition→**SonarQube Community Build**. Citing "SonarCloud"/"SonarLint" as current is off-pin. Extend the
+  "no ID/name from memory" rule (keys 18/15) to **product names**; verify on the vendor's rename announcement.
+- **Lesson 3 ("deprecated" != "removed" precision, sibling of key-01 edition trap):** web summaries said Sonar
+  "issue types are deprecated"; the doc shows them **reorganized** (Standard Experience mode retains bug/vuln/
+  code-smell; MQR mode foregrounds Clean Code attributes + 3 software qualities). State *reorganization*, never "removed."
+- **Verified atoms:** `java:` rule prefix (`java:S2077`); `sonar.java.binaries` required (verbatim) +
+  `sonar.java.libraries`; symbolic-execution/data-flow engine; 14 Clean Code attributes (FORMATTED...RESPECTFUL),
+  3 software qualities, MQR severities (Blocker/High/Medium/Low/Info) vs Standard (Blocker/Critical/Major/
+  Minor/Info), security hotspot (no severity until reviewed); "Sonar way" profile+gate default/read-only;
+  Clean as You Code new-code conditions ("issues > 0" fails; hotspots 100% reviewed); technical debt = sum of
+  remediation minutes; `sqale_debt_ratio` (div 30 min/line x LOC); Maintainability grid A=0-0.05...E=0.51-1.
+- **Folklore guard reused (key 04):** SQALE ratings/debt minutes are configurable conventions -> coarse trend,
+  not exact truth. **Edition gating** (taint/deeper SAST/PR decoration = Developer Edition 9.9 LTS+/Cloud) is
+  the platform's hardest free-tier limit — verify the exact matrix at pin.
+- **Tooling:** Sonar `rules/overview` + `languages/java` docs WebFetch cleanly; the `clean-code` doc page
+  404'd (attribute->category map deferred); `rules.sonarsource.com` unreliable across the project -> resolve
+  rule metadata from the **RSPEC repo** (`github.com/SonarSource/rspec`, `rules/S<NNNN>/metadata.json`).
+- **Filed:** `09-flags/35_sonar_versions_and_defaults_unverified.md`, `09-flags/35_clean_code_taxonomy_and_issuetype_status_unverified.md`.
+- **Promoted to:** not yet — propose the "platform = rule engine + layer above" shape for `templates/` and the product-name atom trap for SOURCE-PIN never-invent emphasis.
+
+## 2026-06-15 — key 29 (SpotBugs + FindSecBugs + fb-contrib): "one engine, N detector sets" + cross-page version drift
+- **Trigger:** key 29 research (Part-IV analyzer cluster 27/28/29/30+36; `⚠` comparison-sensitive).
+- **Lesson 1 (NEUTRALITY shape — "one engine, N detector sets"):** FindSecBugs and fb-contrib are **detector
+  plugins loaded into the SpotBugs engine**, so they are SpotBugs **capabilities** (Bucket i), never rivals.
+  Treat them as the subject; route "FindSecBugs vs Semgrep/CodeQL" to **key 70** and "SpotBugs vs
+  Checkstyle/PMD/Error Prone" to **key 37**. Right split for every Part-IV analyzer chapter — the chapter
+  owns the *tool + its plugin ecosystem*; the cross-cutting verdict lives in 37/70.
+- **Lesson 2 (the "approximation-of-a-spec-property" shape, key 25, scales to a whole-tool chapter):** organize
+  on (1) what it *reads* (bytecode — the distinctive axis), (2) the contract each pattern approximates
+  (equals/hashCode JLS, serialization, JMM §17.4.5, defensive copying), (3) bytecode pattern = the proxy →
+  strongest case AND FP/distance-from-source limit. Reuse for keys 27/28/30.
+- **Lesson 3 (NEW trap — cross-page version drift within ONE tool's docs):** the same tool advertises
+  different versions on different pages — FindSecBugs home/Gradle doc **1.14.0** ("144 patterns") vs the
+  SpotBugs Maven doc example **1.12.0** ("138 vulnerability types"); fb-contrib README **7.0.3** vs Maven
+  Central **7.6.11**. Always take a plugin GAV from **Maven Central** at pin, never from a tutorial/example
+  snippet. Extends the key-19 quote-drift / key-09 "cite ID, defer version" rules to intra-doc version drift.
+- **Lesson 4 (tooling):** `bugDescriptions.html` is one ~595 KB page (WebFetch truncates) — curl + tag-strip +
+  per-code `find()` parses it (reconfirms key 25). `search.maven.org/solrsearch` JSON gives the authoritative
+  latest plugin version in one call — propose adding to fetch helpers.
+- **Folklore guard reinforced:** FindBugs is **dead** → SpotBugs; `findbugs-maven-plugin` →
+  `spotbugs-maven-plugin`; the retained `edu.umd.cs.findbugs.*` package names are *lineage*, not evidence
+  FindBugs is current. Filed `09-flags/29_spotbugs_versions_and_defaults_unverified.md`.
+- **Promoted to:** not yet — propose "one engine, N detector sets" + the cross-page version-drift trap for
+  templates / SOURCE-PIN never-invent emphasis.
+
+## 2026-06-15 — SOURCE-VERIFY (key 31): clean pre-pin pass; split-the-quoted-range + tool-vs-host JDK-floor traps
+- **Trigger:** key 31 step-2 SOURCE-VERIFY (NullAway, null-safety cluster 11/31/32). Pin ABSENT/unhealable
+  (`{URL}`, multi-authority, all `TO-PIN`); `check_source_pin.sh`/`verify_sources.sh` FAIL by construction;
+  `lint_citations.sh` = 13 known bare-domain/`☐`-status false positives. Manual flag-discipline audit.
+- **Verdict:** PASS_WITH_FLAGS, 0 blockers. No invented/unflagged atom; folklore + FindBugs-as-current guard
+  clean; neutrality blocklist clean (lone "unlike" = "unlike a rule ID", a concept); no crowning (every
+  best/crown/winner token is a NON-crowning statement); comparative 1.15×/2.8×/5.1× figures cited to NullAway's
+  OWN FSE'19 paper (NEUTRALITY gift); "which to pick" verdict routed to key 37 (5×), annotation eco to key 32;
+  HONEST-LIMITATIONS floor met (intentional unsoundness + full when-NOT-to-use); both flag files present/consistent;
+  `0.13.6` correctly `⚠ AHEAD-OF-PIN`, all version/min/overhead atoms `⚠ verify at pin`.
+- **New traps (non-blocking, draft-fix):** (F7) the paper range "(2.8-5.1X)" is one citeable atom, but the
+  per-rival SPLIT (Eradicate 2.8× / CFNullness 5.1×) came from WebSearch (scan-log #8), not the paper text —
+  decomposing a quoted range into per-rival points needs each point byte-cited from the source. (F9) NullAway
+  states min JDK 17 but its required Error Prone (key 30) documents "JDK 21 or newer" — a tool can state a lower
+  floor than its host requires; cross-check tool-min against named-host-min before asserting the lower number.
+  (F11) §8 ☑ recurs against its own "reserve ☑ for post-pin" header (keys 07/10/11/13/15/20/22/25).
+- **Promoted to:** not yet — propose "split-the-quoted-range needs per-point cites" + "tool-vs-host floor cross-check" rules.
+
+## 2026-06-15 — SOURCE-VERIFY (key 27, Checkstyle): clean pre-pin pass; "plugin bundles an OLD engine" two-pin atom + verbatim-without-pin recur
+- **Trigger:** key 27 step-2 SOURCE-VERIFY. Pin ABSENT/unhealable (`{URL}`, multi-authority, all `TO-PIN`,
+  `/pin-source` never run); `check_source_pin.sh`/`verify_sources.sh` FAIL by construction; `lint_citations.sh`
+  = 16 known bare-domain/`☐`-status false positives. Manual flag-discipline audit only.
+- **Verdict:** PASS_WITH_FLAGS, 0 blockers. No invented/unflagged atom; FindBugs handled correctly (stated NOT
+  to apply — Checkstyle own lineage, avoids FindBugs-as-current folklore); thresholds key-19-guarded; JEP
+  395/440/441 records/patterns GA@21 match key-13 list (no preview asserted); neutrality clean (cross-tool
+  verdict routed to key 37, each cross-tool fact attributed to its own key; "crown" tokens all anti-crowning;
+  "unlike openjdk JEPs" = fetch-tool contrast); single-file LIMITATIONS + purpose quotes consistent (no drift);
+  HONEST-LIMITATIONS floor met; flag file present/accurate.
+- **New atom worth promoting — "the build-plugin bundles an OLD engine" = TWO pins.** `maven-checkstyle-plugin`
+  3.6.0 ships **Checkstyle 9.3 by default**; engine != plugin, swapped via `com.puppycrawl.tools:checkstyle`
+  override. Recurs for any analyzer with a wrapper plugin (PMD/SpotBugs keys 28/29). Propose SOURCE-PIN: pin
+  *engine* and *plugin* as separate rows + a draft-time check the companion overrides the bundled engine.
+- **Recurring finding (F1):** "(verbatim, plugin docs)" on the live 3.6.0/9.3 pair though no pin exists —
+  same overclaim trap as keys 19/22/25; reserve "verbatim/confirmed" for post-`/pin-source`, use "live-line."
+- **Promoted to:** not yet — reinforces "reserve verbatim/check-mark/@pin for post-pin"; engine-vs-plugin two-row note -> SOURCE-PIN open item.
+
+## 2026-06-15 — SOURCE-VERIFY (key 26): clean pre-pin pass; fully-qualified API class PATH joins never-invent atoms
+- **Trigger:** key 26 step-2 SOURCE-VERIFY (how static analysis works — AST/data-flow/taint/false-positive; Part IV framing). Pin ABSENT/unhealable (multi-authority, `{URL}`, all §2 rows `TO-PIN`); `check_source_pin.sh`/`verify_sources.sh` FAIL by construction; atom byte-verification DEFERRED to `/pin-source`. `lint_citations.sh` = 24 known bare-domain/`☐`-status/orientation-row false positives.
+- **Verdict:** PASS_WITH_FLAGS, 0 blockers. Folklore guard met (FindBugs-dead→SpotBugs carried everywhere, never current); neutrality blocklist clean (the 5 "wins/crowned" hits ARE the routing rule — "which tool wins → key 37"); cross-tool verdict routed to **key 37** throughout (illustrate-here/verdict-there); undecidability/Rice held `⚠ UNVERIFIED` with a dedicated flag (theorem not cited to a tool; Checker FW used only as design-choice illustration); no version/GAV printed; "supports Java 25" explicitly forbidden; HONEST-LIMITATIONS floor met per technique; both flag files present + consistent.
+- **New trap (minor, draft-fix):** §8 cites SpotBugs `OpcodeStackDetector` under `edu.umd.cs.findbugs.bcel.…` — a **doubtful fully-qualified API class PATH** (the `.bcel.` segment is suspect; class historically under `edu.umd.cs.findbugs`). No web here → recommend re-check at draft, not failed. Already `⚠ verify at pin`-marked.
+- **Lesson:** extend the "no rule-ID/JEP-number from memory" guard (keys 14/18/20) to **fully-qualified API class paths** — a package segment is as inventable as a rule code. Sibling of the key-25 4-package `@GuardedBy` rule.
+- **Promoted to:** not yet — propose "fully-qualified API class path = never-invent atom" note for SOURCE-PIN/GUIDELINES §5.
+
+## 2026-06-15 — SOURCE-VERIFY (key 38): clean pre-pin pass; custom-rule = "API-identity vs version" inversion + recurring tooling-`unlike`
+- **Trigger:** key 38 step-2 SOURCE-VERIFY (writing custom Checkstyle/PMD/Error Prone/SpotBugs/ArchUnit rules). Pin ABSENT/unhealable (`{URL}`, multi-authority, all `TO-PIN`, `/pin-source` never run); `check_source_pin.sh`/`verify_sources.sh` FAIL by construction; atom byte-verification DEFERRED to `/pin-source`.
+- **Verdict:** PASS_WITH_FLAGS, 0 blockers. No invented/unflagged atom; FindBugs correctly framed as dead lineage (cite SpotBugs), not current; JEP releases match the key-13/22 list (507 primitive-patterns 3rd-preview@25 `⚠ AHEAD-OF-PIN`); each tool's API cited to its OWN doc (no cross-doc characterization); §2.7 matrix covers every named atom; HONEST-LIMITATIONS floor met per model + shared centre; auto-fix framed as trade-off, "which tool" verdict routed to key 37; both flag files present & accurate.
+- **Recurring findings (not blockers):** (F1) ONE `unlike` token (line 676) contrasts doc-site fetchability (no 403 vs openjdk JEP 403), not tool crowning — same false-positive class as keys 20/23/30; reword anyway. (F2) 22 lint_citations violations all bare-domain-URL/"live-line" status false positives. (F3) observed versions (archetype 0.4.19, ArchUnit 1.4.2, plugin 3.6.0) kept `⚠ verify at pin` — guard the "(verified)-without-pin" trap. (F4) em-dash 16/1000 → CLARITY lane.
+- **Lesson (NEW granularity note):** custom-rule chapters INVERT the stock-rule atom rule — never-invent = authoring **API identity** (base classes/override methods/annotations/config elements, verifiable now from each tool's docs); versions/GAVs/severities/PMD-7.x AST-node renames defer to pin. Propose alongside the key-9/16 "rule-ID vs severity" split.
+- **Promoted to:** not yet — reinforces (a) whitelist tooling/doc-site `unlike` in scripted neutrality pre-pass; (b) "API-identity vs version" granularity note for SOURCE-PIN/GUIDELINES §5.
+
+## 2026-06-15 — SOURCE-VERIFY (key 35): clean pre-pin pass; "(verified)"-without-pin + product-rename discipline
+- **Trigger:** key 35 step-2 SOURCE-VERIFY (Sonar platform & rule engine; `⚠` comparison-sensitive, cluster 26–40).
+  Pin ABSENT/unhealable (multi-authority, all `TO-PIN`, `{URL}` placeholder); `check_source_pin.sh`/
+  `verify_sources.sh` FAIL by construction; `lint_citations.sh` = 16 known elided-URL/status-marker false positives;
+  `check_neutrality.sh` PASS (blocklist clean). Atom byte-verification DEFERRED to `/pin-source`.
+- **Verdict:** PASS_WITH_FLAGS, 0 blockers. No invented/unflagged atom; no FindBugs-as-current; legacy names
+  (SonarLint/SonarCloud) ONLY ever "formerly"; MQR vs Standard severity scales correctly distinguished; 14 Clean
+  Code attributes verbatim with attribute→category map deferred (clean-code page 404'd); issue-type
+  "deprecated≠removed" guarded; SQALE/debt folklore-guarded (key-04); cross-cutting overlap verdict routed to key
+  37 (11×, no crowning); HONEST-LIMITATIONS floor met (paid-SAST gating / needs-bytecode / FP-triage / metric
+  opacity / server ops + explicit when-NOT). Both flag files present & accurate.
+- **Recurring findings (non-blocking):** (F1) 46 body "(verified)" tokens overclaim pin-verification though §8
+  correctly demotes to "live-line" — the keys 07/10/11/13/15/19/25/30 trap recurs; demote body to "live-line,
+  verify at pin." (F2) "Developer Edition 9.9 LTS+" edition+version quote and analyzer "Java 17 … as of 7.31"
+  runtime atom = doubtful-but-undisprovable (no web) → recommend web re-check at draft (already `⚠ verify at pin`).
+- **Promoted to:** not yet — reinforces the proposed `lint_citations.sh` rule (body "verified/confirmed" needs a
+  pinned identifier; pre-pin → "live-line") and the product-rename atom note for SOURCE-PIN never-invent emphasis.
+
+## 2026-06-15 — SOURCE-VERIFY (key 29): clean pre-pin pass; quote-vs-own-count drift + readthedocs `/latest/` URL trap
+- **Trigger:** key 29 step-2 SOURCE-VERIFY (SpotBugs + FindSecBugs + fb-contrib, bytecode analyzer cluster
+  27/28/29/30+36, `⚠` comparison-sensitive). Pin ABSENT/unhealable ({URL} placeholder, multi-authority all
+  `TO-PIN`, `/pin-source` never run); `check_source_pin.sh`/`verify_sources.sh` FAIL by construction; atom
+  byte-verification DEFERRED to `/pin-source`. `check_neutrality.sh` PASS (blocklist clean).
+- **Verdict:** PASS_WITH_FLAGS, 0 blockers. FindBugs handled correctly as dead/lineage (never current);
+  folklore clean (necessary-not-sufficient stated right, no 1:10:100/MI/coverage); neutrality clean + no
+  crowning (bytecode/source/javac approaches; verdict routed 9× to key 37, SAST to key 70; plugins = Bucket-i
+  capabilities); HONEST-LIMITATIONS floor met per tool (SpotBugs heuristic/bytecode-distance, FindSecBugs
+  pattern-not-taint, fb-contrib noise) + shared centre; Java 11+ "experimental" carried verbatim (not upgraded
+  to "fully supports 21"); 27× `⚠ verify at pin` markers; flag file present & accurate.
+- **New traps (draft-fix, non-blocking):** (F2) **quote-vs-own-observed-count drift** — body quotes "144
+  patterns" as *verbatim* while the dossier's own §9 scan log counted "149 distinct pattern codes" on the same
+  page; extends the key-19/25 same-quote-drift lint to *quote-vs-self-observation* (a figure quoted verbatim
+  must equal the dossier's own scan, or be demoted to an observation). (F3) **readthedocs `/latest/` is a
+  moving-target URL class** (14× here; recurs for PMD key 28) — propose a `/pin-source` rule to swap
+  `en/latest/` → `en/<version>/`. (F1) `☑`/`✅`/"verbatim" glyphs read as pin-verified though §8 header
+  honestly says "@ the live line" — the recurring `☑`-without-pin overclaim (keys 07/10/11/13/15/19/25/30);
+  demote to "live-line, verify at pin."
+- **Promoted to:** not yet — propose (a) quote-vs-own-count lint (sibling of the key-19 same-quote-drift
+  check); (b) `/pin-source` readthedocs `/latest/`→versioned-URL rule; (c) reinforces reserve-`☑`-for-post-pin.

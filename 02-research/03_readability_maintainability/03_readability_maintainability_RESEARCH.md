@@ -40,7 +40,7 @@
 ### 2.1 The agreed core (low-controversy)
 
 - **Naming carries most of the readability load.** Folklore-but-true framing (Phil Karlton): "There are only two hard things in Computer Science: cache invalidation and naming things." *(Attributed; cite as attributed, not as a primary fact — §7.)* Names are the densest documentation in the code.
-- **Local reasoning beats global reasoning.** Code you can understand without holding the whole system in your head is more readable. Both schools agree on this even where they disagree on *how* (small functions vs deep modules).
+- **Local reasoning lowers cognitive load.** Code you can understand without holding the whole system in your head is more readable. Both schools agree on this even where they disagree on *how* (small functions vs deep modules).
 - **Consistency reduces cognitive load.** A consistent style (whatever it is) lets the reader stop re-learning conventions — which is *why* formatters/linters exist (Parts IV), independent of which style is "best."
 
 ### 2.2 Measuring readability: cyclomatic vs cognitive complexity (the Java-tool anchor)
