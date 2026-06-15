@@ -1,0 +1,21 @@
+# OS / editor
+.DS_Store
+*.swp
+*~
+.idea/
+.vscode/
+
+# Build output (companion code modules under 08-companion-code/)
+target/
+build/
+*.class
+.gradle/
+bin/
+
+# Scratch / ephemeral
+temp/
+tmp/
+*.log
+
+# Java tool local caches
+.checkstyle
