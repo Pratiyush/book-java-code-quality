@@ -36,7 +36,7 @@
 
 > One row per FINAL_INDEX chapter, grouped by the book's Parts. At a new book's start all gate cells are `pending`. Replace the example row below.
 
-> NOTE: pre-cull. FINAL_INDEX not yet locked (Phase 2). These rows track the **Part-I research pilot**; the board becomes the FINAL_INDEX book of record after `/select-book-one`.
+> NOTE: pre-cull. FINAL_INDEX not yet locked (Phase 2). These rows track **research progress (Parts I–V, keys 01–52)**; the board becomes the FINAL_INDEX book of record after `/select-book-one`.
 
 | Ch | NN | Topic | research | verify | draft | example | clarity | audit | score | figure | reconcile | approve |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -88,15 +88,15 @@
 | — | 49 | Test architecture, flakiness & smells | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 50 | Contract & API testing (Pact, REST-assured) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 51 | Performance testing (JMH) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 42 | Unit testing with JUnit 5 | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 43 | Assertions & test readability | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 45 | Integration testing (Testcontainers) | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 46 | Parameterized & property-based testing | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 52 | Snapshot / approval testing | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 42 | Unit testing with JUnit 5 | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 43 | Assertions & test readability | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 45 | Integration testing (Testcontainers) | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 46 | Parameterized & property-based testing | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 52 | Snapshot / approval testing | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
 
 ¹ Keys 01–06 (pilot) self-verify inline (sources + `⚠ UNVERIFIED` flags) but no separate Step-2 `_VERIFY.md` yet. Open flag: `09-flags/01_iso25010_2023_subtree_unverified.md`.
 ² Keys 07–40 each have a Step-2 `_VERIFY.md` (source-verifier gate): all **PASS_WITH_FLAGS, 0 blockers**. Flags are "verify-at-pin" atoms (resolve at `/pin-source`) + minor citation-lint; two banned-phrasing breaches fixed (keys 03, 28). Tracked in `09-flags/`.
-³ Keys 41, 44, 47, 48, 49, 50, 51: research complete (salvaged from the spend-limit-aborted Part V run) but the SOURCE-VERIFY stage never ran. Manual sweep = neutrality-clean, 6 spine sections + footer, unverified atoms flagged. **Owe a `_VERIFY.md` pass** when unblocked. Keys 42/43/45/46/52 not started.
+³ Part V (testing) research is COMPLETE (12/12), formal SOURCE-VERIFY pending for all. Two sub-cases: (a) keys 41, 44, 47, 48, 49, 50, 51 = salvaged from the spend-limit-aborted workflow (research-done, no `_VERIFY.md`); (b) keys 42, 43, 45, 46, 52 = authored main-loop in cheaper mode (like the Part-I pilot). All neutrality-swept clean + unverified atoms flagged. **Owe a `_VERIFY.md` pass** — fold into the `/pin-source` re-trace.
 
 ---
 

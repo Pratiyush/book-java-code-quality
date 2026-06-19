@@ -76,7 +76,7 @@ flagged to `09-flags/`.
 ### 3. Testing & coverage
 | Authority | Pin identifier | Fetch / reference | Status |
 |---|---|---|---|
-| JUnit 5 (Jupiter) | TO-PIN | junit.org/junit5 + github.com/junit-team | TO-PIN |
+| JUnit | **JUnit 6** current (6.1.0 GA 2026-05; 6.0 GA 2025-09-30; min Java 17, all modules one version, Vintage deprecated). JUnit 5 (Jupiter) = prior widely-used line | docs.junit.org + github.com/junit-team/junit-framework | edition noted; exact patch TO-PIN |
 | AssertJ / Hamcrest / Truth | TO-PIN | assertj.github.io / hamcrest.org / truth.dev | TO-PIN |
 | Mockito | TO-PIN | site.mockito.org + github.com/mockito | TO-PIN |
 | Testcontainers (Java) | TO-PIN | testcontainers.org | TO-PIN |
