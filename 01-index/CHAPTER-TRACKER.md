@@ -93,9 +93,19 @@
 | — | 45 | Integration testing (Testcontainers) | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 46 | Parameterized & property-based testing | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 52 | Snapshot / approval testing | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 53 | SOLID & design principles (contested) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 54 | Coupling, cohesion & dependency direction | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 55 | Enforcing architecture (ArchUnit, JPMS) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 56 | Fitness functions & evolutionary architecture | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 57 | Package/module structure & layering | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 58 | Complexity metrics (cyclomatic, cognitive) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 59 | Technical debt management (SQALE) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 60 | API quality, semver, binary/source compat | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 61 | Design & anti-patterns for maintainability (contested) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 
 ¹ Keys 01–06 (pilot) self-verify inline (sources + `⚠ UNVERIFIED` flags) but no separate Step-2 `_VERIFY.md` yet. Open flag: `09-flags/01_iso25010_2023_subtree_unverified.md`.
 ² Keys 07–40 each have a Step-2 `_VERIFY.md` (source-verifier gate): all **PASS_WITH_FLAGS, 0 blockers**. Flags are "verify-at-pin" atoms (resolve at `/pin-source`) + minor citation-lint; two banned-phrasing breaches fixed (keys 03, 28). Tracked in `09-flags/`.
+⁵ Part VI (architecture & design governance, 53–61) research COMPLETE, authored main-loop (cheaper mode); heavy synthesis of banked keys 02/04/33; neutrality-swept clean; formal SOURCE-VERIFY pending (fold into `/pin-source`).
 ³ Part V (testing) research is COMPLETE (12/12), formal SOURCE-VERIFY pending for all. Two sub-cases: (a) keys 41, 44, 47, 48, 49, 50, 51 = salvaged from the spend-limit-aborted workflow (research-done, no `_VERIFY.md`); (b) keys 42, 43, 45, 46, 52 = authored main-loop in cheaper mode (like the Part-I pilot). All neutrality-swept clean + unverified atoms flagged. **Owe a `_VERIFY.md` pass** — fold into the `/pin-source` re-trace.
 
 ---
