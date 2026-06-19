@@ -81,8 +81,22 @@
 | — | 39 | Living with findings (false positives, ratcheting) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 40 | Annotation processors & the Lombok debate | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 
+| — | 41 | The testing landscape & test quality | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 44 | Test doubles & mocking (Mockito) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 47 | Mutation testing (PITest) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 48 | Code coverage (JaCoCo) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 49 | Test architecture, flakiness & smells | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 50 | Contract & API testing (Pact, REST-assured) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 51 | Performance testing (JMH) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 42 | Unit testing with JUnit 5 | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 43 | Assertions & test readability | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 45 | Integration testing (Testcontainers) | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 46 | Parameterized & property-based testing | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 52 | Snapshot / approval testing | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending |
+
 ¹ Keys 01–06 (pilot) self-verify inline (sources + `⚠ UNVERIFIED` flags) but no separate Step-2 `_VERIFY.md` yet. Open flag: `09-flags/01_iso25010_2023_subtree_unverified.md`.
 ² Keys 07–40 each have a Step-2 `_VERIFY.md` (source-verifier gate): all **PASS_WITH_FLAGS, 0 blockers**. Flags are "verify-at-pin" atoms (resolve at `/pin-source`) + minor citation-lint; two banned-phrasing breaches fixed (keys 03, 28). Tracked in `09-flags/`.
+³ Keys 41, 44, 47, 48, 49, 50, 51: research complete (salvaged from the spend-limit-aborted Part V run) but the SOURCE-VERIFY stage never ran. Manual sweep = neutrality-clean, 6 spine sections + footer, unverified atoms flagged. **Owe a `_VERIFY.md` pass** when unblocked. Keys 42/43/45/46/52 not started.
 
 ---
 
