@@ -103,7 +103,7 @@
 | — | 60 | API quality, semver, binary/source compat | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 61 | Design & anti-patterns for maintainability (contested) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 
-| — | 62 | Build as a quality surface (Maven vs Gradle) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 27 | 62 | The build & dependency hygiene (Ch 27; folds 63+64) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | — | 63 | Dependency management & hygiene (BOM/catalog/enforcer) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 64 | Keeping dependencies current (Renovate/Dependabot) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 65 | Dependency vuln scanning / SCA | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
