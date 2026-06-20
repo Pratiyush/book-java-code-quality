@@ -65,7 +65,7 @@
 | — | 23 | Concurrency utilities (j.u.c) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 24 | Testing & reproducing concurrency bugs (JCStress) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 25 | Static detection of concurrency issues | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 26 | How static analysis works | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| 15 | 26 | How static analysis works (Ch 15) | done | done² | **done** | PEND-RT⁶ | done | done | 41/50 | plan-set | pending | pending⁷ |
 | — | 27 | Checkstyle | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 28 | PMD & CPD | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 29 | SpotBugs (+ FindSecBugs, fb-contrib) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
