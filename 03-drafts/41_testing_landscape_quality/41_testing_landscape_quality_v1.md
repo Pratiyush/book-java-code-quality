@@ -40,6 +40,19 @@ One idea carries the whole chapter: *coverage shows what ran; mutation score sho
 
 ## How it works
 
+![Fig 41.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
+    &ldquo;The more high-level you get the fewer tests you should have.&rdquo;](../../05-figures/41_testing_landscape_quality/fig41_1.png)
+
+*Fig 41.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
+    &ldquo;The more high-level you get the fewer tests you should have.&rdquo;*
+
+![Fig 41.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
+    A suite can reach 100% coverage and kill zero mutants.](../../05-figures/41_testing_landscape_quality/fig41_2.png)
+
+*Fig 41.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
+    A suite can reach 100% coverage and kill zero mutants.*
+
+
 ### The pyramid: how much, and where
 
 The **test pyramid** (Mike Cohn, *Succeeding with Agile*, 2009; restated by Ham Vocke in "The Practical Test Pyramid" on Martin Fowler's site) is the model for the *how much* axis. It rests on two rules, verbatim: *"Write tests with different granularity"* and *"The more high-level you get the fewer tests you should have."* The shape (many tests at the bottom, few at the top) encodes a cost/speed/confidence trade-off across three layers:

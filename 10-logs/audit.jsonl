@@ -37,3 +37,4 @@
 {"ts":"2026-06-20T21:23:34Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 1 ready-for-human, 7 in lift, drift=none"}
 {"ts":"2026-06-20T21:33:11Z","kind":"milestone","actor":"claude","action":"figure","target":"Ch 1-8 (fig batch 1)","detail":"15 designed figures rendered + referenced; figure-designer realized per-chapter image budgets (some 2-3 figs)"}
 {"ts":"2026-06-20T21:43:43Z","kind":"milestone","actor":"claude","action":"figure","target":"Ch 9-16 (fig batch 2)","detail":"designed figures rendered + referenced"}
+{"ts":"2026-06-20T21:52:40Z","kind":"milestone","actor":"claude","action":"figure","target":"Ch 17-24 (fig batch 3)","detail":"designed figures rendered + referenced"}

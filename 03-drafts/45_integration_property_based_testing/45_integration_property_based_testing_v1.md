@@ -38,6 +38,13 @@ Those are the two blind spots this chapter closes, and they are the two limits o
 
 ## How it works
 
+![Fig 45.1 — Two blind-spot axes: fidelity &times; input coverage — A unit test has two structural limits — the collaborator it models, and the inputs it chose.
+    Integration testing and property-based testing each close one.](../../05-figures/45_integration_property_based_testing/fig45_1.png)
+
+*Fig 45.1 — Two blind-spot axes: fidelity &times; input coverage — A unit test has two structural limits — the collaborator it models, and the inputs it chose.
+    Integration testing and property-based testing each close one.*
+
+
 ### Integration testing: use the real collaborator
 
 A unit test isolates one class; an **integration test** checks that units work together against their **real collaborators**: a database, a message broker, an HTTP dependency. The quality problem it solves is fidelity. Mocks (Chapter 21) can drift from the real collaborator's behaviour, and an in-memory substitute like H2-for-Postgres tests a *different system* than production: a different SQL dialect, different null ordering, different type coercion, different transaction semantics. The bugs that live in those differences are invisible to a suite that never touches the real engine.

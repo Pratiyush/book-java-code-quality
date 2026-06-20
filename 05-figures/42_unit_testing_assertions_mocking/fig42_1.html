@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 21 — The Base of the Pyramid (dossier key 42, folds 43+44) · Part V
+  Figure:  Fig 42.1 — JUnit Platform three-module architecture
+  Family:  Architecture / layered-component
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"JUnit: the substrate everything plugs into" — after the three-module
+             architecture introduction
+  One idea: JUnit Platform defines one TestEngine API that build tools and IDEs
+            target, so Jupiter, jqwik, and other engines compose on a single runner.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 42.1 — JUnit Platform three-module architecture</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 24px;
+      width: 860px;
+    }
+
+    /* ── Three-layer stack ── */
+    .arch-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* Each layer row */
+    .layer-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    /* Layer label on the left */
+    .layer-label {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      padding: 0 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 2px solid var(--line);
+      min-width: 32px;
+      background: var(--tint-1);
+    }
+
+    /* Main content area for each layer */
+    .layer-body {
+      flex: 1;
+      padding: 14px 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Layer 1 — Build tools / IDEs (top consumers) */
+    .layer-consumers {
+      border: 1.5px solid var(--ink);
+      border-radius: 10px 10px 0 0;
+      background: var(--tint-0);
+    }
+    .layer-consumers .layer-label {
+      border-radius: 9px 0 0 0;
+    }
+
+    /* Layer 2 — Platform (the engine API) */
+    .layer-platform {
+      border: 2.5px solid var(--ink);
+      border-top: none;
+      border-bottom: none;
+      background: var(--tint-3);
+    }
+    .layer-platform .layer-label {
+      background: var(--tint-3);
+      border-right-color: var(--ink);
+    }
+
+    /* Layer 3 — Engines (bottom) */
+    .layer-engines {
+      border: 1.5px solid var(--ink);
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      background: var(--tint-1);
+    }
+    .layer-engines .layer-label {
+      border-radius: 0 0 0 9px;
+      background: var(--tint-1);
+    }
+
+    /* Pill-style component badge */
+    .comp {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      padding: 7px 12px;
+      background: var(--paper);
+      font-size: 12.5px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-align: center;
+      min-width: 100px;
+    }
+    .comp .sub {
+      font-size: 10.5px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      margin-top: 2px;
+    }
+    .comp.is-focus {
+      background: var(--tint-2);
+      border-width: 2px;
+    }
+    .comp.is-deprecated {
+      border-style: dashed;
+      color: var(--ink-soft);
+    }
+    .comp.is-deprecated .sub {
+      color: var(--stop);
+      font-weight: 600;
+    }
+
+    /* Divider between layers with arrow */
+    .layer-bridge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 28px;
+      position: relative;
+      border-left: 2.5px solid var(--ink);
+      border-right: 2.5px solid var(--ink);
+      background: var(--paper);
+    }
+    .bridge-label {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      font-style: italic;
+      background: var(--paper);
+      padding: 0 10px;
+      position: relative;
+      z-index: 1;
+    }
+    .bridge-line {
+      position: absolute;
+      left: 32px;
+      right: 0;
+      height: 1px;
+      background: var(--line);
+      top: 50%;
+    }
+
+    /* API interface box inside platform layer */
+    .api-box {
+      border: 1.5px solid var(--ink);
+      border-radius: 6px;
+      background: var(--paper);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--mono);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .api-badge {
+      font-size: 10px;
+      font-weight: 400;
+      font-family: var(--font);
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+
+    /* Arrows pointing down from platform to engines */
+    .arrows-row {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+      padding: 0 16px;
+      height: 22px;
+      border-left: 2.5px solid var(--ink);
+      border-right: 2.5px solid var(--ink);
+      background: var(--paper);
+    }
+    .down-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    /* Outer top arrow (from consumers to platform) */
+    .top-bridge {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0;
+      border-left: 2.5px solid var(--ink);
+      border-right: 2.5px solid var(--ink);
+      background: var(--paper);
+      padding: 4px 16px;
+      height: 24px;
+    }
+    .top-bridge-text {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-left: 32px;
+    }
+
+    /* Note row */
+    .note-row {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    /* Legend */
+    .legend-row {
+      display: flex;
+      gap: 18px;
+      margin-top: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      color: var(--ink-soft);
+    }
+    .l-swatch {
+      width: 22px; height: 13px;
+      border-radius: 4px;
+      border: 1.5px solid var(--ink);
+      flex-shrink: 0;
+    }
+    .l-swatch.focus { background: var(--tint-3); }
+    .l-swatch.std   { background: var(--tint-1); }
+    .l-swatch.dash  { background: var(--tint-0); border-style: dashed; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 42.1 — JUnit Platform: three-module architecture</p>
+  <p class="fig-subtitle">One TestEngine API lets build tools run Jupiter, jqwik, and others on a single Platform. JUnit 6.1.0 current (min Java 17).</p>
+
+  <div class="arch-stack">
+
+    <!-- Layer: Build tools / IDEs (consumers of the Platform launcher API) -->
+    <div class="layer-row layer-consumers">
+      <div class="layer-label">Consumers</div>
+      <div class="layer-body" style="gap:14px;">
+        <div class="comp">
+          Maven Surefire
+          <span class="sub">useJUnitPlatform()</span>
+        </div>
+        <div class="comp">
+          Gradle
+          <span class="sub">useJUnitPlatform()</span>
+        </div>
+        <div class="comp">
+          IDE (IntelliJ / Eclipse)
+          <span class="sub">built-in launcher</span>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:flex-end;">
+          <span style="font-size:11px;color:var(--ink-soft);font-style:italic;">target the Platform Launcher API</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bridge: consumers → platform -->
+    <div class="top-bridge">
+      <span class="top-bridge-text">↓ discover + launch engines via Launcher API</span>
+    </div>
+
+    <!-- Layer: JUnit Platform (the foundation — highlighted) -->
+    <div class="layer-row layer-platform">
+      <div class="layer-label" style="color:var(--ink);border-right-width:2px;">Platform</div>
+      <div class="layer-body" style="flex-direction:column;align-items:flex-start;gap:8px;">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div class="api-box">
+            TestEngine API
+            <span class="api-badge">the integration contract</span>
+          </div>
+          <span style="font-size:12px;color:var(--ink-soft);">·</span>
+          <div class="api-box" style="font-weight:400;font-family:var(--font);">
+            Launcher API
+            <span class="api-badge">discovery + execution</span>
+          </div>
+          <span style="font-size:12px;color:var(--ink-soft);">·</span>
+          <div class="api-box" style="font-weight:400;font-family:var(--font);">
+            junit-bom
+            <span class="api-badge">version alignment</span>
+          </div>
+        </div>
+        <div style="font-size:11.5px;color:var(--ink);margin-top:2px;">
+          Foundation that launches test engines on the JVM — what build tools and IDEs target directly.
+        </div>
+      </div>
+    </div>
+
+    <!-- Bridge: platform → engines (arrows) -->
+    <div class="arrows-row">
+      <div class="down-arrow">↓</div>
+      <div class="down-arrow">↓</div>
+      <div class="down-arrow">↓</div>
+      <div class="down-arrow">↓</div>
+    </div>
+
+    <!-- Layer: Engines (implement TestEngine) -->
+    <div class="layer-row layer-engines">
+      <div class="layer-label">Engines</div>
+      <div class="layer-body" style="gap:10px;">
+
+        <!-- Jupiter — the main engine, is-focus -->
+        <div class="comp is-focus">
+          JUnit Jupiter
+          <span class="sub">programming model</span>
+          <span class="sub" style="font-family:var(--mono);font-size:10px;">@Test · @Nested · @ExtendWith</span>
+        </div>
+
+        <!-- Vintage — deprecated -->
+        <div class="comp is-deprecated">
+          JUnit Vintage
+          <span class="sub" style="color:var(--stop);">deprecated (JUnit 6)</span>
+          <span class="sub">runs JUnit 3/4 suites</span>
+        </div>
+
+        <!-- Third-party engines on same platform -->
+        <div class="comp">
+          jqwik
+          <span class="sub">property-based</span>
+          <span class="sub">same Platform</span>
+        </div>
+
+        <div class="comp">
+          Mockito ext.
+          <span class="sub">via @ExtendWith</span>
+          <span class="sub">hooks into Jupiter</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- .arch-stack -->
+
+  <!-- Callout note -->
+  <div class="note-row">
+    <div class="fig-note" style="flex:1;">
+      <b>Quality point:</b> Because every tool targets one <code style="font-family:var(--mono);font-size:11.5px;">TestEngine</code> API,
+      the whole test ecosystem composes on a single runner — JaCoCo, PITest, jqwik, Testcontainers, and Spring all
+      run <em>on the Platform</em>. Choosing JUnit is choosing the substrate the rest of Part V assumes.
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend-row">
+    <div class="legend-item">
+      <div class="l-swatch focus"></div>
+      <span>JUnit Jupiter — current programming model (JUnit 5 + 6)</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-swatch dash"></div>
+      <span>JUnit Vintage — deprecated in JUnit 6; migration-only</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-swatch std"></div>
+      <span>Third-party engines on the same Platform</span>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Source: JUnit User Guide "Overview" (docs.junit.org/current/user-guide — §1 "JUnit 5 = Platform + Jupiter + Vintage";
+    §4 "Dependency Metadata"). JUnit 6.1.0 GA 2026-05; 6.0 GA 2025-09-30; minimum Java 17; Platform/Jupiter/Vintage
+    share one version number in JUnit 6; Vintage deprecated. GAV: <code style="font-family:var(--mono);font-size:10.5px;">org.junit.jupiter:junit-jupiter</code>
+    (aggregator) or <code style="font-family:var(--mono);font-size:10.5px;">junit-bom</code> for version alignment. jqwik 1.10.1 (jqwik.net).
+    Draft §"JUnit: the substrate everything plugs into" (Ch 21 v1).
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

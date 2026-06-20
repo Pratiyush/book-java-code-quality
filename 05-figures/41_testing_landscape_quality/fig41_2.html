@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 20 — The testing landscape & quality (dossier key 41, Ch 20 in FINAL_INDEX, opens Part V)
+  Figure:  Fig 41.2 — Coverage vs. mutation score: the two independent axes of test quality
+  Family:  Concept-map / two-axis matrix with annotated quadrants
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"The two axes of test quality" — after the PITest verbatim quote,
+              before §The Java test-tool landscape
+  One idea: Coverage (execution) and mutation score (fault detection) are independent dimensions;
+             a suite can reach 100% coverage yet kill zero mutants — coverage is necessary,
+             not sufficient (PITest verbatim: "It does not check that your tests are actually
+             able to detect faults in the executed code").
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 41.2 — Coverage vs. mutation score</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 900px;
+    }
+
+    .layout {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      margin-top: 10px;
+    }
+
+    /* ── Left: axis definitions ── */
+    .axis-col {
+      width: 220px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .axis-def {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .axis-def .hd {
+      background: var(--tint-2);
+      border-bottom: 1.5px solid var(--ink);
+      padding: 7px 11px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .axis-def .bd {
+      padding: 9px 11px;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      line-height: 1.45;
+    }
+    .axis-def .bd strong { color: var(--ink); }
+    .axis-def .bd code {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      background: var(--tint-1);
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+
+    .key-quote {
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      padding: 9px 11px;
+      border-radius: 0 8px 8px 0;
+      font-size: 11.5px;
+      color: var(--ink);
+      line-height: 1.45;
+      font-style: italic;
+    }
+    .key-quote .source {
+      font-style: normal;
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* ── Centre: 2×2 matrix ── */
+    .matrix-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .matrix-header {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    /* Grid: 2 columns, 2 rows + axis labels */
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: 34px 1fr 1fr;
+      grid-template-rows: 26px 1fr 1fr;
+      gap: 5px;
+    }
+
+    /* X-axis label (top) */
+    .xa-left, .xa-right {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+    .x-axis-label {
+      grid-column: 2 / 4;
+      grid-row: 1;
+      display: flex;
+      gap: 5px;
+    }
+
+    /* Y-axis label (left) */
+    .y-axis-cell {
+      grid-column: 1;
+      grid-row: 2 / 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .y-axis-label {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      white-space: nowrap;
+      letter-spacing: .3px;
+    }
+
+    /* The four quadrant cells */
+    .q {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 11px 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .q-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .q-sub {
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+    .q-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid;
+      width: fit-content;
+      margin-top: 3px;
+    }
+    .q-badge.ok   { border-color: var(--ok);   color: var(--ok);   background: var(--tint-0); }
+    .q-badge.stop { border-color: var(--stop);  color: var(--stop); background: var(--tint-0); }
+    .q-badge.warn { border-color: var(--warn);  color: var(--warn); background: var(--tint-0); }
+
+    /* Quadrant fills */
+    .q.q-hi-hi  { background: var(--tint-1); grid-column: 2; grid-row: 2; }  /* high cov, high mut */
+    .q.q-lo-hi  { background: var(--tint-2); grid-column: 3; grid-row: 2; }  /* low cov, high mut */
+    .q.q-hi-lo  { background: var(--tint-3); grid-column: 2; grid-row: 3; }  /* high cov, low mut — THE DANGER */
+    .q.q-lo-lo  { background: var(--tint-2); grid-column: 3; grid-row: 3; }  /* low cov, low mut */
+
+    /* Danger accent on the hook quadrant */
+    .q.q-hi-lo {
+      border-color: var(--stop);
+      border-width: 2px;
+      box-shadow: inset 4px 0 0 var(--stop);
+    }
+
+    /* Star marker for the hook scenario */
+    .star-marker {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--stop);
+      margin-left: 4px;
+    }
+
+    /* axis arrow */
+    .axis-arrow {
+      font-size: 13px;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    /* ── Right: JaCoCo counters + PITest lifecycle ── */
+    .tool-col {
+      width: 188px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tool-block {
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .tool-block .hd {
+      background: var(--tint-2);
+      border-bottom: 1px solid var(--line);
+      padding: 6px 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink);
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .tool-block .hd code {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      background: var(--tint-3);
+      border-radius: 3px;
+      padding: 1px 4px;
+      color: var(--ink);
+    }
+    .tool-block .bd {
+      padding: 8px 10px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+    .tool-block .bd code {
+      font-family: var(--mono);
+      font-size: 10px;
+      background: var(--tint-1);
+      border-radius: 3px;
+      padding: 1px 3px;
+      color: var(--ink);
+    }
+    .counter-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .counter-list li {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 2px;
+      font-size: 11px;
+      color: var(--ink-soft);
+    }
+    .counter-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ink);
+      flex-shrink: 0;
+    }
+
+    .mutation-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 6px 0;
+    }
+    .mf-step {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+    }
+    .mf-num {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      font-weight: 700;
+      background: var(--tint-2);
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--ink);
+    }
+    .mf-outcome {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid;
+      display: inline-block;
+      margin-top: 3px;
+    }
+    .mf-outcome.killed { border-color: var(--ok);  color: var(--ok);  background: var(--tint-0); }
+    .mf-outcome.lived  { border-color: var(--stop); color: var(--stop); background: var(--tint-0); }
+
+    /* Hook scenario strip */
+    .hook-strip {
+      border: 2px solid var(--stop);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 10px 13px;
+      margin-top: 4px;
+    }
+    .hook-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--stop);
+      margin-bottom: 5px;
+    }
+    .hook-body {
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.45;
+    }
+    .hook-body strong { color: var(--ink); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 41.2 &mdash; Coverage vs. mutation score: two independent axes of test quality</p>
+  <p class="fig-subtitle">
+    Coverage measures execution; mutation score measures fault detection. They are independent.
+    A suite can reach 100% coverage and kill zero mutants.
+  </p>
+
+  <div class="layout">
+
+    <!-- ── LEFT: axis definitions ── -->
+    <div class="axis-col">
+
+      <div class="axis-def">
+        <div class="hd">X-axis &mdash; Coverage (execution)</div>
+        <div class="bd">
+          <strong>JaCoCo</strong> six counters (verbatim): Instructions,
+          Branches, Lines, Methods, Classes, Cyclomatic Complexity.<br><br>
+          Measures <em>which instructions ran</em> while tests executed.
+          Branch coverage (every <code>if</code> / <code>switch</code> arm) is the
+          stronger floor.<br><br>
+          PITest verbatim: <em>&ldquo;measures only which code is executed by your
+          tests.&rdquo;</em>
+        </div>
+      </div>
+
+      <div class="axis-def">
+        <div class="hd">Y-axis &mdash; Mutation score (detection)</div>
+        <div class="bd">
+          <strong>PITest</strong> &ldquo;automatically seeds&rdquo; small faults, then
+          reruns the suite per mutant.<br><br>
+          <strong>Killed</strong>: a test failed &rarr; fault detected.<br>
+          <strong>Lived</strong>: all tests passed &rarr; suite blind to that fault.<br><br>
+          Score = killed &divide; (killed + lived) &times; 100%.
+        </div>
+      </div>
+
+      <div class="key-quote">
+        &ldquo;It does not check that your tests are actually able to detect faults in the
+        executed code.&rdquo;
+        <span class="source">PITest verbatim (pitest.org)</span>
+      </div>
+
+      <div class="key-quote" style="margin-top:0;">
+        Coverage is <strong>necessary, not sufficient</strong> &mdash; a floor that finds
+        untested code, never proof that tested code is well tested.
+        <span class="source">Chapter thesis; folklore guard confirmed by PITest quote above.</span>
+      </div>
+
+    </div><!-- .axis-col -->
+
+    <!-- ── CENTRE: 2×2 matrix ── -->
+    <div class="matrix-col">
+
+      <div class="matrix-header">
+        Coverage (X) &rarr; &nbsp; low &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; high
+      </div>
+
+      <div class="matrix-grid">
+
+        <!-- X-axis labels -->
+        <div class="x-axis-label">
+          <div class="xa-left">High mutation score</div>
+          <div class="xa-right">Low mutation score</div>
+        </div>
+
+        <!-- Y-axis label -->
+        <div class="y-axis-cell">
+          <div class="y-axis-label">Mutation score (Y) &uarr; high &nbsp;&nbsp; low &darr;</div>
+        </div>
+
+        <!-- Q1: High coverage, High mutation score → target state -->
+        <div class="q q-hi-hi">
+          <div class="q-title">High coverage &amp; high score</div>
+          <div class="q-sub">
+            Tests execute the code <em>and</em> detect faults.
+            Strong boundary <code style="font-family:var(--mono);font-size:10px;">@ParameterizedTest</code>
+            + AssertJ assertions that verify the result.
+          </div>
+          <span class="q-badge ok">target state</span>
+        </div>
+
+        <!-- Q2: Low coverage, High mutation score → impractical (cannot have high score without running code) -->
+        <div class="q q-lo-hi">
+          <div class="q-title">Low coverage, high score</div>
+          <div class="q-sub">
+            Tests that run cover the code well — but coverage is low.
+            Meaningful assertions on a narrow, exercised subset. Expand coverage.
+          </div>
+          <span class="q-badge warn">improve coverage</span>
+        </div>
+
+        <!-- Q3: High coverage, Low mutation score → THE HOOK SCENARIO -->
+        <div class="q q-hi-lo">
+          <div class="q-title">
+            High coverage, low score
+            <span class="star-marker">&#9650; chapter hook</span>
+          </div>
+          <div class="q-sub">
+            Every line runs &mdash; yet tests assert almost nothing.
+            Coverage badge green; mutation gate red. The &ldquo;vanity suite&rdquo;:
+            100% line coverage, 0% kill rate. A real, money-losing bug passes uncaught.
+          </div>
+          <span class="q-badge stop">coverage lies here</span>
+        </div>
+
+        <!-- Q4: Low coverage, Low mutation score → needs work everywhere -->
+        <div class="q q-lo-lo">
+          <div class="q-title">Low coverage, low score</div>
+          <div class="q-sub">
+            Most code never runs; tested code has weak assertions.
+            Start here: add coverage and strengthen assertions together.
+          </div>
+          <span class="q-badge stop">both axes weak</span>
+        </div>
+
+      </div><!-- .matrix-grid -->
+
+      <!-- Hook scenario callout -->
+      <div class="hook-strip">
+        <div class="hook-title">The chapter hook: vanity suite</div>
+        <div class="hook-body">
+          A <code style="font-family:var(--mono);font-size:10px;">DiscountPolicy</code> test suite reaches
+          <strong>100% line coverage</strong> yet kills <strong>&lt;30% of seeded mutants</strong>.
+          A <code style="font-family:var(--mono);font-size:10.5px;">&gt;=</code> &rarr; <code style="font-family:var(--mono);font-size:10.5px;">&gt;</code> conditional mutation survives because
+          tests call the method but never assert the returned discount amount.
+          Coverage gate: green. Mutation gate: red. The suite lies.
+        </div>
+      </div>
+
+    </div><!-- .matrix-col -->
+
+    <!-- ── RIGHT: tool detail ── -->
+    <div class="tool-col">
+
+      <div class="tool-block">
+        <div class="hd"><code>JaCoCo</code> &mdash; execution coverage</div>
+        <div class="bd">
+          Six counters (verbatim):
+          <ul class="counter-list">
+            <li><div class="counter-dot"></div>Instructions</li>
+            <li><div class="counter-dot"></div>Branches</li>
+            <li><div class="counter-dot"></div>Lines</li>
+            <li><div class="counter-dot"></div>Methods</li>
+            <li><div class="counter-dot"></div>Classes</li>
+            <li><div class="counter-dot"></div>Cyclomatic Complexity</li>
+          </ul>
+          <br>
+          <code>check</code> goal has <strong>no built-in default threshold</strong>
+          (verify at pin).
+        </div>
+      </div>
+
+      <div class="tool-block">
+        <div class="hd"><code>PITest</code> &mdash; mutation testing</div>
+        <div class="bd">
+          <div class="mutation-flow">
+            <div class="mf-step">
+              <div class="mf-num">1</div>
+              <span>Seed a fault automatically (flip conditional, change <code>+</code> to <code>-</code>, replace return value)</span>
+            </div>
+            <div class="mf-step">
+              <div class="mf-num">2</div>
+              <span>Rerun suite against mutant</span>
+            </div>
+            <div class="mf-step">
+              <div class="mf-num">3</div>
+              <div>
+                <span>Outcome:</span><br>
+                <span class="mf-outcome killed">killed</span> = test failed (fault detected)<br>
+                <span class="mf-outcome lived">lived</span> = all passed (suite blind)
+              </div>
+            </div>
+          </div>
+          <br>
+          Full-project run is slow &mdash; scope to <em>changed code</em>
+          (PITest owning chapter covers how).
+        </div>
+      </div>
+
+      <div class="tool-block">
+        <div class="hd">FIRST (qualitative heuristic)</div>
+        <div class="bd">
+          <strong>F</strong>ast &nbsp;
+          <strong>I</strong>solated &nbsp;
+          <strong>R</strong>epeatable &nbsp;
+          <strong>S</strong>elf-validating &nbsp;
+          <strong>T</strong>imely<br><br>
+          Community checklist, not a formal standard.
+          Complements the quantitative axes above.
+        </div>
+      </div>
+
+    </div><!-- .tool-col -->
+
+  </div><!-- .layout -->
+
+  <p class="fig-caption">
+    Sources: JaCoCo six counters and <code style="font-family:var(--mono);font-size:10px;">check</code> no-default-threshold &mdash;
+    jacoco.org/jacoco/trunk/doc/counters.html (JaCoCo at pin).
+    PITest verbatim: &ldquo;automatically seeded … then your tests are run&rdquo;; killed/lived;
+    &ldquo;measures only which code is executed by your tests. It does not check that your tests
+    are actually able to detect faults in the executed code&rdquo; (pitest.org).
+    Coverage = necessary not sufficient (chapter thesis, folklore guard, confirmed by PITest quote).
+    FIRST = community heuristic, not a spec (draft §two-axes; source-pin gap noted).
+    Companion module hook scenario: <code style="font-family:var(--mono);font-size:10px;">DiscountPolicy</code> suite A (100% coverage,
+    &lt;30% kill) vs. suite B (strong assertions, high kill) &mdash; per companion spec in draft.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

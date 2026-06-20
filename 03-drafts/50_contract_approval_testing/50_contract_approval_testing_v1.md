@@ -38,6 +38,15 @@ That is the gap this final chapter of Part V closes, and it generalizes. Everyth
 
 ## How it works
 
+![Fig 50.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.](../../05-figures/50_contract_approval_testing/fig50_1.png)
+
+*Fig 50.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.*
+
+![Fig 50.2 — Three techniques, three questions on the service boundary and its output — Each answers what the others cannot; each fails when its own reference goes wrong.](../../05-figures/50_contract_approval_testing/fig50_2.png)
+
+*Fig 50.2 — Three techniques, three questions on the service boundary and its output — Each answers what the others cannot; each fails when its own reference goes wrong.*
+
+
 ### Contract testing: do the two sides still agree?
 
 **Contract testing** verifies that an integration point still works *without standing up both sides*. Pact's own definition: it is "a technique for testing an integration point by checking each application in isolation to ensure the messages it sends or receives conform to a shared understanding that is documented in a 'contract'." Pact is specifically **consumer-driven**: "the contract is generated during the execution of the automated consumer tests," so "only communication paths actually used by consumers get tested": the contract is exactly what the consumer relies on, no more. Provider behaviour no current consumer uses can change freely; behaviour a consumer *does* use cannot change without the contract catching it. That is precisely the field-rename from the hook.

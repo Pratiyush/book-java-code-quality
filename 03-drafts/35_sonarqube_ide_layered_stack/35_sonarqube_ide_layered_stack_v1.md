@@ -39,6 +39,11 @@ Both are right, and the resolution is neither "more tools" nor "fewer tools" but
 
 ## How it works
 
+![Fig 35.1 &mdash; The substrate &times; moment matrix: one owner per concern — Each tool reads one substrate at one moment &mdash; covering a cell no other tool reaches. Compose by assigning each concern exactly once.](../../05-figures/35_sonarqube_ide_layered_stack/fig35_1.png)
+
+*Fig 35.1 &mdash; The substrate &times; moment matrix: one owner per concern — Each tool reads one substrate at one moment &mdash; covering a cell no other tool reaches. Compose by assigning each concern exactly once.*
+
+
 ### The substrate × moment matrix
 
 Every analyzer reads exactly one substrate, and that choice fixes both *what it can possibly see* and *when it can run*:

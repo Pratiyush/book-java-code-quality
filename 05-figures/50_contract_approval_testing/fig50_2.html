@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 24 — Contract & Approval Testing (dossier key 50, folds 52)
+  Figure:  Fig 50.2 — Two jobs on one boundary + one job on the output
+  Family:  Concept-map (three-column technique comparison with shared boundary context)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Two jobs on one boundary, not rivals" table / §"Approval testing" — the
+             spatial overview that the inline table cannot carry (adds pyramid band,
+             artifact, reference type, and central risk per technique)
+  One idea: Three complementary techniques each answer a question the others cannot:
+            contract testing asks "do the sides agree?" (no live partner), API testing
+            asks "does the endpoint behave?" (needs live endpoint), and approval testing
+            asks "did the output change from a human-reviewed baseline?" — each is the
+            wrong tool for the other's question, and each fails when its own reference
+            goes wrong.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 50.2 — Three techniques, three questions</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 1020px;
+    }
+
+    /* Three-column technique grid */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      margin: 18px 0 14px;
+    }
+
+    .tech-card {
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--paper);
+      display: flex;
+      flex-direction: column;
+    }
+    .tech-card.is-boundary-left {
+      /* left side of the boundary pair */
+    }
+    .tech-card.is-boundary-right {
+      /* right side of the boundary pair */
+    }
+    .tech-card.is-output {
+      border-style: dashed;
+    }
+
+    .tech-hd {
+      background: var(--tint-2);
+      border-bottom: 2px solid var(--ink);
+      padding: 10px 14px;
+    }
+    .tech-card.is-output .tech-hd {
+      background: var(--tint-1);
+      border-bottom-style: dashed;
+    }
+    .tech-hd .tech-label {
+      font-size: 10px;
+      font-weight: 600;
+      font-family: var(--mono);
+      color: var(--ink-soft);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .tech-hd .tech-name {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .tech-hd .tech-tool {
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-top: 3px;
+    }
+    .tech-hd .tech-tool span {
+      font-family: var(--mono);
+      font-size: 10.5px;
+    }
+
+    .tech-bd {
+      padding: 11px 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .attr-row {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .attr-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--ink-soft);
+    }
+    .attr-val {
+      font-size: 12px;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+    .attr-val .mono-tag {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      background: var(--tint-2);
+      border-radius: 3px;
+      padding: 0 3px;
+    }
+
+    hr.divider {
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 2px 0;
+    }
+
+    .risk-band {
+      background: var(--tint-1);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 11.5px;
+      line-height: 1.4;
+      border-left: 3px solid var(--accent-bar);
+    }
+    .risk-band .risk-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      letter-spacing: .4px;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* Bracket annotation spanning the two boundary columns */
+    .bracket-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 6px;
+    }
+    .bracket-span {
+      grid-column: 1 / 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .bracket-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      border: 1.5px solid var(--ink);
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      padding: 3px 14px;
+      text-align: center;
+    }
+    .bracket-output {
+      grid-column: 3 / 4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .bracket-output-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      border: 1.5px dashed var(--ink);
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      padding: 3px 14px;
+      text-align: center;
+    }
+
+    /* Pyramid band badges */
+    .band-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      border: 1.5px solid var(--ink);
+      border-radius: 4px;
+      padding: 1px 6px;
+      background: var(--tint-2);
+      font-family: var(--mono);
+    }
+
+    /* Bottom note */
+    .bottom-note {
+      background: var(--tint-1);
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 4px;
+      border: 1px solid var(--line);
+    }
+    .bottom-note b { color: var(--ink); }
+
+    /* Legend */
+    .legend-row {
+      display: flex;
+      gap: 20px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+    }
+    .l-solid { width: 22px; height: 12px; border: 2px solid var(--ink); border-radius: 4px; background: var(--tint-2); }
+    .l-dashed { width: 22px; height: 12px; border: 2px dashed var(--ink); border-radius: 4px; background: var(--tint-1); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 50.2 — Three techniques, three questions on the service boundary and its output</p>
+  <p class="fig-subtitle">Each answers what the others cannot; each fails when its own reference goes wrong.</p>
+
+  <!-- Bracket annotations -->
+  <div class="bracket-row">
+    <div class="bracket-span">
+      <div class="bracket-label">Service boundary — two jobs, not rivals</div>
+    </div>
+    <div class="bracket-output">
+      <div class="bracket-output-label">Complex output</div>
+    </div>
+  </div>
+
+  <!-- Three technique cards -->
+  <div class="tech-grid">
+
+    <!-- Card 1: Contract testing / Pact -->
+    <div class="tech-card is-boundary-left">
+      <div class="tech-hd">
+        <span class="tech-label">TECHNIQUE 1 · SERVICE BOUNDARY</span>
+        <div class="tech-name">Contract testing</div>
+        <div class="tech-tool">Tool: <span>Pact (pact-jvm)</span></div>
+      </div>
+      <div class="tech-bd">
+        <div class="attr-row">
+          <span class="attr-label">Question answered</span>
+          <span class="attr-val">Do consumer and provider still <b>agree on message shape</b>?</span>
+        </div>
+        <hr class="divider">
+        <div class="attr-row">
+          <span class="attr-label">Needs live partner?</span>
+          <span class="attr-val">No — each side in isolation. Consumer runs against <span class="mono-tag">MockServer</span>; provider replays recorded pact.</span>
+        </div>
+        <div class="attr-row">
+          <span class="attr-label">Produces artifact?</span>
+          <span class="attr-val">Yes — pact JSON + broker matrix of verification results.</span>
+        </div>
+        <div class="attr-row">
+          <span class="attr-label">Pyramid band</span>
+          <span class="attr-val"><span class="band-badge">middle</span></span>
+        </div>
+        <div class="attr-row">
+          <span class="attr-label">Scope limit (verbatim, Pact docs)</span>
+          <span class="attr-val">"Not suitable for public or third-party APIs." Not a functional, performance, or load test.</span>
+        </div>
+        <hr class="divider">
+        <div class="risk-band">
+          <span class="risk-label">Central risk</span>
+          Consumer pact without provider verification is the over-mocking anti-pattern:
+          the consumer's own assumptions with a broker behind them.
+          Run all four stages or none of the guarantee applies.
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: API testing / REST-assured -->
+    <div class="tech-card is-boundary-right">
+      <div class="tech-hd">
+        <span class="tech-label">TECHNIQUE 2 · SERVICE BOUNDARY</span>
+        <div class="tech-name">API / HTTP testing</div>
+        <div class="tech-tool">Tool: <span>REST-assured 5.5.0</span></div>
+      </div>
+      <div class="tech-bd">
+        <div class="attr-row">
+          <span class="attr-label">Question answered</span>
+          <span class="attr-val">Does the <b>running endpoint respond correctly</b>?</span>
+        </div>
+        <hr class="divider">
+        <div class="attr-row">
+          <span class="attr-label">Needs live partner?</span>
+          <span class="attr-val">Yes — a running endpoint (Testcontainers / framework test instance).</span>
+        </div>
+        <div class="attr-row">
+          <span class="attr-label">Produces artifact?</span>
+          <span class="attr-val">No artifact — asserts on the live HTTP response.</span>
+        </div>
+        <div class="attr-row">
+          <span class="attr-label">Pyramid band</span>
+          <span class="attr-val"><span class="band-badge">middle → top</span></span>
+        </div>
+        <div class="attr-row">
+          <span class="attr-label">DSL</span>
+          <span class="attr-val"><span class="mono-tag">given()</span> / <span class="mono-tag">when()</span> / <span class="mono-tag">then()</span>; body path = GPath (Groovy GPath, not Jayway JsonPath).</span>
+        </div>
+        <hr class="divider">
+        <div class="risk-band">
+          <span class="risk-label">Central risk</span>
+          Cannot see a downstream consumer break — no consumer is involved.
+          Cannot replace a contract test; cannot replace a unit test of business logic.
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Approval testing / ApprovalTests -->
+    <div class="tech-card is-output">
+      <div class="tech-hd">
+        <span class="tech-label">TECHNIQUE 3 · OUTPUT</span>
+        <div class="tech-name">Approval testing</div>
+        <div class="tech-tool">Tool: <span>ApprovalTests.Java</span></div>
+      </div>
+      <div class="tech-bd">
+        <div class="attr-row">
+          <span class="attr-label">Question answered</span>
+          <span class="attr-val">Did the output <b>change from a human-reviewed baseline</b>?</span>
+        </div>
+        <hr class="divider">
+        <div class="attr-row">
+          <span class="attr-label">Mechanism</span>
+          <span class="attr-val"><span class="mono-tag">Approvals.verify(result)</span> writes <span class="mono-tag">*.received.*</span>,
+            compares <span class="mono-tag">*.approved.*</span>; mismatch launches diff/reporter.
+            Scrubbers normalize non-determinism (timestamps, GUIDs).
+          </span>
+        </div>
+        <div class="attr-row">
+          <span class="attr-label">Fits best for</span>
+          <span class="attr-val">Large / hard-to-hand-write output; golden-master for legacy characterization before refactor.</span>
+        </div>
+        <div class="attr-row">
+          <span class="attr-label">Pyramid band</span>
+          <span class="attr-val"><span class="band-badge">any level</span></span>
+        </div>
+        <div class="attr-row">
+          <span class="attr-label">Approved files</span>
+          <span class="attr-val">Committed to version control — surface in pull-request review as second-reviewer check.</span>
+        </div>
+        <hr class="divider">
+        <div class="risk-band">
+          <span class="risk-label">Central risk</span>
+          Verifies "unchanged," <em>not</em> "correct." Rubber-stamping a wrong <span class="mono-tag">received</span>
+          file bakes the bug into the baseline. Without diff discipline, it is theatre.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .tech-grid -->
+
+  <!-- Shared note -->
+  <div class="bottom-note">
+    <b>Unifying caveat:</b> every reference-based test is only as good as its reference.
+    A wrong contract (unverified consumer mock), a blind API assertion (no downstream consumer view), or a rubber-stamped baseline
+    each turns the test into theatre. These three compose — REST-assured proves endpoints run, Pact proves no consumer is broken,
+    ApprovalTests pins complex outputs — and none replaces unit/property tests that assert business-logic invariants.
+  </div>
+
+  <!-- Legend -->
+  <div class="legend-row">
+    <div class="legend-item">
+      <div class="l-solid"></div>
+      <span>Boundary technique (needs service)</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-dashed"></div>
+      <span>Output technique (any unit / integration scope)</span>
+    </div>
+    <div class="legend-item" style="margin-left:auto;">
+      <span style="font-size:11px;color:var(--ink-soft);">GAV: io.rest-assured:rest-assured 5.5.0 (2024-07-05); au.com.dius.pact.consumer:junit5 4.4.x; github.com/approvals/ApprovalTests.Java</span>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Sources: docs.pact.io (contract definition verbatim; scope limits verbatim: "not suitable for public or third-party APIs"; "not a functional, performance, or load test");
+    github.com/rest-assured/rest-assured wiki (given/when/then DSL; GPath vs Jayway JsonPath distinction; GAV 5.5.0 2024-07-05);
+    github.com/approvals/ApprovalTests.Java / approvaltests.com (Approvals.verify, *.received.*, *.approved.*, scrubbers, golden-master).
+    Pyramid band placement per Fowler Practical Test Pyramid bliki. All annotations and API names traced to pinned source.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

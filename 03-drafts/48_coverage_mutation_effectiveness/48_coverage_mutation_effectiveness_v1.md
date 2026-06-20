@@ -38,6 +38,11 @@ That gap is the subject of this chapter, and it is the payoff of the two-axis fr
 
 ## How it works
 
+![Fig 48.1 — Coverage vs mutation: the assertion gap on the same covered line — 100% line coverage does not move when assertions are added — mutation score does. Coverage records execution; mutation score records detection.](../../05-figures/48_coverage_mutation_effectiveness/fig48_1.png)
+
+*Fig 48.1 — Coverage vs mutation: the assertion gap on the same covered line — 100% line coverage does not move when assertions are added — mutation score does. Coverage records execution; mutation score records detection.*
+
+
 ### Coverage: what the tests touched
 
 **Code coverage** measures which parts of the production code were *executed* while the tests ran. **JaCoCo** is the de-facto JVM coverage library, and its mechanism is worth understanding because its sharp edges follow from it. JaCoCo uses **on-the-fly bytecode instrumentation** via a Java agent: as classes load, it inserts **probes** (execution flags) into the bytecode (using the ASM library, shaded into a private package to avoid conflicts), records which probes fire at runtime into a binary `.exec` file, and a report goal turns that into HTML/XML/CSV plus an optional build-failing check. Each class is identified by a CRC64 hash of its bytes, which is why a stale `.class` that does not match the analyzed source breaks line mapping.

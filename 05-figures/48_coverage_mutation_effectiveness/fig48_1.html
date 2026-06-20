@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 23 — Coverage, Mutation & Test Effectiveness (dossier key 48, folds 47; Ch 23 in FINAL_INDEX, Part V)
+  Figure:  Fig 48.1 — Coverage vs mutation: the same line, two very different answers
+  Family:  Concept-map / two-axis contrast (side-by-side scenario comparison)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §Deep dive — "100% coverage, surviving mutants", after the weak/strong test walkthrough
+  One idea: A test that covers a line earns 100% coverage yet catches nothing — coverage records execution,
+             mutation score records detection; only mutation reveals the assertion gap on covered code.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 48.1 — Coverage vs mutation: the assertion gap</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 24px;
+      width: 900px;
+    }
+
+    /* ── Two-column scenario layout ── */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 10px;
+    }
+
+    .scenario {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--paper);
+    }
+    .scenario.weak-scenario { border-color: var(--ink); }
+    .scenario.strong-scenario { border-color: var(--ink); }
+
+    .scenario-hd {
+      padding: 10px 14px;
+      border-bottom: 1.5px solid var(--ink);
+      font-weight: 700;
+      font-size: 13.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .scenario-hd .tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1.5px solid var(--ink);
+    }
+    .weak-scenario .scenario-hd { background: var(--tint-1); }
+    .strong-scenario .scenario-hd { background: var(--tint-3); }
+
+    .scenario-body { padding: 12px 14px; }
+
+    /* Code block typeset as text, not a screenshot */
+    .code-block {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      background: var(--tint-1);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      line-height: 1.55;
+    }
+    .code-block .cm { color: var(--ink-soft); }   /* comment */
+    .code-block .kw { font-weight: 700; }          /* keyword */
+    .code-block .hi { font-weight: 700; color: var(--ink); background: var(--tint-2); border-radius: 2px; padding: 0 2px; } /* highlight */
+
+    /* Metric row inside scenario */
+    .metric-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .metric-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .metric-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      min-width: 120px;
+      color: var(--ink);
+    }
+    .metric-value {
+      font-size: 11.5px;
+      font-family: var(--mono);
+      font-weight: 700;
+    }
+    .metric-badge {
+      font-size: 10.5px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1.5px solid;
+      font-weight: 700;
+    }
+    .badge-ok   { border-color: var(--ok);   color: var(--ok);   background: var(--tint-0); }
+    .badge-warn { border-color: var(--warn); color: var(--warn); background: var(--tint-0); }
+    .badge-stop { border-color: var(--stop); color: var(--stop); background: var(--tint-0); }
+
+    /* Mutant status table */
+    .mutant-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+      margin-bottom: 10px;
+    }
+    .mutant-table th {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--ink-soft);
+      padding: 4px 8px;
+      border-bottom: 1.5px solid var(--line);
+      text-align: left;
+      background: var(--tint-0);
+    }
+    .mutant-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: 11px;
+      vertical-align: top;
+    }
+    .mutant-table td.mutant-desc {
+      font-family: var(--font);
+      font-size: 11px;
+    }
+    .mutant-table tr:last-child td { border-bottom: none; }
+    .status-killed  { color: var(--ok);   font-weight: 700; }
+    .status-survived { color: var(--stop); font-weight: 700; }
+
+    /* Verdict banner at bottom of each scenario */
+    .verdict {
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 12px;
+      line-height: 1.45;
+      margin-top: 6px;
+    }
+    .verdict-weak   { background: var(--tint-1); border-left: 4px solid var(--stop); }
+    .verdict-strong { background: var(--tint-2); border-left: 4px solid var(--ok); }
+    .verdict b { color: var(--ink); }
+
+    /* ── Centre divider arrow ── */
+    .centre-arrow {
+      display: none; /* handled by grid gap */
+    }
+
+    /* ── Bottom synthesis strip ── */
+    .synthesis {
+      margin-top: 16px;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 12px 16px;
+    }
+    .synthesis-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .synthesis-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .synthesis-item {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+    .synthesis-item .sh {
+      font-weight: 700;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .synthesis-item .tool-tag {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      background: var(--tint-2);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      padding: 0 4px;
+      color: var(--ink);
+    }
+
+    /* ── Invariant callout ── */
+    .invariant {
+      margin-top: 12px;
+    }
+
+    /* ── Legend / routing ── */
+    .routing-row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      font-size: 11px;
+      color: var(--ink-soft);
+      align-items: center;
+    }
+    .routing-row .r-item { display: flex; align-items: center; gap: 5px; }
+    .routing-row .r-dot {
+      width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--ink); flex-shrink: 0;
+    }
+    .routing-row .r-dot.filled { background: var(--ink); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 48.1 — Coverage vs mutation: the assertion gap on the same covered line</p>
+  <p class="fig-subtitle">100% line coverage does not move when assertions are added — mutation score does. Coverage records execution; mutation score records detection.</p>
+
+  <!-- ── Two scenario columns ── -->
+  <div class="scenario-grid">
+
+    <!-- WEAK TEST -->
+    <div class="scenario weak-scenario">
+      <div class="scenario-hd">
+        <span>Weak test — assertion-free</span>
+        <span class="tag">BEFORE</span>
+      </div>
+      <div class="scenario-body">
+
+        <!-- Test code (typeset, not a screenshot) -->
+        <div class="code-block">
+<span class="cm">// asserts only non-null — no boundary, no value</span>
+<span class="kw">@Test</span> <span class="kw">void</span> discount_returnsValue() {
+  var result = Discount.apply(
+      <span class="hi">10</span>, <span class="hi">100.0</span>, <span class="hi">0.10</span>);
+  assertNotNull(result); <span class="cm">// ← only assertion</span>
+}
+        </div>
+
+        <!-- Metric outcomes -->
+        <div class="metric-row">
+          <div class="metric-item">
+            <span class="metric-label">JaCoCo LINE</span>
+            <span class="metric-value">100 %</span>
+            <span class="metric-badge badge-ok">PASS</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">JaCoCo BRANCH</span>
+            <span class="metric-value">&lt; 100 %</span>
+            <span class="metric-badge badge-warn">FAIL gate</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Mutation score</span>
+            <span class="metric-value">low</span>
+            <span class="metric-badge badge-stop">FAIL gate</span>
+          </div>
+        </div>
+
+        <!-- Mutant status table (weak) -->
+        <table class="mutant-table">
+          <thead>
+            <tr>
+              <th>Mutator (PITest DEFAULTS)</th>
+              <th>Change introduced</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CONDITIONALS_BOUNDARY</td>
+              <td class="mutant-desc"><code>&gt;=</code> &rarr; <code>&gt;</code> on <code>qty &gt;= 10</code></td>
+              <td class="status-survived">SURVIVED</td>
+            </tr>
+            <tr>
+              <td>MATH</td>
+              <td class="mutant-desc"><code>*</code> &rarr; <code>/</code> in <code>price * (1 - rate)</code></td>
+              <td class="status-survived">SURVIVED</td>
+            </tr>
+            <tr>
+              <td>VOID_METHOD_CALLS</td>
+              <td class="mutant-desc">delete void call (early return)</td>
+              <td class="status-survived">SURVIVED</td>
+            </tr>
+            <tr>
+              <td>NULL_RETURNS</td>
+              <td class="mutant-desc">return <code>null</code> instead of result</td>
+              <td class="status-survived">SURVIVED</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="verdict verdict-weak">
+          <b>What went wrong:</b> the test executed every line (LINE = 100%) but asserted only that
+          the return value is non-null. A flipped boundary, a swapped operator, or a deleted call all
+          return a non-null value — each mutant <b>survived</b>. PITest's own statement:
+          coverage <em>"does not check that your tests are actually able to detect faults
+          in the executed code."</em>
+        </div>
+
+      </div>
+    </div><!-- weak scenario -->
+
+    <!-- STRONG TEST -->
+    <div class="scenario strong-scenario">
+      <div class="scenario-hd">
+        <span>Strong test — boundary + value assertions</span>
+        <span class="tag">AFTER</span>
+      </div>
+      <div class="scenario-body">
+
+        <!-- Test code (typeset, not a screenshot) -->
+        <div class="code-block">
+<span class="cm">// AssertJ: boundary and computed value both checked</span>
+<span class="kw">@Test</span> <span class="kw">void</span> discount_appliesAboveBoundary() {
+  assertThat(Discount.apply(<span class="hi">10</span>, 100.0, 0.10))
+      .isCloseTo(<span class="hi">90.0</span>, within(0.001)); <span class="cm">// value</span>
+  assertThat(Discount.apply(<span class="hi">9</span>, 100.0, 0.10))
+      .isCloseTo(<span class="hi">100.0</span>, within(0.001)); <span class="cm">// boundary</span>
+}
+        </div>
+
+        <!-- Metric outcomes (strong) -->
+        <div class="metric-row">
+          <div class="metric-item">
+            <span class="metric-label">JaCoCo LINE</span>
+            <span class="metric-value">100 %</span>
+            <span class="metric-badge badge-ok">PASS</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">JaCoCo BRANCH</span>
+            <span class="metric-value">100 %</span>
+            <span class="metric-badge badge-ok">PASS gate</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Mutation score</span>
+            <span class="metric-value">high</span>
+            <span class="metric-badge badge-ok">PASS gate</span>
+          </div>
+        </div>
+
+        <!-- Mutant status table (strong) -->
+        <table class="mutant-table">
+          <thead>
+            <tr>
+              <th>Mutator (PITest DEFAULTS)</th>
+              <th>Change introduced</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CONDITIONALS_BOUNDARY</td>
+              <td class="mutant-desc"><code>&gt;=</code> &rarr; <code>&gt;</code> on <code>qty &gt;= 10</code></td>
+              <td class="status-killed">KILLED</td>
+            </tr>
+            <tr>
+              <td>MATH</td>
+              <td class="mutant-desc"><code>*</code> &rarr; <code>/</code> in <code>price * (1 - rate)</code></td>
+              <td class="status-killed">KILLED</td>
+            </tr>
+            <tr>
+              <td>VOID_METHOD_CALLS</td>
+              <td class="mutant-desc">delete void call (early return)</td>
+              <td class="status-killed">KILLED</td>
+            </tr>
+            <tr>
+              <td>NULL_RETURNS</td>
+              <td class="mutant-desc">return <code>null</code> instead of result</td>
+              <td class="status-killed">KILLED</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="verdict verdict-strong">
+          <b>What changed:</b> LINE coverage stayed at 100% — the same lines ran. BRANCH coverage
+          rose to 100% (both sides of <code>qty &gt;= 10</code> now exercised). Mutants were
+          <b>killed</b> because the AssertJ value assertions failed on each mutated return.
+          Coverage did not move; assertion strength did.
+        </div>
+
+      </div>
+    </div><!-- strong scenario -->
+
+  </div><!-- .scenario-grid -->
+
+  <!-- ── Synthesis strip ── -->
+  <div class="synthesis">
+    <div class="synthesis-title">The two-tool answer to two different questions</div>
+    <div class="synthesis-cols">
+      <div class="synthesis-item">
+        <span class="sh">JaCoCo <span class="tool-tag">org.jacoco:jacoco-maven-plugin</span></span>
+        <b>Question:</b> what did the tests touch?<br>
+        Gate every commit — cheap (single instrumented run, Java agent). Read
+        <b>BRANCH</b> (C1), not only LINE: a line counts covered when <em>one</em> instruction
+        ran; BRANCH exposes the untested else-path LINE hides.
+        Check goal: element BUNDLE, counter BRANCH, value COVEREDRATIO, minimum &lt;threshold&gt;,
+        haltOnFailure default true.
+        JaCoCo <b>0.8.16</b> (Java 21 support: 0.8.11; Java 25: 0.8.14).
+      </div>
+      <div class="synthesis-item">
+        <span class="sh">PITest <span class="tool-tag">org.pitest:pitest-maven</span> goal <span class="tool-tag">mutationCoverage</span></span>
+        <b>Question:</b> would the tests catch a bug?<br>
+        Run periodically — expensive (covering tests once per mutant). Statuses:
+        <b>KILLED</b> / <b>SURVIVED</b> / NO_COVERAGE / TIMED_OUT / MEMORY_ERROR / RUN_ERROR / NON_VIABLE.
+        Mutation score = killed &divide; total. Test strength = killed &divide; mutants-with-coverage.
+        JUnit 5 (Jupiter) requires <b>pitest-junit5-plugin</b> — absent = silent no-coverage.
+        PITest <b>1.25.3</b>.
+      </div>
+    </div>
+
+    <!-- Invariant note -->
+    <div class="invariant fig-note" style="margin-top: 12px;">
+      <b>The invariant:</b> LINE coverage did not move between the two tests above — the executed
+      code was identical. Mutation score did, because what changed was whether the tests
+      <em>checked</em> the result. High coverage with weak assertions manufactures false confidence.
+      Neither metric is "test quality" alone: coverage is a gap-finder (necessary floor); mutation
+      score is a fault-detection gauge (stronger signal, higher cost). Run both; crown neither.
+    </div>
+  </div>
+
+  <!-- ── Routing row ── -->
+  <div class="routing-row">
+    <div class="r-item">
+      <div class="r-dot filled"></div>
+      <span>PITest DEFAULTS: CONDITIONALS_BOUNDARY / MATH / VOID_METHOD_CALLS / NULL_RETURNS &amp; EMPTY|FALSE|TRUE|PRIMITIVE_RETURNS / INCREMENTS / INVERT_NEGS / NEGATE_CONDITIONALS &rarr; pitest.org (1.25.3)</span>
+    </div>
+    <div class="r-item" style="margin-left: auto;">
+      <span class="fig-mono fig-muted">Gate policy (which %, ratchet) &rarr; CI part (Ch 38) &nbsp;|&nbsp; Flakiness corrupts score &rarr; Ch 20 &nbsp;|&nbsp; Over-mocking flatters score &rarr; Ch 21</span>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Sources: JaCoCo 0.8.16 — on-the-fly Java-agent bytecode instrumentation; six counters
+    (INSTRUCTION C0 / BRANCH C1 / LINE / METHOD / CLASS / COMPLEXITY); check goal element/counter/value
+    model (check-mojo.html); BRANCH available without debug info; LINE requires debug info; Java 21
+    support 0.8.11, Java 25 support 0.8.14 (jacoco.org; github.com/jacoco/jacoco).
+    Fowler verbatim: <em>"high coverage numbers are too easy to reach with low quality testing"</em>;
+    <em>"useful tool for finding untested parts of a codebase"</em> (martinfowler.com/bliki/TestCoverage).
+    PITest 1.25.3 — mutation = fault-detecting power; statuses KILLED/SURVIVED/NO_COVERAGE/TIMED_OUT/MEMORY_ERROR/RUN_ERROR/NON_VIABLE (basic-concepts, pitest.org);
+    DEFAULTS mutators: CONDITIONALS_BOUNDARY / INCREMENTS / INVERT_NEGS / MATH / NEGATE_CONDITIONALS / VOID_METHOD_CALLS / EMPTY_RETURNS / FALSE_RETURNS / TRUE_RETURNS / NULL_RETURNS / PRIMITIVE_RETURNS; RETURN_VALS deprecated;
+    mutation score = killed &divide; total; test strength = killed &divide; mutants-with-coverage;
+    PITest verbatim: <em>"does not check that your tests are actually able to detect faults in the executed code"</em>;
+    pitest-junit5-plugin REQUIRED for JUnit 5 (Jupiter); goal mutationCoverage
+    (pitest.org; github.com/hcoles/pitest). AssertJ 3.27.7 (assertj.github.io).
+    Companion module spec: 08-companion-code/48_coverage_mutation_effectiveness/ (EXAMPLE-BUILD pending).
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>
