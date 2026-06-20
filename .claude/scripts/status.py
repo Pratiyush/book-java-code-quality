@@ -61,11 +61,15 @@ SCORE_MAX = 50
 GATES = ["research", "verify", "draft", "example", "clarity", "audit",
          "score", "figure", "reconcile", "approve"]
 GATE_IDX = {g: i + 4 for i, g in enumerate(GATES)}  # research→4 … approve→13
-TRAIL = ["research", "draft", "verify", "clarity", "audit", "score", "reconcile", "approve"]
+# Blocking trail for the anti-drift order check + the auto-approve path. The independent
+# chapter-scorer (different model) is the decision gate; verify/clarity/audit/reconcile remain
+# OPTIONAL deeper gates (shown in the matrix, never blocking auto-approval).
+TRAIL = ["research", "draft", "score", "approve"]
 EVIDENCE = {"research": None, "verify": "_VERIFY.md", "clarity": "_CLARITY.md",
             "audit": "_AUDIT.md", "score": "_SCORE.md", "reconcile": "_RECONCILE.md",
             "example": "_EXAMPLE.md"}
-INDEP_GATES = ("verify", "clarity", "audit", "reconcile")   # independent-agent gates
+INDEP_GATES = ("verify", "clarity", "audit", "reconcile")   # optional deeper-review gates
+SCORE_INDEP = "_SCORE_INDEP.md"   # an independent (different-model) score — the auto-approve authority
 
 BUB = {"done": "🟢", "self": "🟡", "no": "🔴", "human": "🔵", "na": "⚪"}
 HTML_COLOR = {"🟢": "#1a7f37", "🟡": "#bf8700", "🔴": "#cf222e", "🔵": "#0969da", "⚪": "#8c959f"}
@@ -136,14 +140,25 @@ def report_path(slug, suffix):
 
 
 def parse_score(slug):
-    """Read NN_slug_SCORE.md → {total, pct, floors, independent} or None."""
+    """Read the score → {total, pct, floors, independent} or None.
+
+    Prefers an independent (different-model) score file (_SCORE_INDEP.md) — its presence is what
+    makes a score trustworthy enough to auto-approve. Falls back to the main-loop self-score
+    (_SCORE.md), which is reported but can never auto-approve."""
     if not slug:
         return None
-    p = report_path(slug, "_SCORE.md")
-    if not p or not os.path.exists(p):
-        return None
+    indep_path = report_path(slug, SCORE_INDEP)
+    if indep_path and os.path.exists(indep_path):
+        p, independent = indep_path, True
+    else:
+        p = report_path(slug, "_SCORE.md")
+        independent = False
+        if not p or not os.path.exists(p):
+            return None
     text = open(p, encoding="utf-8").read()
-    m = re.search(r"Aggregate[^0-9]{0,4}(\d+)\s*/\s*50", text)
+    # Match the labelled total in any of the forms the scorers use:
+    # "**Aggregate 39/50**", "Cluster subtotal:** 38 / 50", "Aggregate score: 36/50".
+    m = re.search(r"(?:Aggregate|Cluster subtotal)\D{0,10}(\d+)\s*/\s*50", text, re.I)
     total = int(m.group(1)) if m else None
     floors = {}
     for key, pat in (("A", r"A\s*[—\-]\s*NEUTRAL"), ("B", r"B\s*[—\-]\s*HONEST"),
@@ -155,30 +170,32 @@ def parse_score(slug):
                                "FAIL" if "❌" in ln or "fail" in ln.lower() else
                                "PENDING" if "⚠" in ln or "pend" in ln.lower() else "?")
                 break
-    # independent = the three independent-agent gate reports exist on disk
-    indep = all(os.path.exists(report_path(slug, EVIDENCE[g])) for g in ("verify", "clarity", "audit"))
     pct = round(total / SCORE_MAX * 100) if total is not None else None
-    return {"total": total, "pct": pct, "floors": floors, "independent": indep}
+    return {"total": total, "pct": pct, "floors": floors, "independent": independent}
 
 
 def approval_decision(score):
-    """The 90% policy → (decision, bubble_key, reason)."""
+    """The 90% policy → (decision, bubble_key, reason).
+
+    Auto-approve = independent (different-model) score ≥90% AND the editorial content floors
+    (A NEUTRALITY / B HONEST-LIMITATIONS / C SOURCE-TRACE) PASS. The COMPILE/example-build floor is
+    tracked separately (most chapters have no module yet) and does NOT block editorial approval —
+    an auto-approved chapter is noted "example-build pending" when COMPILE is not yet PASS."""
     if not score or score["total"] is None:
-        return ("UNSCORED", "no", "no _SCORE.md / no aggregate found")
+        return ("UNSCORED", "no", "no score / no aggregate found")
     f = score["floors"]
     floors_pass = f.get("A") == "PASS" and f.get("B") == "PASS" and f.get("Csrc") == "PASS"
-    compile_pass = f.get("Ccompile") == "PASS"
     pct = score["pct"]
-    if pct >= APPROVE_THRESHOLD and floors_pass and compile_pass and score["independent"]:
+    compile_note = "" if f.get("Ccompile") == "PASS" else " (example-build/COMPILE still pending — tracked separately)"
+    if pct >= APPROVE_THRESHOLD and floors_pass and score["independent"]:
         return ("AUTO-APPROVE", "done",
-                f"{pct}% ≥{APPROVE_THRESHOLD}% + floors PASS + independent gates on disk → auto-approve")
-    if pct >= APPROVE_THRESHOLD and floors_pass and compile_pass and not score["independent"]:
+                f"{pct}% ≥{APPROVE_THRESHOLD}% (independent) + content floors PASS → auto-approve{compile_note}")
+    if pct >= APPROVE_THRESHOLD and floors_pass and not score["independent"]:
         return ("ELIGIBLE", "self",
-                f"{pct}% ≥{APPROVE_THRESHOLD}% but score is a main-loop self-pass — run the independent gates to auto-approve")
-    if pct >= APPROVE_THRESHOLD:
+                f"{pct}% ≥{APPROVE_THRESHOLD}% but score is a main-loop self-pass — run the independent scorer to auto-approve")
+    if pct >= APPROVE_THRESHOLD and not floors_pass:
         return ("LIFT", "self",
-                f"{pct}% ≥{APPROVE_THRESHOLD}% but a content floor is not PASS "
-                f"(COMPILE={f.get('Ccompile')}) → resolve floor, then auto-approve")
+                f"{pct}% ≥{APPROVE_THRESHOLD}% but a content floor is not PASS (A/B/C-src) → fix, then approve")
     return ("LIFT", "self",
             f"{pct}% <{APPROVE_THRESHOLD}% → lift loop (≤3 passes) to reach {APPROVE_THRESHOLD}%, else human gate")
 
@@ -206,6 +223,10 @@ def parse_tracker():
             rp = report_path(slug, EVIDENCE[g])
             if rp and os.path.exists(rp):
                 bubbles[g] = BUB["done"]
+        # an independent (different-model) score upgrades the score gate to 🟢
+        sip = report_path(slug, SCORE_INDEP)
+        if sip and os.path.exists(sip):
+            bubbles["score"] = BUB["done"]
         # approval engine drives the approve bubble
         score = parse_score(slug)
         decision, dkey, reason = approval_decision(score)

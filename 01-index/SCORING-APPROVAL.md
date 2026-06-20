@@ -42,16 +42,16 @@
 | 35 | 81 | 42/50 | 84% | PASS | PASS | PASS | PENDING | no | **LIFT** | 84% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
 | 36 | 83 | 42/50 | 84% | PASS | PASS | PASS | PENDING | no | **LIFT** | 84% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
 | 37 | 84 | 44/50 | 88% | PASS | PASS | PASS | PENDING | no | **LIFT** | 88% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
-| 38 | 85 | 44/50 | 88% | PASS | PASS | PASS | PENDING | no | **LIFT** | 88% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
-| 39 | 91 | 44/50 | 88% | PASS | PASS | PASS | PENDING | no | **LIFT** | 88% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
+| 38 | 85 | 38/50 | 76% | ? | ? | PASS | ? | yes | **LIFT** | 76% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
+| 39 | 91 | 37/50 | 74% | ? | ? | ? | ? | yes | **LIFT** | 74% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
 | 40 | 96 | 42/50 | 84% | PASS | PASS | PASS | PENDING | no | **LIFT** | 84% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
-| 41 | 97 | 44/50 | 88% | PASS | PASS | PASS | PENDING | no | **LIFT** | 88% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
-| 42 | 100 | 44/50 | 88% | PASS | PASS | PASS | PENDING | no | **LIFT** | 88% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
-| 43 | 101 | 44/50 | 88% | PASS | PASS | PASS | PENDING | no | **LIFT** | 88% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
+| 41 | 97 | 37/50 | 74% | ? | ? | ? | ? | yes | **LIFT** | 74% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
+| 42 | 100 | 36/50 | 72% | ? | ? | ? | ? | yes | **LIFT** | 72% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
+| 43 | 101 | 37/50 | 74% | ? | ? | ? | ? | yes | **LIFT** | 74% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
 | 44 | 105 | 42/50 | 84% | PASS | PASS | PASS | PENDING | no | **LIFT** | 84% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
-| 45 | 106 | 44/50 | 88% | PASS | PASS | PASS | FAIL | no | **LIFT** | 88% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
-| 46 | 109 | 46/50 | 92% | PASS | PASS | PASS | PENDING | no | **LIFT** | 92% ≥90% but a content floor is not PASS (COMPILE=PENDING) → resolve floor, then auto-approve |
-| 47 | 110 | 47/50 | 94% | PASS | PASS | PASS | PENDING | no | **LIFT** | 94% ≥90% but a content floor is not PASS (COMPILE=PENDING) → resolve floor, then auto-approve |
+| 45 | 106 | 34/50 | 68% | ? | ? | ? | ? | yes | **LIFT** | 68% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
+| 46 | 109 | 35/50 | 70% | ? | ? | ? | ? | yes | **LIFT** | 70% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
+| 47 | 110 | 39/50 | 78% | PASS | PASS | PASS | FAIL | yes | **LIFT** | 78% <90% → lift loop (≤3 passes) to reach 90%, else human gate |
 
 ## Routing
 
