@@ -1,0 +1,48 @@
+{
+  "_comment": "Machine-readable capstone gate status, read by .claude/scripts/status.py to render the Capstones page/section of the dashboard. Update 'as_of' and the gate values when a capstone's state changes (e.g. after a build or a code-review). Gate values map to bubbles: done=green, self=yellow(wip/self-pass), no=red(not-started), human=blue(awaiting human), na=grey.",
+  "as_of": "2026-06-20",
+  "verified_by": "mvn -B -Pquality verify on 08-companion-code (full reactor) -> BUILD SUCCESS; 0 Checkstyle violations; 0 SpotBugs bugs",
+  "gate_order": ["build", "tests", "checkstyle", "spotbugs", "code_review", "assemble"],
+  "gate_labels": {
+    "build": "Build",
+    "tests": "Tests",
+    "checkstyle": "Checkstyle",
+    "spotbugs": "SpotBugs",
+    "code_review": "Code-review (FLOOR C)",
+    "assemble": "Phase-4 assemble"
+  },
+  "capstones": [
+    {
+      "id": "shared-platform",
+      "title": "shared-platform (HTTP/JSON/Result/EventBus/client)",
+      "domain": "platform library",
+      "services": ["(library)"],
+      "tests": 14,
+      "gates": {"build": "done", "tests": "done", "checkstyle": "done", "spotbugs": "done", "code_review": "human", "assemble": "na"}
+    },
+    {
+      "id": "01-commerce-checkout",
+      "title": "Commerce checkout",
+      "domain": "e-commerce checkout",
+      "services": ["catalog-service", "payment-service", "order-service"],
+      "tests": 14,
+      "gates": {"build": "done", "tests": "done", "checkstyle": "done", "spotbugs": "done", "code_review": "human", "assemble": "no"}
+    },
+    {
+      "id": "02-fintech-ledger",
+      "title": "Fintech ledger",
+      "domain": "double-entry money movement",
+      "services": ["account-service", "ledger-service", "transfer-service"],
+      "tests": 12,
+      "gates": {"build": "done", "tests": "done", "checkstyle": "done", "spotbugs": "done", "code_review": "human", "assemble": "no"}
+    },
+    {
+      "id": "03-logistics-fulfil",
+      "title": "Logistics fulfilment",
+      "domain": "warehouse fulfilment (saga)",
+      "services": ["inventory-service", "shipment-service", "fulfilment-orchestrator"],
+      "tests": 12,
+      "gates": {"build": "done", "tests": "done", "checkstyle": "done", "spotbugs": "done", "code_review": "human", "assemble": "no"}
+    }
+  ]
+}

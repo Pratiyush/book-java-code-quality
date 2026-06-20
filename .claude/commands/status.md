@@ -4,14 +4,21 @@ description: "Print the progress board — phase, banked dossiers, per-chapter g
 
 # /status — print the progress board
 
-**First, regenerate the status matrix + run the drift guard:**
+**First, regenerate the full report + run the drift guard:**
 ```
-python3 .claude/scripts/status.py
+python3 .claude/scripts/status.py                  # regenerate MD + HTML, report-only
+python3 .claude/scripts/status.py --apply-approvals # also auto-approve chapters that qualify (mutates 04-approved/)
 ```
-This rewrites `01-index/STATUS-MATRIX.md` (the 🟢🟡🔴🔵 chapter × gate matrix + per-Part rollups +
-needs-human queue + ETA) and `10-logs/dashboard.html`, and **fails (exit 1) on drift** (a gate cell
-claiming progress with no report on disk, or a gate-trail order violation). Report the drift verdict
-prominently. Then read the living state below and print a concise board.
+This rewrites, every run:
+- `01-index/STATUS-MATRIX.md` — the 🟢🟡🔴🔵 chapter × gate matrix + per-Part rollups + needs-human queue + **capstone status**.
+- `01-index/SCORING-APPROVAL.md` — the **auto-approval engine**: per-chapter score %, content-floor verdicts, and the routing under the **90% policy** (score ≥90% + floors PASS + independent gates run → auto-approve; else lift ≤3; else human gate).
+- `10-logs/{dashboard,chapters,scoring,capstones,audit}.html` — the multi-page HTML dashboard (Overview · Chapters matrix · Scoring & approval · Capstones · **Audit log**), cross-linked.
+
+It **fails (exit 1) on drift** (a gate cell claiming progress with no report on disk, or a gate-trail
+order violation), and logs a milestone to `10-logs/audit.jsonl`. Report the drift verdict + the
+approval routing prominently. The audit trail (`10-logs/audit.jsonl`) records every action — milestones
+always, plus every tool call once the `PostToolUse` hook is enabled (`.claude/hooks/AUDIT-LOG.md`).
+Then read the living state below and print a concise board.
 
 You are otherwise a **reporter**: aside from regenerating the matrix/dashboard above, change nothing — no gates run, no agents dispatched.
 
