@@ -84,7 +84,7 @@
 | 20 | 41 | The testing landscape & test quality (Ch 20; folds 49) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
 | — | 44 | Test doubles & mocking (Mockito) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 47 | Mutation testing (PITest) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 48 | Code coverage (JaCoCo) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 23 | 48 | Coverage, mutation & test effectiveness (Ch 23; folds 47) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
 | — | 49 | Test architecture, flakiness & smells | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 50 | Contract & API testing (Pact, REST-assured) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 51 | Performance testing (JMH) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
