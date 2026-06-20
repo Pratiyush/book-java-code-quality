@@ -14,7 +14,7 @@ _Regenerated 2026-06-20 from `LEDGER.md` §1 (human-facing summary, never the so
 
 ## Open actions (in order)
 
-1. **Keep drafting Phase 3, main agent only.** Next: Part I Chapters 2–4 (Ch 2 = keys 03+04+58; Ch 3 = 05; Ch 4 = 06+90), then fan out across the 47 locked chapters. Per draft: 12-section spine (`00-strategy/templates/CHAPTER-TEMPLATE.md`), facts traced to `SOURCE-PIN.md`, neutrality + honest-limitations floors, write `03-drafts/NN_slug/NN_slug_v1.md` + `_SCORE.md`, **banned-phrasing sweep BEFORE commit**, update `CHAPTER-TRACKER.md`, commit + push.
+1. **Keep drafting Phase 3, main agent only.** Next: Ch 6 (keys 07+17+34, naming/formatting), then Ch 7+ across the 47 locked chapters across the 47 locked chapters. Per draft: 12-section spine (`00-strategy/templates/CHAPTER-TEMPLATE.md`), facts traced to `SOURCE-PIN.md`, neutrality + honest-limitations floors, write `03-drafts/NN_slug/NN_slug_v1.md` + `_SCORE.md`, **banned-phrasing sweep BEFORE commit**, update `CHAPTER-TRACKER.md`, commit + push.
 2. **HUMAN-ONLY BLOCKER — install JDK 21** (Maven 3.9.16 already present) to lift FLOOR-C COMPILE from PENDING-RUNTIME; then `./mvnw -B verify` the companion modules. Until then chapters are draft-complete but cannot pass the Step-12 human gate.
 3. **Per chapter before the human gate:** run independence gates (ORIGINALITY 5b, RED-TEAM 8b) on a *different* model/persona than the drafter (kernel rule).
 4. **Optional, non-gating:** fine-tune `GUIDELINES-JAVA-QUALITY.md` §0–§1 + `VOICE-GUIDE-JAVA-QUALITY.md`; adapt the multi-authority source-pin scripts.
