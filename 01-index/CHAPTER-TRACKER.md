@@ -77,7 +77,7 @@
 | 17 | 35 | SonarQube, IDE inspections & the layered stack (Ch 17; folds 36+37) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
 | — | 36 | IDE inspections (IntelliJ, Eclipse) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 37 | Comparing & layering the analyzers | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 38 | Writing custom rules | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| 18 | 38 | Writing custom rules; annotation processors & Lombok (Ch 18; folds 40) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
 | — | 39 | Living with findings (false positives, ratcheting) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 40 | Annotation processors & the Lombok debate | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 
