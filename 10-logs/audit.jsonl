@@ -20,3 +20,5 @@
 {"ts":"2026-06-20T19:51:22Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 0 approved, 47 in lift, drift=none"}
 {"ts":"2026-06-20T20:10:29Z","kind":"milestone","actor":"claude","action":"voice-lift","target":"Ch 38,39,41,42,43,45,46","detail":"copyeditor (Sonnet) voice pass: narration you->3rd/imperative, em-dash to ceiling, self-narration cut; neutrality all 7 clean; facts untouched"}
 {"ts":"2026-06-20T20:19:08Z","kind":"milestone","actor":"claude","action":"figure","target":"Ch 38,39,41,42,43,45,46","detail":"8 designed figures authored + rendered (Ch46 x2) via the pipeline; referenced in drafts; all traced"}
+{"ts":"2026-06-20T20:25:13Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 0 approved, 47 in lift, drift=none"}
+{"ts":"2026-06-20T20:25:13Z","kind":"milestone","actor":"claude","action":"score-indep","target":"Ch 38,39,41,42,43,45,46 (lift1)","detail":"after voice+figure: 70-80% (was 68-76%); none reach 90%; remaining caps = EXAMPLE-BUILD snippets + live-web pin-verify + residual prose"}
