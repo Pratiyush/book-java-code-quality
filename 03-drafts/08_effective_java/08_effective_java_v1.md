@@ -15,25 +15,25 @@ DRAFT v1 — gates manual; canon-dating shape; EXAMPLE-BUILD pending JDK.
 
 ## Hook
 
-You open a pull request and see a 40-line class: a private final field, a constructor, `equals`, `hashCode`, `toString`, and getters — all to carry three values. The author cites *Effective Java*, Item by Item: minimize mutability, obey the `equals`/`hashCode` contract, favor composition. Every word is right. And every line is now unnecessary, because on Java 21 the whole class is one line:
+A pull request arrives: a 40-line class with a private final field, a constructor, `equals`, `hashCode`, `toString`, and getters, all to carry three values. The author cites *Effective Java*, Item by Item: minimize mutability, obey the `equals`/`hashCode` contract, favor composition. Every word is right. And every line is now unnecessary, because on Java 21 the whole class is one line:
 
 ```java
 record Point(int x, int y, String label) {}
 ```
 
-*Effective Java* taught a generation of developers how to write the language well. But it was last revised in 2018, and Java has shipped a new feature train every six months since. This chapter does two things at once: it distills the canon's load-bearing principles, and it reads each through the language as it is now — because citing a 2018 rule uncritically can have you hand-writing code the compiler will now generate, correctly, for free.
+*Effective Java* taught a generation of developers how to write the language well. But it was last revised in 2018, and Java has shipped a new feature train every six months since. This chapter does two things at once: it distills the canon's load-bearing principles, and it reads each through the language as it is now, because citing a 2018 rule uncritically can produce hand-written code the compiler will now generate, correctly, for free.
 
 ## Overview
 
 **What this chapter covers**
 
 - The *Effective Java* principles that still anchor quality Java: immutability, the object contracts, composition, generics discipline, and "prefer alternatives to Java serialization."
-- The **canon-dating** method: for each rule, name the modern Java feature (records, sealed types, pattern matching) that changed how you apply it — and give a verdict.
+- The **canon-dating** method: for each rule, name the modern Java feature (records, sealed types, pattern matching) that changed how to apply it, and give a verdict.
 - Which classic idioms are now **served by a language feature**, which **still stand**, and which are **reinforced**.
 
 **What this chapter does NOT cover.** Deep dives on immutability (Chapter 8), null-safety (Chapter 9), generics (Chapter 11), or the full feature reference (the JDK docs). It is the bridge from the canon to modern Java; the specific topics follow.
 
-**If you hold one idea**, hold the hook: a principle can be timeless while the *idiom that expresses it* becomes obsolete. The skill is telling the two apart.
+One idea carries the chapter: a principle can be timeless while the *idiom that expresses it* becomes obsolete. The skill is telling the two apart.
 
 ## How it works
 
@@ -47,15 +47,15 @@ record Point(int x, int y, String label) {}
 - **Use generics and avoid raw types** — let the compiler enforce type-safety (Chapter 11).
 - **Prefer alternatives to Java serialization** — native serialization is a security and maintenance hazard (Chapter 30 on deserialization).
 
-These are not in dispute. What has changed is *how you satisfy them* in modern Java.
+These are not in dispute. What has changed is *how to satisfy them* in modern Java.
 
 ### Canon-dating: rule → feature → verdict
 
-The method this chapter uses for each principle is a three-step the book reuses for every "canon" chapter (Fowler, Feathers, SOLID): state the rule, cite the **primary source** (a JEP or the JLS) that changed the terrain, and give a verdict — *Stands*, *Served by a feature*, or *Reinforced-and-dated*.
+Each principle gets a three-step treatment reused for every "canon" chapter (Fowler, Feathers, SOLID): state the rule, cite the **primary source** (a JEP or the JLS) that changed the terrain, and give a verdict: *Stands*, *Served by a feature*, or *Reinforced-and-dated*.
 
 | Effective Java principle | Modern Java feature (verify JEP/version @ pin) | Verdict |
 |---|---|---|
-| Minimize mutability; immutable value classes | **Records** (JEP 395, final Java 16) | **Served by a feature** — a transparent immutable data carrier is one line; hand-write only when you need invariants/validation |
+| Minimize mutability; immutable value classes | **Records** (JEP 395, final Java 16) | **Served by a feature** — a transparent immutable data carrier is one line; hand-write when invariants/validation are required |
 | Obey `equals`/`hashCode`/`toString` | Records generate all three from the components | **Served** for data carriers; **Stands** for classes with identity or custom equality |
 | Model a closed set of types safely | **Sealed types** (JEP 409, Java 17) + **pattern matching for `switch`** (JEP 441, Java 21) | **Served / reinforced** — exhaustive, checked alternatives to the visitor/instanceof ladder |
 | Prefer enums for fixed instances; singletons | `enum` (Item 3's recommended singleton) | **Stands** — still the idiom |
@@ -68,27 +68,27 @@ The method this chapter uses for each principle is a three-step the book reuses 
 
 The modern features above are the quality story of Java 21/25, and they earn their keep by stating intent more directly:
 
-- **Records** — collapse a data carrier's boilerplate to its components; with a **compact constructor** you can still validate invariants. This is the hook's one-liner.
+- **Records** — collapse a data carrier's boilerplate to its components; a **compact constructor** adds validation where needed. The hook's one-liner is a record.
 - **Sealed types** — declare the complete set of permitted subtypes, so the compiler (and the reader) knows the hierarchy is closed.
-- **Pattern matching for `switch`** — flat, exhaustive handling of a sealed hierarchy, replacing the nested `instanceof`-and-cast ladder; the compiler checks you covered every case.
+- **Pattern matching for `switch`** — flat, exhaustive handling of a sealed hierarchy, replacing the nested `instanceof`-and-cast ladder; the compiler checks that every case is covered.
 - **Text blocks** — multi-line strings (SQL, JSON) that read as themselves.
 - **`var`** — local type inference that cuts redundant noise (used judiciously; Chapter 2's caveat).
 
-*(Every JEP number and since-version here is carried `verify-at-pin` against the pinned JDK docs — Chapter 13 confirms each; preview/exploratory features are flagged AHEAD-OF-PIN below.)*
+*(Every JEP number and since-version here is carried `verify-at-pin` against the pinned JDK docs; Chapter 13 confirms each; preview/exploratory features are flagged AHEAD-OF-PIN below.)*
 
-> **Trace it back.** Principles cite *Effective Java* 3e; each "changed the terrain" claim cites the JEP/JLS that introduced the feature (pinned @ JDK 21.0.11 / 25.0.3). Where a feature is preview at 25 (structured concurrency) or exploratory (Valhalla value classes), it is marked AHEAD-OF-PIN and never presented as a stable replacement. Concept chapter — the companion build is PENDING-RUNTIME.
+> **Trace it back.** Principles cite *Effective Java* 3e; each "changed the terrain" claim cites the JEP/JLS that introduced the feature (pinned @ JDK 21.0.11 / 25.0.3). Where a feature is preview at 25 (structured concurrency) or exploratory (Valhalla value classes), it is marked AHEAD-OF-PIN and never presented as a stable replacement. Concept chapter; the companion build is PENDING-RUNTIME.
 
 ## Deep dive
 
 ### The folklore to avoid: "records make immutability obsolete"
 
-A tempting over-claim has emerged: *records replace Effective Java's immutability item.* They do not. A `record` carries **transparent, immutable data** — its components *are* its API. But the Item-on-minimizing-mutability covers more: types with **invariants** (a temperature that must be ≥ absolute zero), **validation**, or a **hidden representation** still need the hand-written form, or a record with a **compact constructor** that validates. The honest framing, traced to JEP 395 and the EJ item, is *nuance, not replacement*: records serve the common case (a plain immutable data carrier) and shrink the boilerplate; they do not retire the principle.
+A tempting over-claim has emerged: *records replace Effective Java's immutability item.* They do not. A `record` carries **transparent, immutable data**; its components *are* its API. But the Item-on-minimizing-mutability covers more: types with **invariants** (a temperature that must be ≥ absolute zero), **validation**, or a **hidden representation** still need the hand-written form, or a record with a **compact constructor** that validates. The honest framing, traced to JEP 395 and the EJ item, is *nuance, not replacement*: records serve the common case (a plain immutable data carrier) and shrink the boilerplate; they do not retire the principle.
 
 > **WARNING** Reaching for a record reflexively for any small class is its own anti-pattern. A record exposes all components and is for *data*; a class with behaviour, encapsulated state, or validation beyond a compact constructor is not a record candidate. Use the feature where it fits the principle, not as a default.
 
 ### Reading a 2018 book in 2026 — the standing discipline
 
-This chapter models how to treat every named-book source in this book (Fowler's *Refactoring*, Feathers' *Working Effectively with Legacy Code*, Martin's *Clean Code*): the **book is a secondary authority**. Where it conflicts with a **primary** source (the JLS, a JEP, a tool's own docs at the pin) or has been overtaken by a language version, the primary wins and the book's claim is dated and contextualized — never presented as current fact without the primary confirming it. *Effective Java* remains the best single distillation of Java idiom; the discipline is to read it forward into the language as it is.
+The same discipline applies to every named-book source in this book (Fowler's *Refactoring*, Feathers' *Working Effectively with Legacy Code*, Martin's *Clean Code*): the **book is a secondary authority**. Where it conflicts with a **primary** source (the JLS, a JEP, a tool's own docs at the pin) or has been overtaken by a language version, the primary wins and the book's claim is dated and contextualized, never presented as current fact without the primary confirming it. *Effective Java* remains the best single distillation of Java idiom; the discipline is to read it forward into the language as it stands.
 
 ## Limitations
 
@@ -96,30 +96,30 @@ This chapter models how to treat every named-book source in this book (Fowler's 
 - **"Served by a feature" is not "obsolete principle."** The principle stands; only the idiom changes. Confusing the two (e.g. the records folklore) over-claims.
 - **Feature reach is bounded.** Records are for transparent data; sealed types for closed hierarchies; pattern matching gains most with sealed types. Each fits a shape; forcing it elsewhere harms readability (Chapter 2).
 - **Preview ≠ stable.** Structured concurrency is preview at the pinned JDK; value classes (Valhalla) are exploratory. Building on them as if stable is an AHEAD-OF-PIN error.
-- **This chapter is a bridge, not the deep dives.** Immutability, null-safety, generics each have their own chapter; here they are surveyed.
+- **Bridge, not a deep dive.** Immutability, null-safety, and generics each have their own chapter; this one surveys them.
 
 ## Alternatives
 
 - **Other Java-idiom references** — for example, the *Java Concurrency in Practice* canon (for the concurrency items) or vendor/style guides. They overlap with *Effective Java* and are sometimes more current on a narrow area; *Effective Java* remains the broadest single distillation. Use the canon for breadth and the specialist works (and this book's later chapters) for depth; neither is "the" source.
-- **"Just read the JEPs."** The primary sources are authoritative and current but give no *idiom* — they tell you what a feature is, not when to reach for it. The canon supplies judgment; the JEPs supply ground truth. The two are complementary, which is the whole point of canon-dating.
+- **"Read only the JEPs."** The primary sources are authoritative and current but give no *idiom*: they describe what a feature is, not when to reach for it. The canon supplies judgment; the JEPs supply ground truth. The two are complementary, which is the whole point of canon-dating.
 
 ## When to use
 
-- **Reach for a record** when you have a transparent, immutable data carrier — the common case the immutability principle covers. Add a compact constructor for validation; hand-write the class when you need invariants, identity, or a hidden representation.
+- **Reach for a record** for a transparent, immutable data carrier — the common case the immutability principle covers. Add a compact constructor for validation; hand-write the class when invariants, identity, or a hidden representation are required.
 - **Reach for sealed types + pattern matching** when modeling a closed set of alternatives — it makes the hierarchy legible and the handling exhaustive and compiler-checked.
 - **Keep the standing principles** (composition over inheritance, generics over raw types, alternatives to serialization) regardless of version — they are not dated.
 - **Avoid** building on preview/exploratory features as if stable, and avoid citing a 2018 idiom without checking what the language now provides.
 
 ## Hand-off
 
-The canon, read forward, points at a cluster of related craft: immutability and value semantics, the object contracts, null-safety, generics — each a principle the modern language now helps you satisfy. The next chapters take them one at a time, beginning with the most leverage-heavy readability lever a developer touches every day: naming, structure, and the formatters that end the argument.
+The canon, read forward, points at a cluster of related craft: immutability and value semantics, the object contracts, null-safety, generics, each a principle the modern language now helps satisfy. The next chapters take them one at a time, beginning with the most leverage-heavy readability lever a developer touches every day: naming, structure, and the formatters that end the argument.
 
 ## Back matter
 
 **Key takeaways**
 
 - *Effective Java* (3e, 2018) distills durable principles — minimize mutability, the object contracts, composition, generics, alternatives to serialization.
-- **Canon-dating:** read each rule through the modern feature (records, sealed types, pattern matching) that changed how you apply it. Verdict: *Stands / Served by a feature / Reinforced-and-dated*.
+- **Canon-dating:** read each rule through the modern feature (records, sealed types, pattern matching) that changed how to apply it. Verdict: *Stands / Served by a feature / Reinforced-and-dated*.
 - **Records serve, not retire, the immutability principle** — transparent data only; invariants/validation still need the hand-written form or a compact constructor.
 - A **book is a secondary authority**; the JLS/JEP (the pin) wins. Read the canon forward into the language as it is.
 - **Preview/exploratory features** (structured concurrency, Valhalla) are AHEAD-OF-PIN — never cited as stable.
@@ -148,7 +148,7 @@ The canon, read forward, points at a cluster of related craft: immutability and 
 
 ## Next chapter teaser
 
-If the language now states much of your intent for you, the highest-leverage thing left in your hands is what you call things — so why is naming still the hardest part, and can a tool settle the rest?
+If the language now states much of the developer's intent, the highest-leverage choice remaining is what things are called — so why is naming still the hardest part, and can a tool settle the rest?
 
 ---
 
