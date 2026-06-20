@@ -136,7 +136,7 @@
 | — | 89 | Documentation quality (ADRs/Javadoc/README) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 90 | Knowledge sharing, onboarding & bus factor | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 
-| — | 91 | Refactoring discipline (Fowler catalog) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 39 | 91 | Refactoring, legacy code & modernization (Ch 39; folds 92+93+95) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
 | — | 92 | Working with legacy code — characterization, seams | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 93 | Strangler-fig & incremental modernization | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 94 | Automated large-scale change (OpenRewrite/Refaster) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
