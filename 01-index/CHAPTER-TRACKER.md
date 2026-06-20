@@ -128,7 +128,7 @@
 | — | 82 | Pre-commit hooks & local↔CI parity | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | 36 | 83 | Release quality (Ch 36) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 
-| — | 84 | Code review practices (size/time, checklists) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 37 | 84 | Code review, coding standards & documentation (Ch 37; folds 86+89) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
 | — | 85 | Metrics that matter vs vanity (DORA/SPACE) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 86 | Coding standards & style guides | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 87 | Rolling quality into a legacy codebase (baseline/ratchet) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
