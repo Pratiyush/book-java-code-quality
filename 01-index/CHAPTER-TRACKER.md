@@ -36,7 +36,7 @@
 
 > One row per FINAL_INDEX chapter, grouped by the book's Parts. At a new book's start all gate cells are `pending`. Replace the example row below.
 
-> NOTE: pre-cull. FINAL_INDEX not yet locked (Phase 2). These rows track **research progress (Parts I–XII, keys 01–100)**; the board becomes the FINAL_INDEX book of record after `/select-book-one`.
+> NOTE: pre-cull. FINAL_INDEX not yet locked (Phase 2). These rows track **research progress (Parts I–XIII, keys 01–105)**; the board becomes the FINAL_INDEX book of record after `/select-book-one`.
 
 | Ch | NN | Topic | research | verify | draft | example | clarity | audit | score | figure | reconcile | approve |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -148,9 +148,15 @@
 | — | 99 | AI-assisted refactoring & test generation | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 100 | Governing AI in the dev workflow | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 
+| — | 101 | Performance as a quality attribute | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 102 | Profiling (JFR, async-profiler) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 103 | Memory & allocation hygiene | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 104 | Benchmarking discipline (JMH) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| — | 105 | Performance-regression gates in CI | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+
 ¹ Keys 01–06 (pilot) self-verify inline (sources + `⚠ UNVERIFIED` flags) but no separate Step-2 `_VERIFY.md` yet. Open flag: `09-flags/01_iso25010_2023_subtree_unverified.md`.
 ² Keys 07–40 each have a Step-2 `_VERIFY.md` (source-verifier gate): all **PASS_WITH_FLAGS, 0 blockers**. Flags are "verify-at-pin" atoms (resolve at `/pin-source`) + minor citation-lint; two banned-phrasing breaches fixed (keys 03, 28). Tracked in `09-flags/`.
-⁵ Parts VI–VII (architecture & design governance 53–61; build/deps/supply-chain 62–68; security/SAST 69–74; CI/CD & gates 75–83; process/people/metrics 84–90; refactoring/legacy 91–96; AI-era 97–100) research COMPLETE, authored main-loop (cheaper mode); heavy synthesis of banked keys 02/04/33; neutrality-swept clean; formal SOURCE-VERIFY pending (fold into `/pin-source`).
+⁵ Parts VI–VII (architecture & design governance 53–61; build/deps/supply-chain 62–68; security/SAST 69–74; CI/CD & gates 75–83; process/people/metrics 84–90; refactoring/legacy 91–96; AI-era 97–100; performance 101–105) research COMPLETE, authored main-loop (cheaper mode); heavy synthesis of banked keys 02/04/33; neutrality-swept clean; formal SOURCE-VERIFY pending (fold into `/pin-source`).
 ³ Part V (testing) research is COMPLETE (12/12), formal SOURCE-VERIFY pending for all. Two sub-cases: (a) keys 41, 44, 47, 48, 49, 50, 51 = salvaged from the spend-limit-aborted workflow (research-done, no `_VERIFY.md`); (b) keys 42, 43, 45, 46, 52 = authored main-loop in cheaper mode (like the Part-I pilot). All neutrality-swept clean + unverified atoms flagged. **Owe a `_VERIFY.md` pass** — fold into the `/pin-source` re-trace.
 
 ---
