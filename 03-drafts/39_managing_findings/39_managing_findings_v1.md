@@ -1,0 +1,145 @@
+<!--
+Dossier key: 39 — per 01-index/FINAL_INDEX.md Ch 19 (CLOSES Part IV; Ch 20 opens Part V — Testing)
+Slug: 39_managing_findings
+Part / arc position: Part IV — Static Analysis, Linting & Formatting, Chapter 19 of 15-19 (CLOSER)
+Companion module: 08-companion-code/ (a baseline that ratchets + one justified suppression) — ⚠ EXAMPLE-BUILD = PENDING (toolchain READY: JDK 21.0.11+25.0.3). Spec at foot.
+Verified against SOURCE-PIN: 2026-06-20. Sources (each tool cited to its OWN docs; no tool crowned):
+- The four levers (narrow→broad): (1) per-finding suppression, (2) rule/ruleset tuning, (3) baseline, (4) ratchet ("clean as you code").
+- Checkstyle: SuppressWarningsFilter (+ required child SuppressWarningsHolder on TreeWalker) honours @SuppressWarnings("checkname") (case-insensitive, dotted prefix/Check suffix removed); SuppressionCommentFilter (// CHECKSTYLE:OFF .. :ON) / SuppressWithNearbyCommentFilter; SuppressionXpathSingleFilter (inline, same config); SuppressionFilter (external suppressions.xml = de-facto baseline). maven-checkstyle-plugin checkstyle:check; failOnViolation (default true); maxAllowedViolations (count-cap ratchet); violationSeverity.
+- PMD: @SuppressWarnings("PMD" / "PMD.RuleName" / "unused"); // NOPMD (same line as violation; trailing text → report = justification slot); CLI --suppress-marker; rule props violationSuppressRegex / violationSuppressXPath; ruleset <exclude>/<exclude-pattern>.
+- SpotBugs: @SuppressFBWarnings(value, justification) from edu.umd.cs.findbugs.annotations (GAV spotbugs-annotations; CLASS retention because bytecode); FindBugsFilter root + Match (children = conjuncts) / And / Or / Not; leaves Bug(pattern/code/category), Class, Method, Field, Local, Confidence(1-3), Rank(1-20), Package, Source; -exclude/-include (Maven excludeFilterFile/includeFilterFile); baselineFiles ("bugs in baseline not reported"; multi-file since spotbugs-maven-plugin 4.7.1.0 ⚠).
+- Error Prone: @SuppressWarnings("CheckName"); -Xep:Check:OFF|WARN|ERROR (last flag wins). NullAway: @SuppressWarnings("NullAway"); castToNonNull (self-suppressed) / -XepOpt:NullAway:CastToNonNullMethod.
+- SonarQube: //NOSONAR (EOL, suppresses ALL issues on the line, rule-blind); issue transitions False Positive / Accepted (Accepted supersedes Won't Fix; both excluded from ratings/quality reports); New Code Definition + Clean as You Code gate (conditions on NEW code only) = the ratchet.
+⚠ verify-at-pin: all tool/plugin versions/GAVs; failOnViolation/violationSeverity defaults; baselineFiles name + "since 4.7.1.0"; Sonar "Won't Fix"→"Accepted" rename + version boundary; //NOSONAR scoping (//NOSONAR <ruleKey>?); PMD --suppress-marker vs -suppressmarker spelling; Checkstyle @SuppressWarnings name-normalization; EI_EXPOSE_REP example pattern code.
+Routes: WHY FPs exist (undecidability) → Ch 15 (key 26); WHICH analyzers to layer → Ch 17 (key 37); new-code coverage gate mechanics → CI part (key 80); legacy-remediation playbook → key 87; build-breaking policy → key 76. FindBugs DEAD → SpotBugs.
+DRAFT v1 — gates manual; four-lever-scope-ladder + triage-tree + suppression-is-a-claim-that-needs-evidence + debt-about-debt shapes; PART IV CLOSER (hand-off opens Part V — Testing, Ch 20 keys 41+49). EXAMPLE-BUILD pending.
+-->
+
+# Keeping the Gate Honest
+
+*False positives, suppression with a reason, baselines, and the ratchet — how a static-analysis gate survives contact with a real codebase · 39 · Part IV (closer)*
+
+> A gate that fails the build on a finding the team has judged wrong, or on four thousand findings in legacy code, doesn't get fixed. It gets disabled.
+
+## Hook
+
+Here is how a quality gate dies. A team turns on the full analyzer stack from the last four chapters — Checkstyle, PMD, SpotBugs, Error Prone, Sonar — with sensible rulesets. On the first run it reports four thousand findings, almost all of them pre-existing, a handful of them false. The build goes red and stays red. After a week of nobody being able to merge, someone adds `-Dcheckstyle.skip=true` to the CI config "just until we clean this up." The cleanup never happens. A year later the gate is still there, still skipped, and a genuinely new bug sails through the dead checkpoint nobody reads.
+
+The stack wasn't wrong. The mistake was treating its output as a binary — green or fix-everything — when the operational reality of static analysis is messier. Every analyzer is an approximation (Chapter 15): undecidability means it *must* trade precision for recall, so **false positives aren't a defect, they're a property**. And every real codebase carries debt that predates the gate. A gate that ignores both gets turned off, which is the most damaging quality outcome of all — a checkpoint everyone believes in but nothing actually guards. This final chapter of Part IV is the discipline that keeps the gate *credible*: telling a true finding to fix from a false positive to suppress *with a reason*, from a rule that's wrong for your project to tune off, from a mountain of legacy debt to baseline and ratchet down. Get this right and everything you wired across Chapters 15–18 stays alive instead of decaying into theatre.
+
+## Overview
+
+**What this chapter covers**
+
+- The **triage decision** every finding forces — fix, suppress (false positive), accept (true but tolerated), or baseline — and the trap of conflating them.
+- The **four levers**, from narrowest to broadest: per-finding **suppression**, rule/ruleset **tuning**, **baselines**, and the **ratchet** ("clean as you code").
+- Each tool's own suppression surface (Checkstyle, PMD, SpotBugs, Error Prone, NullAway, Sonar), cited to its own docs — and why every narrow form has a dangerous broad form.
+- Why suppression is **a claim that needs evidence**, and why baselines and suppressions are *debt about debt* that needs its own review.
+
+**What this chapter does NOT cover.** *Why* analyzers are imprecise — the undecidability theory (Chapter 15). *Which* analyzers to run and how to layer them (Chapter 17). The new-code **coverage** gate and build-breaking policy in depth (the CI part). The full legacy-remediation playbook for paying debt *down* (a later chapter). This chapter owns the **mechanics of living with the findings** the gate produces. Each tool is cited to its own docs; **no tool is crowned**.
+
+**If you hold one idea**, hold this: *a static-analysis gate stays credible only if every silenced finding is silenced on purpose, with a recorded reason, and the past is frozen so the gate can react to change — suppression without a reason is indistinguishable from hiding a bug.*
+
+## How it works
+
+### The triage tree: what a finding actually is
+
+Before any mechanism, the decision. A finding is exactly one of four things, and each wants a different lever:
+
+| The finding is… | Do this | Lever |
+|---|---|---|
+| **a real defect** | fix it | — |
+| **a false positive** (the tool is wrong) | suppress *at the site, with a reason* — or tune the rule if it's wrong everywhere | 1 / 2 |
+| **true but accepted** (real, but the team accepts the cost) | accept *with a reason* | 1 |
+| **pre-existing debt too large to fix now** | freeze it, then block new debt | 3 / 4 |
+
+The recurring hazard is conflating the false-positive case with the accepted case, and then reaching for a *broad* tool: `@SuppressWarnings("PMD")` on an entire class, a `// CHECKSTYLE:OFF` with no disciplined `:ON`, an over-wide SpotBugs `Match` on a whole package. Each of those silences not just today's finding but **every future finding** of that kind in that scope — including the real one that shows up next quarter.
+
+> **CONCEPT** *Every narrow form has a broad form, and the broad form silences the future.* The skill is always reaching for the narrowest lever that solves the actual problem: one finding → suppress one finding; one rule that's systematically wrong → tune that one rule; a legacy mountain → baseline, don't scatter suppressions. Breadth is convenient and almost always a smell.
+
+### The four levers, narrow to broad
+
+**Lever 1 — per-finding suppression.** Silence one finding at one site. Every staple ships this, and the shape that matters is whether it carries a *reason*:
+
+- **SpotBugs**: `@SuppressFBWarnings(value = "NP_…", justification = "…")` from `edu.umd.cs.findbugs.annotations` — note the **`justification` field**: the tool *intends* suppression to be documented. (The annotation has class retention because SpotBugs reads bytecode.)
+- **PMD**: `@SuppressWarnings("PMD.RuleName")` for one rule, or the `// NOPMD` comment **on the same line as the violation** — any text after the marker lands in the report, a built-in justification slot.
+- **Checkstyle**: `@SuppressWarnings("checkname")`, but only when the config wires `SuppressWarningsFilter` *and* its prerequisite `SuppressWarningsHolder` on the `TreeWalker`; plus comment filters (`// CHECKSTYLE:OFF` … `:ON`) and the inline `SuppressionXpathSingleFilter`.
+- **Error Prone**: `@SuppressWarnings("CheckName")` with the canonical check name.
+- **NullAway**: beyond `@SuppressWarnings("NullAway")`, a `castToNonNull(x)` helper expresses "I know this one is non-null" as a *call* at the exact site — narrower than a blanket annotation.
+- **Sonar**: end-of-line `//NOSONAR` — but it is **rule-blind**: it drops *every* issue on that line. The reviewed server-side path is the **False Positive** or **Accepted** issue transition, both excluded from ratings and reports.
+
+**Lever 2 — rule/ruleset tuning.** When a rule is wrong for *this* project everywhere, don't scatter site suppressions — tune the rule once. Checkstyle: drop the module or set its `severity`. PMD: `<exclude name="RuleName"/>`, or `violationSuppressRegex` / `violationSuppressXPath` to suppress a systematic misfire by message or AST shape. SpotBugs: a `FindBugsFilter` `Match` on a bug pattern with no class/method narrowing = "never report this pattern." Error Prone: `-Xep:CheckName:OFF` (last flag for a check wins). Sonar: deactivate the rule in the Quality Profile.
+
+**Lever 3 — baseline.** Freeze the findings that exist *today* so the gate reacts only to *change* — the precondition for ever turning a gate on over a noisy codebase. SpotBugs has a true baseline: `baselineFiles` ("bugs found in the baseline files won't be reported"). Checkstyle's external `suppressions.xml` (one `<suppress>` row per frozen finding) is the de-facto baseline, and `maxAllowedViolations` caps by count. Sonar's baseline is implicit: anything outside the **New Code** window is tracked but excluded from the default gate.
+
+**Lever 4 — ratchet ("clean as you code").** Let existing findings persist but **block new ones**, so debt only goes down. Sonar is the reference articulation: the **New Code Definition** marks what's "new," and the default gate applies its conditions *only to new code* — legacy doesn't block the build, but new code must be clean, and the debt decays as files are touched. Without a new-code engine, a count cap (`maxAllowedViolations` set to today's number, then lowered over time) blocks any *increase*; regenerating a SpotBugs baseline plays the same role at the finding-set level.
+
+> **CONCEPT** *Baseline freezes the past; the ratchet governs the future.* Together they let a team adopt a gate on a million-line legacy codebase *today* — no flag-day cleanup — while guaranteeing the codebase gets no worse. That combination, not the analyzer itself, is what makes static analysis adoptable in the real world.
+
+### Suppression is a claim that needs evidence
+
+The through-line of all four levers: the tools can *record* "false positive," but they cannot *decide* it. That judgment is human, and a wrong one — suppressing a finding that was actually real — is **invisible afterward**. There's no squiggle anymore; the bug is just gone from the report. This is why the `justification` field exists, why `// NOPMD` captures trailing text into the report, and why a reviewed PR is the right home for a suppression: an unjustified suppression is, on its face, indistinguishable from hiding a real defect.
+
+Which makes suppressions and baselines a peculiar kind of artifact: **debt about debt.** They are claims the team made at one moment, and they rot. The code under a suppression changes and the original reason no longer holds, but the suppression stays. A baselined finding gets refactored and a real bug slips in under the stale match. So the suppression set itself needs review (it's version-controlled and shows up in PRs precisely so it *can* be reviewed) and periodic decay — every so often, delete the suppressions and see what comes back. A gate full of stale, unexamined suppressions is the same theatre as a skipped gate, just better disguised.
+
+## Deep dive: a baseline that ratchets, and one suppression that earns its keep
+
+Make it concrete with two analyzers on a real module. Wire Checkstyle and SpotBugs over a `PricingService` that, like every real codebase, has three kinds of code in it: a legacy class with a dozen pre-existing findings, one genuine false positive, and a clean new class.
+
+Turn the gate on without a baseline and the build is red on day one — the failure mode from the hook. So **baseline the past**: a SpotBugs `FindBugsFilter` (or `baselineFiles`) freezes the legacy class's findings, and Checkstyle's `maxAllowedViolations` is set to today's count. The build goes green — not because the debt is gone, but because the gate now reacts only to change.
+
+Now the **ratchet** earns its keep. Add a *new* bug to the clean class — say a method that returns its internal mutable array directly (the `EI_EXPOSE_REP` pattern). Run the build: it **fails**, because the baseline froze only the *old* findings and this one is new. That is the entire value proposition in one event — the past is tolerated, the future is guarded. Fix the bug and it's green again.
+
+The one **false positive** shows how to suppress correctly. SpotBugs flags a pattern the team has examined and judged wrong for this specific site. The right fix is the *narrowest* one with a *reason*: `@SuppressFBWarnings(value = "…", justification = "validated non-null by the caller contract, see PricingPolicy")` on that one method. The wrong fix — the tempting one — is `@SuppressFBWarnings("EI_EXPOSE_REP")` on the whole class, which would also have silenced the *new* bug the ratchet just caught. That contrast is the chapter in miniature: the narrow, justified suppression keeps the gate honest; the broad, silent one quietly turns the gate off for an entire class and nobody notices until production does.
+
+And the honest edge, the reason none of this is free: a baseline that freezes all current findings also freezes any *real* bugs hiding among them, and the team stops seeing them. A count cap is order-blind — fix one false positive while adding one real bug and the number nets to zero and passes. A finding-set baseline drifts as code moves. The ratchet, by design, never *forces* legacy remediation, so a cold module stays dirty indefinitely. These levers make a gate adoptable and credible; they do not make debt disappear. Paying it down is a separate, deliberate act (a later chapter) — and for a class of finding that must be fixed in old code *now*, such as a known vulnerability, ratcheting defers rather than remediates, and you reach past it to a targeted pass.
+
+That is the bow on Part IV. Static analysis gives you a fleet of approximating tools, each reading a different view of your program (Chapters 15–17), extensible to your own invariants (Chapter 18) — and this chapter is what keeps the resulting gate from being switched off the first week it inconveniences someone. The measure of a quality gate is not how many findings it produces; it's whether, a year on, the team still trusts it enough to leave it on.
+
+## Limitations & when NOT to reach for it
+
+- **Per-finding suppression silences the future, not just the present.** A broad suppression (`@SuppressWarnings("PMD")` on a class, an over-wide `Match`, `//NOSONAR` which is rule-blind) hides future real findings in that scope; suppressions also rot as the code under them changes. When NOT: as the default response to a noisy rule (tune the rule instead), or without a recorded reason.
+- **Rule tuning's global off-switch can hide local truth.** Turning a rule fully `OFF` removes it where it *would* have caught a real defect; a message-regex suppression can over-match. When NOT: to make a gate green fast under deadline — that's disabling signal, not managing it; prefer a baseline that keeps the rule.
+- **Baselines freeze debt and can freeze bugs.** A baseline of *all* current findings also freezes the real bugs among them; finding-set baselines drift on refactor; count caps are order-blind. When NOT: on a small/new codebase where a real cleanup is cheaper than the baseline's permanent carrying cost, or for security findings you actually intend to triage.
+- **The ratchet leaves legacy untouched and needs an accurate boundary.** "New code" requires reliable SCM/`git blame` data; a mis-set new-code definition mis-attributes findings; cold modules stay dirty forever, and count ratchets can be gamed (split a file, reformat). When NOT to rely on it alone: when a finding must be fixed in *old* code now.
+- **The tools record a judgment; they cannot make it.** "Is this a false positive?" is human, and a wrong suppression is invisible afterward. The whole practice is a trust mechanism — a gate full of stale, unjustified suppressions is theatre, the same as a skipped gate.
+- **Suppressions and baselines are debt about debt.** They need their own PR review and periodic decay; left unreviewed they accumulate exactly the blindness the gate was meant to remove.
+
+## Alternatives & adjacent approaches
+
+- **Actually fix it** — for a small or new codebase, a real cleanup is often cheaper than carrying a baseline forever. Baseline is for when fixing-now is infeasible, not a default.
+- **Tune the rule, don't suppress the sites** — when a rule misfires the *same way* everywhere, one ruleset change replaces a hundred scattered suppressions (and leaves no rot).
+- **New-code coverage gating** (the CI part): the same clean-as-you-code ratchet applied to test coverage rather than findings.
+- **A deliberate legacy-remediation pass** (a later chapter) for paying frozen debt *down* on a schedule, rather than waiting for files to be touched.
+- **Stronger guarantees upstream** — a language feature or type (a `record`, an `Optional`, a custom rule from Chapter 18) that makes the bad state unrepresentable removes the finding at the source, so there's nothing to suppress.
+
+These compose: fix what's cheap, tune systematic misfires, baseline the rest, ratchet the future, and remove whole finding classes upstream where the language lets you.
+
+## When to use what
+
+- **One finding the tool got wrong:** the narrowest site suppression *with a justification* (`@SuppressFBWarnings(justification=…)`, `// NOPMD <reason>`, a reviewed Sonar **False Positive**).
+- **One finding that's real but accepted:** an **Accepted** transition or a justified suppression — never silently.
+- **A rule that's wrong for the project everywhere:** tune or deactivate that one rule in config.
+- **A legacy codebase too noisy to fix now:** baseline today's findings, then ratchet (block new) — adopt the gate without a flag-day.
+- **A finding that must be fixed in old code now (e.g. a vulnerability):** fix it; don't baseline it.
+- **Every suppression and baseline:** put it in version control, review it in the PR, record the reason, and revisit it periodically — treat it as debt about debt.
+
+## Hand-off to the next part
+
+Part IV has built and operated a static-analysis gate end to end: how the tools reason (Chapter 15), the four bare analyzers (Chapter 16), the platform and the layered stack (Chapter 17), extending them with custom rules and codegen (Chapter 18), and — here — keeping the resulting gate honest. But every one of those tools shares a hard limit stated again and again: it reasons about code *without running it*. A clean gate proves the code is well-formed, idiomatic, and free of known bad patterns. It says nothing about whether the code is *correct* — whether it computes the right answer. That guarantee comes only from executing the code against expectations, which is **Part V: Testing**. The next chapter opens it with the testing landscape and what makes a test *good* — the pyramid, test smells, and flakiness — because a suite of bad tests is its own kind of skipped gate.
+
+## Back matter — sources & traceability
+
+- **Checkstyle** (`checkstyle.org` filter pages; `maven.apache.org/plugins/maven-checkstyle-plugin`): `SuppressWarningsFilter` (+ required `SuppressWarningsHolder`), `SuppressionCommentFilter` (`// CHECKSTYLE:OFF`/`:ON`), `SuppressWithNearbyCommentFilter`, `SuppressionXpathSingleFilter`, `SuppressionFilter` (`suppressions.xml`); `@SuppressWarnings("checkname")` (case-insensitive, dotted-prefix/`Check`-suffix removed); `checkstyle:check`, `failOnViolation` (default `true`), `maxAllowedViolations`, `violationSeverity`.
+- **PMD** (`pmd.github.io/.../suppressing_warnings.html`): `@SuppressWarnings("PMD"/"PMD.Rule"/"unused")`; `// NOPMD` (same line; trailing text → report); `--suppress-marker`; `violationSuppressRegex` / `violationSuppressXPath`; ruleset `<exclude>`/`<exclude-pattern>`.
+- **SpotBugs** (`spotbugs.readthedocs.io`): `@SuppressFBWarnings(value, justification)` from `edu.umd.cs.findbugs.annotations` (GAV `spotbugs-annotations`, class retention); `FindBugsFilter` root + `Match`(conjunct children)/`And`/`Or`/`Not`; leaves `Bug`(pattern/code/category), `Class`, `Method`, `Field`, `Local`, `Confidence`(1–3), `Rank`(1–20), `Package`, `Source`; `-exclude`/`-include` (Maven `excludeFilterFile`/`includeFilterFile`); `baselineFiles` ("bugs in baseline not reported"; multi-file since spotbugs-maven-plugin 4.7.1.0 ⚠ @pin).
+- **Error Prone / NullAway** (`errorprone.info/docs/flags`; `github.com/uber/NullAway/wiki`): `@SuppressWarnings("CheckName")`; `-Xep:Check:OFF|WARN|ERROR` (last flag wins); NullAway `@SuppressWarnings("NullAway")`, `castToNonNull` (self-suppressed), `-XepOpt:NullAway:CastToNonNullMethod`.
+- **SonarQube** (`docs.sonarsource.com`): `//NOSONAR` (EOL, suppresses all issues on the line); issue transitions **False Positive** / **Accepted** (Accepted supersedes Won't Fix; both excluded from ratings/reports — ⚠ rename + version boundary @pin); New Code Definition + Clean-as-You-Code gate (conditions on new code only) = the ratchet.
+- **Status/discipline**: FindBugs is dead → **SpotBugs** (annotation package `edu.umd.cs.findbugs.annotations`); `@Generated`-style precision applies to suppression annotation *packages* too. All tool/plugin versions, GAVs, defaults (`failOnViolation`, `violationSeverity`, `baselineFiles`), the Sonar "Won't Fix"→"Accepted" rename, `//NOSONAR` scoping, PMD `--suppress-marker` spelling, and the `EI_EXPOSE_REP` example code carried **⚠ verify at pin**.
+- **Routing** — why FPs exist (undecidability) → Ch 15 (key 26); which analyzers to layer → Ch 17 (key 37); new-code coverage gate + build-breaking policy → the CI part (keys 80/76); legacy-remediation playbook → a later chapter (key 87).
+
+**Companion module (spec — ⚠ EXAMPLE-BUILD = PENDING; toolchain READY):** `08-companion-code/39_managing_findings/` — a `PricingService` module wired with Checkstyle (`failOnViolation=true`, `maxAllowedViolations` ratchet) and SpotBugs (`excludeFilterFile`/`baselineFiles`), containing (i) a legacy class with baselined findings, (ii) one narrow `@SuppressFBWarnings(value=…, justification="…")`, (iii) a clean new class. **TRY-IT / failure path:** add a new SpotBugs finding (`EI_EXPOSE_REP`, returning a mutable field) to the clean class → `./mvnw -B verify` **fails** (the baseline froze only old findings); fix it or add a *narrow justified* suppression → green. Externalized config: `checkstyle.xml` (`SuppressWarningsFilter`+`SuppressWarningsHolder`), `checkstyle-suppressions.xml`, `spotbugs-exclude.xml` (`FindBugsFilter`), `maxAllowedViolations`. **Honest edge:** a broad `@SuppressFBWarnings("EI_EXPOSE_REP")` on the class would also hide the new finding — narrow-with-a-reason is the discipline.
+
+## Next chapter teaser
+
+Static analysis can prove your code is well-formed, idiomatic, and free of known bad patterns — and it still can't tell you whether the code returns the right answer, because it never runs the code. That guarantee comes only from execution. Part V opens with the testing landscape: the pyramid that shapes a suite, what makes a test trustworthy rather than merely present, and the test smells and flakiness that turn a green suite into the same kind of decorative checkpoint a skipped gate becomes.

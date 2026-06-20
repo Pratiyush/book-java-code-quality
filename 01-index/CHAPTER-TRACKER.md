@@ -78,7 +78,7 @@
 | — | 36 | IDE inspections (IntelliJ, Eclipse) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 37 | Comparing & layering the analyzers | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | 18 | 38 | Writing custom rules; annotation processors & Lombok (Ch 18; folds 40) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
-| — | 39 | Living with findings (false positives, ratcheting) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| 19 | 39 | Living with findings: false positives, baselines, ratcheting (Ch 19) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | — | 40 | Annotation processors & the Lombok debate | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 
 | — | 41 | The testing landscape & test quality | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
