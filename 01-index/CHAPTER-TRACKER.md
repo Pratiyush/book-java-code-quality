@@ -118,7 +118,7 @@
 | 32 | 73 | Security in CI — the security gate (Ch 32) | done | done² | **done** | PEND-RT⁶ | done | done | 41/50 | plan-set | pending | pending⁷ |
 | — | 74 | Cryptography & security-API misuse | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 
-| — | 75 | Designing a CI pipeline for quality | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 33 | 75 | Designing the CI pipeline & quality gates (Ch 33; folds 76+79) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
 | — | 76 | Quality gates & build-breaking policy | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 77 | CI platforms (GitHub Actions/GitLab CI/Jenkins) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 78 | PR-based quality (reviewdog/Danger/Sonar) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
