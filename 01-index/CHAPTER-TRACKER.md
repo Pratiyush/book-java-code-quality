@@ -44,8 +44,8 @@
 | — | 02 | The cost of poor quality (tech debt, SQALE, quality-vs-speed) | done | pending | pending | pending | pending | pending | pending | pending | pending | pending |
 | 2 | 03 | Readability, maintainability & measuring (Ch 2; folds 04+58) | done | done | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
 | — | 04 | Quality metrics — signal vs vanity (CK, Goodhart, DORA/SPACE) | done | pending | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 05 | The Java quality toolchain map | done | pending | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 06 | Quality culture & ownership (Westrum, shift-left) | done | pending | pending | pending | pending | pending | pending | pending | pending | pending |
+| 3 | 05 | The Java quality toolchain map (Ch 3) | done | done | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
+| 4 | 06 | Quality culture, ownership & knowledge (Ch 4; folds 90) | done | done | **done** | n-a | done | done | 40/50 | plan-set | pending | pending⁷ |
 | — | 07 | Naming, structure & formatting | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 08 | Effective Java in practice (canon-dated) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 09 | Designing clear APIs & method contracts | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
