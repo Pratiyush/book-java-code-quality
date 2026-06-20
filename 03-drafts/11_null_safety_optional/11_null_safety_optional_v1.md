@@ -40,6 +40,11 @@ Java's type system, by itself, cannot help. The language specification makes `nu
 
 ## How it works
 
+![Fig 11.1 — Null-safety: four levers of layered defense — Each lever catches the null the earlier one cannot reach. Detection moves left (earlier) across the lifecycle.](../../05-figures/11_null_safety_optional/fig11_1.png)
+
+*Fig 11.1 — Null-safety: four levers of layered defense — Each lever catches the null the earlier one cannot reach. Detection moves left (earlier) across the lifecycle.*
+
+
 ### Why null is special in Java
 
 `null` is structural in the language. The JLS makes a null reference assignable to any reference type (⚠ §4.1 verify @pin), and the compiler imposes no non-null obligation — so `String s = maybe(); s.length();` compiles whether or not `maybe()` can return null. That gap is exactly what the four levers fill. None of them changes the language; each adds information the compiler or the JVM did not have.

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 14 — Cheap Threads, Same Rules (dossier key 22)
+  Figure:  Fig 22.1 — Virtual thread mounting, unmounting, and the pinning trap
+  Family:  Flow-sequence / architecture (two-track contrast)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"How it works" → "Virtual threads: mounting, carriers, the scheduler" +
+             "The pinning trap — and its version boundary"
+  One idea: A virtual thread unmounts its carrier when it blocks (keeping the OS thread free),
+            UNLESS a synchronized block pins it — and whether synchronized pins depends on the JDK version.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 22.1 — Virtual thread mounting and the pinning trap</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 900px;
+    }
+
+    /* ── Two-track layout: normal path (top) vs pinning path (bottom) ── */
+    .tracks {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 4px;
+    }
+
+    .track {
+      border: 1.5px solid var(--ink);
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    .track-hd {
+      background: var(--tint-2);
+      border-bottom: 1.5px solid var(--ink);
+      padding: 7px 14px;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .track-hd .badge {
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid var(--ink-soft);
+      border-radius: 4px;
+      padding: 1px 6px;
+      background: var(--tint-1);
+      color: var(--ink-soft);
+    }
+
+    .track-hd .badge.ok {
+      border-color: var(--ok);
+      color: var(--ok);
+      background: #f0fff4;
+    }
+
+    .track-hd .badge.stop {
+      border-color: var(--stop);
+      color: var(--stop);
+      background: #fff0f0;
+    }
+
+    .track-hd .badge.warn {
+      border-color: var(--warn);
+      color: var(--warn);
+      background: #fffbea;
+    }
+
+    .track-bd {
+      padding: 14px 16px;
+    }
+
+    /* ── Step sequence inside each track ── */
+    .step-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .step-box {
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      background: var(--tint-1);
+      padding: 9px 11px;
+      font-size: 12px;
+      line-height: 1.4;
+      text-align: center;
+      min-width: 110px;
+      flex-shrink: 0;
+    }
+
+    .step-box .mono {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-soft);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .step-box.is-strong {
+      background: var(--tint-3);
+      font-weight: 700;
+    }
+
+    .step-box.is-carrier {
+      background: var(--tint-2);
+      font-weight: 600;
+    }
+
+    .step-box.is-blocked {
+      background: var(--tint-3);
+      border-color: var(--stop);
+      border-width: 2px;
+      font-weight: 700;
+    }
+
+    .step-box.is-free {
+      border-color: var(--ok);
+      border-width: 2px;
+    }
+
+    .step-box.is-parked {
+      border-style: dashed;
+      background: var(--tint-0);
+      color: var(--ink-soft);
+    }
+
+    /* Arrows between steps */
+    .arr {
+      flex: 0 0 28px;
+      text-align: center;
+      font-size: 16px;
+      color: var(--ink);
+      font-weight: 700;
+      line-height: 1;
+      padding: 0 2px;
+    }
+
+    .arr.down {
+      display: flex;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--ink-soft);
+    }
+
+    /* Two-row sub-track (carrier row + virtual thread row) */
+    .two-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .row-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      min-width: 80px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .lane {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    /* Version boundary note */
+    .version-table {
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .version-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      flex: 1;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 12px;
+      background: var(--tint-1);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .version-row .ver-badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      border: 1.5px solid var(--ink);
+      border-radius: 4px;
+      padding: 2px 7px;
+      background: var(--tint-2);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .version-row.ok-ver { border-color: var(--ok); background: #f0fff4; }
+    .version-row.ok-ver .ver-badge { border-color: var(--ok); color: var(--ok); }
+    .version-row.warn-ver { border-color: var(--warn); background: #fffbea; }
+    .version-row.warn-ver .ver-badge { border-color: var(--warn); color: var(--warn); }
+
+    .annotation {
+      font-size: 11px;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 22.1 — Virtual thread mounting, unmounting, and the pinning trap</p>
+  <p class="fig-subtitle">JEP 444 (GA, Java 21) · JEP 491 (Java 24) · Two behaviors, one version boundary</p>
+
+  <div class="tracks">
+
+    <!-- ── TRACK A: Normal (non-pinning) path ── -->
+    <div class="track">
+      <div class="track-hd">
+        Normal path — blocking inside <span class="mono" style="font-size:12px; background:var(--tint-1); border:1px solid var(--line); border-radius:4px; padding:1px 6px;">ReentrantLock</span>
+        <span class="badge ok">carrier stays free</span>
+      </div>
+      <div class="track-bd">
+        <!-- Carrier (OS thread) lane -->
+        <div class="two-rows">
+          <div class="lane">
+            <div class="row-label">OS thread<br>(carrier)</div>
+            <div class="step-box is-carrier" style="min-width:128px;">Runs virtual<br>thread&nbsp;VT-1</div>
+            <div class="arr">→</div>
+            <div class="step-box is-free" style="min-width:128px;">I/O blocks →<br><strong>VT-1 unmounts</strong></div>
+            <div class="arr">→</div>
+            <div class="step-box is-carrier" style="min-width:128px;">Picks up &amp; runs<br>virtual thread&nbsp;VT-2</div>
+            <div class="arr">→</div>
+            <div class="step-box is-carrier" style="min-width:128px;">I/O done →<br><strong>VT-1 remounts</strong></div>
+          </div>
+
+          <div class="lane">
+            <div class="row-label">Virtual<br>thread VT-1</div>
+            <div class="step-box" style="min-width:128px;">Running<br><span class="mono">blocking call</span></div>
+            <div class="arr">→</div>
+            <div class="step-box is-parked" style="min-width:128px;">Parked<br>(off carrier)</div>
+            <div class="arr">→</div>
+            <div class="step-box is-parked" style="min-width:128px;">Still parked<br>&nbsp;</div>
+            <div class="arr">→</div>
+            <div class="step-box" style="min-width:128px;">Resumes<br><span class="mono">on carrier</span></div>
+          </div>
+        </div>
+        <p class="annotation" style="margin:8px 0 0;">
+          JEP 444: "when [a virtual thread] blocks on a blocking I/O … the Java runtime automatically unmounts the virtual thread from its carrier" — carrier is reused for VT-2.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── TRACK B: Pinning path ── -->
+    <div class="track">
+      <div class="track-hd">
+        Pinning path — blocking inside <span class="mono" style="font-size:12px; background:var(--tint-1); border:1px solid var(--line); border-radius:4px; padding:1px 6px;">synchronized</span>
+        <span class="badge stop">carrier blocked (Java 21–23)</span>
+        <span class="badge warn">fixed in Java 24 (JEP 491)</span>
+      </div>
+      <div class="track-bd">
+        <div class="two-rows">
+          <div class="lane">
+            <div class="row-label">OS thread<br>(carrier)</div>
+            <div class="step-box is-carrier" style="min-width:128px;">Runs virtual<br>thread&nbsp;VT-1</div>
+            <div class="arr">→</div>
+            <div class="step-box is-blocked" style="min-width:200px;">PINNED — VT-1 cannot<br>unmount; carrier OS<br>thread is blocked</div>
+            <div class="arr">→</div>
+            <div class="step-box is-blocked" style="min-width:128px; opacity:.7;">Still blocked<br>(pool starved)</div>
+          </div>
+
+          <div class="lane">
+            <div class="row-label">Virtual<br>thread VT-1</div>
+            <div class="step-box" style="min-width:128px;">Enters<br><span class="mono">synchronized</span></div>
+            <div class="arr">→</div>
+            <div class="step-box is-blocked" style="min-width:200px;">Blocking call<br><em>inside</em> synchronized —<br>cannot unmount</div>
+            <div class="arr">→</div>
+            <div class="step-box is-blocked" style="min-width:128px; opacity:.7;">Waiting…<br><span class="mono">(carrier held)</span></div>
+          </div>
+        </div>
+        <p class="annotation" style="margin:8px 0 0;">
+          JEP 444: "when it executes code inside a synchronized block or method … its carrier and the underlying OS thread are blocked for the duration." Detected via <span style="font-family:var(--mono);font-size:11px;">-Djdk.tracePinnedThreads</span> / JFR event; flagged by Sonar <span style="font-family:var(--mono);font-size:11px;">java:S6906</span>.
+        </p>
+      </div>
+    </div>
+
+  </div><!-- .tracks -->
+
+  <!-- Version boundary summary -->
+  <div class="version-table">
+    <div class="version-row warn-ver">
+      <div class="ver-badge">Java 21–23</div>
+      <div>
+        <strong>synchronized pins.</strong> Mitigation: replace with
+        <span style="font-family:var(--mono);font-size:11px;">ReentrantLock</span>
+        for any blocking call inside the lock. (Sonar <span style="font-family:var(--mono);font-size:11px;">java:S6906</span>)
+      </div>
+    </div>
+    <div class="version-row ok-ver">
+      <div class="ver-badge">Java 24+ (JEP 491)</div>
+      <div>
+        <strong>synchronized no longer pins.</strong> JEP 491: "the synchronized keyword no longer pins virtual threads." Native methods and foreign-function calls still pin.
+      </div>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Sources: <b>JEP 444</b> (GA, Release 21) — mounting/unmounting/carrier/scheduler/pinning-on-synchronized verbatim.
+    <b>JEP 491</b> (Release 24) — synchronized no longer pins, native/FFM still do.
+    <b>Sonar java:S6906</b> — "virtual threads should not run tasks that include synchronized code."
+    <b>-Djdk.tracePinnedThreads</b> / JFR pinned-thread event — JEP 444 diagnostics.
+    Version-bound advice form: dates the JDK, never states a timeless rule.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

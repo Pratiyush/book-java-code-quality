@@ -38,6 +38,11 @@ This chapter, the last in Part II, turns the whole part into a vocabulary. It ca
 
 ## How it works
 
+![Fig 19.1 — The smell-triple: smell → refactoring → detecting rule — Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it](../../05-figures/19_code_smells_antipatterns/fig19_1.png)
+
+*Fig 19.1 — The smell-triple: smell → refactoring → detecting rule — Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it*
+
+
 ### A smell is a symptom, not a defect
 
 Martin Fowler's framing (*Refactoring*, 2nd ed., 2018) is exact: smells are "structures in the code that suggest — sometimes scream for — the possibility of refactoring." The code compiles and may pass every test; the smell is a signal that *change* will be expensive, paid not at run time but at the next edit. Most smells are runtime-neutral. A few overlap with real defects (the leaking getter in the hook is both a smell and a latent mutation bug), but the defining property of a smell is that it costs the team later, not now.

@@ -41,6 +41,11 @@ That is the organizing fact of this chapter, and the reason teams run several an
 
 ## How it works
 
+![Fig 16.1 — The detection-time axis: where each analyzer reads the program — Four tools, four vantage points — where a tool stands determines what it can see](../../05-figures/27_checkstyle/fig27_1.png)
+
+*Fig 16.1 — The detection-time axis: where each analyzer reads the program — Four tools, four vantage points — where a tool stands determines what it can see*
+
+
 ### The organizing axis: where each tool stands
 
 Every finding in the hook traces to *where* the tool reads the program. This is the spine of the chapter:

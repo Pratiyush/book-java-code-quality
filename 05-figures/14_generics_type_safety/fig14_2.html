@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 11 (dossier key 14) — Let the Compiler Carry It: Generics, type erasure, and type safety
+  Figure:  Fig 14.2 — Type Erasure: Compile Time → Run Time
+  Family:  Flow / architecture (two-phase timeline)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Erasure: the one fact everything follows from" — after the opening erasure paragraph
+  One idea: Generic type information exists only at compile time; the compiler checks, inserts casts,
+            then erases — leaving the JVM to see only raw types and the inserted casts at run time.
+            The unchecked warning marks the exact point where compiler sight ends.
+  Sources: JLS SE 21 §4.6 (type erasure: parameterized → raw, type-var → leftmost-bound erasure);
+           JLS SE 21 §4.7 (reifiable vs non-reifiable types);
+           JLS SE 21 §5.1.9 (unchecked conversion);
+           JLS SE 21 §4.12.2 (heap pollution);
+           Effective Java 3e Item 26 (don't use raw types), Item 27 (eliminate unchecked warnings);
+           JEP 286 (var, Java 10); compiler flag -Xlint:unchecked,rawtypes.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 14.2 — Type Erasure: Compile Time → Run Time</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      width: 900px;
+      padding: 28px 30px 24px;
+    }
+
+    /* ── Two-phase timeline track ── */
+    .timeline {
+      display: grid;
+      grid-template-columns: 1fr 56px 1fr;
+      gap: 0;
+      align-items: stretch;
+      margin: 16px 0 14px;
+    }
+
+    /* Phase column */
+    .phase-col {
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--paper);
+    }
+    .phase-col.compile { background: var(--tint-0); }
+    .phase-col.runtime { background: var(--tint-1); }
+
+    .phase-hd {
+      padding: 10px 14px 9px;
+      border-bottom: 2px solid var(--ink);
+      font-weight: 700;
+      font-size: 14.5px;
+    }
+    .phase-col.compile .phase-hd { background: var(--tint-2); }
+    .phase-col.runtime .phase-hd { background: var(--tint-3); }
+
+    .phase-sub {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      margin-top: 2px;
+    }
+    .phase-bd {
+      padding: 12px 14px;
+    }
+
+    /* ── Arrow column in centre ── */
+    .arrow-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .arrow-shaft {
+      width: 2px;
+      flex: 1;
+      background: var(--ink);
+    }
+    .arrow-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      white-space: nowrap;
+      padding: 4px 0;
+    }
+    /* Arrowhead pointing right via SVG */
+    .arrow-head {
+      display: block;
+    }
+
+    /* ── Fact rows inside each phase ── */
+    .fact-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    .fact-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .fact-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid var(--ink);
+      background: var(--tint-2);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+      margin-top: 1px;
+    }
+    .fact-icon.ok   { border-color: var(--ok);   color: var(--ok);   background: var(--tint-0); }
+    .fact-icon.warn { border-color: var(--warn); color: var(--warn); background: var(--tint-0); }
+    .fact-icon.stop { border-color: var(--stop); color: var(--stop); background: var(--tint-0); }
+
+    .fact-body { flex: 1; }
+    .fact-head { font-weight: 700; color: var(--ink); }
+    .fact-detail { color: var(--ink-soft); font-size: 11.5px; margin-top: 1px; }
+    .fact-mono { font-family: var(--mono); font-size: 11.5px; }
+
+    /* ── Erasure-rule strip ── */
+    .erasure-strip {
+      background: var(--tint-2);
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin: 0 0 14px;
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+    .erasure-strip b { color: var(--ink); }
+    .erasure-strip .rule-line {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin: 3px 0;
+    }
+    .erasure-strip .rule-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      flex-shrink: 0;
+      width: 80px;
+    }
+    .rule-mono { font-family: var(--mono); font-size: 12px; color: var(--ink); }
+    .rule-arrow { color: var(--ink-soft); font-size: 12px; margin: 0 4px; }
+
+    /* ── Reifiable strip ── */
+    .reif-strip {
+      display: flex;
+      gap: 10px;
+      margin: 0 0 14px;
+    }
+    .reif-box {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .reif-box b { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--ink-soft); margin-bottom: 4px; }
+    .reif-box.reif  { background: var(--tint-1); }
+    .reif-box.nreif { background: var(--tint-0); border-style: dashed; }
+
+    /* ── Unchecked warning highlight ── */
+    .warn-box {
+      border-left: 4px solid var(--accent-bar);
+      background: var(--tint-1);
+      border-radius: 0 8px 8px 0;
+      padding: 9px 14px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .warn-box b  { color: var(--ink); }
+    .warn-box .mono { font-family: var(--mono); font-size: 11.5px; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 14.2 — Type Erasure: Compile Time vs. Run Time</p>
+  <p class="fig-subtitle">Generic type information is a compile-time artifact. The JVM sees only raw types and the casts the compiler inserted. (JLS SE 21 §4.6)</p>
+
+  <!-- Erasure transformation rules -->
+  <div class="erasure-strip">
+    <b>JLS §4.6 erasure rules — what the compiler maps each generic construct to:</b>
+    <div class="rule-line">
+      <span class="rule-label">Param. type</span>
+      <span class="rule-mono">List&lt;String&gt;</span>
+      <span class="rule-arrow">⟶ erases to ⟶</span>
+      <span class="rule-mono">List</span>
+      <span style="font-size:11.5px;color:var(--ink-soft);">&nbsp;(raw form)</span>
+    </div>
+    <div class="rule-line">
+      <span class="rule-label">Type variable</span>
+      <span class="rule-mono">&lt;T&gt;</span>
+      <span class="rule-arrow">⟶ erases to ⟶</span>
+      <span class="rule-mono">Object</span>
+      <span style="font-size:11.5px;color:var(--ink-soft);">&nbsp;(leftmost bound; unbounded T → Object)</span>
+    </div>
+    <div class="rule-line">
+      <span class="rule-label">Bounded var</span>
+      <span class="rule-mono">&lt;T extends Number&gt;</span>
+      <span class="rule-arrow">⟶ erases to ⟶</span>
+      <span class="rule-mono">Number</span>
+      <span style="font-size:11.5px;color:var(--ink-soft);">&nbsp;(leftmost bound; JLS §4.6)</span>
+    </div>
+  </div>
+
+  <!-- Two-phase timeline -->
+  <div class="timeline">
+
+    <!-- Compile-time column -->
+    <div class="phase-col compile">
+      <div class="phase-hd">
+        Compile time
+        <div class="phase-sub">javac · -Xlint:unchecked,rawtypes · type arguments visible</div>
+      </div>
+      <div class="phase-bd">
+
+        <div class="fact-row">
+          <div class="fact-icon ok">✔</div>
+          <div class="fact-body">
+            <div class="fact-head">Type-argument checking</div>
+            <div class="fact-detail">Compiler verifies every read/write against the declared type argument. An <span class="fact-mono">Integer</span> cannot be added to a <span class="fact-mono">List&lt;String&gt;</span>.</div>
+          </div>
+        </div>
+
+        <div class="fact-row">
+          <div class="fact-icon ok">✔</div>
+          <div class="fact-body">
+            <div class="fact-head">Cast insertion</div>
+            <div class="fact-detail">Compiler inserts a checked cast at every point where a type argument is used: <span class="fact-mono">strings.get(0)</span> → <span class="fact-mono">(String) list.get(0)</span>. Correct generics mean casts never fail.</div>
+          </div>
+        </div>
+
+        <div class="fact-row">
+          <div class="fact-icon warn">!</div>
+          <div class="fact-body">
+            <div class="fact-head">Unchecked warning (JLS §5.1.9)</div>
+            <div class="fact-detail">Emitted on any raw-type assignment or unchecked cast. "The compiler has done all it can; erasure leaves a gap it cannot close." Surfaced by <span class="fact-mono">-Xlint:unchecked,rawtypes</span> and Sonar <span class="fact-mono">java:S3740</span>.</div>
+          </div>
+        </div>
+
+        <div class="fact-row">
+          <div class="fact-icon ok">✔</div>
+          <div class="fact-body">
+            <div class="fact-head">Wildcard &amp; bound checking (JLS §4.10.2)</div>
+            <div class="fact-detail">Compiler enforces: <span class="fact-mono">? extends T</span> → read-only; <span class="fact-mono">? super T</span> → write-only. PECS correctness is enforced here.</div>
+          </div>
+        </div>
+
+        <div class="fact-row">
+          <div class="fact-icon ok">✔</div>
+          <div class="fact-body">
+            <div class="fact-head">Type erasure (performed here)</div>
+            <div class="fact-detail">All type arguments are stripped from the bytecode. <span class="fact-mono">List&lt;String&gt;</span> becomes <span class="fact-mono">List</span> in the .class file. §4.6.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Arrow -->
+    <div class="arrow-col">
+      <svg width="56" height="100%" viewBox="0 0 56 120" preserveAspectRatio="none" aria-hidden="true" style="flex:1;display:block;width:56px;">
+        <line x1="28" y1="0" x2="28" y2="105" stroke="#1f2328" stroke-width="2"/>
+        <polygon points="14,100 28,120 42,100" fill="#1f2328"/>
+      </svg>
+      <div class="arrow-label">erasure</div>
+    </div>
+
+    <!-- Run-time column -->
+    <div class="phase-col runtime">
+      <div class="phase-hd">
+        Run time (JVM)
+        <div class="phase-sub">HotSpot · bytecode · type arguments absent</div>
+      </div>
+      <div class="phase-bd">
+
+        <div class="fact-row">
+          <div class="fact-icon stop">✘</div>
+          <div class="fact-body">
+            <div class="fact-head">No type argument — raw type only</div>
+            <div class="fact-detail"><span class="fact-mono">List&lt;String&gt;</span> and <span class="fact-mono">List&lt;Integer&gt;</span> are the same class: <span class="fact-mono">List</span>. The JVM cannot distinguish them. JLS §4.6.</div>
+          </div>
+        </div>
+
+        <div class="fact-row">
+          <div class="fact-icon ok">✔</div>
+          <div class="fact-body">
+            <div class="fact-head">Inserted casts execute</div>
+            <div class="fact-detail">The casts the compiler inserted run. If the source code was type-safe (no unchecked warnings), they all succeed. If a raw-type smuggle occurred, one of these casts throws <span class="fact-mono">ClassCastException</span> — at the get, far from the offending put.</div>
+          </div>
+        </div>
+
+        <div class="fact-row">
+          <div class="fact-icon stop">✘</div>
+          <div class="fact-body">
+            <div class="fact-head">Non-reifiable types cannot be checked (JLS §4.7)</div>
+            <div class="fact-detail"><span class="fact-mono">instanceof List&lt;String&gt;</span> is illegal. Only <span class="fact-mono">instanceof List&lt;?&gt;</span> or bare <span class="fact-mono">instanceof List</span> is permitted. Generic arrays (<span class="fact-mono">new List&lt;String&gt;[]</span>) are illegal for the same reason.</div>
+          </div>
+        </div>
+
+        <div class="fact-row">
+          <div class="fact-icon warn">!</div>
+          <div class="fact-body">
+            <div class="fact-head">Heap pollution (JLS §4.12.2)</div>
+            <div class="fact-detail">A variable of a parameterized type holds an object of a different type. Arises from raw-type assignments or unsafe varargs. The JVM detects it only when the compiler-inserted cast runs.</div>
+          </div>
+        </div>
+
+        <div class="fact-row">
+          <div class="fact-icon stop">✘</div>
+          <div class="fact-body">
+            <div class="fact-head">Generic array creation forbidden</div>
+            <div class="fact-detail"><span class="fact-mono">new T[n]</span>, <span class="fact-mono">new List&lt;String&gt;[]</span> are compile errors: an array of a non-reifiable type cannot uphold the array contract (JLS §4.7; Item 28).</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- .timeline -->
+
+  <!-- Reifiable / non-reifiable quick reference -->
+  <div class="reif-strip">
+    <div class="reif-box reif">
+      <b>Reifiable (JLS §4.7) — JVM can check</b>
+      Non-generic types · primitives · raw types ·
+      <span class="fig-mono">List&lt;?&gt;</span> (unbounded wildcard) · arrays of reifiable types
+    </div>
+    <div class="reif-box nreif">
+      <b>Non-reifiable — JVM cannot check</b>
+      <span class="fig-mono">List&lt;String&gt;</span> · <span class="fig-mono">List&lt;? extends Number&gt;</span> · any concrete type argument.
+      Result: <span class="fig-mono">instanceof</span> forbidden; generic arrays forbidden.
+    </div>
+  </div>
+
+  <!-- Unchecked-warning obligation box -->
+  <div class="warn-box">
+    <b>The unchecked warning is the compiler's debt notice.</b>
+    It means: "I have done all I can; erasure leaves a gap I cannot close; a runtime cast failure is possible."
+    Item 27 (<em>Effective Java</em> 3e): eliminate every unchecked warning. If elimination is impossible, suppress with
+    <span class="mono">@SuppressWarnings("unchecked")</span> at the narrowest scope
+    and add a comment proving the operation is type-safe. The annotation discharges the debt; the comment is the proof.
+  </div>
+
+  <p class="fig-caption">
+    <b>Sources:</b>
+    JLS SE 21 §4.6 (type erasure rules, parameterized→raw, type-var→leftmost-bound);
+    §4.7 (reifiable / non-reifiable types);
+    §4.12.2 (heap pollution);
+    §5.1.9 (unchecked conversion);
+    <em>Effective Java</em> 3e Items 26–28 (raw types, unchecked warnings, lists vs arrays);
+    compiler flag <span class="fig-mono">-Xlint:unchecked,rawtypes</span>;
+    Sonar rule java:S3740 (raw types).
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

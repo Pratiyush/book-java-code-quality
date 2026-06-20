@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 11 (dossier key 14) — Let the Compiler Carry It: Generics, type erasure, and type safety
+  Figure:  Fig 14.1 — PECS Variance Ladder
+  Family:  Concept-map / decision-shape
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Variance: invariance, wildcards, and PECS" — after the variance table
+  One idea: Java generics are invariant; use-site wildcards restore controlled flexibility —
+            Producer-Extends (covariant, read-only) and Consumer-Super (contravariant, write-only)
+            are the two safe directions. Return types stay concrete.
+  Sources: JLS SE 21 §4.10.2 (variance via wildcards); Effective Java 3e Item 31 (PECS mnemonic,
+           wildcard-return caveat); Sonar java:S1452 (wildcard return types).
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 14.1 — PECS Variance Ladder</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      width: 860px;
+      padding: 28px 30px 24px;
+    }
+
+    /* ── Three-column layout ── */
+    .variance-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      margin: 16px 0 12px;
+    }
+
+    /* ── Variance card ── */
+    .var-card {
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      background: var(--tint-1);
+      overflow: hidden;
+    }
+    .var-card.is-invariant  { background: var(--tint-2); }
+    .var-card.is-covariant  { background: var(--tint-0); border-style: solid; }
+    .var-card.is-contra     { background: var(--tint-0); border-style: solid; }
+
+    /* Card header bar */
+    .var-head {
+      background: var(--tint-3);
+      border-bottom: 2px solid var(--ink);
+      padding: 10px 14px 8px;
+    }
+    .var-card.is-invariant  .var-head { background: var(--tint-3); }
+    .var-card.is-covariant  .var-head { background: var(--tint-2); }
+    .var-card.is-contra     .var-head { background: var(--tint-2); }
+
+    .var-kind {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      color: var(--ink-soft);
+      margin-bottom: 3px;
+    }
+    .var-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0;
+      line-height: 1.2;
+    }
+    .var-pecs {
+      display: inline-block;
+      margin-top: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1.5px solid var(--ink);
+      border-radius: 4px;
+      padding: 1px 7px;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--mono);
+    }
+
+    /* Card body */
+    .var-body {
+      padding: 12px 14px;
+    }
+    .var-sig {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      background: var(--tint-2);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      padding: 5px 9px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .ops-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      margin: 0 0 5px;
+    }
+
+    .op-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin: 4px 0;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .op-icon {
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+      width: 16px;
+      margin-top: 1px;
+    }
+    .op-icon.ok   { color: var(--ok);   }
+    .op-icon.stop { color: var(--stop); }
+    .op-text      { color: var(--ink);  }
+    .op-mono      { font-family: var(--mono); font-size: 11px; }
+
+    .var-note {
+      margin-top: 10px;
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+    .var-note b { color: var(--ink); }
+
+    /* ── Use-site rule strip ── */
+    .rule-strip {
+      display: flex;
+      gap: 10px;
+      margin: 4px 0 12px;
+    }
+    .rule-pill {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: 7px;
+      padding: 8px 12px;
+      background: var(--tint-1);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .rule-pill b { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--ink-soft); margin-bottom: 3px; }
+
+    /* ── PECS mnemonic banner ── */
+    .pecs-banner {
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      background: var(--tint-3);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .pecs-label {
+      font-size: 22px;
+      font-weight: 700;
+      font-family: var(--mono);
+      color: var(--ink);
+      letter-spacing: 2px;
+      flex-shrink: 0;
+    }
+    .pecs-expand {
+      font-size: 13px;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    .pecs-expand span {
+      display: inline-block;
+      font-family: var(--mono);
+      font-weight: 700;
+    }
+
+    /* ── Return-type warning box ── */
+    .return-warn {
+      border-left: 4px solid var(--accent-bar);
+      background: var(--tint-1);
+      border-radius: 0 8px 8px 0;
+      padding: 9px 14px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      margin-top: 0;
+    }
+    .return-warn b { color: var(--ink); }
+    .return-warn .mono { font-family: var(--mono); font-size: 11.5px; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 14.1 — PECS Variance Ladder</p>
+  <p class="fig-subtitle">Java generics are invariant at declaration; wildcards restore controlled flexibility at the use site.</p>
+
+  <!-- PECS mnemonic banner -->
+  <div class="pecs-banner">
+    <div class="pecs-label">PECS</div>
+    <div class="pecs-expand">
+      <span>P</span>roducer-<span>E</span>xtends&nbsp; · &nbsp;<span>C</span>onsumer-<span>S</span>uper
+      &nbsp;—&nbsp; Item 31, <em>Effective Java</em> 3e (Bloch, 2018).
+      <br>If a parameter <em>produces</em> T values, use <span class="fig-mono">? extends T</span>.
+      If it <em>consumes</em> T values, use <span class="fig-mono">? super T</span>.
+    </div>
+  </div>
+
+  <!-- Three variance cards -->
+  <div class="variance-grid">
+
+    <!-- Invariant -->
+    <div class="var-card is-invariant">
+      <div class="var-head">
+        <div class="var-kind">Declaration-site · invariant</div>
+        <p class="var-title">Exact type</p>
+      </div>
+      <div class="var-body">
+        <code class="var-sig">List&lt;String&gt;</code>
+        <div class="ops-label">Operations</div>
+        <div class="op-row">
+          <span class="op-icon ok">✔</span>
+          <span class="op-text">Read as <span class="op-mono">String</span></span>
+        </div>
+        <div class="op-row">
+          <span class="op-icon ok">✔</span>
+          <span class="op-text">Add <span class="op-mono">String</span></span>
+        </div>
+        <div class="op-row">
+          <span class="op-icon stop">✘</span>
+          <span class="op-text">Assign to <span class="op-mono">List&lt;Object&gt;</span> — invariance: not a subtype (JLS §4.10.2)</span>
+        </div>
+        <div class="var-note">
+          <b>Rule:</b> <span class="op-mono">List&lt;String&gt;</span> is not a <span class="op-mono">List&lt;Object&gt;</span> — even though <span class="op-mono">String</span> extends <span class="op-mono">Object</span>. Invariance keeps the type system sound.
+        </div>
+      </div>
+    </div>
+
+    <!-- Covariant / Producer-Extends -->
+    <div class="var-card is-covariant">
+      <div class="var-head">
+        <div class="var-kind">Use-site · covariant (producer)</div>
+        <p class="var-title">? extends T</p>
+        <span class="var-pecs">PECS — Producer-Extends</span>
+      </div>
+      <div class="var-body">
+        <code class="var-sig">List&lt;? extends Number&gt;</code>
+        <div class="ops-label">Operations</div>
+        <div class="op-row">
+          <span class="op-icon ok">✔</span>
+          <span class="op-text">Read as <span class="op-mono">Number</span> (upper bound)</span>
+        </div>
+        <div class="op-row">
+          <span class="op-icon stop">✘</span>
+          <span class="op-text">Add anything (except <span class="op-mono">null</span>) — actual type unknown</span>
+        </div>
+        <div class="op-row">
+          <span class="op-icon ok">✔</span>
+          <span class="op-text">Accept <span class="op-mono">List&lt;Integer&gt;</span> or <span class="op-mono">List&lt;Double&gt;</span></span>
+        </div>
+        <div class="var-note">
+          Parameter <em>produces</em> T values for the caller to read.
+          Widens what callers can pass in — <span class="op-mono">List&lt;Integer&gt;</span> satisfies <span class="op-mono">List&lt;? extends Number&gt;</span>.
+        </div>
+      </div>
+    </div>
+
+    <!-- Contravariant / Consumer-Super -->
+    <div class="var-card is-contra">
+      <div class="var-head">
+        <div class="var-kind">Use-site · contravariant (consumer)</div>
+        <p class="var-title">? super T</p>
+        <span class="var-pecs">PECS — Consumer-Super</span>
+      </div>
+      <div class="var-body">
+        <code class="var-sig">List&lt;? super Integer&gt;</code>
+        <div class="ops-label">Operations</div>
+        <div class="op-row">
+          <span class="op-icon ok">✔</span>
+          <span class="op-text">Add <span class="op-mono">Integer</span> (or subtype)</span>
+        </div>
+        <div class="op-row">
+          <span class="op-icon stop">✘</span>
+          <span class="op-text">Read as anything more specific than <span class="op-mono">Object</span></span>
+        </div>
+        <div class="op-row">
+          <span class="op-icon ok">✔</span>
+          <span class="op-text">Accept <span class="op-mono">List&lt;Number&gt;</span> or <span class="op-mono">List&lt;Object&gt;</span></span>
+        </div>
+        <div class="var-note">
+          Parameter <em>consumes</em> T values from the caller.
+          Widens what callers can pass in — <span class="op-mono">List&lt;Number&gt;</span> satisfies <span class="op-mono">List&lt;? super Integer&gt;</span>.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .variance-grid -->
+
+  <!-- Combined-use example strip -->
+  <div class="rule-strip">
+    <div class="rule-pill">
+      <b>Both at once (copy idiom)</b>
+      <span class="fig-mono">static &lt;T&gt; void copy(List&lt;? extends T&gt; src, List&lt;? super T&gt; dst)</span>
+      <br><span style="font-size:11.5px;color:var(--ink-soft);">src produces T (extends); dst consumes T (super). Item 31.</span>
+    </div>
+    <div class="rule-pill">
+      <b>Unbounded wildcard &lt;?&gt;</b>
+      <span class="fig-mono">static void printAll(List&lt;?&gt; list)</span>
+      <br><span style="font-size:11.5px;color:var(--ink-soft);">The element type is irrelevant — only iteration/size operations needed. JLS §4.5.1.</span>
+    </div>
+  </div>
+
+  <!-- Return-type hard rule -->
+  <div class="return-warn">
+    <b>Hard rule — never use a bounded wildcard as a return type.</b>
+    A method returning <span class="mono">List&lt;? extends Number&gt;</span> forces every caller to deal with the wildcard, propagating complexity outward.
+    Use a concrete type in return position. Sonar <span class="mono">java:S1452</span> flags wildcard return types.
+    &mdash; Item 31, <em>Effective Java</em> 3e.
+  </div>
+
+  <p class="fig-caption">
+    <b>Sources:</b> JLS SE 21 §4.10.2 (subtyping of parameterized types / wildcard variance);
+    <em>Effective Java</em> 3e Item 31 (bounded wildcards / PECS mnemonic, wildcard-return caveat);
+    Sonar rule java:S1452 (wildcard return types).
+    Diagram depicts call-site variance only — declaration-site variance is not a Java feature.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

@@ -43,6 +43,15 @@ This chapter takes on the failure paths: how to signal an error (exceptions, and
 
 ## How it works
 
+![Fig 12.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java](../../05-figures/12_error_handling_exceptions/fig12_1.png)
+
+*Fig 12.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java*
+
+![Fig 12.2 — try-with-resources: suppressed vs masked exceptions — JLS SE 21 §14.20.3 · Effective Java](../../05-figures/12_error_handling_exceptions/fig12_2.png)
+
+*Fig 12.2 — try-with-resources: suppressed vs masked exceptions — JLS SE 21 §14.20.3 · Effective Java*
+
+
 ### The exception model: the hierarchy and the decision
 
 Java's error channel is the `Throwable` hierarchy (JLS §11): `Throwable` splits into `Error` and `Exception`, and `Exception` splits into checked subclasses and `RuntimeException`. The dividing line that matters is *checked vs unchecked*: a method that can throw a *checked* exception must either catch it or declare it in a `throws` clause (the compile-time "catch or specify" rule, JLS §11.2). `RuntimeException` and `Error` are exempt. That compiler rule is what makes "checked" load-bearing: it is the first gate on the error model.

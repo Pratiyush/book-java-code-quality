@@ -38,6 +38,15 @@ The line that closes Part III: **threads got cheap; correctness did not.** Virtu
 
 ## How it works
 
+![Fig 22.1 — Virtual thread mounting, unmounting, and the pinning trap — JEP 444 (GA, Java 21) · JEP 491 (Java 24) · Two behaviors, one version boundary](../../05-figures/22_virtual_threads_structured_concurrency/fig22_1.png)
+
+*Fig 22.1 — Virtual thread mounting, unmounting, and the pinning trap — JEP 444 (GA, Java 21) · JEP 491 (Java 24) · Two behaviors, one version boundary*
+
+![Fig 22.2 — Three-layer concurrency verification stack — Static detection (build time) + stress sampling (verify time) + deterministic reproduction (regression time) — complementary, not substitutes](../../05-figures/22_virtual_threads_structured_concurrency/fig22_2.png)
+
+*Fig 22.2 — Three-layer concurrency verification stack — Static detection (build time) + stress sampling (verify time) + deterministic reproduction (regression time) — complementary, not substitutes*
+
+
 ### Virtual threads: mounting, carriers, the scheduler
 
 A virtual thread is a `java.lang.Thread` that is *not* bound one-to-one to an OS thread. JEP 444's own words: virtual threads "are lightweight threads that dramatically reduce the effort of writing, maintaining, and observing high-throughput concurrent applications." Many virtual threads are multiplexed onto a small pool of OS **platform** threads. A virtual thread runs by being **mounted** on a platform thread (its **carrier**), and when it hits a blocking I/O or `java.util.concurrent` operation, the JDK **unmounts** it (freeing the carrier for other work) and remounts it later when the operation completes. The carrier is never idle-blocked. The scheduler is "a work-stealing `ForkJoinPool` that operates in FIFO mode," distinct from the common pool used by parallel streams.
