@@ -58,7 +58,7 @@
 | — | 16 | Resource & lifecycle management | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 17 | Comments, Javadoc & self-documenting code (contested) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 18 | Defensive coding & input validation | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 19 | Code smells & Java anti-patterns | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| 12 | 19 | Code smells & Java anti-patterns (Ch 12; folds 61) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
 | — | 20 | Thread-safety & the Java Memory Model | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 21 | Immutability & safe publication | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 22 | Virtual threads & structured concurrency | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
