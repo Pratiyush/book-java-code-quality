@@ -48,7 +48,7 @@
 | 4 | 06 | Quality culture, ownership & knowledge (Ch 4; folds 90) | done | done | **done** | n-a | done | done | 40/50 | plan-set | pending | pending⁷ |
 | 6 | 07 | Naming, structure & formatting (Ch 6; folds 17+34) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
 | 5 | 08 | Effective Java & modern Java for quality (Ch 5; folds 13) | done | done | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
-| — | 09 | Designing clear APIs & method contracts | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| 7 | 09 | Designing clear APIs & method contracts (Ch 7; folds 60) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
 | — | 10 | Immutability & value-based design | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 11 | Null-safety & Optional discipline | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 12 | Error handling & exceptions | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
