@@ -123,7 +123,7 @@
 | — | 77 | CI platforms (GitHub Actions/GitLab CI/Jenkins) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 78 | PR-based quality (reviewdog/Danger/Sonar) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 79 | Gate performance (caching/incremental/parallel) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 80 | Coverage & gate strategy (clean-as-you-code) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 34 | 80 | Coverage strategy, PR automation & CI platforms (Ch 34; folds 77+78) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | — | 81 | Branch protection, trunk-based dev, merge queues | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 82 | Pre-commit hooks & local↔CI parity | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 83 | Release quality (gates, canary, feedback) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
