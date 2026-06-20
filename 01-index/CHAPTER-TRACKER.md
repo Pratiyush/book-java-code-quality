@@ -40,7 +40,7 @@
 
 | Ch | NN | Topic | research | verify | draft | example | clarity | audit | score | figure | reconcile | approve |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| — | 01 | What is code quality? (ISO 25010, internal/external, economics) | done | pending¹ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 1 | 01 | What is code quality? (Ch 1; folds 02+59) | done | done | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
 | — | 02 | The cost of poor quality (tech debt, SQALE, quality-vs-speed) | done | pending | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 03 | Readability & maintainability (cognitive complexity; contested) | done | pending | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 04 | Quality metrics — signal vs vanity (CK, Goodhart, DORA/SPACE) | done | pending | pending | pending | pending | pending | pending | pending | pending | pending |
@@ -164,6 +164,8 @@
 ² Keys 07–40 each have a Step-2 `_VERIFY.md` (source-verifier gate): all **PASS_WITH_FLAGS, 0 blockers**. Flags are "verify-at-pin" atoms (resolve at `/pin-source`) + minor citation-lint; two banned-phrasing breaches fixed (keys 03, 28). Tracked in `09-flags/`.
 ⁵ Parts VI–VII (architecture & design governance 53–61; build/deps/supply-chain 62–68; security/SAST 69–74; CI/CD & gates 75–83; process/people/metrics 84–90; refactoring/legacy 91–96; AI-era 97–100; performance 101–105; observability 106–108; capstone 109–110) research COMPLETE, authored main-loop (cheaper mode); heavy synthesis of banked keys 02/04/33; neutrality-swept clean; formal SOURCE-VERIFY pending (fold into `/pin-source`).
 ³ Part V (testing) research is COMPLETE (12/12), formal SOURCE-VERIFY pending for all. Two sub-cases: (a) keys 41, 44, 47, 48, 49, 50, 51 = salvaged from the spend-limit-aborted workflow (research-done, no `_VERIFY.md`); (b) keys 42, 43, 45, 46, 52 = authored main-loop in cheaper mode (like the Part-I pilot). All neutrality-swept clean + unverified atoms flagged. **Owe a `_VERIFY.md` pass** — fold into the `/pin-source` re-trace.
+⁶ EXAMPLE-BUILD = PENDING-RUNTIME — no JDK installed; FLOOR-C compile clause deferred (repro-proofer toolchain-gating). Lifts when JDK 21 is installed + `./mvnw -B verify` runs green.
+⁷ approve = human gate (Step 12); BLOCKED until FLOOR C lifts. Independence gates (ORIGINALITY 5b, RED-TEAM 8b) recommended on a different model before approval.
 
 ---
 

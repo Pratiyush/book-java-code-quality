@@ -18,7 +18,7 @@
 <!-- prior-phase note: Phase 1 — RESEARCH COMPLETE: all 110/110 dossiers banked (keys 01–110, every Part I–XV). Built via multi-agent workflow (keys 07–40, each with a `_VERIFY.md`) then **cheaper main-loop solo research** (keys 01–06 pilot + 41–110, after the spend limit aborted the Part V workflow). Global neutrality sweep = 0 banned phrasings. Verify status: 07–40 have separate `_VERIFY.md`; 01–06 + 41–110 research-done, formal SOURCE-VERIFY pending → fold into `/pin-source`. SOURCE-PIN versions still `TO-PIN`. -->
 **Authority pin:** multi-authority set in `00-strategy/SOURCE-PIN.md` (Java 21+25 LTS anchor; each tool pinned per row). ✅ PINNED 2026-06-20 (full /pin-source pass; versions web-verified). Rolling/SaaS rows (CodeQL, Renovate/Dependabot, Snyk, GitHub/GitLab) pinned at use; preview items marked AHEAD-OF-PIN.
 **Repo state:** under git on `main`; remote `origin` = https://github.com/Pratiyush/book-java-code-quality (PUBLIC). Working dir `/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality`. No blocker.
-**Last updated:** 2026-06-20 — Phase 1 RESEARCH COMPLETE: all 110 dossiers banked + pushed. Next: /pin-source then Phase 2 cull.
+**Last updated:** 2026-06-20 — Phase 0–2 complete + /pin-source done; Phase 3 started: pilot Ch 1 drafted (build PENDING-RUNTIME until JDK installed).
 
 ### Phase map
 
@@ -29,7 +29,7 @@
 | 0 — Foundation | Strategy, authority pin, candidate pool, folder tree, tooling | **✅ COMPLETE** — kernel adapted; pool built; SOURCE-PIN fully pinned (2026-06-20). (Optional law-file fine-tuning remains, non-gating.) |
 | 1 — Research | Bank a verified dossier per candidate | **COMPLETE** — 110/110 dossiers banked (07–40 with `_VERIFY.md`; rest verify-pending → `/pin-source`) |
 | 2 — Select | Score the pool, cull to ONE book; human confirms the cut | **✅ COMPLETE / LOCKED 2026-06-20** — 110 keys → 47 chapters (14 Parts), human-confirmed. See `01-index/FINAL_INDEX.md`. |
-| 3 — Draft + Gate | Draft confirmed chapters through the gated pipeline | not started |
+| 3 — Draft + Gate | Draft confirmed chapters through the gated pipeline | **IN PROGRESS** — pilot Ch 1 drafted (v1 + SCORE 40/50; floors A/B/C-source PASS; FLOOR-C compile = PENDING-RUNTIME, no JDK). 1/47 drafted. |
 | 4 — Assemble | Compile approved chapters into the manuscript | not started |
 
 ### Done
