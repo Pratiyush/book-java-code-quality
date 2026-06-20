@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    The book's FLAGSHIP companion app (DEMO-CATALOG.md §2): a checkout-generation API
+    microservice + a deterministic payment simulator, in the shared org.acme.storefront domain.
+    Zero runtime dependencies — JDK only (com.sun.net.httpserver + virtual threads) — so it
+    dogfoods Parts II-III (records, Optional, immutability, sealed Result, fail-fast, j.u.c,
+    virtual threads) and builds fast and green. Analyzer rule gates (Ch 16) are layered in via
+    the `quality` profile.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>storefront-checkout</artifactId>
+  <name>Storefront — checkout API microservice &amp; payment simulator (flagship demo)</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
