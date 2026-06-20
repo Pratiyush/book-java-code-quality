@@ -143,7 +143,7 @@
 | — | 95 | Migrating Java versions (8→17→21→25) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | 40 | 96 | Automated change & the remediation playbook (Ch 40; folds 94) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 
-| — | 97 | Quality of AI/LLM-generated Java | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 41 | 97 | Quality of AI-generated code & AI-assisted development (Ch 41; folds 99) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
 | — | 98 | Using AI for code review | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 99 | AI-assisted refactoring & test generation | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 100 | Governing AI in the dev workflow | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
