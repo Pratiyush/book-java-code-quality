@@ -17,3 +17,4 @@
 {"ts":"2026-06-20T19:39:46Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 0 approved, 47 in lift, drift=none"}
 {"ts":"2026-06-20T19:39:46Z","kind":"milestone","actor":"claude","action":"lift","target":"Ch 47","detail":"voice pass; re-score 39/50 (78%) unchanged — capped by missing Fig 110.1 (figure toolchain not installed) + DORA TO-PIN; 90% blocked on figure pipeline"}
 {"ts":"2026-06-20T19:43:56Z","kind":"milestone","actor":"claude","action":"figure-pipeline","target":"05-figures/_assets","detail":"built render.mjs + figures.css + puppeteer-core (system Chrome); smoke-test rendered a clean print-DPI PNG; pipeline live"}
+{"ts":"2026-06-20T19:51:22Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 0 approved, 47 in lift, drift=none"}

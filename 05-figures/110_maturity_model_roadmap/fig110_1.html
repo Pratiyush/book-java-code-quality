@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 47 — Where to Start, and How to Keep Going (key 110)
+  Figure:  Fig 110.1 — The staged adoption roadmap
+  Family:  Timeline / staged-roadmap (five horizontal stages joined by arrows)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: CONCEPT callout § "The staged roadmap" (draft v1, line ~44–50)
+  One idea: Five adoption stages — Foundations → Gate basics → Deepen → Govern & observe →
+             Sustain & evolve — map the whole book into an actionable sequence; start where
+             YOUR pain is, climb for outcomes, not the maturity badge.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 110.1 — The staged adoption roadmap</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + components come from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 24px;
+      max-width: 1300px;
+    }
+
+    /* Stage row ---------------------------------------------------------------- */
+    .road-row {
+      display: flex;
+      gap: 0;
+      align-items: flex-start;
+      margin-top: 18px;
+    }
+
+    /* Each .fig-stage card — override min-width to let them size proportionally */
+    .road-row .fig-stage {
+      min-width: 0;
+      flex: 1;
+    }
+
+    /* Stage header label: number + name on separate lines */
+    .road-row .fig-stage > .hd {
+      padding: 9px 12px 8px;
+      line-height: 1.3;
+    }
+    .stage-num {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 2px;
+    }
+    .stage-name {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .stage-when {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      margin-top: 1px;
+    }
+
+    /* Stage body: compact bullet list */
+    .road-row .fig-stage > .bd {
+      padding: 10px 12px 12px;
+    }
+    .road-row .fig-stage ul {
+      margin: 0;
+      padding-left: 15px;
+      list-style: disc;
+    }
+    .road-row .fig-stage li {
+      margin: 3px 0;
+      font-size: 12px;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+    .road-row .fig-stage li .fig-chapter {
+      display: inline;
+      margin-left: 3px;
+    }
+
+    /* is-accent on Stage 0 — warm left bar, slightly tinted header */
+    .fig-stage.is-accent > .hd {
+      background: #fff3e0;        /* warm tint — distinct from neutral tint-2 */
+      border-bottom-color: var(--accent-bar);
+    }
+    .fig-stage.is-accent {
+      border-color: var(--accent-bar);
+      box-shadow: inset 4px 0 0 var(--accent-bar);
+    }
+    .fig-stage.is-accent .stage-num { color: var(--accent-bar); }
+
+    /* Arrow connector — vertically centred between stage cards */
+    .road-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 28px;
+      color: var(--ink);
+      font-size: 22px;
+      font-weight: 700;
+      padding-top: 36px; /* align with card header mid-point */
+      user-select: none;
+    }
+
+    /* Note strip below the row */
+    .road-note {
+      margin-top: 14px;
+    }
+
+    /* Caption */
+    .road-caption {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 110.1 — The staged adoption roadmap</p>
+  <p class="fig-subtitle">A guide to outcomes, not a ladder to climb for its own sake.</p>
+
+  <div class="road-row">
+
+    <!-- Stage 0 ─ Foundations (START HERE by default) -->
+    <div class="fig-stage is-accent">
+      <div class="hd">
+        <span class="stage-num">Stage 0</span>
+        <span class="stage-name">Foundations</span>
+        <span class="stage-when">Monday</span>
+      </div>
+      <div class="bd">
+        <ul>
+          <li>VCS hygiene</li>
+          <li>Build wrapper<span class="fig-chapter">(Ch 27)</span></li>
+          <li>Auto-format — Spotless<span class="fig-chapter">(Ch 6)</span></li>
+          <li>Secrets pre-commit hook<span class="fig-chapter">(Ch 31, 35)</span></li>
+          <li>JUnit running in CI<span class="fig-chapter">(Ch 20, 33)</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="road-arrow">&#8594;</div>
+
+    <!-- Stage 1 ─ Gate the basics -->
+    <div class="fig-stage">
+      <div class="hd">
+        <span class="stage-num">Stage 1</span>
+        <span class="stage-name">Gate the basics</span>
+        <span class="stage-when">New code</span>
+      </div>
+      <div class="bd">
+        <ul>
+          <li>Checkstyle / PMD + Error Prone<span class="fig-chapter">(Ch 16, 18)</span></li>
+          <li>New-code coverage<span class="fig-chapter">(Ch 23, 34)</span></li>
+          <li>PR gate + branch protection<span class="fig-chapter">(Ch 33, 35)</span></li>
+          <li>Small-PR review discipline<span class="fig-chapter">(Ch 37)</span></li>
+          <li>Baseline the legacy<span class="fig-chapter">(Ch 38)</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="road-arrow">&#8594;</div>
+
+    <!-- Stage 2 ─ Deepen -->
+    <div class="fig-stage">
+      <div class="hd">
+        <span class="stage-num">Stage 2</span>
+        <span class="stage-name">Deepen</span>
+        <span class="stage-when">When basics hold</span>
+      </div>
+      <div class="bd">
+        <ul>
+          <li>SpotBugs + FindSecBugs<span class="fig-chapter">(Ch 16)</span></li>
+          <li>SCA + SBOM<span class="fig-chapter">(Ch 28)</span></li>
+          <li>ArchUnit<span class="fig-chapter">(Ch 16, 25)</span></li>
+          <li>SonarQube quality gate<span class="fig-chapter">(Ch 17)</span></li>
+          <li>Mutation on critical code<span class="fig-chapter">(Ch 23)</span></li>
+          <li>CI speed work<span class="fig-chapter">(Ch 33)</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="road-arrow">&#8594;</div>
+
+    <!-- Stage 3 ─ Govern & observe -->
+    <div class="fig-stage">
+      <div class="hd">
+        <span class="stage-num">Stage 3</span>
+        <span class="stage-name">Govern &amp; observe</span>
+        <span class="stage-when">Measure &amp; govern</span>
+      </div>
+      <div class="bd">
+        <ul>
+          <li>SAST + security gate<span class="fig-chapter">(Ch 31, 32)</span></li>
+          <li>Fitness functions<span class="fig-chapter">(Ch 26)</span></li>
+          <li>Dashboards + trends<span class="fig-chapter">(Ch 38)</span></li>
+          <li>DORA metrics<span class="fig-chapter">(Ch 38)</span></li>
+          <li>Perf-regression gates<span class="fig-chapter">(Ch 44)</span></li>
+          <li>Observability + prod feedback<span class="fig-chapter">(Ch 45)</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="road-arrow">&#8594;</div>
+
+    <!-- Stage 4 ─ Sustain & evolve -->
+    <div class="fig-stage">
+      <div class="hd">
+        <span class="stage-num">Stage 4</span>
+        <span class="stage-name">Sustain &amp; evolve</span>
+        <span class="stage-when">Self-sustaining program</span>
+      </div>
+      <div class="bd">
+        <ul>
+          <li>Custom rules — org standards<span class="fig-chapter">(Ch 18)</span></li>
+          <li>AI governance<span class="fig-chapter">(Ch 42)</span></li>
+          <li>Continuous debt remediation<span class="fig-chapter">(Ch 40)</span></li>
+          <li>Culture + knowledge distribution<span class="fig-chapter">(Ch 1, 37)</span></li>
+          <li>Reference stack realized<span class="fig-chapter">(Ch 46)</span></li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- .road-row -->
+
+  <div class="fig-note road-note">
+    <b>Start where YOUR pain is</b> — the order is a default, not a track.
+    A team with a security mandate starts with the security gate; a team drowning in incidents
+    jumps to Stage 3 observability first; a team with a specific hotspot remediates
+    <em>that</em> before anything else.
+    Climb for <b>outcomes</b> (fewer incidents, safer delivery, a changeable codebase),
+    not for the level. Stage 0 is marked as the default "Monday" entry — it is not
+    obligatory if a higher stage solves your most expensive problem first.
+    <b>There is no "done."</b>
+  </div>
+
+  <p class="fig-caption road-caption">
+    Synthesis of the whole book (key 110); DORA's capabilities-over-maturity-levels framing,
+    key 85 (Ch 38). Every chapter reference traces to its dossier entry in
+    <b>fig110_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

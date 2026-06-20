@@ -81,7 +81,7 @@ _None yet — chapters reach the human gate only after the lift loop cannot reac
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
 | 45 | 106 | Observability as quality: logging, metrics, … | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟡 | 🔴 | 🟡 | approve |
 | 46 | 109 | A reference quality stack & gate design | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟡 | 🔴 | 🟡 | approve |
-| 47 | 110 | A code-quality maturity model & adoption roa… | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟡 | 🔴 | 🟡 | approve |
+| 47 | 110 | A code-quality maturity model & adoption roa… | 🟢 | 🟢 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟡 | 🔴 | 🟡 | approve |
 
 ## Per-Part rollup
 
