@@ -28,7 +28,7 @@ AI assistants raise productivity *and* risk, so a team needs a deliberate policy
 
 ## 4. Evidence AGAINST / limits (HONEST-LIMITATIONS)
 - **Policy without enforcement/culture fails** — a governance doc nobody follows yields "shadow AI" (un-sanctioned tools leaking code); culture + tooling must back it (key 06).
-- **Over-restriction drives workarounds** — banning AI outright pushes it underground; pragmatic, enforced policy beats prohibition.
+- **Over-restriction drives workarounds** — banning AI outright pushes it underground; pragmatic, enforced policy succeeds where prohibition drives shadow AI.
 - **Verification has a ceiling** — gates + AI review catch a fraction (keys 70/98); governance reduces but doesn't eliminate risk; the human gate is essential but fallible (automation bias, key 98).
 - **Stats are volatile + often vendor-sourced** — date + attribute; productivity claims especially are marketing-adjacent (verify primary).
 - **Not legal advice** — AI-IP/compliance (EU AI Act, license of generated code) needs counsel; the book stays factual.
