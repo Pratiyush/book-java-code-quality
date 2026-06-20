@@ -81,7 +81,7 @@
 | 19 | 39 | Living with findings: false positives, baselines, ratcheting (Ch 19) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | — | 40 | Annotation processors & the Lombok debate | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 
-| — | 41 | The testing landscape & test quality | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 20 | 41 | The testing landscape & test quality (Ch 20; folds 49) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
 | — | 44 | Test doubles & mocking (Mockito) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 47 | Mutation testing (PITest) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 48 | Code coverage (JaCoCo) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
