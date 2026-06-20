@@ -154,7 +154,7 @@
 | — | 104 | Benchmarking discipline (JMH) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | 44 | 105 | Performance-regression gates (Ch 44) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 
-| — | 106 | Logging quality (structured, SLF4J) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 45 | 106 | Observability as quality: logging, metrics, tracing & feedback (Ch 45; folds 107+108) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
 | — | 107 | Metrics & tracing (Micrometer/OpenTelemetry) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 108 | Production feedback loops (error tracking) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 109 | Reference quality stack & gate design (capstone) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
