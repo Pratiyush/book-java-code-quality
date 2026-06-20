@@ -88,7 +88,7 @@
 | — | 49 | Test architecture, flakiness & smells | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 50 | Contract & API testing (Pact, REST-assured) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 51 | Performance testing (JMH) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 42 | Unit testing with JUnit 5 | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 21 | 42 | Unit testing, assertions & mocking (Ch 21; folds 43+44) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
 | — | 43 | Assertions & test readability | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 45 | Integration testing (Testcontainers) | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 46 | Parameterized & property-based testing | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
