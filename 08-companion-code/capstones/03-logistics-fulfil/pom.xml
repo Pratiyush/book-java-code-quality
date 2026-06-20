@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Capstone 03 — logistics-fulfil. Warehouse order fulfilment as a saga across three microservices:
+        inventory-service        stock per SKU; reserve and release are atomic, so two orders cannot
+                                 both reserve the last unit (oversell prevention)
+        shipment-service         creates a shipment per order, idempotent by order id
+        fulfilment-orchestrator  the saga: reserve every line, then create a shipment; if any line is
+                                 out of stock it RELEASES the lines it already reserved (compensation)
+                                 and fails the whole fulfilment — never a half-fulfilled order
+    The real problems this models: never oversell under concurrency, never half-fulfil (atomic-ish
+    multi-step work with compensation), and never double-ship a retried fulfilment (idempotency).
+  -->
+  <parent>
+    <groupId>org.acme.capstones</groupId>
+    <artifactId>capstones</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>logistics-fulfil</artifactId>
+  <packaging>pom</packaging>
+  <name>Capstone 03 — logistics-fulfil (inventory / shipment / fulfilment)</name>
+
+  <properties>
+    <checkstyle.config.location>../config/checkstyle/checkstyle.xml</checkstyle.config.location>
+    <spotbugs.exclude.location>../config/spotbugs/spotbugs-exclude.xml</spotbugs.exclude.location>
+  </properties>
+
+  <modules>
+    <module>inventory-service</module>
+    <module>shipment-service</module>
+    <module>fulfilment-orchestrator</module>
+  </modules>
+</project>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Capstone 02 — fintech-ledger. Money movement, modelled the way real ledgers are: double-entry.
+        account-service    accounts and their currency — the source of truth for who can hold money
+        ledger-service     an append-only double-entry journal; every entry must balance to zero, and
+                           an account's balance is the sum of its postings
+        transfer-service   orchestrates a transfer: checks both accounts, prevents an overdraft, posts
+                           one balanced debit/credit entry, and is idempotent by transfer reference
+    The real invariants this models: debits equal credits on every entry (money is neither created
+    nor destroyed), an account cannot be overdrawn, and a retried transfer moves money once.
+  -->
+  <parent>
+    <groupId>org.acme.capstones</groupId>
+    <artifactId>capstones</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>fintech-ledger</artifactId>
+  <packaging>pom</packaging>
+  <name>Capstone 02 — fintech-ledger (account / ledger / transfer)</name>
+
+  <properties>
+    <checkstyle.config.location>../config/checkstyle/checkstyle.xml</checkstyle.config.location>
+    <spotbugs.exclude.location>../config/spotbugs/spotbugs-exclude.xml</spotbugs.exclude.location>
+  </properties>
+
+  <modules>
+    <module>account-service</module>
+    <module>ledger-service</module>
+    <module>transfer-service</module>
+  </modules>
+</project>
