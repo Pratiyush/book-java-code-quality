@@ -112,7 +112,7 @@
 | — | 68 | License compliance | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 
 | 30 | 69 | Secure coding & OWASP for Java (Ch 30; folds 72+74) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
-| — | 70 | SAST tools (FindSecBugs/Semgrep/CodeQL/Snyk/Sonar) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 31 | 70 | SAST & secrets detection (Ch 31; folds 71) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | — | 71 | Secrets detection (gitleaks/TruffleHog) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 72 | Injection, deserialization & validation safety | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 73 | Security in CI — the security gate | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
