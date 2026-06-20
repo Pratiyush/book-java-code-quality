@@ -108,7 +108,7 @@
 | — | 64 | Keeping dependencies current (Renovate/Dependabot) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | 28 | 65 | Dependency scanning, SBOM & supply-chain security (Ch 28; folds 66) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | — | 66 | Supply chain — SBOM, provenance, SLSA | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 67 | Reproducible & verifiable builds | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 29 | 67 | Reproducible builds & license compliance (Ch 29; folds 68) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | — | 68 | License compliance | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 
 | — | 69 | Secure coding & OWASP Top 10 (2025) for Java | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
