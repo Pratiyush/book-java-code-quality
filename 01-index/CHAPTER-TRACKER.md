@@ -42,7 +42,7 @@
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | 01 | What is code quality? (Ch 1; folds 02+59) | done | done | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
 | — | 02 | The cost of poor quality (tech debt, SQALE, quality-vs-speed) | done | pending | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 03 | Readability & maintainability (cognitive complexity; contested) | done | pending | pending | pending | pending | pending | pending | pending | pending | pending |
+| 2 | 03 | Readability, maintainability & measuring (Ch 2; folds 04+58) | done | done | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
 | — | 04 | Quality metrics — signal vs vanity (CK, Goodhart, DORA/SPACE) | done | pending | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 05 | The Java quality toolchain map | done | pending | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 06 | Quality culture & ownership (Westrum, shift-left) | done | pending | pending | pending | pending | pending | pending | pending | pending | pending |
