@@ -146,7 +146,7 @@
 | 41 | 97 | Quality of AI-generated code & AI-assisted development (Ch 41; folds 99) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
 | — | 98 | Using AI for code review | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 99 | AI-assisted refactoring & test generation | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 100 | Governing AI in the dev workflow | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 42 | 100 | AI code review & governing AI in the workflow (Ch 42; folds 98) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
 
 | — | 101 | Performance as a quality attribute | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 102 | Profiling (JFR, async-profiler) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
