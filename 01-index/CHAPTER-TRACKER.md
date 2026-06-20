@@ -148,7 +148,7 @@
 | — | 99 | AI-assisted refactoring & test generation | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | 42 | 100 | AI code review & governing AI in the workflow (Ch 42; folds 98) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
 
-| — | 101 | Performance as a quality attribute | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 43 | 101 | Performance as quality: profiling, memory & benchmarking (Ch 43; folds 102+103+51+104) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
 | — | 102 | Profiling (JFR, async-profiler) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 103 | Memory & allocation hygiene | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 104 | Benchmarking discipline (JMH) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
