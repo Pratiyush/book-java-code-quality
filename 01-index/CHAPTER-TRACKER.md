@@ -106,7 +106,7 @@
 | 27 | 62 | The build & dependency hygiene (Ch 27; folds 63+64) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | — | 63 | Dependency management & hygiene (BOM/catalog/enforcer) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 64 | Keeping dependencies current (Renovate/Dependabot) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 65 | Dependency vuln scanning / SCA | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 28 | 65 | Dependency scanning, SBOM & supply-chain security (Ch 28; folds 66) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | — | 66 | Supply chain — SBOM, provenance, SLSA | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 67 | Reproducible & verifiable builds | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 68 | License compliance | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
