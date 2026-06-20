@@ -93,7 +93,7 @@
 | 22 | 45 | Integration & property-based testing (Ch 22; folds 46) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | — | 46 | Parameterized & property-based testing | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 52 | Snapshot / approval testing | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 53 | SOLID & design principles (contested) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 25 | 53 | SOLID, coupling, cohesion & package structure (Ch 25; folds 54+57) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
 | — | 54 | Coupling, cohesion & dependency direction | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 55 | Enforcing architecture (ArchUnit, JPMS) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 56 | Fitness functions & evolutionary architecture | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
