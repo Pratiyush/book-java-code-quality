@@ -157,7 +157,7 @@
 | 45 | 106 | Observability as quality: logging, metrics, tracing & feedback (Ch 45; folds 107+108) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
 | — | 107 | Metrics & tracing (Micrometer/OpenTelemetry) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 108 | Production feedback loops (error tracking) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 109 | Reference quality stack & gate design (capstone) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 46 | 109 | A reference quality stack & gate design (Ch 46; CAPSTONE) | done | done² | **done** | PEND-RT⁶ | PARTIAL⁸ | done | 46/50 | plan-set | pending | pending⁷ |
 | — | 110 | Code-quality maturity model & roadmap | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 
 ¹ Keys 01–06 (pilot) self-verify inline (sources + `⚠ UNVERIFIED` flags) but no separate Step-2 `_VERIFY.md` yet. Open flag: `09-flags/01_iso25010_2023_subtree_unverified.md`.
