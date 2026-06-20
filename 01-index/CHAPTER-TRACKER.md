@@ -59,7 +59,7 @@
 | — | 17 | Comments, Javadoc & self-documenting code (contested) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 18 | Defensive coding & input validation | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | 12 | 19 | Code smells & Java anti-patterns (Ch 12; folds 61) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
-| — | 20 | Thread-safety & the Java Memory Model | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| 13 | 20 | Thread-safety & the Java Memory Model (Ch 13; folds 21+23) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
 | — | 21 | Immutability & safe publication | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 22 | Virtual threads & structured concurrency | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 23 | Concurrency utilities (j.u.c) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
