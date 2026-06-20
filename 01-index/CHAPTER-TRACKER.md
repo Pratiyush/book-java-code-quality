@@ -61,7 +61,7 @@
 | 12 | 19 | Code smells & Java anti-patterns (Ch 12; folds 61) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
 | 13 | 20 | Thread-safety & the Java Memory Model (Ch 13; folds 21+23) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
 | — | 21 | Immutability & safe publication | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 22 | Virtual threads & structured concurrency | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| 14 | 22 | Virtual threads & structured concurrency (Ch 14; folds 24+25) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
 | — | 23 | Concurrency utilities (j.u.c) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 24 | Testing & reproducing concurrency bugs (JCStress) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 25 | Static detection of concurrency issues | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
