@@ -4,10 +4,10 @@
 > senior-level volume._ The candidate pool is preserved as the frozen dossier-key registry; this file is
 > the **book of record** for what gets drafted and assembled, and the single canonical chapter count
 > (every other file points here, never hardcodes a number).
-> **Status: PROPOSED — awaiting human confirmation.** Once CONFIRMED/LOCKED this index gates Phase-3
-> drafting. A re-cull requires re-latching (clear the confirmation fields + re-confirm).
+> **Status: ✅ CONFIRMED / LOCKED (2026-06-20).** This index now gates Phase-3 drafting. A re-cull
+> requires re-latching (clear the confirmation fields + re-confirm + re-lock by a human).
 
-**Confirmed by:** ______ **on:** ______ — _(latched on the author's confirmation of chapter scope.)_
+**Confirmed by:** Pratiyush **on:** 2026-06-20 — 47-chapter / 14-Part comprehensive volume confirmed as-is (all-pillars scope).
 
 > **Cull method (Phase 2, manual-documented per `select-book-one`):** all 110 dossiers cleared the content
 > floors (A NEUTRALITY — global banned-phrasing sweep = 0; B HONEST-LIMITATIONS — every dossier has a
@@ -144,6 +144,6 @@
 
 ---
 
-**47 chapters. PROPOSED — not yet LOCKED.** CONFIRMED/LOCKED on ______ by ______; a re-cull requires re-latching. This file gates Phase-3 drafting; nothing drafts until a human locks the cut.
+**47 chapters. ✅ CONFIRMED / LOCKED on 2026-06-20 by Pratiyush.** A re-cull requires re-latching. This file now gates Phase-3 drafting.
 
 > **Size note for the human gate:** 47 chapters is a *comprehensive* single volume matching the requested all-pillars scope. Three options to weigh: **(a) confirm as-is** (~47 ch comprehensive reference); **(b) tighten to ~32** (appendix/drop Tier-B solos, collapse Parts XII–XIII); **(c) split into two volumes** (e.g. Vol 1: code craft + concurrency + tooling + testing; Vol 2: architecture + CI + security + process + AI + performance). Your call.

@@ -14,7 +14,8 @@
 
 <!-- HOW TO FILL: one paragraph each. Start a new book at Phase 0 — Foundation; update as the pipeline advances. The chapter count is canonical in FINAL_INDEX.md (point to it, never hardcode it here). -->
 
-**Current phase:** Phase 1 — RESEARCH **COMPLETE: all 110/110 dossiers banked** (keys 01–110, every Part I–XV). Built via multi-agent workflow (keys 07–40, each with a `_VERIFY.md`) then **cheaper main-loop solo research** (keys 01–06 pilot + 41–110, after the spend limit aborted the Part V workflow). Global neutrality sweep = 0 banned phrasings. Verify status: 07–40 have separate `_VERIFY.md`; 01–06 + 41–110 research-done, formal SOURCE-VERIFY pending → fold into `/pin-source`. SOURCE-PIN versions still `TO-PIN` (JUnit row = JUnit 6 current). **Next: `/pin-source` (resolve every TO-PIN + deferred verifies), then Phase 2 — SELECT (cull 110 → FINAL_INDEX, human-confirmed).**
+**Current phase:** Phase 2 — SELECT **✅ COMPLETE / LOCKED (2026-06-20):** human-confirmed `FINAL_INDEX` = **47 chapters / 14 Parts** (110 keys consolidated, 0 hard cuts). Phase 1 research complete (110/110 dossiers). **Next: `/pin-source`** (resolve every `TO-PIN` + the deferred SOURCE-VERIFY for keys 01–06 + 41–110 + the 60 flags), **then Phase 3 — DRAFT** the 47 chapters through the gated pipeline (drafting is now unblocked by the lock).
+<!-- prior-phase note: Phase 1 — RESEARCH COMPLETE: all 110/110 dossiers banked (keys 01–110, every Part I–XV). Built via multi-agent workflow (keys 07–40, each with a `_VERIFY.md`) then **cheaper main-loop solo research** (keys 01–06 pilot + 41–110, after the spend limit aborted the Part V workflow). Global neutrality sweep = 0 banned phrasings. Verify status: 07–40 have separate `_VERIFY.md`; 01–06 + 41–110 research-done, formal SOURCE-VERIFY pending → fold into `/pin-source`. SOURCE-PIN versions still `TO-PIN`. -->
 **Authority pin:** multi-authority set in `00-strategy/SOURCE-PIN.md` (Java 21+25 LTS anchor; each tool pinned per row). Exact tool versions are `TO-PIN` — run `/pin-source` before drafting. Until pinned, facts from a `TO-PIN` row are `⚠ UNVERIFIED`.
 **Repo state:** under git on `main`; remote `origin` = https://github.com/Pratiyush/book-java-code-quality (PUBLIC). Working dir `/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality`. No blocker.
 **Last updated:** 2026-06-20 — Phase 1 RESEARCH COMPLETE: all 110 dossiers banked + pushed. Next: /pin-source then Phase 2 cull.
@@ -27,7 +28,7 @@
 |---|---|---|
 | 0 — Foundation | Strategy, authority pin, candidate pool, folder tree, tooling | **IN PROGRESS** — kernel adapted; pool built; pin structured (versions TO-PIN); law-file fine-tuning + `/pin-source` remain |
 | 1 — Research | Bank a verified dossier per candidate | **COMPLETE** — 110/110 dossiers banked (07–40 with `_VERIFY.md`; rest verify-pending → `/pin-source`) |
-| 2 — Select | Score the pool, cull to ONE book; human confirms the cut | **PROPOSED — awaiting human LOCK.** 110 keys → 47 chapters (14 Parts), 0 hard cuts, merge-driven. See `01-index/FINAL_INDEX.md`. |
+| 2 — Select | Score the pool, cull to ONE book; human confirms the cut | **✅ COMPLETE / LOCKED 2026-06-20** — 110 keys → 47 chapters (14 Parts), human-confirmed. See `01-index/FINAL_INDEX.md`. |
 | 3 — Draft + Gate | Draft confirmed chapters through the gated pipeline | not started |
 | 4 — Assemble | Compile approved chapters into the manuscript | not started |
 
@@ -92,6 +93,13 @@
 > Dated entries: rule changes, promotions from `00-strategy/PIPELINE-LEARNINGS.md` into law, pin events, and gate-policy shifts. Newest first. Append; never delete.
 
 <!-- HOW TO FILL: every meaningful unit of work appends an entry (Continuous-improvement HARD RULE). Empty at Phase 0 start. -->
+
+### 2026-06-20 — Phase 1 complete + Phase 2 cull LOCKED
+
+- **Phase 1 RESEARCH complete:** all 110/110 dossiers banked (Parts II–IV via multi-agent workflow w/ `_VERIFY.md`; 01–06 + 41–110 via cheaper main-loop after the spend-limit aborted the Part V workflow). Global neutrality sweep = 0. ~302k words. Pushed to public GitHub (17 commits).
+- **Phase 2 SELECT LOCKED (human gate):** `FINAL_INDEX.md` confirmed by Pratiyush — 110 keys → **47 chapters / 14 Parts**, 0 hard cuts (merge-driven). Drafting now unblocked.
+- **Deferred (HARD, before drafting a chapter):** `/pin-source` resolves every `TO-PIN` + folds in the SOURCE-VERIFY for keys 01–06 + 41–110 + the 60 `09-flags/` items. Logged as the standing next action.
+- **Process note:** "beats/better than" slipped into prose ~6× across batches (ordinary-English verbs); caught by the per-batch + global banned-phrasing sweep each time. Recommend promoting an automated `check_neutrality.sh` pre-pass (PIPELINE-LEARNINGS).
 
 ### 2026-06-15 — Part I research pilot /retro
 
