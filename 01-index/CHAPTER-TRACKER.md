@@ -46,7 +46,7 @@
 | — | 04 | Quality metrics — signal vs vanity (CK, Goodhart, DORA/SPACE) | done | pending | pending | pending | pending | pending | pending | pending | pending | pending |
 | 3 | 05 | The Java quality toolchain map (Ch 3) | done | done | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
 | 4 | 06 | Quality culture, ownership & knowledge (Ch 4; folds 90) | done | done | **done** | n-a | done | done | 40/50 | plan-set | pending | pending⁷ |
-| — | 07 | Naming, structure & formatting | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| 6 | 07 | Naming, structure & formatting (Ch 6; folds 17+34) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
 | 5 | 08 | Effective Java & modern Java for quality (Ch 5; folds 13) | done | done | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
 | — | 09 | Designing clear APIs & method contracts | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 10 | Immutability & value-based design | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
