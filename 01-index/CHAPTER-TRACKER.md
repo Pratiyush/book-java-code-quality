@@ -86,7 +86,7 @@
 | — | 47 | Mutation testing (PITest) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | 23 | 48 | Coverage, mutation & test effectiveness (Ch 23; folds 47) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
 | — | 49 | Test architecture, flakiness & smells | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 50 | Contract & API testing (Pact, REST-assured) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 24 | 50 | Contract & approval testing (Ch 24; folds 52) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | — | 51 | Performance testing (JMH) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | 21 | 42 | Unit testing, assertions & mocking (Ch 21; folds 43+44) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
 | — | 43 | Assertions & test readability | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |

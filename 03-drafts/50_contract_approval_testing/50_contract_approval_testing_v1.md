@@ -1,0 +1,137 @@
+<!--
+Dossier key: 50 (owner, leads) + folds 52 — per 01-index/FINAL_INDEX.md Ch 24 (CLOSES Part V; Ch 25 opens Part VI — Architecture & Design Governance)
+Slug: 50_contract_approval_testing (owner key 50)
+Part / arc position: Part V — Testing, Chapter 24 of 20-24 (CLOSER)
+Companion module: 08-companion-code/ (Pact consumer+provider pair + REST-assured endpoint test + an ApprovalTests golden-file) — ⚠ EXAMPLE-BUILD = PENDING (toolchain READY: JDK 21.0.11+25.0.3; provider/API tests Testcontainers/Boot = REPRO PENDING-RUNTIME where Docker absent). Spec at foot.
+Verified against SOURCE-PIN: 2026-06-20. Sources (each tool cited to its OWN docs; complementary-not-rivals, crown none):
+- Contract/API (50): TWO jobs on ONE boundary, two questions. Contract testing (Pact): "do the two sides agree on message shape without standing up both?" VERBATIM "a technique for testing an integration point by checking each application in isolation to ensure the messages it sends or receives conform to a shared understanding documented in a 'contract'"; "code-first consumer-driven"; "contract is generated during the execution of the automated consumer tests"; "only communication paths actually used by consumers get tested". API/HTTP (REST-assured): "does the running endpoint respond correctly?" given()/when()/then() DSL; .body(path,matcher) GPath (Groovy GPath, NOT Jayway JsonPath, verbatim); Hamcrest; RequestSpecBuilder/ResponseSpecBuilder; matchesJsonSchemaInClasspath. Pact 4-stage pipeline: consumer test (PactConsumerTestExt @ExtendWith; @Pact(consumer,provider)→RequestResponsePact; @PactTestFor(providerName,pactMethod,pactVersion=V3,port); PactDslJsonBody TYPE-matching stringType/matchRegex; MockServer injected; writes target/pacts) → publish to Pact Broker → provider verification (au.com.dius.pact.provider:junit5; @Provider; @PactFolder/@PactBroker; PactVerificationInvocationContextProvider+@TestTemplate one-test-per-interaction; PactVerificationContext.verifyInteraction() REPLAYS; context.setTarget(HttpTestTarget.fromUrl); @State preconditions) → can-i-deploy (broker MATRIX of consumer×provider verification VERBATIM; consumer version selectors deployed/released/deployedOrReleased; record-deployment/record-release). Pyramid: contract=middle (NO live partner); API=middle→top (needs running endpoint). GAV au.com.dius.pact.consumer:junit5 (4.4.x) / .provider:junit5 (4.6.x) [version independently!]; io.rest-assured:rest-assured (5.5.0, 2024-07-05).
+- Snapshot/approval (52): inverts inline assertion — test produces output, framework compares to stored *approved* file, any diff fails, human reviews + approves (received→approved=baseline). Approvals.verify(result) writes *.received.*, compares *.approved.*; mismatch launches diff/reporter. Scrubbers normalize non-determinism (timestamps/GUIDs/ordering). Variants: strings/objects/collections/combinations. Fits: large/hard-to-hand-write output (reports/serialized DTOs/generated text); characterizing legacy before refactor (golden-master, Feathers WELC). HONEST SPINE: verifies "UNCHANGED" not "CORRECT" — headline risk = rubber-stamp a wrong received into approved, baking the bug into the baseline; approval discipline (read the diff) mandatory or it's theatre. ApprovalTests.Java (github.com/approvals/ApprovalTests.Java; approvaltests.com).
+⚠ verify-at-pin: all GAVs/versions (Pact consumer 4.4.x/provider 4.6.x version independently; REST-assured 5.5.x; ApprovalTests.Java); @PactTestFor pactVersion default V3 + V4 target; consumer-version-selector set + can-i-deploy/record-deployment CLI flags; PactDslJsonBody matcher method names; pact output dir/override props; ApprovalTests API (Approvals.verify, reporters, scrubbers) + JUnit5/6 integration. DOCKER-GATING: provider verification + REST-assured tests need running endpoint → REPRO PENDING-RUNTIME where Docker/Boot absent. SOURCE-PIN gaps: DEMO-CATALOG missing; Cohn 2009 + Feathers WELC not §7 rows.
+Routes: integration-test mechanics (Testcontainers/flakiness) → Ch20(49); effectiveness vs coverage framing → Ch23(47/48); API SIGNATURE compat (revapi/japicmp ≠ message contract) → key 60; deploy-gate policy consuming can-i-deploy → CI part(80/105); over-mocking (consumer mock held honest by provider verify) → Ch21(44); security testing Pact excludes → Part VIII(70); legacy characterization (golden-master) → key 92; assertions → Ch21(43).
+DRAFT v1 — gates manual; two-jobs-on-one-boundary + four-stage-pipeline + verifies-unchanged-not-correct + golden-master-for-legacy shapes; PART V CLOSER (hand-off opens Part VI — Architecture & Design Governance, Ch 25 keys 53+54+57). EXAMPLE-BUILD pending.
+-->
+
+# Correctness Against an Outside Reference
+
+*Contract testing for the agreements between services, API testing for the running endpoint, and approval testing against a reviewed baseline · 50 (folds 52) · Part V (closer)*
+
+> Your service can pass every test it owns, hit 100% coverage, kill every mutant — and still break the team downstream, because nothing in your suite encoded what they depend on.
+
+## Hook
+
+An orders service is in great shape by every measure from the last three chapters: well-distributed tests across the pyramid, high branch coverage, a strong mutation score. A developer renames a JSON field from `id` to `orderId` — tidier, fully covered, every mutant still killed. It ships, and the *consumer* team's integration breaks in production, because their code reads `id` and nothing in the orders service's own suite knew they depended on it. Every test the service owns asks "does my code do what *I* expect?" None asks "does my code still do what my *consumers* expect?" That question lives outside the service, and no inward-looking test can answer it.
+
+That's the gap this final chapter of Part V closes, and it generalizes. Everything so far has tested correctness against expectations *restated inside the test* — `assertThat(x).isEqualTo(expected)`, with `expected` written by the test author. This chapter covers two techniques that test correctness against an **external reference** instead: a **contract** (what a consumer actually expects of a provider, captured executably) and an **approved baseline** (a complex output a human once reviewed and signed off as correct). **Contract testing** (Pact) and **API testing** (REST-assured) handle the service boundary — the agreement between two sides, and the behaviour of the running endpoint. **Approval testing** (ApprovalTests) handles outputs too large or intricate to hand-assert, pinning them against a reviewed snapshot so any drift surfaces. Both move the assertion from "I expect X" to "it still matches the reference" — and both carry a sharp failure mode when the reference itself goes wrong.
+
+## Overview
+
+**What this chapter covers**
+
+- **Contract testing** with Pact: consumer-driven contracts, the four-stage pipeline, and the `can-i-deploy` gate.
+- **API testing** with REST-assured: the given/when/then DSL against a running endpoint.
+- Why contract and API testing are **two different jobs on one boundary**, not rivals.
+- **Approval (snapshot/golden-master) testing**: pinning hard-to-assert output against a reviewed baseline — and its central risk.
+
+**What this chapter does NOT cover.** Integration-test mechanics — running a provider via Testcontainers or a framework slice (Chapter 22). Test effectiveness — coverage and mutation (Chapter 23). API *signature* compatibility (binary/source compat via revapi/japicmp — a different kind of contract, in a later part). Deploy-gate *policy* that consumes `can-i-deploy` (the CI part). Security testing, which Pact explicitly excludes (Part VIII). Each tool is cited to its own docs; the paired tools are **complementary, crowning none**.
+
+**If you hold one idea**, hold this: *these techniques assert against a reference outside the test — a consumer's contract or a human-approved baseline — so they catch correctness an inward assertion can't; but a wrong reference (an unverified contract, a rubber-stamped baseline) turns the test into theatre.*
+
+## How it works
+
+### Contract testing: do the two sides still agree?
+
+**Contract testing** verifies that an integration point still works *without standing up both sides*. Pact's own definition: it is "a technique for testing an integration point by checking each application in isolation to ensure the messages it sends or receives conform to a shared understanding that is documented in a 'contract'." Pact is specifically **consumer-driven**: "the contract is generated during the execution of the automated consumer tests," so "only communication paths actually used by consumers get tested" — the contract is exactly what the consumer relies on, no more. Provider behaviour no current consumer uses can change freely; behaviour a consumer *does* use cannot change without the contract catching it. That is precisely the field-rename from the hook.
+
+The mechanism is a four-stage pipeline:
+
+1. **Consumer test** generates the contract. The consumer's test runs against a Pact **mock server**, not the real provider. It declares the expected interaction in a `@Pact` method, describing the body with `PactDslJsonBody` by **type, not value** (`stringType()`, `matchRegex()` — so the contract matches *shape*), points the real client code at the injected `MockServer`, and on success the extension writes a pact JSON file to `target/pacts`.
+2. **Publish** the pact to a **Pact Broker** — the shared store of contracts and verification results.
+3. **Provider verification** replays the contract. The provider's test (`@Provider`, sourcing pacts via `@PactFolder` or `@PactBroker`) uses `@TestTemplate` to generate **one test per interaction**, calls `context.verifyInteraction()` to replay each recorded request against the *running provider* and check the real response matches, with `@State` methods seeding preconditions (e.g. "order 42 exists").
+4. **`can-i-deploy`** is the gate. The broker holds a **matrix** of verification results for every consumer-version × provider-version pair — "used by the can-i-deploy tool to determine if an application is safe to deploy." Consumer version selectors (`deployed`, `released`) scope verification to what's actually running in each environment.
+
+> **CONCEPT** *The contract is only honest if both halves run.* The consumer test alone proves nothing real — it runs against a mock the consumer author wrote, which could expect data the provider would never send. The provider verification is what holds that mock honest by replaying the contract against the real provider. A consumer pact without provider verification is the over-mocking anti-pattern from Chapter 21 wearing a contract's clothes: a green test asserting your own assumptions. Teach the pipeline as a whole, or not at all.
+
+### API testing: does the running endpoint respond correctly?
+
+**REST-assured** answers a different question on the same boundary: not "do the sides agree?" but "does this running endpoint actually respond correctly?" It exercises a live (or test-instance) HTTP service with a fluent BDD-style DSL:
+
+```java
+given().param("id", 42)
+.when().get("/orders/42")
+.then().statusCode(200).body("id", equalTo(42));
+```
+
+`given()` sets up the request (params, headers, body auto-serialized, auth), `when()` issues the verb, and `then()` asserts on the **live response** — `statusCode`, headers, and `body(path, matcher)` where `path` is a **GPath** expression (Groovy GPath, explicitly *not* Jayway JsonPath — a recurring confusion worth stating once) and `matcher` is a Hamcrest matcher. `RequestSpecBuilder`/`ResponseSpecBuilder` keep large suites DRY, and `matchesJsonSchemaInClasspath` validates a response against a JSON Schema. REST-assured produces no artifact and requires the endpoint to be *running* — in CI, typically against a Testcontainers-backed or framework-test instance (Chapter 22).
+
+> **CONCEPT** *Two jobs on one boundary, not rivals.* A contract test verifies *agreement* between a specific consumer and provider, each in isolation, with no network call to a live partner. An API test verifies the *behaviour* of a running endpoint. Each is the wrong tool for the other's question: REST-assured against your own service can't see a downstream consumer break (no consumer is involved), and Pact never calls a live endpoint so it can't tell you the service actually runs. A mature service uses both — REST-assured to prove its endpoints work, Pact to prove it hasn't broken a consumer.
+
+| Technique | Pyramid band | Needs a live partner? | Produces an artifact? | Question answered |
+|---|---|---|---|---|
+| Contract (Pact) | middle | **no** — each side in isolation | **yes** — pact + broker results | do the two sides *agree*? |
+| API/HTTP (REST-assured) | middle→top | **yes** — a running endpoint | no | does the running endpoint *behave*? |
+
+### Approval testing: does the output still match what a human approved?
+
+The third technique inverts the assertion entirely. Most tests state the expected value inline; **approval testing** (also called snapshot or golden-master testing) produces output, compares it to a stored **approved** file, and fails on any difference — and a human reviews the diff and, if it's correct, **approves** it (the new output becomes the baseline). `Approvals.verify(result)` writes a `*.received.*` file, compares it to the committed `*.approved.*`, and on mismatch launches a diff tool for inspection. **Scrubbers** normalize non-deterministic content (timestamps, GUIDs, ordering) so the test isn't flaky.
+
+It shines exactly where inline assertions fail: output that is **large or hard to hand-write** — generated reports, serialized DTOs, rendered text — where dozens of brittle field assertions would be unreadable, replaced by one `verify` call. And it's the classic safety net for **characterizing legacy code** before a refactor (the golden-master technique): capture the current behaviour as the approved baseline, then change the structure underneath and trust the baseline to flag any behavioural drift (a later part goes deeper on legacy work).
+
+## Deep dive: when the reference itself is wrong
+
+The power of all three techniques is that the assertion lives in an external reference; the danger is the same fact. An inward `assertThat(x).isEqualTo(2)` is wrong only if the author miswrote `2`. A reference-based test is wrong if the *reference* is wrong — and the reference can go wrong silently.
+
+**Approval testing's central risk is the sharpest, and it must be the headline, not a footnote: it verifies "unchanged," not "correct."** When a test fails because the output changed, the developer reviews the diff and approves the new `received` file as the baseline. If they actually *read* the diff, this is a powerful human-in-the-loop check. If they rubber-stamp it — promote `received` to `approved` without scrutiny because the build is red and they want it green — they bake the bug into the baseline, and every future run happily confirms the wrong output forever. An approval suite where no one reads the diffs is pure theatre: it asserts that the output hasn't changed since someone stopped paying attention. So the discipline is mandatory and non-negotiable: approval testing is only worth running where the diffs will genuinely be scrutinized, and approved files belong in version control precisely so they surface in pull-request review where a second person sees them. The secondary costs follow from the same root: large approved files create noisy diffs and merge conflicts (right-size the snapshot), and any un-scrubbed non-determinism makes the test flake (Chapter 20).
+
+**Contract testing has the analogous failure**, already named: a consumer pact whose mock expects data the real provider would never produce satisfies the contract while being wrong — until the provider verification catches it. Skip the provider half and the "contract" is just the consumer's untested assumption with a broker behind it. And contract testing carries hard scope limits stated by Pact itself: it is **not suitable for public or third-party APIs** (you can't identify or coordinate with every consumer), and it is **not a functional, performance, or load test** — a green contract proves the two sides agree on *message shape*, not that the provider's business logic is correct, that auth is enforced, or that the system survives load. Treating a green contract as proof of correctness is the central Pact anti-pattern. It also wants real operational discipline: a broker, `record-deployment`/`record-release` so `can-i-deploy` is meaningful, and `@State` handlers — a two-service shop may find the overhead exceeds the value.
+
+The unifying caveat, and the honest close to Part V: every reference-based test is only as good as its reference, and every test in the part has been only as good as something — an assertion an author wrote, a contract a consumer recorded, a baseline a human approved, a mutation a tool seeded. None proves correctness; each is a signal that must be kept honest. These two techniques sit in the *middle and boundary* of the pyramid — they don't replace the unit tests below that check business logic, the effectiveness measures of the last chapter, or a small number of end-to-end tests above. A green contract, a green API test, and a green approval are evidence of a healthy boundary and stable outputs, not of a correct product. That humility — a test is a signal, not a proof — is the thread through the whole of Part V.
+
+## Limitations & when NOT to reach for it
+
+- **Pact is not for public or third-party APIs.** It needs identifiable, coordinated consumers; its home is intra-organisation services you control on both sides. For a public API, schema validation (or revapi/japicmp for signatures, a later part) fits better.
+- **A contract is not a functional, performance, or load test.** Green means the sides agree on shape — not that the logic is right, auth holds, or the system scales. Don't read it as correctness; pair with unit, integration, and security tests.
+- **A consumer pact without provider verification is false confidence.** The mock can drift from reality; only the provider-side replay holds it honest. Run the whole pipeline or none of it.
+- **Pact carries operational overhead.** A broker, deployment/release recording, and `@State` handlers are real infrastructure; a tiny system may not justify it.
+- **REST-assured needs a running endpoint.** Slower and heavier than an isolated contract test; and GPath is Groovy GPath, not Jayway JsonPath — a learning edge whose mistakes surface at runtime.
+- **Approval testing verifies "unchanged," not "correct."** The headline risk: rubber-stamping a wrong `received` file bakes the bug into the baseline. When NOT to use it: where no one will actually read the diffs — then it's theatre.
+- **Approval files churn and flake.** Large snapshots make noisy diffs and merge conflicts; un-scrubbed non-determinism flakes the test. Right-size snapshots and scrub.
+- **Approval testing says *what*, not *why*.** A baseline pins the output, not the intent; pair it with a few example tests that assert the meaningful invariants.
+- **All three test the boundary or the output, not the whole system.** They complement, never replace, unit/property tests below and a thin end-to-end layer above.
+
+## Alternatives & adjacent approaches
+
+- **JSON Schema validation** (REST-assured `matchesJsonSchema`) — a one-sided, static structural check of a response; fits a public API you can't contract-test, where consumer-driven Pact doesn't.
+- **Full end-to-end tests** — exercise the whole flow across real services; higher fidelity, far slower and flakier, used sparingly at the pyramid's top.
+- **API signature compatibility** (revapi/japicmp, a later part) — a *different* contract: binary/source compatibility of a published library's API, not a message contract between services.
+- **Example and property tests** (Chapters 21–22) — assert the meaningful invariants an approval file can't express; the right companion to a golden-master baseline.
+- **Manual diff review in code review** — the human half of approval testing; the technique only works when this actually happens.
+
+These compose into one boundary-and-output program: REST-assured proves your endpoints run, Pact proves you haven't broken consumers, approval testing pins complex outputs and legacy behaviour, and example/property tests below assert the logic — each checking a kind of correctness the others can't.
+
+## When to use what
+
+- **"Did we break a downstream consumer?"** — contract testing (Pact), with provider verification and `can-i-deploy`, for services you control on both sides.
+- **"Does this running endpoint respond correctly?"** — REST-assured against a Testcontainers/test instance.
+- **A public or third-party API you can't coordinate:** JSON Schema validation, not Pact.
+- **Output too large or intricate to hand-assert** (reports, serialized objects, generated text): approval testing — *only* where diffs will be read.
+- **Locking legacy behaviour before a refactor:** approval testing as a golden master (a later part goes deeper).
+- **Expressing *why* an output is right:** a few example tests alongside the approval baseline, not the baseline alone.
+- **Proving the system is correct:** none of these alone — combine with unit/property tests, effectiveness measures, and a thin E2E layer.
+
+## Hand-off to the next part
+
+Part V built and measured a test suite from the unit base to the service boundary — structure and doubles, real dependencies and generated inputs, coverage and mutation, contracts and approved baselines — and its recurring lesson was humility: every test is a signal kept honest by something outside it, never a proof. The tests verify that the code *behaves*. They say little about whether the code is *well-structured* — whether responsibilities are placed sensibly, whether modules depend in the right direction, whether the architecture will survive a year of change. That is the subject of **Part VI: Architecture & Design Governance**, which opens with the design principles that shape where behaviour lives — SOLID, coupling and cohesion, and package structure — the qualities that decide whether a codebase stays testable, or slowly becomes the thing no test suite can rescue.
+
+## Back matter — sources & traceability
+
+- **Contract testing / Pact** (`docs.pact.io`; `github.com/pact-foundation/pact-jvm`): definition verbatim ("checking each application in isolation … messages … conform to a … 'contract'"; "code-first consumer-driven"; "contract is generated during the execution of the automated consumer tests"; "only communication paths actually used by consumers get tested"). Four-stage pipeline — consumer (`PactConsumerTestExt`, `@Pact`, `@PactTestFor(pactVersion=V3)`, `PactDslJsonBody` type-matching, injected `MockServer`, `target/pacts`) → broker → provider (`@Provider`, `@PactFolder`/`@PactBroker`, `PactVerificationInvocationContextProvider`+`@TestTemplate` one-per-interaction, `verifyInteraction()`, `HttpTestTarget.fromUrl`, `@State`) → `can-i-deploy` (matrix verbatim; consumer version selectors `deployed`/`released`/`deployedOrReleased`). Suitability limits verbatim (NOT public/3rd-party; NOT functional/perf/load; data-setup-via-API; pass-through). GAV `au.com.dius.pact.consumer:junit5` (4.4.x) / `.provider:junit5` (4.6.x) — version independently. *(identity verified; versions/pactVersion-default/selector-set/CLI-flags/matcher-method-names ⚠ @pin.)*
+- **API testing / REST-assured** (`github.com/rest-assured/rest-assured` wiki): `given()…when()…then()`; `.body(path, matcher)` GPath ("not … Kalle Stenflo's JsonPath", verbatim) + Hamcrest; `RequestSpecBuilder`/`ResponseSpecBuilder`; `matchesJsonSchemaInClasspath`; auto (de)serialization. GAV `io.rest-assured:rest-assured` (5.5.0, 2024-07-05). *(DSL/GPath verified; version + module versions ⚠ @pin.)*
+- **Pyramid placement** — Cohn (*Succeeding with Agile*, 2009; ⚠ §7 canon row) + Fowler *Practical Test Pyramid* / *Integration Contract Test* bliki (verbatim "faster, more independent and usually easier to reason about"; contract tests in the middle band).
+- **Approval/snapshot** (`github.com/approvals/ApprovalTests.Java`; `approvaltests.com`): `Approvals.verify(result)` → `*.received.*` vs `*.approved.*`, diff/reporter on mismatch, human approves; scrubbers for non-determinism; variants strings/objects/collections/combinations; golden-master for legacy characterization (Feathers *WELC*, ⚠ §7 canon row). **Honest spine: verifies "unchanged" not "correct"** — rubber-stamp risk bakes the bug into the baseline; approval discipline mandatory. *(model verified; API/version/JUnit-integration ⚠ @pin.)*
+- **Routing** — integration-test mechanics (Testcontainers/flakiness) → Ch 22/20 (49); effectiveness vs coverage → Ch 23 (47/48); API signature compat (revapi/japicmp ≠ message contract) → later part (60); deploy-gate policy consuming `can-i-deploy` → CI part (80/105); over-mocking (consumer mock held honest by provider verify) → Ch 21 (44); security testing Pact excludes → Part VIII (70); legacy characterization → later part (92); assertions → Ch 21 (43). DEMO-CATALOG missing; provider/API tests Docker-gated → REPRO PENDING-RUNTIME.
+
+**Companion module (spec — ⚠ EXAMPLE-BUILD = PENDING; toolchain READY; provider/API tests DOCKER-GATED → REPRO PENDING-RUNTIME):** `08-companion-code/50_contract_approval_testing/` — a two-module `orders` system: a provider endpoint `GET /orders/{id}` and a client consumer. (1) **REST-assured** tests the provider's running endpoint (`given().when().get("/orders/42").then().statusCode(200).body("id", equalTo(42))`); (2) a **Pact consumer test** records the interaction (`PactDslJsonBody`) → pact in `target/pacts`; (3) **Pact provider verification** replays it (`@TestTemplate` + `verifyInteraction()`, `@State("order 42 exists")`); (4) an **ApprovalTests** golden-file pins a generated order *report* with a timestamp scrubber. **Failure path:** rename the provider JSON field `id`→`orderId` — the **provider verification fails** (consumer-breaking change caught) while the provider's own **REST-assured test still passes** — proving a contract catches what a one-sided API test misses; conversely the approval test's honest edge is that approving a wrong `received` report bakes the bug into the baseline (the discipline shown in a comment).
+
+## Next chapter teaser
+
+Part V proved the code behaves. It said nothing about whether the code is *built well* — whether each class has one reason to change, whether modules depend inward toward stable abstractions, whether the package structure reflects the domain or just the framework. Those structural qualities decide whether a codebase stays testable and changeable, or slowly calcifies into the system every change breaks. Part VI opens with the design principles that govern them: SOLID, coupling and cohesion, and the package structure that holds a growing codebase together.
