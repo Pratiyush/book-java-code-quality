@@ -152,7 +152,7 @@
 | — | 102 | Profiling (JFR, async-profiler) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 103 | Memory & allocation hygiene | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 104 | Benchmarking discipline (JMH) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 105 | Performance-regression gates in CI | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 44 | 105 | Performance-regression gates (Ch 44) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 
 | — | 106 | Logging quality (structured, SLF4J) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 107 | Metrics & tracing (Micrometer/OpenTelemetry) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
