@@ -40,6 +40,11 @@ The entire craft of this part is the alternative: **changing existing code safel
 
 ## How it works
 
+![The safe-change refactoring loop (precondition → transform → verify green → commit → repeat), and the same invariant at method/legacy/system/platform scale.](../../05-figures/91_refactoring_legacy_modernization/fig91_1.png)
+
+*The safe-change refactoring loop (precondition → transform → verify green → commit → repeat), and the same invariant at method/legacy/system/platform scale.*
+
+
 ### Refactoring: small behavior-preserving steps under a green suite
 
 **Refactoring is changing the structure of code without changing its behavior** — the disciplined mechanism by which quality is *recovered* and debt paid down, and the thing that separates it from "rewriting and hoping" is precisely the discipline. Fowler's definition: a refactoring is a small, *behavior-preserving* transformation — Extract Method, Rename, Move, Replace Conditional with Polymorphism, Introduce Parameter Object — and refactoring *is* applying these in series under a green test suite. (The code-smell catalogue of Chapter 12 says *what* to fix; this chapter owns the *how*.)

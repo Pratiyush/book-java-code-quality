@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 46 — So What Do I Actually Set Up? (key 109)
+  Figure:  Fig 109.1 — The reference quality stack: layered and de-duplicated
+  Family:  Architecture / layered-stack (eight horizontal layers stacked vertically,
+           each naming one distinct concern + primary tool + named alternative)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: § "The reference stack: layered and de-duplicated" (draft v1, lines 43–55)
+  One idea: One defensible, layered, de-duplicated Java quality stack — each layer
+            covers a distinct concern; the stack as a whole catches more than any
+            single tool by composing complementary lenses.
+  NEUTRALITY: CAPSTONE CARVE-OUT — recommends one defensible setup; every pick names
+              its trade-off and alternative. No crowning language.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 109.1 — The reference quality stack: layered and de-duplicated</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + components come from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 24px;
+      max-width: 900px;
+    }
+
+    /* Stack grid — each row = one concern layer */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: 120px 1fr 1fr 1fr;
+      gap: 0;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 18px;
+    }
+
+    /* Column headers */
+    .stack-col-hd {
+      background: var(--tint-3);
+      border-bottom: 2px solid var(--ink);
+      padding: 7px 12px;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--ink);
+    }
+    .stack-col-hd:not(:last-child) {
+      border-right: 1.5px solid var(--ink);
+    }
+
+    /* Each row */
+    .stack-row {
+      display: contents;
+    }
+
+    /* Each cell in a row */
+    .stack-cell {
+      padding: 8px 12px;
+      font-size: 12.5px;
+      border-top: 1px solid var(--tint-3);
+      vertical-align: top;
+    }
+    .stack-cell:not(:last-child) {
+      border-right: 1.5px solid var(--tint-2);
+    }
+
+    /* Concern cell (col 1) */
+    .cell-concern {
+      background: var(--tint-2);
+      font-weight: 700;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      border-right: 1.5px solid var(--ink) !important;
+    }
+    .cell-concern span {
+      line-height: 1.3;
+    }
+
+    /* Primary tool cell */
+    .cell-tool {
+      background: var(--tint-1);
+    }
+    .cell-tool .tool-name {
+      font-weight: 700;
+      font-size: 13px;
+      font-family: var(--mono);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .cell-tool .tool-catches {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      display: block;
+    }
+
+    /* Alternative cell */
+    .cell-alt {
+      background: var(--tint-0);
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+    .cell-alt .alt-name {
+      font-weight: 600;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 1px;
+    }
+
+    /* Cost/limit cell */
+    .cell-limit {
+      background: var(--tint-0);
+      font-size: 11.5px;
+      color: var(--ink-soft);
+    }
+
+    /* Layered-duo row — two tools covering one concern at two levels */
+    .cell-tool.is-duo {
+      background: var(--tint-2);
+    }
+
+    /* Accent row (the layer that earns the accent-bar treatment) */
+    .stack-row.is-accent .cell-concern {
+      background: #fff3e0;
+      border-left: 4px solid var(--accent-bar);
+    }
+    .stack-row.is-accent .cell-tool.is-duo {
+      background: #fff8ee;
+    }
+
+    /* Chapter ref */
+    .ch-ref {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      margin-left: 4px;
+    }
+
+    /* Note strip */
+    .stack-note {
+      margin-top: 14px;
+    }
+
+    .fig-caption {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 109.1 — The reference quality stack: layered and de-duplicated</p>
+  <p class="fig-subtitle">One defensible setup — each layer covers a distinct concern; every pick names its cost and the equally-valid alternative.</p>
+
+  <div class="stack-grid">
+
+    <!-- Column headers -->
+    <div class="stack-col-hd">Concern layer</div>
+    <div class="stack-col-hd">Primary tool(s) · what they catch</div>
+    <div class="stack-col-hd">Named alternative · when to swap</div>
+    <div class="stack-col-hd">Cost / limit</div>
+
+    <!-- Row 1 — Build -->
+    <div class="stack-row">
+      <div class="stack-cell cell-concern"><span>Build</span></div>
+      <div class="stack-cell cell-tool">
+        <span class="tool-name">Maven 3.9.16 + wrapper</span>
+        <span class="tool-catches">Reproducible build; pinned plugin versions<span class="ch-ref">Ch 27, 29</span></span>
+      </div>
+      <div class="stack-cell cell-alt">
+        <span class="alt-name">Gradle 9.6.0</span>
+        More flexible, more complex; swap when ecosystem or build logic favors it<span class="ch-ref">Ch 27</span>
+      </div>
+      <div class="stack-cell cell-limit">XML verbosity; wrapper required to pin exact version<span class="ch-ref">Ch 29</span></div>
+    </div>
+
+    <!-- Row 2 — Format -->
+    <div class="stack-row">
+      <div class="stack-cell cell-concern"><span>Format</span></div>
+      <div class="stack-cell cell-tool">
+        <span class="tool-name">Spotless 8.7.0 + google-java-format 1.35.0</span>
+        <span class="tool-catches">Style consistency auto-fixed; ends style debate; taken off review<span class="ch-ref">Ch 6</span></span>
+      </div>
+      <div class="stack-cell cell-alt">
+        <span class="alt-name">palantir-java-format</span>
+        Alternative house style; swap on preference — the choice matters less than automating one<span class="ch-ref">Ch 6</span>
+      </div>
+      <div class="stack-cell cell-limit">One imposed style; not negotiable once set; palantir is a valid equal<span class="ch-ref">Ch 6</span></div>
+    </div>
+
+    <!-- Row 3 — Style/convention -->
+    <div class="stack-row">
+      <div class="stack-cell cell-concern"><span>Style &amp; convention</span></div>
+      <div class="stack-cell cell-tool">
+        <span class="tool-name">Checkstyle 13.6.0 (curated ruleset)</span>
+        <span class="tool-catches">Naming, imports, Javadoc presence, conventions a formatter does not reach<span class="ch-ref">Ch 16</span></span>
+      </div>
+      <div class="stack-cell cell-alt">
+        <span class="alt-name">PMD 7.25.0 (also)</span>
+        Rule-based; overlapping; run a curated subset alongside, not the kitchen sink<span class="ch-ref">Ch 16</span>
+      </div>
+      <div class="stack-cell cell-limit">Noise if over-configured; curate aggressively<span class="ch-ref">Ch 19</span></div>
+    </div>
+
+    <!-- Row 4 — Bug-finding (layered duo — accent) -->
+    <div class="stack-row is-accent">
+      <div class="stack-cell cell-concern"><span>Bug-finding<br><em style="font-weight:400;font-size:11px">(two layers)</em></span></div>
+      <div class="stack-cell cell-tool is-duo">
+        <span class="tool-name">Error Prone 2.x (compile-time)</span>
+        <span class="tool-catches">Fast in-compiler feedback on bug patterns; source-level<span class="ch-ref">Ch 18</span></span>
+        <hr class="fig-divider">
+        <span class="tool-name">SpotBugs 4.10.2 + FindSecBugs (bytecode)</span>
+        <span class="tool-catches">Different bug class + security findings; bytecode-level<span class="ch-ref">Ch 16</span></span>
+      </div>
+      <div class="stack-cell cell-alt">
+        Either alone if build time is tight; the duo is deliberate because they see different things<span class="ch-ref">Ch 3</span>
+      </div>
+      <div class="stack-cell cell-limit">Build time; false positives to tune; two separate configs to own<span class="ch-ref">Ch 19</span></div>
+    </div>
+
+    <!-- Row 5 — Null-safety -->
+    <div class="stack-row">
+      <div class="stack-cell cell-concern"><span>Null-safety</span></div>
+      <div class="stack-cell cell-tool">
+        <span class="tool-name">NullAway 0.13.4 + JSpecify 1.0.0</span>
+        <span class="tool-catches">NullPointerException caught at build time; annotations make intent explicit<span class="ch-ref">Ch 9</span></span>
+      </div>
+      <div class="stack-cell cell-alt">
+        <span class="alt-name">Checker Framework 4.2.0</span>
+        Stronger guarantees at higher annotation cost; swap when nullness correctness is critical<span class="ch-ref">Ch 9</span>
+      </div>
+      <div class="stack-cell cell-limit">Annotation effort; not a total guarantee; Checker Framework is stronger but costlier<span class="ch-ref">Ch 9</span></div>
+    </div>
+
+    <!-- Row 6 — Architecture -->
+    <div class="stack-row">
+      <div class="stack-cell cell-concern"><span>Architecture</span></div>
+      <div class="stack-cell cell-tool">
+        <span class="tool-name">ArchUnit 1.4.2 (as tests)</span>
+        <span class="tool-catches">Dependency cycles and layering violations enforced as ordinary JUnit tests<span class="ch-ref">Ch 16, 25</span></span>
+      </div>
+      <div class="stack-cell cell-alt">
+        <span class="alt-name">Sonar architecture rules</span>
+        or manual review for smaller codebases; ArchUnit is the code-level enforcement<span class="ch-ref">Ch 17</span>
+      </div>
+      <div class="stack-cell cell-limit">Rules must be written and maintained; the architecture model is code to own<span class="ch-ref">Ch 25</span></div>
+    </div>
+
+    <!-- Row 7 — Tests -->
+    <div class="stack-row">
+      <div class="stack-cell cell-concern"><span>Tests &amp; coverage</span></div>
+      <div class="stack-cell cell-tool">
+        <span class="tool-name">JUnit 6.1.0 + AssertJ 3.27.7 + Mockito 5.23.0 + Testcontainers 2.0.5</span>
+        <span class="tool-catches">Correctness; JaCoCo 0.8.16 coverage; PITest 1.25.3 mutation on critical modules<span class="ch-ref">Part V</span></span>
+      </div>
+      <div class="stack-cell cell-alt">
+        Vary mock/assertion libraries to taste; mutation (PITest) is slow — reserve for critical modules<span class="ch-ref">Ch 23</span>
+      </div>
+      <div class="stack-cell cell-limit">Mutation testing is slow; reserve for critical paths; full integration suite adds time<span class="ch-ref">Ch 23</span></div>
+    </div>
+
+    <!-- Row 8 — Security/supply-chain -->
+    <div class="stack-row">
+      <div class="stack-cell cell-concern"><span>Security &amp; supply-chain</span></div>
+      <div class="stack-cell cell-tool">
+        <span class="tool-name">OWASP Dependency-Check 12.2.2 (SCA) + gitleaks (secrets) + CycloneDX 1.6 (SBOM)</span>
+        <span class="tool-catches">Vulnerable deps, leaked secrets, software bill of materials; Semgrep 1.163.0 / CodeQL (SAST) where warranted<span class="ch-ref">Ch 28, 30, 31</span></span>
+      </div>
+      <div class="stack-cell cell-alt">
+        <span class="alt-name">Commercial SCA/SAST</span>
+        Paid platforms with richer features; both OSS and commercial are legitimate choices<span class="ch-ref">Ch 28</span>
+      </div>
+      <div class="stack-cell cell-limit">SCA false positives; SAST tuning effort; SCA can be slow on large dependency trees<span class="ch-ref">Ch 19</span></div>
+    </div>
+
+    <!-- Row 9 — Platform -->
+    <div class="stack-row">
+      <div class="stack-cell cell-concern"><span>Platform</span></div>
+      <div class="stack-cell cell-tool">
+        <span class="tool-name">SonarQube Server 2026.1 LTA (new-code / clean-as-you-code gate)</span>
+        <span class="tool-catches">Aggregates findings, trends, and a single gate verdict on new code; Community edition is OSS<span class="ch-ref">Ch 17, 33, 34</span></span>
+      </div>
+      <div class="stack-cell cell-alt">
+        <span class="alt-name">CI-native gate</span>
+        Compose the individual tools in CI without a platform; no server to run; less aggregation<span class="ch-ref">Ch 33</span>
+      </div>
+      <div class="stack-cell cell-limit">A server to run; someone owns the SonarQube instance even at OSS tier<span class="ch-ref">Ch 17</span></div>
+    </div>
+
+  </div><!-- .stack-grid -->
+
+  <div class="fig-note stack-note">
+    <b>This is one defensible setup, not the setup.</b>
+    Every pick names its trade-off and an equally-valid alternative — the composition is the example;
+    the tailored version is the deliverable. All-OSS core is possible: SonarQube Community + OSS analyzers.
+    The full stack is code to own: build time, false-positive tuning, and config maintenance are real ongoing costs.
+    <b>Adopt incrementally</b> — format first, then fast linters, then heavier analysis.
+    Tools are necessary scaffolding; design, review, and culture are where quality is decided.
+    <span class="fig-chapter">Ch 1, 37 (keys 06, 84)</span>
+  </div>
+
+  <p class="fig-caption">
+    Reference stack composition: key 109 (Ch 46) synthesizing Ch 3 key 37 (layering/de-duplication),
+    Parts IV–IX (each tool row), Ch 33–35 (gate). Version pins from
+    <b>00-strategy/SOURCE-PIN.md</b> (pinned 2026-06-20). Every label traced in <b>fig109_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

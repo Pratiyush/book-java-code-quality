@@ -39,6 +39,11 @@ Hold this: *measure a quality program by outcomes (DORA/SPACE), not vanity (LOC/
 
 ## How it works
 
+![DORA and SPACE outcome measures to adopt, versus vanity metrics to refuse — anchored by Goodhart's law.](../../05-figures/85_metrics_rollout_dashboards/fig85_1.png)
+
+*DORA and SPACE outcome measures to adopt, versus vanity metrics to refuse — anchored by Goodhart's law.*
+
+
 ### Metrics that matter: outcomes, not vanity
 
 The measurement discipline established earlier (signal versus vanity, Goodhart, counter-metrics) applies at the team and delivery level here, and the central distinction is **outcomes versus outputs**. An *output* is activity (lines written, commits made, story points burned); an *outcome* is value safely delivered. The best-evidenced outcome measures are **DORA's four keys**:

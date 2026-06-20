@@ -40,6 +40,11 @@ This closing chapter of Part XIII is the quality of being able to *understand a 
 
 ## How it works
 
+![The three pillars (logs, metrics, traces) correlated by trace id, feeding the production-feedback loop back into tests and gates.](../../05-figures/106_observability_logging_metrics_feedback/fig106_1.png)
+
+*The three pillars (logs, metrics, traces) correlated by trace id, feeding the production-feedback loop back into tests and gates.*
+
+
 ### Logging quality: structured, correlated, leveled — and never secrets
 
 Logging is the most-used and most-abused observability tool — the difference between an incident debuggable in minutes and the 3am flood of the hook. Logging *quality* is a code-quality concern with a few load-bearing practices:

@@ -40,6 +40,11 @@ This opening chapter of Part XIII is the discipline that defeats both lies, and 
 
 ## How it works
 
+![The "measure, don't guess" performance loop: set a real target, profile, benchmark the fix with JMH, gate against regression — and most code never enters the loop.](../../05-figures/101_performance_profiling_memory_benchmarking/fig101_1.png)
+
+*The "measure, don't guess" performance loop: set a real target, profile, benchmark the fix with JMH, gate against regression — and most code never enters the loop.*
+
+
 ### Performance as a measured requirement
 
 Performance is an ISO 25010 quality characteristic — *Performance Efficiency*: time behavior, resource utilization, capacity — which means it can be specified, measured, and gated like any other quality attribute. The first discipline is to make it a *requirement, not a vibe*:

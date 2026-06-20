@@ -38,6 +38,11 @@ This chapter is the umbrella over Part XII, and it establishes the single stance
 
 ## How it works
 
+![AI output as an untrusted draft, flowing through the full quality gate (SAST/SCA/secrets → tests/mutation → review → CI gate) before it can ship.](../../05-figures/97_ai_generated_code_quality/fig97_1.png)
+
+*AI output as an untrusted draft, flowing through the full quality gate (SAST/SCA/secrets → tests/mutation → review → CI gate) before it can ship.*
+
+
 ### Why AI-generated code carries risk
 
 Two mechanisms make AI-generated code risky in characteristic ways, and understanding them is what turns "be careful with AI" into specific, checkable practice.

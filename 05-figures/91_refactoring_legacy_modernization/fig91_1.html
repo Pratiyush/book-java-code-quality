@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   39 — Changing Code Without Breaking It (dossier key 91, folds 92/93/95)
+  Figure:    Fig 91.1 — The safe-change loop: one invariant at four scales
+  Family:    Flow-sequence (cyclic loop + four-scale annotation column)
+  Method:    Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: CONCEPT callout "The refactoring loop" (§ Refactoring: small behavior-preserving steps)
+             and the deep-dive "one invariant, four scales" synthesis (draft v1)
+  One idea:  Preserve behavior, verify with tests, move in small reversible steps — the one
+             invariant governing refactoring at every scale (method, getting-under-test,
+             system, platform); the "never" branch shows what the big-bang violates.
+  Sources:   Fowler Refactoring 2e (2018); Feathers WELC (2004); SOURCE-PIN §6 + §7
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 91.1 — The safe-change loop</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout only — palette + components from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 24px;
+      max-width: 1060px;
+    }
+
+    /* ── Top: two-column layout (loop | scale ladder) ── */
+    .main-row {
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+      margin-top: 18px;
+    }
+
+    /* ── LEFT: the cyclic loop ── */
+    .loop-col {
+      flex: 0 0 auto;
+      width: 560px;
+    }
+
+    /* Step sequence with numbered circles */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+    }
+
+    .step-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    /* Vertical connector track */
+    .step-track {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 36px;
+      flex-shrink: 0;
+    }
+    .step-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--ink);
+      background: var(--tint-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    .step-circle.is-start {
+      background: var(--accent-bar);
+      border-color: var(--accent-bar);
+      color: #fff;
+    }
+    .step-circle.is-gate {
+      background: var(--tint-3);
+      border-width: 2.5px;
+    }
+    .step-line {
+      width: 2px;
+      flex: 1;
+      background: var(--line);
+      min-height: 12px;
+    }
+    .step-line.none { background: transparent; }
+
+    /* Step card */
+    .step-card {
+      flex: 1;
+      margin: 0 0 10px 10px;
+      padding: 10px 14px;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--tint-1);
+    }
+    .step-card.is-strong { background: var(--tint-3); }
+    .step-card.is-gate {
+      background: var(--tint-0);
+      border-style: dashed;
+    }
+    .step-card h4 {
+      margin: 0 0 3px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .step-card p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+    .step-card .tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-soft);
+      background: var(--tint-2);
+      border-radius: 4px;
+      padding: 1px 5px;
+      display: inline-block;
+      margin-top: 3px;
+    }
+
+    /* NEVER box */
+    .never-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 2px 0 10px 46px;
+    }
+    .never-arrow {
+      font-size: 18px;
+      color: var(--stop);
+      font-weight: 700;
+    }
+    .never-box {
+      border: 2px solid var(--stop);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 8px 12px;
+      flex: 1;
+    }
+    .never-box h4 {
+      margin: 0 0 2px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--stop);
+    }
+    .never-box p {
+      margin: 0;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+    }
+
+    /* Repeat / back arrow */
+    .repeat-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 4px 0 0 46px;
+    }
+    .repeat-arrow-bar {
+      height: 2px;
+      background: var(--ink);
+      flex: 1;
+      position: relative;
+    }
+    .repeat-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .repeat-back {
+      font-size: 20px;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    /* ── RIGHT: scale ladder ── */
+    .scale-col {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .scale-head {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--ink-soft);
+      margin: 0 0 10px;
+    }
+
+    .scale-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .scale-badge {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1.5px solid var(--ink);
+      background: var(--tint-1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .scale-card {
+      flex: 1;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: var(--tint-0);
+    }
+    .scale-card .sc-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .scale-card .sc-how {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      display: block;
+      line-height: 1.35;
+    }
+    .scale-card .sc-how b {
+      color: var(--ink);
+    }
+    .scale-card .sc-limit {
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-top: 4px;
+      display: block;
+      font-style: italic;
+    }
+
+    .scale-divider {
+      height: 1px;
+      background: var(--line);
+      margin: 4px 0 4px 32px;
+    }
+
+    /* Shared-state note */
+    .shared-note {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 91.1 — The safe-change loop: one invariant at four scales</p>
+  <p class="fig-subtitle">Preserve behavior · verify with tests · move in small reversible steps · keep the system working throughout</p>
+
+  <div class="main-row">
+
+    <!-- ── LEFT: the cyclic loop ── -->
+    <div class="loop-col">
+
+      <div class="step-list">
+
+        <!-- Step 0: Precondition — ensure a test net exists -->
+        <div class="step-row">
+          <div class="step-track">
+            <div class="step-circle is-start">0</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-card is-strong">
+            <h4>Precondition — ensure a test net exists</h4>
+            <p>Tests cover the area. On untested legacy: build the net first (characterization
+               tests + seams). A characterization test pins current behavior — including bugs —
+               as a net, not a specification; review what is captured.</p>
+            <span class="tag">Feathers WELC 2004 — "legacy code is code without tests"</span>
+          </div>
+        </div>
+
+        <!-- Step 1: Make ONE small behavior-preserving transformation -->
+        <div class="step-row">
+          <div class="step-track">
+            <div class="step-circle">1</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-card">
+            <h4>Make ONE small behavior-preserving transformation</h4>
+            <p>Apply a single refactoring (Extract Method · Rename · Move · Replace
+               Conditional with Polymorphism · Introduce Parameter Object). One step only.
+               Prefer IDE-automated refactorings — behavior-preserving by construction.</p>
+            <span class="tag">Fowler Refactoring 2e (2018) — catalog entries</span>
+          </div>
+        </div>
+
+        <!-- NEVER branch -->
+        <div class="never-row">
+          <span class="never-arrow">&#10007;</span>
+          <div class="never-box">
+            <h4>Never: refactor + behavior change in one step</h4>
+            <p>Fowler "two hats" — at any moment: <em>refactor</em> (structure fixed, behavior preserved) OR
+               <em>add feature</em> (behavior changes, structure fixed). Mixing them means a failing
+               test cannot localize which change broke it.</p>
+          </div>
+        </div>
+
+        <!-- Step 2: Run the test suite — must stay green -->
+        <div class="step-row">
+          <div class="step-track">
+            <div class="step-circle is-gate">2</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-card is-gate">
+            <h4>Run the test suite — must stay green</h4>
+            <p>The suite is the verification gate. A failure here means behavior changed:
+               revert the step, do not proceed. Green = behavior preserved.</p>
+            <span class="tag">Fowler Refactoring 2e — "suite runs after every refactoring"</span>
+          </div>
+        </div>
+
+        <!-- Step 3: Commit — one commit per step -->
+        <div class="step-row">
+          <div class="step-track">
+            <div class="step-circle">3</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-card">
+            <h4>Commit — one commit per step</h4>
+            <p>Each commit is independently reversible. The codebase is never more than one
+               small step away from a known-good state. This is the safety that the
+               big-bang rewrite discards.</p>
+          </div>
+        </div>
+
+        <!-- Repeat arrow -->
+        <div class="repeat-row">
+          <span class="repeat-back">&#8617;</span>
+          <span class="repeat-label">Repeat — return to step 1</span>
+          <div class="repeat-arrow-bar"></div>
+        </div>
+
+      </div><!-- .step-list -->
+
+      <div class="fig-note shared-note">
+        <b>Preparatory refactoring</b> — refactor <em>before</em> the feature to make the change
+        easy (Fowler), and clean up as code is touched (<b>Boy Scout Rule</b>, Ch 1).
+        Never "while I'm here" — refactoring belongs in its own PR, under its own hat.
+      </div>
+
+    </div><!-- .loop-col -->
+
+    <!-- ── RIGHT: scale ladder ── -->
+    <div class="scale-col">
+
+      <p class="scale-head">The same loop at four scales</p>
+
+      <!-- Scale A: Method / class -->
+      <div class="scale-item">
+        <div class="scale-badge">A</div>
+        <div class="scale-card">
+          <span class="sc-name">Method / class — Refactoring</span>
+          <span class="sc-how">Small behavior-preserving transforms under a <b>green suite</b>.
+            IDE refactorings are behavior-preserving by construction. Some 2018 catalog entries
+            are now language features: <b>records</b>, <b>sealed + pattern matching</b> (Ch 5).</span>
+          <span class="sc-limit">Limit: refactoring without tests is just editing.</span>
+        </div>
+      </div>
+
+      <div class="scale-divider"></div>
+
+      <!-- Scale B: Getting untested legacy under test -->
+      <div class="scale-item">
+        <div class="scale-badge">B</div>
+        <div class="scale-card">
+          <span class="sc-name">Untested legacy — Characterize &amp; seam</span>
+          <span class="sc-how">Break deps to a <b>seam</b> (object / interface / link) using only
+            IDE behavior-preserving refactorings (Extract Interface · Parameterize Constructor ·
+            Subclass-and-Override). Write a <b>characterization test</b>. Then apply scale A.
+            <b>Loop:</b> find change point → seam → characterize → change → refactor green.</span>
+          <span class="sc-limit">Limit: characterization pins current behavior including bugs — review the captured output; it is a net, not a spec. (Feathers WELC 2004)</span>
+        </div>
+      </div>
+
+      <div class="scale-divider"></div>
+
+      <!-- Scale C: Whole system -->
+      <div class="scale-item">
+        <div class="scale-badge">C</div>
+        <div class="scale-card">
+          <span class="sc-name">Whole system — Strangler fig</span>
+          <span class="sc-how"><b>Façade / routing layer</b> in front of old system →
+            build new slices behind it → redirect calls old→new per feature/endpoint →
+            retire old when nothing routes to it. Feature flags toggle each slice.
+            Contract tests + characterization at the seam. (Fowler 2004)</span>
+          <span class="sc-limit">Limit: half-strangled stall is the failure mode — dual-running cost + shared data/state is the hard part; needs org stamina to finish.</span>
+        </div>
+      </div>
+
+      <div class="scale-divider"></div>
+
+      <!-- Scale D: Platform -->
+      <div class="scale-item">
+        <div class="scale-badge">D</div>
+        <div class="scale-card">
+          <span class="sc-name">Platform — Java version migration</span>
+          <span class="sc-how"><b>LTS-to-LTS</b> path: 8 → 11 → 17 → 21 → 25. Process:
+            tests green on current → <b>dependencies first</b> (usual blocker: old lib/agent)
+            → run <code>UpgradeToJava21</code> recipe (OpenRewrite 8.81.0) → fix residual
+            breaks (JPMS, removed APIs) → build on target JDK matrix → modernize after
+            (records / sealed / pattern matching) as a <em>separate</em> step.</span>
+          <span class="sc-limit">Limit: migration ≠ modernization — bumping the version does not refactor old idioms; recipes do not cover everything; preview at 25 is not a migration target.</span>
+        </div>
+      </div>
+
+    </div><!-- .scale-col -->
+
+  </div><!-- .main-row -->
+
+  <p class="fig-caption">
+    The loop (left) is Fowler's refactoring discipline (<em>Refactoring</em> 2e, 2018) and Feathers'
+    legacy-code precondition (<em>Working Effectively with Legacy Code</em>, 2004), both in SOURCE-PIN §7.
+    The four-scale column (right) traces to draft §§ A–D and dossier keys 91, 92, 93, 95.
+    OpenRewrite pin: <b>8.81.0</b> (SOURCE-PIN §6). Java LTS path: JDK 21.0.11 / 25.0.3 (SOURCE-PIN §1).
+    Every label and claim traces to <b>fig91_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

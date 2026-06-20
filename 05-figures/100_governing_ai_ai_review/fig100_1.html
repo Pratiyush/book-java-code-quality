@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   42 — Only Policy Can Ship It (dossier key 100, folds 98) · Part XII (closer)
+  Figure:    Fig 100.1 — The governed AI development workflow
+  Family:    Flow-sequence / architecture (three-column pipeline: AI-assist | Quality gates | Human gate)
+  Method:    Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: Synthesises all three CONCEPT callouts in the draft:
+             • Keep the human gate / accountability (draft §"How it works", line ~48)
+             • AI review augments, never replaces (draft §"AI code review", line ~60)
+             • AI reviewing AI compounds blind spots — independence safeguard (draft, line ~64)
+  One idea:  AI assists at two points (drafting code, reviewing diffs), but every artifact passes
+             the same quality gates + AI-specific checks, and an accountable human is the
+             invariant gate — because intent lives outside the code and cannot be verified by
+             any model, whether writing or reviewing.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 100.1 — The governed AI development workflow</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + shared components come from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 24px;
+      max-width: 1080px;
+    }
+
+    /* ── Pipeline rows ── */
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 18px;
+      position: relative;
+    }
+
+    /* Each row: left lane label + center content + right annotation */
+    .pipe-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      position: relative;
+    }
+
+    /* Lane label column (left) */
+    .lane-label {
+      width: 110px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      text-align: right;
+    }
+
+    /* Center content column */
+    .pipe-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    /* Right annotation column */
+    .pipe-note {
+      width: 200px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      padding-left: 14px;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+
+    /* ── Step boxes inside pipeline ── */
+    .pipe-step {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--tint-1);
+      padding: 11px 14px;
+    }
+    .pipe-step h4 {
+      margin: 0 0 4px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .pipe-step p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+
+    /* AI-assist steps: dashed border, slightly lighter fill */
+    .pipe-step.ai-step {
+      border-style: dashed;
+      border-color: var(--line);
+      background: var(--tint-0);
+    }
+    .pipe-step.ai-step h4 { color: var(--ink); }
+
+    /* Human gate: strong fill + accent bar */
+    .pipe-step.human-gate {
+      background: var(--tint-3);
+      border-width: 2px;
+      border-color: var(--ink);
+      box-shadow: inset 4px 0 0 var(--accent-bar);
+    }
+    .pipe-step.human-gate h4 { color: var(--ink); }
+
+    /* Gate block: two-column horizontal layout for the quality gates row */
+    .gate-block {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+    .gate-cell {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      background: var(--tint-2);
+      padding: 9px 11px;
+    }
+    .gate-cell h5 {
+      margin: 0 0 4px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .gate-cell ul {
+      margin: 0;
+      padding-left: 15px;
+      list-style: disc;
+    }
+    .gate-cell li {
+      font-size: 11.5px;
+      color: var(--ink);
+      margin: 2px 0;
+      line-height: 1.3;
+    }
+    .gate-cell .fig-chapter { margin-left: 2px; }
+
+    /* Connector arrow rows */
+    .pipe-connector {
+      display: flex;
+      align-items: center;
+    }
+    .lane-label-spacer {
+      width: 110px;
+      flex-shrink: 0;
+    }
+    .connector-body {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 5px 0;
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .connector-note {
+      width: 200px;
+      flex-shrink: 0;
+    }
+
+    /* AI-review augment arrow (dashed) */
+    .aug-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 0;
+      color: var(--ink-soft);
+      font-size: 13px;
+    }
+
+    /* Bottom note strip */
+    .bottom-strip {
+      margin-top: 14px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .bottom-strip .fig-note {
+      flex: 1;
+    }
+
+    /* Badge row inside human-gate step */
+    .badge-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    /* AI-review inset: sits between the gates row and the human-gate row */
+    .ai-review-inset {
+      border: 1.5px dashed var(--line);
+      border-radius: 8px;
+      background: var(--tint-0);
+      padding: 9px 12px;
+      margin: 0 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .ai-review-inset .inset-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .ai-review-inset .inset-body {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .ai-review-inset .inset-ceiling {
+      font-size: 11px;
+      color: var(--ink);
+      font-style: italic;
+      margin-top: 3px;
+    }
+
+    /* Section separators within pipe-body */
+    .pipe-spacer { height: 8px; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 100.1 — The governed AI development workflow</p>
+  <p class="fig-subtitle">Where AI assists · where deterministic gates decide · where the human gate is the invariant</p>
+
+  <div class="pipeline">
+
+    <!-- ── Row 1: Developer + AI assistant (sanctioned tool) ── -->
+    <div class="pipe-row">
+      <div class="lane-label">Author</div>
+      <div class="pipe-body">
+        <div class="pipe-step ai-step">
+          <h4>Developer authors code — AI assistant as co-pilot (sanctioned tool)</h4>
+          <p>Tool selection = a security &amp; compliance decision: vet for data-handling (does code
+          leave the org?), license / IP status of suggestions, privacy posture.
+          Disclosure &amp; provenance: record where AI was used.
+          <span class="fig-chapter">Ch 42 (key 100)</span></p>
+        </div>
+      </div>
+      <div class="pipe-note">
+        <span>AI drafts; developer owns.<br>
+        "The AI did it" is no defense — it is their PR.</span>
+      </div>
+    </div>
+
+    <!-- connector -->
+    <div class="pipe-connector">
+      <div class="lane-label-spacer"></div>
+      <div class="connector-body">&#8595;</div>
+      <div class="connector-note"></div>
+    </div>
+
+    <!-- ── Row 2: Pull request opened ── -->
+    <div class="pipe-row">
+      <div class="lane-label">PR open</div>
+      <div class="pipe-body">
+        <div class="pipe-step">
+          <h4>Pull request submitted</h4>
+          <p>Human author is accountable for the diff they push — regardless of how the first draft
+          was produced. <span class="fig-chapter">Ch 37 (key 84)</span></p>
+        </div>
+      </div>
+      <div class="pipe-note"></div>
+    </div>
+
+    <!-- connector -->
+    <div class="pipe-connector">
+      <div class="lane-label-spacer"></div>
+      <div class="connector-body">&#8595;</div>
+      <div class="connector-note"></div>
+    </div>
+
+    <!-- ── Row 3: Deterministic quality gates ── -->
+    <div class="pipe-row">
+      <div class="lane-label">Gates</div>
+      <div class="pipe-body">
+        <div class="gate-block">
+
+          <div class="gate-cell">
+            <h5>Same gates as human code <span class="fig-badge">Parts IV–IX</span></h5>
+            <ul>
+              <li>Static analysis — Checkstyle, PMD, Error Prone <span class="fig-chapter">(Ch 15–17)</span></li>
+              <li>SpotBugs / FindSecBugs <span class="fig-chapter">(Ch 16)</span></li>
+              <li>Test coverage + mutation <span class="fig-chapter">(Ch 23)</span></li>
+              <li>Architecture fitness functions <span class="fig-chapter">(Ch 26)</span></li>
+            </ul>
+          </div>
+
+          <div class="gate-cell">
+            <h5>AI-specific additional checks</h5>
+            <ul>
+              <li>SAST — vulnerability inheritance <span class="fig-chapter">(Ch 30, key 70)</span></li>
+              <li>SCA — dependency risk <span class="fig-chapter">(Ch 28, key 65)</span></li>
+              <li>Secrets scan <span class="fig-chapter">(Ch 31, key 71)</span></li>
+              <li>Mutation-verify AI-generated tests <span class="fig-chapter">(Ch 23, key 47)</span></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+      <div class="pipe-note">
+        <span>Deterministic tools run on every diff — AI code gets no exemption.</span>
+      </div>
+    </div>
+
+    <!-- connector -->
+    <div class="pipe-connector">
+      <div class="lane-label-spacer"></div>
+      <div class="connector-body">&#8595;</div>
+      <div class="connector-note"></div>
+    </div>
+
+    <!-- ── Row 4: AI code review (augmentation layer, dashed) ── -->
+    <div class="pipe-row">
+      <div class="lane-label">AI review<br><span style="font-size:10px;font-weight:400;text-transform:none;">(augment only)</span></div>
+      <div class="pipe-body">
+        <div class="ai-review-inset">
+          <div>
+            <div class="inset-label">AI code reviewer — PR bot comments on the diff</div>
+            <div class="inset-body">
+              Scoped to the diff; given team standards as context
+              <span class="fig-chapter">(Ch 37, key 86)</span>.
+              Finds some bugs in natural language; surfaces missing tests / edge cases.
+              Drafts findings — a human <em>dispositions</em> every comment.
+            </div>
+            <div class="inset-ceiling">Ceiling: cannot verify intent — infers from code, no ground truth of what code should do.
+            AI reviewing AI compounds blind spots; independence (different model / human) is the safeguard.
+            <span class="fig-chapter">(Ch 42, key 98)</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="pipe-note">
+        <span>Augments; never replaces the gate.<br>
+        No auto-merge on AI approval.</span>
+      </div>
+    </div>
+
+    <!-- connector -->
+    <div class="pipe-connector">
+      <div class="lane-label-spacer"></div>
+      <div class="connector-body">&#8595;</div>
+      <div class="connector-note"></div>
+    </div>
+
+    <!-- ── Row 5: Human gate (invariant) ── -->
+    <div class="pipe-row">
+      <div class="lane-label">Human<br>gate</div>
+      <div class="pipe-body">
+        <div class="pipe-step human-gate">
+          <h4>Human reviewer — intent verification (the invariant)</h4>
+          <p>Reviews the diff for <em>correctness of intent</em>: is this what the system is actually
+          supposed to do? Intent lives outside the code — in requirements, business rules, user
+          need. Only a human author has it; only a human reviewer can challenge it.</p>
+          <div class="badge-row">
+            <span class="fig-badge">No auto-merge on AI approval</span>
+            <span class="fig-badge">Accountability stays with the author</span>
+            <span class="fig-chapter">Ch 37 (key 84) · Ch 42 (key 100)</span>
+          </div>
+        </div>
+      </div>
+      <div class="pipe-note">
+        <span>The one job that is structurally human — AI changes how drafts are written,
+        not who answers for the result.</span>
+      </div>
+    </div>
+
+    <!-- connector -->
+    <div class="pipe-connector">
+      <div class="lane-label-spacer"></div>
+      <div class="connector-body">&#8595;</div>
+      <div class="connector-note"></div>
+    </div>
+
+    <!-- ── Row 6: Merge / ship (policy gate) ── -->
+    <div class="pipe-row">
+      <div class="lane-label">Ship</div>
+      <div class="pipe-body">
+        <div class="pipe-step">
+          <h4>Merge — only with all gates green and human approval</h4>
+          <p>Counter-metric the outcome: track productivity <em>and</em> change-failure rate.
+          AI can write code; only policy can ship it.
+          <span class="fig-chapter">Ch 38 (key 85) · Ch 42 (key 100)</span></p>
+        </div>
+      </div>
+      <div class="pipe-note">
+        <span>Measure both sides: productivity gain and risk signal.</span>
+      </div>
+    </div>
+
+  </div><!-- .pipeline -->
+
+  <!-- ── Bottom notes ── -->
+  <div class="bottom-strip">
+    <div class="fig-note" style="flex:2;">
+      <b>Policy governs tool selection</b> (a security decision) and mandates disclosure and provenance.
+      Culture sustains it: shadow AI — unsanctioned tools leaking code — is the failure mode of
+      prohibition and of policy without culture.
+      <span class="fig-chapter">Ch 42 (key 100) · Ch 1 (key 06)</span>
+    </div>
+    <div class="fig-note" style="flex:3;">
+      <b>AI review patterns:</b> scope to the diff; give it your standards checklist as context
+      <span class="fig-chapter">(Ch 37, key 86)</span>;
+      ask for specific lenses (security, concurrency, error-handling);
+      AI <em>drafts</em> findings, human <em>dispositions</em> — never auto-merge on AI approval.
+      When AI generated the code, ensure an independent reviewer (human and/or different-model
+      tooling): correlated blind spots compound, they do not cancel.
+      <span class="fig-chapter">Ch 42 (key 98)</span>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Governed AI workflow — key 100 (leads) + key 98 (AI code review).
+    Draft <code>100_governing_ai_ai_review_v1.md</code>.
+    All labels trace to the draft and dossier; every chapter reference is to the
+    chapter where that gate or practice is covered. No AI-review statistic is baked
+    into the diagram (those are dated snapshots, not structural claims).
+    See <b>fig100_1.sources.md</b> for the per-label trace.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

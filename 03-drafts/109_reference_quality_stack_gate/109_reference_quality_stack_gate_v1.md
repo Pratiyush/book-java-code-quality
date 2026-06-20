@@ -38,6 +38,15 @@ This is the one place in the book that **recommends**: one coherent, worked, end
 
 ## How it works
 
+![One defensible reference quality stack, by concern — each row naming an equally-valid alternative.](../../05-figures/109_reference_quality_stack_gate/fig109_1.png)
+
+*One defensible reference quality stack, by concern — each row naming an equally-valid alternative.*
+
+![The feedback-latency gate: pre-commit → PR-fast → main/nightly → merge.](../../05-figures/109_reference_quality_stack_gate/fig109_2.png)
+
+*The feedback-latency gate: pre-commit → PR-fast → main/nightly → merge.*
+
+
 ### The reference stack: layered and de-duplicated
 
 The organizing principle (from Chapter 3) is **layering**: each tool covers a *distinct* concern, so the stack catches more than any single tool could, with overlap tuned out (Chapter 19). One defensible composition follows — each entry as *what it catches · the cost/limit · the named alternative and when to swap*:

@@ -38,6 +38,11 @@ The two obvious answers both fail. *Ban AI* and it goes underground — develope
 
 ## How it works
 
+![Governing AI in the workflow: where AI assists, where deterministic gates decide, and where the human gate is the structural invariant.](../../05-figures/100_governing_ai_ai_review/fig100_1.png)
+
+*Governing AI in the workflow: where AI assists, where deterministic gates decide, and where the human gate is the structural invariant.*
+
+
 ### Governing AI: sanction, verify, keep the human gate
 
 Governance is the organizational form of the last chapter's stance, and it has a definite shape — not a rulebook nobody reads, but a small number of load-bearing decisions:
