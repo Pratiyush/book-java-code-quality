@@ -1,7 +1,7 @@
 <!--
 Dossier key: 12 (owner) + folds 16 + 18 — per 01-index/FINAL_INDEX.md Ch 10
 Slug: 12_error_handling_exceptions
-Part / arc position: Part II — Writing Quality Java, Chapter 10 (closes Part II)
+Part / arc position: Part II — Writing Quality Java, Chapter 10 (Part II = Ch 5-12; Ch 12 closes it)
 Companion module: 08-companion-code/12_error_handling_exceptions/ — ⚠ EXAMPLE-BUILD = PENDING-RUNTIME (no JDK). Spec at foot.
 Verified against SOURCE-PIN: 2026-06-20. Sources: JLS SE 21 §11 (Throwable hierarchy, checked catch-or-specify §11.2), §14.20/§14.20.3 (try/catch/finally, try-with-resources basic/extended), §14.10 (assert); JEP 358 (helpful NPEs, default-on since JDK 15 — ⚠ verify), JEP 213 (effectively-final resources, Java 9), JEP 421 (deprecate finalization, Java 18), JEP 395/409/441 (records/sealed/pattern-switch GA at 21), JEP 453 (StructuredTaskScope, PREVIEW — ⚠ AHEAD-OF-PIN); JDK 21 API (AutoCloseable not-idempotent vs Closeable idempotent verbatim, Throwable.addSuppressed/getSuppressed, Cleaner, Objects.requireNonNull/checkIndex); Effective Java 3e Items 8/9/49/69–77; Jakarta Validation 3.1 (Final 2024-03-28; @NotNull/@Size/@Valid; Validator/ExecutableValidator; groups); Hibernate Validator 9.1.0.Final (RI of 3.1.1, Java 17+); OWASP Input Validation Cheat Sheet; tool rules Sonar java:S112/S1166/S2095, PMD EmptyCatchBlock/AvoidCatchingGenericException/PreserveStackTrace/CloseResource, SpotBugs REC_CATCH_EXCEPTION/OS_OPEN_STREAM/OBL_*, Checkstyle IllegalCatch/IllegalThrows, Error Prone DeadException/MustBeClosed/StreamResourceLeak/Finalize, Sonar java:S5128.
 ⚠ verify-at-pin: JEP 358 default level; tool rule IDs/defaults; EJ verbatims; Jakarta/HV/EL GAVs; S5128 title. ⚠ AHEAD-OF-PIN: StructuredTaskScope (preview).
@@ -26,7 +26,7 @@ try {
 
 Three lines, three separate failures. The `catch (Exception e)` swallows everything — a recoverable "not found," an unrecoverable programming bug, even the `InterruptedException` that should restore a thread's interrupt status — and flattens them into one undifferentiated nothing. The empty body discards the stack trace, so when the method silently returns `null` and something NPEs three frames away, there is no thread to pull. And the comment promises a fix that will never come. This is not error handling; it is error *hiding*, and it is the single most common quality defect in production Java.
 
-This chapter closes Part II with the failure paths: how to signal an error (exceptions, and the choice between checked and unchecked), how to release the resources a failing path still has to clean up (try-with-resources), and how to stop bad input at the door before it can fail at all (defensive coding and validation). The three are one subject — *what your code does when the happy path doesn't happen* — and the discipline across all three is the one Part II keeps repeating: make the failure explicit, fail fast, and never let it disappear silently.
+This chapter takes on the failure paths: how to signal an error (exceptions, and the choice between checked and unchecked), how to release the resources a failing path still has to clean up (try-with-resources), and how to stop bad input at the door before it can fail at all (defensive coding and validation). The three are one subject — *what your code does when the happy path doesn't happen* — and the discipline across all three is the one Part II keeps repeating: make the failure explicit, fail fast, and never let it disappear silently.
 
 ## Overview
 
@@ -161,9 +161,9 @@ These layer rather than compete: guard clauses and constraints stop bad input, e
 - **Validating input:** guard clauses (and record compact constructors) for internal invariants and private methods; Jakarta Validation at request/DTO/entity boundaries; `assert` only for private preconditions.
 - **Security-critical input:** validate as a *supporting* control, allowlist over denylist, server-side — but rely on parameterized queries and output encoding as the frontline (security part).
 
-## Hand-off to the next part
+## Hand-off to the next chapter
 
-That closes Part II: across ten chapters you've made the code itself trustworthy — readable, contract-honest, immutable where it should be, null-safe, and now resilient on its failure paths. But a single quality codebase is only as good as the team's ability to *keep* it that way as it grows. Part III turns from the code to the forces around it — concurrency under load, performance under scale, and the modern-Java features that change how all of this is written. The discipline carries forward: make the invisible visible, fail fast, and let the tools hold the line.
+You've now made the code resilient on its failure paths — the right exception, the cleaned-up resource, the rejected bad input. The next chapter stays inside Part II and pushes the same idea one layer deeper into the type system. Generics move an entire class of failure — the `ClassCastException` — from run time to compile time, so the compiler catches it before the program ever runs. That is the purest form of this part's recurring move: make the failure visible as early as you can, and here "as early as you can" is the compiler itself. Two more chapters then close Part II — generics, and the code-smell and design-pattern catalogue that reads the whole part back as a set of recognizable shapes.
 
 ## Back matter — sources & traceability
 
@@ -179,4 +179,4 @@ That closes Part II: across ten chapters you've made the code itself trustworthy
 
 ## Next chapter teaser
 
-Part III opens on the forces that test all of this at scale. First, concurrency: the immutable values and clear contracts from Part II become the foundation for code that's correct under many threads — where a swallowed `InterruptedException` or a leaked lock is the failure path that only shows up under load.
+If an exception is how you handle a failure at run time, a generic type is how you prevent one at compile time. The next chapter is generics and type-safety — type erasure and the sharp edges it leaves behind, the unchecked warning read as an unpaid debt, and PECS variance — the discipline of writing code so the compiler, not a runtime cast, carries the type-safety burden.

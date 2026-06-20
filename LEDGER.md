@@ -29,7 +29,7 @@
 | 0 — Foundation | Strategy, authority pin, candidate pool, folder tree, tooling | **✅ COMPLETE** — kernel adapted; pool built; SOURCE-PIN fully pinned (2026-06-20). (Optional law-file fine-tuning remains, non-gating.) |
 | 1 — Research | Bank a verified dossier per candidate | **COMPLETE** — 110/110 dossiers banked (07–40 with `_VERIFY.md`; rest verify-pending → `/pin-source`) |
 | 2 — Select | Score the pool, cull to ONE book; human confirms the cut | **✅ COMPLETE / LOCKED 2026-06-20** — 110 keys → 47 chapters (14 Parts), human-confirmed. See `01-index/FINAL_INDEX.md`. |
-| 3 — Draft + Gate | Draft confirmed chapters through the gated pipeline | **IN PROGRESS** — pilot Ch 1 drafted (v1 + SCORE 40/50; floors A/B/C-source PASS; FLOOR-C compile = PENDING-RUNTIME, no JDK). 10/47 drafted (Part I complete + Ch 5-10; Part II complete). Next: Ch 11 (key 14, generics & type-safety). |
+| 3 — Draft + Gate | Draft confirmed chapters through the gated pipeline | **IN PROGRESS** — pilot Ch 1 drafted (v1 + SCORE 40/50; floors A/B/C-source PASS; FLOOR-C compile = PENDING-RUNTIME, no JDK). 10/47 drafted (Part I complete + Part II Ch 5-10 of 5-12). Next: Ch 11 (key 14, generics & type-safety). |
 | 4 — Assemble | Compile approved chapters into the manuscript | not started |
 
 ### Done

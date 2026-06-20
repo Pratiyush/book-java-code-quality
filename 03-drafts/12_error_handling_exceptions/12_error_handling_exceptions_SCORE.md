@@ -1,6 +1,6 @@
 # SCORECARD — Ch 10 "Error handling, resources & defensive coding" (key 12 + 16 + 18)
 
-> Part II closer, three merged dossiers (exceptions + resource mgmt + defensive validation).
+> Part II (Ch 5-12), three merged dossiers (exceptions + resource mgmt + defensive validation).
 > Main-loop; gates = manual passes. Throwable-decision + item-to-rule crosswalk + lifecycle-card +
 > two-validation-paths shapes. Draft: `12_error_handling_exceptions_v1.md`. Pin 2026-06-20.
 
@@ -19,6 +19,6 @@
 | DEPTH | 8 | merges three sizable topics into one "what happens when the happy path doesn't" arc without re-teaching tool internals (routed to Part IV); honest on contested checked exceptions, suppressed-exception traps, Cleaner timing, validation-not-primary-defense. |
 | READABILITY | 8 | the swallow-the-exception hook, table-led decision + crosswalk, three sparing CONCEPT callouts + one AHEAD-OF-PIN, code snippets bounded (≤9 lines); no grey wall. |
 
-**Aggregate 40/50**, none < 6. Floors A/B/C-source ✅; FLOOR-C COMPILE = PENDING-RUNTIME. **Closes Part II.**
-Reuses item-to-rule crosswalk (Ch 7/8) + lifecycle-card (Ch 8) + layered-defense (Ch 9) shapes; hands off to
-Part III (concurrency/performance/modern Java). StructuredTaskScope + analyzer depth → Part III / Part IV.
+**Aggregate 40/50**, none < 6. Floors A/B/C-source ✅; FLOOR-C COMPILE = PENDING-RUNTIME. Mid Part II
+(Part II = Ch 5-12; Ch 12 closes it). Reuses item-to-rule crosswalk (Ch 7/8) + lifecycle-card (Ch 8) +
+layered-defense (Ch 9) shapes; hands off to Ch 11 (generics). StructuredTaskScope + analyzer depth → Part III / Part IV.
