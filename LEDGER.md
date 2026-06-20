@@ -27,7 +27,7 @@
 |---|---|---|
 | 0 — Foundation | Strategy, authority pin, candidate pool, folder tree, tooling | **IN PROGRESS** — kernel adapted; pool built; pin structured (versions TO-PIN); law-file fine-tuning + `/pin-source` remain |
 | 1 — Research | Bank a verified dossier per candidate | **COMPLETE** — 110/110 dossiers banked (07–40 with `_VERIFY.md`; rest verify-pending → `/pin-source`) |
-| 2 — Select | Score the pool, cull to ONE book; human confirms the cut | next (after `/pin-source`) |
+| 2 — Select | Score the pool, cull to ONE book; human confirms the cut | **PROPOSED — awaiting human LOCK.** 110 keys → 47 chapters (14 Parts), 0 hard cuts, merge-driven. See `01-index/FINAL_INDEX.md`. |
 | 3 — Draft + Gate | Draft confirmed chapters through the gated pipeline | not started |
 | 4 — Assemble | Compile approved chapters into the manuscript | not started |
 
