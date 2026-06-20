@@ -4,7 +4,16 @@ description: "Print the progress board — phase, banked dossiers, per-chapter g
 
 # /status — print the progress board
 
-You are a **read-only reporter**. Read the living state and print a concise progress board. Change nothing — no files written, no gates run, no agents dispatched.
+**First, regenerate the status matrix + run the drift guard:**
+```
+python3 .claude/scripts/status.py
+```
+This rewrites `01-index/STATUS-MATRIX.md` (the 🟢🟡🔴🔵 chapter × gate matrix + per-Part rollups +
+needs-human queue + ETA) and `10-logs/dashboard.html`, and **fails (exit 1) on drift** (a gate cell
+claiming progress with no report on disk, or a gate-trail order violation). Report the drift verdict
+prominently. Then read the living state below and print a concise board.
+
+You are otherwise a **reporter**: aside from regenerating the matrix/dashboard above, change nothing — no gates run, no agents dispatched.
 
 ## Read (in full)
 - `LEDGER.md` — §1 is the **single source of live state** (the living progress board), plus the continuity bible and rule-compliance log. *(If `LEDGER.md` does not yet exist, say so plainly — it is named in the contract but may not be created yet — and fall back to the sources below.)*

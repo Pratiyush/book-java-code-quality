@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# =============================================================================
+# pre-commit — in-repo enforcer hook (NEUTRALITY on staged manuscript prose).
+# -----------------------------------------------------------------------------
+# Blocks a commit that adds a banned comparative/superlative phrasing to a
+# chapter's v1 draft or an approved chapter — so the #1 rule (NEUTRALITY) is
+# enforced automatically, not by hand. Only manuscript PROSE is checked
+# (03-drafts/*_v1.md + 04-approved/*.md); the _SCORE/_GATELOG/_VERIFY meta-files
+# are excluded (they legitimately quote banned words in commentary). Citation
+# lint is ADVISORY (prints, never blocks) — it is format-sensitive. Fast: only
+# STAGED files. Written for bash 3.2 (macOS default — no mapfile).
+#
+# Install:  bash .claude/scripts/install_hooks.sh
+# Bypass (sparingly, e.g. a WIP checkpoint):  git commit --no-verify
+# This is FEEDBACK at the keyboard; CI + the gate agents remain the enforcement.
+# =============================================================================
+set -uo pipefail
+REPO="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+cd "$REPO"
+SC=".claude/scripts"
+
+FILES="$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null \
+         | grep -E '^(03-drafts/.*_v1\.md|04-approved/.*\.md)$' || true)"
+[ -z "$FILES" ] && exit 0
+
+fail=0
+while IFS= read -r f; do
+  [ -n "$f" ] && [ -f "$f" ] || continue
+  if [ -f "$SC/check_neutrality.sh" ]; then
+    if ! out="$(bash "$SC/check_neutrality.sh" "$f" 2>&1)"; then
+      echo "✗ NEUTRALITY FAIL — $f"
+      printf '%s\n' "$out" | grep -iE 'better than|unlike|superior|beats|the best|worse than|outperforms|inferior|crush|destroys|the problem with' | head -5
+      fail=1
+    fi
+  fi
+  if [ -f "$SC/lint_citations.sh" ] && ! bash "$SC/lint_citations.sh" "$f" >/dev/null 2>&1; then
+    echo "  · note: citation lint flagged $f (advisory)"
+  fi
+done <<< "$FILES"
+
+if [ "$fail" -ne 0 ]; then
+  echo ""
+  echo "pre-commit: BLOCKED on NEUTRALITY — fix the banned phrasing above, or 'git commit --no-verify' for a deliberate WIP checkpoint."
+  exit 1
+fi
+echo "pre-commit: ✓ staged manuscript prose passes the neutrality enforcer"
+exit 0

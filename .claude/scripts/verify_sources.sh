@@ -38,7 +38,7 @@ set -euo pipefail
 # =============================================================================
 
 # ===== CONFIGURE PER BOOK (see .foundation/BOOK-TYPE-PROFILES.md) =====
-DEFAULT_CLONE_PATH="$CLAUDE_JOB_DIR/tmp"    # e.g. /tmp/quarkus-3.33.2
+DEFAULT_CLONE_PATH="${CLAUDE_JOB_DIR:-/tmp}/tmp"    # e.g. /tmp/quarkus-3.33.2
 DEFAULT_VER="multi-authority (see SOURCE-PIN.md; no single tag)"                  # e.g. 3.33.2 (the pinned version literal)
 DEFAULT_SHA="n/a-multi-authority"                  # e.g. 2f9a60b84d3338f5b81cd83a2b4b853c41071a0f
 PIN_FILE_REL="00-strategy/SOURCE-PIN.md"        # e.g. 00-strategy/SOURCE-PIN.md

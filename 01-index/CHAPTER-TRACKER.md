@@ -4,7 +4,19 @@
 > Rows track the **FINAL_INDEX** book of record. See `01-index/FINAL_INDEX.md` for the canonical chapter count. The candidate pool stays the registry; this board tracks only what gets researched and drafted.
 > This file absorbs the hand-off-chain role (see [§ Hand-off chain / threads](#hand-off-chain--threads)).
 >
-> **Last updated: YYYY-MM-DD.**
+> **Last updated: 2026-06-20.**
+>
+> **🟢🟡🔴🔵 status matrix + anti-drift:** run `python3 .claude/scripts/status.py` to regenerate
+> [`STATUS-MATRIX.md`](STATUS-MATRIX.md) (chapter × gate bubble grid + per-Part rollups + needs-human
+> queue + ETA) and `10-logs/dashboard.html`, and to run the **drift guard** (it fails if a gate cell
+> claims progress with no report on disk, or the gate-trail order is violated). This board is the source;
+> the matrix is the rendered, colour-coded view.
+>
+> **Honesty note (2026-06-20 reset):** all 47 chapters are **drafted + main-loop self-scored** (`research`
+> = done, `draft` = done, `score` = NN/50 with a real `_SCORE.md`). The **independent** gates
+> (`verify`/`clarity`/`audit`/`reconcile`, run by their agents — originality + red-team on a *different
+> model*) have **not** run, so those cells read `pending`, not `done`. The matrix renders self-passes as
+> 🟡 and independent-pending as 🔴 — the truthful "drafted, not yet gated" picture.
 
 <!-- HOW TO USE THIS TEMPLATE: copy to 01-index/CHAPTER-TRACKER.md, drop ".template", resolve every {{TOKEN}}. At a new book's start, the only chapter rows are whatever FINAL_INDEX.md holds, every gate cell = `pending`. The example row below is a shape illustration — replace it. -->
 
@@ -18,6 +30,10 @@
 | `pending` | Not started |
 | `n-a` | Not applicable to this chapter |
 | `FLAG` | Blocked / awaiting human — see `09-flags/` |
+
+**Bubble mapping** (how `status.py` renders each mark in the matrix): `done` on `research`/`draft` → 🟢 ·
+`done`/`NN/50` on the independent gates or `score` → 🟡 (self-pass, independent agent pending) · `pending`/blank → 🔴 ·
+the `approve` (human) gate pending → 🔵 · `n-a` → ⚪.
 
 ## Gate columns (left→right = pipeline order)
 
@@ -40,33 +56,33 @@
 
 | Ch | NN | Topic | research | verify | draft | example | clarity | audit | score | figure | reconcile | approve |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 01 | What is code quality? (Ch 1; folds 02+59) | done | done | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
+| 1 | 01 | What is code quality? (Ch 1; folds 02+59) | done | pending | **done** | PEND-RT⁶ | pending | pending | 40/50 | plan-set | pending | pending⁷ |
 | — | 02 | The cost of poor quality (tech debt, SQALE, quality-vs-speed) | done | pending | pending | pending | pending | pending | pending | pending | pending | pending |
-| 2 | 03 | Readability, maintainability & measuring (Ch 2; folds 04+58) | done | done | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
+| 2 | 03 | Readability, maintainability & measuring (Ch 2; folds 04+58) | done | pending | **done** | PEND-RT⁶ | pending | pending | 40/50 | plan-set | pending | pending⁷ |
 | — | 04 | Quality metrics — signal vs vanity (CK, Goodhart, DORA/SPACE) | done | pending | pending | pending | pending | pending | pending | pending | pending | pending |
-| 3 | 05 | The Java quality toolchain map (Ch 3) | done | done | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
-| 4 | 06 | Quality culture, ownership & knowledge (Ch 4; folds 90) | done | done | **done** | n-a | done | done | 40/50 | plan-set | pending | pending⁷ |
-| 6 | 07 | Naming, structure & formatting (Ch 6; folds 17+34) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
-| 5 | 08 | Effective Java & modern Java for quality (Ch 5; folds 13) | done | done | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
-| 7 | 09 | Designing clear APIs & method contracts (Ch 7; folds 60) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
-| 8 | 10 | Immutability & value-based design (Ch 8; folds 15) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
-| 9 | 11 | Null-safety & Optional discipline (Ch 9; folds 31+32) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
-| 10 | 12 | Error handling & exceptions (Ch 10; folds 16+18) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
+| 3 | 05 | The Java quality toolchain map (Ch 3) | done | pending | **done** | PEND-RT⁶ | pending | pending | 40/50 | plan-set | pending | pending⁷ |
+| 4 | 06 | Quality culture, ownership & knowledge (Ch 4; folds 90) | done | pending | **done** | n-a | pending | pending | 40/50 | plan-set | pending | pending⁷ |
+| 6 | 07 | Naming, structure & formatting (Ch 6; folds 17+34) | done | pending | **done** | PEND-RT⁶ | pending | pending | 40/50 | plan-set | pending | pending⁷ |
+| 5 | 08 | Effective Java & modern Java for quality (Ch 5; folds 13) | done | pending | **done** | PEND-RT⁶ | pending | pending | 40/50 | plan-set | pending | pending⁷ |
+| 7 | 09 | Designing clear APIs & method contracts (Ch 7; folds 60) | done | pending | **done** | PEND-RT⁶ | pending | pending | 40/50 | plan-set | pending | pending⁷ |
+| 8 | 10 | Immutability & value-based design (Ch 8; folds 15) | done | pending | **done** | PEND-RT⁶ | pending | pending | 40/50 | plan-set | pending | pending⁷ |
+| 9 | 11 | Null-safety & Optional discipline (Ch 9; folds 31+32) | done | pending | **done** | PEND-RT⁶ | pending | pending | 40/50 | plan-set | pending | pending⁷ |
+| 10 | 12 | Error handling & exceptions (Ch 10; folds 16+18) | done | pending | **done** | PEND-RT⁶ | pending | pending | 40/50 | plan-set | pending | pending⁷ |
 | — | 13 | Modern Java for quality (records/sealed/patterns) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
-| 11 | 14 | Generics & type-safety (Ch 11) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
+| 11 | 14 | Generics & type-safety (Ch 11) | done | pending | **done** | PEND-RT⁶ | pending | pending | 40/50 | plan-set | pending | pending⁷ |
 | — | 15 | equals/hashCode/Comparable/toString | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 16 | Resource & lifecycle management | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 17 | Comments, Javadoc & self-documenting code (contested) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 18 | Defensive coding & input validation | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
-| 12 | 19 | Code smells & Java anti-patterns (Ch 12; folds 61) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
-| 13 | 20 | Thread-safety & the Java Memory Model (Ch 13; folds 21+23) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
+| 12 | 19 | Code smells & Java anti-patterns (Ch 12; folds 61) | done | pending | **done** | PEND-RT⁶ | pending | pending | 40/50 | plan-set | pending | pending⁷ |
+| 13 | 20 | Thread-safety & the Java Memory Model (Ch 13; folds 21+23) | done | pending | **done** | PEND-RT⁶ | pending | pending | 43/50 | plan-set | pending | pending⁷ |
 | — | 21 | Immutability & safe publication | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
-| 14 | 22 | Virtual threads & structured concurrency (Ch 14; folds 24+25) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
+| 14 | 22 | Virtual threads & structured concurrency (Ch 14; folds 24+25) | done | pending | **done** | PEND-RT⁶ | pending | pending | 43/50 | plan-set | pending | pending⁷ |
 | — | 23 | Concurrency utilities (j.u.c) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 24 | Testing & reproducing concurrency bugs (JCStress) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 25 | Static detection of concurrency issues | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
-| 15 | 26 | How static analysis works (Ch 15) | done | done² | **done** | PEND-RT⁶ | done | done | 41/50 | plan-set | pending | pending⁷ |
-| 16 | 27 | Checkstyle, PMD, SpotBugs, Error Prone (Ch 16; folds 28+29+30) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
+| 15 | 26 | How static analysis works (Ch 15) | done | pending | **done** | PEND-RT⁶ | pending | pending | 41/50 | plan-set | pending | pending⁷ |
+| 16 | 27 | Checkstyle, PMD, SpotBugs, Error Prone (Ch 16; folds 28+29+30) | done | pending | **done** | PEND-RT⁶ | pending | pending | 42/50 | plan-set | pending | pending⁷ |
 | — | 28 | PMD & CPD | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 29 | SpotBugs (+ FindSecBugs, fb-contrib) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 30 | Error Prone (+ Refaster) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
@@ -74,28 +90,28 @@
 | — | 32 | Null-safety annotation landscape (JSpecify…) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 33 | ArchUnit | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 34 | Formatters (Spotless, google-java-format…) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
-| 17 | 35 | SonarQube, IDE inspections & the layered stack (Ch 17; folds 36+37) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
+| 17 | 35 | SonarQube, IDE inspections & the layered stack (Ch 17; folds 36+37) | done | pending | **done** | PEND-RT⁶ | pending | pending | 43/50 | plan-set | pending | pending⁷ |
 | — | 36 | IDE inspections (IntelliJ, Eclipse) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 37 | Comparing & layering the analyzers | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
-| 18 | 38 | Writing custom rules; annotation processors & Lombok (Ch 18; folds 40) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
-| 19 | 39 | Living with findings: false positives, baselines, ratcheting (Ch 19) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
+| 18 | 38 | Writing custom rules; annotation processors & Lombok (Ch 18; folds 40) | done | pending | **done** | PEND-RT⁶ | pending | pending | 43/50 | plan-set | pending | pending⁷ |
+| 19 | 39 | Living with findings: false positives, baselines, ratcheting (Ch 19) | done | pending | **done** | PEND-RT⁶ | pending | pending | 42/50 | plan-set | pending | pending⁷ |
 | — | 40 | Annotation processors & the Lombok debate | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 
-| 20 | 41 | The testing landscape & test quality (Ch 20; folds 49) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
+| 20 | 41 | The testing landscape & test quality (Ch 20; folds 49) | done | pending | **done** | PEND-RT⁶ | pending | pending | 44/50 | plan-set | pending | pending⁷ |
 | — | 44 | Test doubles & mocking (Mockito) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 47 | Mutation testing (PITest) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
-| 23 | 48 | Coverage, mutation & test effectiveness (Ch 23; folds 47) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
+| 23 | 48 | Coverage, mutation & test effectiveness (Ch 23; folds 47) | done | pending | **done** | PEND-RT⁶ | pending | pending | 44/50 | plan-set | pending | pending⁷ |
 | — | 49 | Test architecture, flakiness & smells | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
-| 24 | 50 | Contract & approval testing (Ch 24; folds 52) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
+| 24 | 50 | Contract & approval testing (Ch 24; folds 52) | done | pending | **done** | PEND-RT⁶ | pending | pending | 42/50 | plan-set | pending | pending⁷ |
 | — | 51 | Performance testing (JMH) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
-| 21 | 42 | Unit testing, assertions & mocking (Ch 21; folds 43+44) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
+| 21 | 42 | Unit testing, assertions & mocking (Ch 21; folds 43+44) | done | pending | **done** | PEND-RT⁶ | pending | pending | 43/50 | plan-set | pending | pending⁷ |
 | — | 43 | Assertions & test readability | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
-| 22 | 45 | Integration & property-based testing (Ch 22; folds 46) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
+| 22 | 45 | Integration & property-based testing (Ch 22; folds 46) | done | pending | **done** | PEND-RT⁶ | pending | pending | 42/50 | plan-set | pending | pending⁷ |
 | — | 46 | Parameterized & property-based testing | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 52 | Snapshot / approval testing | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
-| 25 | 53 | SOLID, coupling, cohesion & package structure (Ch 25; folds 54+57) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
+| 25 | 53 | SOLID, coupling, cohesion & package structure (Ch 25; folds 54+57) | done | pending | **done** | PEND-RT⁶ | pending | pending | 43/50 | plan-set | pending | pending⁷ |
 | — | 54 | Coupling, cohesion & dependency direction | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| 26 | 55 | Enforcing architecture: ArchUnit & fitness functions (Ch 26; folds 33+56) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
+| 26 | 55 | Enforcing architecture: ArchUnit & fitness functions (Ch 26; folds 33+56) | done | pending | **done** | PEND-RT⁶ | pending | pending | 43/50 | plan-set | pending | pending⁷ |
 | — | 56 | Fitness functions & evolutionary architecture | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 57 | Package/module structure & layering | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 58 | Complexity metrics (cyclomatic, cognitive) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
@@ -103,62 +119,62 @@
 | — | 60 | API quality, semver, binary/source compat | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 61 | Design & anti-patterns for maintainability (contested) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 
-| 27 | 62 | The build & dependency hygiene (Ch 27; folds 63+64) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
+| 27 | 62 | The build & dependency hygiene (Ch 27; folds 63+64) | done | pending | **done** | PEND-RT⁶ | pending | pending | 42/50 | plan-set | pending | pending⁷ |
 | — | 63 | Dependency management & hygiene (BOM/catalog/enforcer) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 64 | Keeping dependencies current (Renovate/Dependabot) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| 28 | 65 | Dependency scanning, SBOM & supply-chain security (Ch 28; folds 66) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
+| 28 | 65 | Dependency scanning, SBOM & supply-chain security (Ch 28; folds 66) | done | pending | **done** | PEND-RT⁶ | pending | pending | 42/50 | plan-set | pending | pending⁷ |
 | — | 66 | Supply chain — SBOM, provenance, SLSA | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| 29 | 67 | Reproducible builds & license compliance (Ch 29; folds 68) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
+| 29 | 67 | Reproducible builds & license compliance (Ch 29; folds 68) | done | pending | **done** | PEND-RT⁶ | pending | pending | 42/50 | plan-set | pending | pending⁷ |
 | — | 68 | License compliance | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 
-| 30 | 69 | Secure coding & OWASP for Java (Ch 30; folds 72+74) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
-| 31 | 70 | SAST & secrets detection (Ch 31; folds 71) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
+| 30 | 69 | Secure coding & OWASP for Java (Ch 30; folds 72+74) | done | pending | **done** | PEND-RT⁶ | pending | pending | 44/50 | plan-set | pending | pending⁷ |
+| 31 | 70 | SAST & secrets detection (Ch 31; folds 71) | done | pending | **done** | PEND-RT⁶ | pending | pending | 42/50 | plan-set | pending | pending⁷ |
 | — | 71 | Secrets detection (gitleaks/TruffleHog) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 72 | Injection, deserialization & validation safety | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| 32 | 73 | Security in CI — the security gate (Ch 32) | done | done² | **done** | PEND-RT⁶ | done | done | 41/50 | plan-set | pending | pending⁷ |
+| 32 | 73 | Security in CI — the security gate (Ch 32) | done | pending | **done** | PEND-RT⁶ | pending | pending | 41/50 | plan-set | pending | pending⁷ |
 | — | 74 | Cryptography & security-API misuse | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 
-| 33 | 75 | Designing the CI pipeline & quality gates (Ch 33; folds 76+79) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
+| 33 | 75 | Designing the CI pipeline & quality gates (Ch 33; folds 76+79) | done | pending | **done** | PEND-RT⁶ | pending | pending | 44/50 | plan-set | pending | pending⁷ |
 | — | 76 | Quality gates & build-breaking policy | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 77 | CI platforms (GitHub Actions/GitLab CI/Jenkins) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 78 | PR-based quality (reviewdog/Danger/Sonar) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 79 | Gate performance (caching/incremental/parallel) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| 34 | 80 | Coverage strategy, PR automation & CI platforms (Ch 34; folds 77+78) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
-| 35 | 81 | Branch protection, trunk-based dev & pre-commit parity (Ch 35; folds 82) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
+| 34 | 80 | Coverage strategy, PR automation & CI platforms (Ch 34; folds 77+78) | done | pending | **done** | PEND-RT⁶ | pending | pending | 42/50 | plan-set | pending | pending⁷ |
+| 35 | 81 | Branch protection, trunk-based dev & pre-commit parity (Ch 35; folds 82) | done | pending | **done** | PEND-RT⁶ | pending | pending | 42/50 | plan-set | pending | pending⁷ |
 | — | 82 | Pre-commit hooks & local↔CI parity | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| 36 | 83 | Release quality (Ch 36) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
+| 36 | 83 | Release quality (Ch 36) | done | pending | **done** | PEND-RT⁶ | pending | pending | 42/50 | plan-set | pending | pending⁷ |
 
-| 37 | 84 | Code review, coding standards & documentation (Ch 37; folds 86+89) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
-| 38 | 85 | Metrics, dashboards & rolling out quality (Ch 38; folds 87+88) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
+| 37 | 84 | Code review, coding standards & documentation (Ch 37; folds 86+89) | done | pending | **done** | PEND-RT⁶ | pending | pending | 44/50 | plan-set | pending | pending⁷ |
+| 38 | 85 | Metrics, dashboards & rolling out quality (Ch 38; folds 87+88) | done | pending | **done** | PEND-RT⁶ | pending | pending | 44/50 | plan-set | pending | pending⁷ |
 | — | 86 | Coding standards & style guides | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 87 | Rolling quality into a legacy codebase (baseline/ratchet) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 88 | Quality dashboards & trend observability | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 89 | Documentation quality (ADRs/Javadoc/README) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 90 | Knowledge sharing, onboarding & bus factor | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 
-| 39 | 91 | Refactoring, legacy code & modernization (Ch 39; folds 92+93+95) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
+| 39 | 91 | Refactoring, legacy code & modernization (Ch 39; folds 92+93+95) | done | pending | **done** | PEND-RT⁶ | pending | pending | 44/50 | plan-set | pending | pending⁷ |
 | — | 92 | Working with legacy code — characterization, seams | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 93 | Strangler-fig & incremental modernization | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 94 | Automated large-scale change (OpenRewrite/Refaster) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 95 | Migrating Java versions (8→17→21→25) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| 40 | 96 | Automated change & the remediation playbook (Ch 40; folds 94) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
+| 40 | 96 | Automated change & the remediation playbook (Ch 40; folds 94) | done | pending | **done** | PEND-RT⁶ | pending | pending | 42/50 | plan-set | pending | pending⁷ |
 
-| 41 | 97 | Quality of AI-generated code & AI-assisted development (Ch 41; folds 99) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
+| 41 | 97 | Quality of AI-generated code & AI-assisted development (Ch 41; folds 99) | done | pending | **done** | PEND-RT⁶ | pending | pending | 44/50 | plan-set | pending | pending⁷ |
 | — | 98 | Using AI for code review | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 99 | AI-assisted refactoring & test generation | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| 42 | 100 | AI code review & governing AI in the workflow (Ch 42; folds 98) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
+| 42 | 100 | AI code review & governing AI in the workflow (Ch 42; folds 98) | done | pending | **done** | PEND-RT⁶ | pending | pending | 44/50 | plan-set | pending | pending⁷ |
 
-| 43 | 101 | Performance as quality: profiling, memory & benchmarking (Ch 43; folds 102+103+51+104) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
+| 43 | 101 | Performance as quality: profiling, memory & benchmarking (Ch 43; folds 102+103+51+104) | done | pending | **done** | PEND-RT⁶ | pending | pending | 44/50 | plan-set | pending | pending⁷ |
 | — | 102 | Profiling (JFR, async-profiler) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 103 | Memory & allocation hygiene | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 104 | Benchmarking discipline (JMH) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| 44 | 105 | Performance-regression gates (Ch 44) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
+| 44 | 105 | Performance-regression gates (Ch 44) | done | pending | **done** | PEND-RT⁶ | pending | pending | 42/50 | plan-set | pending | pending⁷ |
 
-| 45 | 106 | Observability as quality: logging, metrics, tracing & feedback (Ch 45; folds 107+108) | done | done² | **done** | PEND-RT⁶ | done | done | 44/50 | plan-set | pending | pending⁷ |
+| 45 | 106 | Observability as quality: logging, metrics, tracing & feedback (Ch 45; folds 107+108) | done | pending | **done** | PEND-RT⁶ | pending | pending | 44/50 | plan-set | pending | pending⁷ |
 | — | 107 | Metrics & tracing (Micrometer/OpenTelemetry) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 108 | Production feedback loops (error tracking) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| 46 | 109 | A reference quality stack & gate design (Ch 46; CAPSTONE) | done | done² | **done** | PEND-RT⁶ | PARTIAL⁸ | done | 46/50 | plan-set | pending | pending⁷ |
-| 47 | 110 | A code-quality maturity model & adoption roadmap (Ch 47; FINAL) | done | done² | **done** | PEND-RT⁶ | N/A⁹ | done | 47/50 | plan-set | pending | pending⁷ |
+| 46 | 109 | A reference quality stack & gate design (Ch 46; CAPSTONE) | done | pending | **done** | PEND-RT⁶ | pending | pending | 46/50 | plan-set | pending | pending⁷ |
+| 47 | 110 | A code-quality maturity model & adoption roadmap (Ch 47; FINAL) | done | pending | **done** | PEND-RT⁶ | pending | pending | 47/50 | plan-set | pending | pending⁷ |
 
 ¹ Keys 01–06 (pilot) self-verify inline (sources + `⚠ UNVERIFIED` flags) but no separate Step-2 `_VERIFY.md` yet. Open flag: `09-flags/01_iso25010_2023_subtree_unverified.md`.
 ² Keys 07–40 each have a Step-2 `_VERIFY.md` (source-verifier gate): all **PASS_WITH_FLAGS, 0 blockers**. Flags are "verify-at-pin" atoms (resolve at `/pin-source`) + minor citation-lint; two banned-phrasing breaches fixed (keys 03, 28). Tracked in `09-flags/`.
