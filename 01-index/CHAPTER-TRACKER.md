@@ -115,7 +115,7 @@
 | 31 | 70 | SAST & secrets detection (Ch 31; folds 71) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | — | 71 | Secrets detection (gitleaks/TruffleHog) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 72 | Injection, deserialization & validation safety | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 73 | Security in CI — the security gate | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 32 | 73 | Security in CI — the security gate (Ch 32) | done | done² | **done** | PEND-RT⁶ | done | done | 41/50 | plan-set | pending | pending⁷ |
 | — | 74 | Cryptography & security-API misuse | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 
 | — | 75 | Designing a CI pipeline for quality | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
