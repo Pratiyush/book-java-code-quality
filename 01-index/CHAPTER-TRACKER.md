@@ -95,7 +95,7 @@
 | — | 52 | Snapshot / approval testing | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | 25 | 53 | SOLID, coupling, cohesion & package structure (Ch 25; folds 54+57) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
 | — | 54 | Coupling, cohesion & dependency direction | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 55 | Enforcing architecture (ArchUnit, JPMS) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 26 | 55 | Enforcing architecture: ArchUnit & fitness functions (Ch 26; folds 33+56) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
 | — | 56 | Fitness functions & evolutionary architecture | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 57 | Package/module structure & layering | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 58 | Complexity metrics (cyclomatic, cognitive) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
