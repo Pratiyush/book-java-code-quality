@@ -29,3 +29,5 @@
 {"ts":"2026-06-20T20:49:33Z","kind":"milestone","actor":"claude","action":"voice-lift","target":"Ch 1-8 (batch 2)","detail":"copyeditor voice pass; Ch7 (api contracts) still em-dash-heavy ~30/1000 -> needs 2nd pass"}
 {"ts":"2026-06-20T20:49:34Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 1 ready-for-human, 7 in lift, drift=none"}
 {"ts":"2026-06-20T20:57:45Z","kind":"milestone","actor":"claude","action":"voice-lift","target":"Ch 9-16 (batch 3)","detail":"copyeditor voice pass; em-dash to ceiling, narration you->3rd/imperative"}
+{"ts":"2026-06-20T20:57:46Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 1 ready-for-human, 7 in lift, drift=none"}
+{"ts":"2026-06-20T21:06:09Z","kind":"milestone","actor":"claude","action":"voice-lift","target":"Ch 17-24 (batch 4)","detail":"copyeditor voice pass"}
