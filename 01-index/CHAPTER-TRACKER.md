@@ -158,7 +158,7 @@
 | — | 107 | Metrics & tracing (Micrometer/OpenTelemetry) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 108 | Production feedback loops (error tracking) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | 46 | 109 | A reference quality stack & gate design (Ch 46; CAPSTONE) | done | done² | **done** | PEND-RT⁶ | PARTIAL⁸ | done | 46/50 | plan-set | pending | pending⁷ |
-| — | 110 | Code-quality maturity model & roadmap | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 47 | 110 | A code-quality maturity model & adoption roadmap (Ch 47; FINAL) | done | done² | **done** | PEND-RT⁶ | N/A⁹ | done | 47/50 | plan-set | pending | pending⁷ |
 
 ¹ Keys 01–06 (pilot) self-verify inline (sources + `⚠ UNVERIFIED` flags) but no separate Step-2 `_VERIFY.md` yet. Open flag: `09-flags/01_iso25010_2023_subtree_unverified.md`.
 ² Keys 07–40 each have a Step-2 `_VERIFY.md` (source-verifier gate): all **PASS_WITH_FLAGS, 0 blockers**. Flags are "verify-at-pin" atoms (resolve at `/pin-source`) + minor citation-lint; two banned-phrasing breaches fixed (keys 03, 28). Tracked in `09-flags/`.
