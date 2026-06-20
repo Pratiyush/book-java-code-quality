@@ -74,7 +74,7 @@
 | — | 32 | Null-safety annotation landscape (JSpecify…) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 33 | ArchUnit | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 34 | Formatters (Spotless, google-java-format…) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 35 | SonarQube / SonarLint | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| 17 | 35 | SonarQube, IDE inspections & the layered stack (Ch 17; folds 36+37) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
 | — | 36 | IDE inspections (IntelliJ, Eclipse) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 37 | Comparing & layering the analyzers | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 38 | Writing custom rules | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
