@@ -90,7 +90,7 @@
 | — | 51 | Performance testing (JMH) | done | PENDING³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | 21 | 42 | Unit testing, assertions & mocking (Ch 21; folds 43+44) | done | done² | **done** | PEND-RT⁶ | done | done | 43/50 | plan-set | pending | pending⁷ |
 | — | 43 | Assertions & test readability | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 45 | Integration testing (Testcontainers) | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 22 | 45 | Integration & property-based testing (Ch 22; folds 46) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | — | 46 | Parameterized & property-based testing | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 52 | Snapshot / approval testing | done | pending³ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 53 | SOLID & design principles (contested) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
