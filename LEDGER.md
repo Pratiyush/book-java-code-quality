@@ -94,6 +94,14 @@
 
 <!-- HOW TO FILL: every meaningful unit of work appends an entry (Continuous-improvement HARD RULE). Empty at Phase 0 start. -->
 
+### 2026-06-20 — Flagship companion app built GREEN (first real FLOOR-C exercise)
+
+- **DEMO-CATALOG §2 realized:** `08-companion-code/storefront-checkout/` — a runnable checkout-generation API microservice + deterministic payment simulator in `org.acme.storefront`, **zero runtime dependencies** (JDK `HttpServer` + virtual threads). Built on a parent aggregator POM (`08-companion-code/pom.xml`) pinning JDK 21 + the SOURCE-PIN test libs (JUnit 6.0.3, AssertJ 3.27.7).
+- **Green build (author request: "build a real app … add to rule"):** `mvn -B verify` = **28 tests pass**; `mvn -B -Pquality verify` adds the Chapter-16 rule gates — **Checkstyle 10.26.1** (curated ruleset, engine-override = the two-pin lesson) **0 violations** + **SpotBugs 4.9.3.0** (effort=Max) **0 bug instances**. First time FLOOR-C COMPILE has actually run green for a real module (the toolchain install paying off).
+- **Dogfoods Parts II-III in code:** immutable records + defensive copy (Ch 8), sealed result types + exhaustive switch (Ch 10), Optional/no-null (Ch 9), atomic compound ops `computeIfPresent`/`computeIfAbsent` (Ch 13), virtual-thread-per-request + routes-in-start() to avoid this-escape (Ch 13/14), externalized config, Luhn + idempotent payment simulator. README with run/curl instructions shipped.
+- **Pin correction surfaced:** Maven Central's real latest Checkstyle engine is **10.26.1**, not the key-27 dossier's misread "13.6.0" — verified at Central; pin/draft should use 10.26.1.
+- **Next on the example:** remaining Ch-16 analyzers (PMD/CPD, Error Prone) can be added to the `quality` profile the same way; per-chapter companion modules + DEMO-CATALOG per-chapter rows still to backfill.
+
 ### 2026-06-20 — Build toolchain installed (FLOOR-C toolchain blocker RESOLVED)
 
 - **JDK toolchain installed to the pin (human action, at author's request):** Homebrew `openjdk@21` = **21.0.11** (the SOURCE-PIN anchor) and `openjdk@25` = **25.0.3** (the SOURCE-PIN forward LTS); ahead-of-pin `openjdk` 26.0.1 **removed** (author decision: stay on the pinned 21/25 matrix). Maven 3.9.16 drives both via `JAVA_HOME` (anchor `/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home`; forward `/opt/homebrew/opt/openjdk@25/libexec/openjdk.jdk/Contents/Home`). Both keg-only (use `JAVA_HOME`, not a system symlink).
