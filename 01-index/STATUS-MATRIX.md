@@ -9,12 +9,12 @@
 - **47/47 chapters** drafted (🟢 `draft`).
 - **39** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).
 - **46** need EXAMPLE-BUILD (FLOOR-C compile).
-- **Auto-approval (≥90%):** 0 approved · 0 eligible-pending-independent · 47 in lift · 0 at human gate 🔵.
+- **Routing (ship bar 80% + floors → human gate):** 1 READY for human approval 🔵 · 7 in lift · 39 need an independent score · 0 approved.
 - **DRIFT: ✅ none**.
 
 ## Needs-human queue 🔵
 
-_None yet — chapters reach the human gate only after the lift loop cannot reach 90%._
+Chapters at the human gate (Step 12): Ch 38.
 
 ## Matrix
 
@@ -70,7 +70,7 @@ _None yet — chapters reach the human gate only after the lift loop cannot reac
 | 36 | 83 | Release quality | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟡 | 🔴 | 🟡 | score |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
 | 37 | 84 | Code review, coding standards & documentation | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟡 | 🔴 | 🟡 | score |
-| 38 | 85 | Metrics, dashboards & rolling out quality | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟡 | 🔴 | 🟡 | approve |
+| 38 | 85 | Metrics, dashboards & rolling out quality | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟡 | 🔴 | 🔵 | approve (HUMAN) |
 | 39 | 91 | Refactoring, legacy code & modernization | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟡 | 🔴 | 🟡 | approve |
 | 40 | 96 | Automated change & the remediation playbook | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟡 | 🔴 | 🟡 | score |
 | 41 | 97 | Quality of AI-generated code & AI-assisted d… | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟡 | 🔴 | 🟡 | approve |
@@ -93,7 +93,7 @@ _None yet — chapters reach the human gate only after the lift loop cannot reac
 | Part VIII — Security & SAST | 1 | 1 | 1 | 0 |
 | Part IX — CI/CD & Quality Gates | 1 | 1 | 1 | 0 |
 | Part XIII — Performance & Observability | 1 | 1 | 1 | 0 |
-| Part XIV — Capstone & Synthesis | 40 | 40 | 40 | 0 |
+| Part XIV — Capstone & Synthesis | 40 | 40 | 40 | 1 |
 
 ## Capstones (companion microservice apps)
 

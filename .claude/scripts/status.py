@@ -55,7 +55,8 @@ AUDIT_LOG   = os.path.join(ROOT, "10-logs", "audit.jsonl")
 HTML_DIR    = os.path.join(ROOT, "10-logs")
 AUDIT_SH    = os.path.join(ROOT, ".claude", "scripts", "audit_log.sh")
 
-APPROVE_THRESHOLD = 90          # percent; >= this auto-approves (45/50)
+APPROVE_THRESHOLD = 90          # percent; the "excellence" flag (45/50) — informational
+SHIP_BAR = 80                   # ship bar (user-set): ≥80% (40/50) + floors → ready for the human gate
 SCORE_MAX = 50
 
 GATES = ["research", "verify", "draft", "example", "clarity", "audit",
@@ -139,6 +140,17 @@ def report_path(slug, suffix):
     return os.path.join(DRAFTS, slug, slug + suffix) if slug else None
 
 
+def _verdict_token(cell):
+    """The earliest PASS/FAIL/PENDING verdict in a table cell (emoji or word), or None."""
+    found = []
+    for needle, val, emoji in (("✅", "PASS", True), ("❌", "FAIL", True), ("⚠", "PENDING", True),
+                               ("PASS", "PASS", False), ("FAIL", "FAIL", False), ("PENDING", "PENDING", False)):
+        i = cell.find(needle) if emoji else cell.upper().find(needle)
+        if i >= 0:
+            found.append((i, val))
+    return min(found)[1] if found else None
+
+
 def parse_score(slug):
     """Read the score → {total, pct, floors, independent} or None.
 
@@ -160,44 +172,63 @@ def parse_score(slug):
     # "**Aggregate 39/50**", "Cluster subtotal:** 38 / 50", "Aggregate score: 36/50".
     m = re.search(r"(?:Aggregate|Cluster subtotal)\D{0,10}(\d+)\s*/\s*50", text, re.I)
     total = int(m.group(1)) if m else None
-    floors = {}
-    for key, pat in (("A", r"A\s*[—\-]\s*NEUTRAL"), ("B", r"B\s*[—\-]\s*HONEST"),
-                     ("Csrc", r"C\s*[—\-]\s*SOURCE"), ("Ccompile", r"C\s*[—\-]\s*COMPILE")):
-        floors[key] = "?"
-        for ln in text.splitlines():
-            if re.search(pat, ln, re.I):
-                floors[key] = ("PASS" if "✅" in ln or "pass" in ln.lower() else
-                               "FAIL" if "❌" in ln or "fail" in ln.lower() else
-                               "PENDING" if "⚠" in ln or "pend" in ln.lower() else "?")
-                break
+    # Floors are read from the floor TABLE: a row whose label cell contains the floor name, with the
+    # verdict in the next cell. Tolerates both "| A — NEUTRALITY | ✅ PASS |" and "| **NEUTRALITY** |
+    # PASS |" formats; reads the verdict from the verdict cell only (evidence cells often mention other
+    # floors' states, e.g. "COMPILE = PENDING", which must not bleed across). First matching row wins.
+    floors = {"A": "?", "B": "?", "Csrc": "?", "Ccompile": "?"}
+    names = (("A", "NEUTRAL"), ("B", "HONEST"), ("Csrc", "SOURCE-TRACE"), ("Ccompile", "COMPILE"))
+    for ln in text.splitlines():
+        s = ln.strip()
+        if not s.startswith("|"):
+            continue
+        cells = [c.strip() for c in s.strip("|").split("|")]
+        if len(cells) < 2:
+            continue
+        label = cells[0].upper()
+        for key, name in names:
+            if floors[key] != "?" or name not in label:
+                continue
+            # The verdict may sit in any cell after the label (3-col vs 4-col tables); take the first
+            # cell that yields a verdict token, and the EARLIEST token in it (e.g. a combined
+            # "PASS (SOURCE-TRACE) / PENDING (COMPILE)" cell resolves to PASS for SOURCE-TRACE).
+            for c in cells[1:]:
+                tok = _verdict_token(c)
+                if tok:
+                    floors[key] = tok
+                    break
     pct = round(total / SCORE_MAX * 100) if total is not None else None
     return {"total": total, "pct": pct, "floors": floors, "independent": independent}
 
 
 def approval_decision(score):
-    """The 90% policy → (decision, bubble_key, reason).
+    """Routing policy (lift → human gate) → (decision, bubble_key, reason).
 
-    Auto-approve = independent (different-model) score ≥90% AND the editorial content floors
-    (A NEUTRALITY / B HONEST-LIMITATIONS / C SOURCE-TRACE) PASS. The COMPILE/example-build floor is
-    tracked separately (most chapters have no module yet) and does NOT block editorial approval —
-    an auto-approved chapter is noted "example-build pending" when COMPILE is not yet PASS."""
+    A chapter is READY for the human approval gate (Step 12) when it has an INDEPENDENT
+    (different-model) score that clears the book's ship bar (≥70% = 35/50) AND the editorial content
+    floors (A NEUTRALITY / B HONEST-LIMITATIONS / C SOURCE-TRACE) PASS. Below the bar or a floor not
+    PASS → LIFT. A self-score (no independent gate yet) can only be NEEDS-INDEP. The COMPILE/
+    example-build floor is tracked separately (the EXAMPLE-BUILD module suite is a later phase) and
+    does NOT block reaching the human gate; ≥90% is reported as an excellence flag, not a separate
+    route (final approval is the human's, per the chosen lift→human-gate plan)."""
     if not score or score["total"] is None:
         return ("UNSCORED", "no", "no score / no aggregate found")
     f = score["floors"]
     floors_pass = f.get("A") == "PASS" and f.get("B") == "PASS" and f.get("Csrc") == "PASS"
     pct = score["pct"]
-    compile_note = "" if f.get("Ccompile") == "PASS" else " (example-build/COMPILE still pending — tracked separately)"
-    if pct >= APPROVE_THRESHOLD and floors_pass and score["independent"]:
-        return ("AUTO-APPROVE", "done",
-                f"{pct}% ≥{APPROVE_THRESHOLD}% (independent) + content floors PASS → auto-approve{compile_note}")
-    if pct >= APPROVE_THRESHOLD and floors_pass and not score["independent"]:
-        return ("ELIGIBLE", "self",
-                f"{pct}% ≥{APPROVE_THRESHOLD}% but score is a main-loop self-pass — run the independent scorer to auto-approve")
-    if pct >= APPROVE_THRESHOLD and not floors_pass:
-        return ("LIFT", "self",
-                f"{pct}% ≥{APPROVE_THRESHOLD}% but a content floor is not PASS (A/B/C-src) → fix, then approve")
-    return ("LIFT", "self",
-            f"{pct}% <{APPROVE_THRESHOLD}% → lift loop (≤3 passes) to reach {APPROVE_THRESHOLD}%, else human gate")
+    star = " ★≥90% excellence" if pct >= APPROVE_THRESHOLD else ""
+    cnote = "" if f.get("Ccompile") == "PASS" else "; example-build pending (separate phase)"
+    if not score["independent"]:
+        if floors_pass and pct >= SHIP_BAR:
+            return ("NEEDS-INDEP", "self",
+                    f"{pct}% self ≥{SHIP_BAR}% — run the independent scorer to advance to the human gate")
+        return ("LIFT", "self", f"{pct}% self-score — lift + independent-score toward the {SHIP_BAR}% bar")
+    if not floors_pass:
+        return ("LIFT", "self", f"{pct}% (independent) but a content floor is not PASS (A/B/C-src) → fix")
+    if pct >= SHIP_BAR:
+        return ("READY", "human",
+                f"{pct}% (independent) ≥{SHIP_BAR}% + floors PASS → ready for human approval (Step 12){star}{cnote}")
+    return ("LIFT", "self", f"{pct}% (independent) <{SHIP_BAR}% → lift loop (≤3) toward the bar")
 
 
 def parse_tracker():
@@ -306,12 +337,13 @@ def summary(rows):
     n = len(rows)
     need_indep = sum(1 for r in rows if any(r["bubbles"][g] == BUB["self"] for g in INDEP_GATES + ("score",)))
     need_example = sum(1 for r in rows if r["bubbles"]["example"] in (BUB["no"], BUB["self"]))
-    auto = sum(1 for r in rows if r["decision"] in ("AUTO-APPROVE", "APPROVED"))
-    eligible = sum(1 for r in rows if r["decision"] == "ELIGIBLE")
+    ready = sum(1 for r in rows if r["decision"] == "READY")
+    needs_indep = sum(1 for r in rows if r["decision"] == "NEEDS-INDEP")
     lift = sum(1 for r in rows if r["decision"] == "LIFT")
+    approved = sum(1 for r in rows if r["decision"] == "APPROVED")
     human = sum(1 for r in rows if r["bubbles"]["approve"] == BUB["human"])
     return dict(n=n, indep=need_indep, example=need_example,
-                auto=auto, eligible=eligible, lift=lift, human=human)
+                ready=ready, needs_indep=needs_indep, lift=lift, approved=approved, human=human)
 
 
 # ----------------------------------------------------------------------------- markdown
@@ -337,7 +369,7 @@ def write_matrix(rows, ch2part, parts, findings, caps):
         f"- **{s['n']}/47 chapters** drafted (🟢 `draft`).",
         f"- **{s['indep']}** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).",
         f"- **{s['example']}** need EXAMPLE-BUILD (FLOOR-C compile).",
-        f"- **Auto-approval (≥{APPROVE_THRESHOLD}%):** {s['auto']} approved · {s['eligible']} eligible-pending-independent · {s['lift']} in lift · {s['human']} at human gate 🔵.",
+        f"- **Routing (ship bar {SHIP_BAR}% + floors → human gate):** {s['ready']} READY for human approval 🔵 · {s['lift']} in lift · {s['needs_indep']} need an independent score · {s['approved']} approved.",
         f"- **DRIFT: {'❌ ' + str(len(findings)) + ' finding(s)' if findings else '✅ none'}**.",
         "",
         "## Needs-human queue 🔵",
@@ -389,11 +421,13 @@ def write_matrix(rows, ch2part, parts, findings, caps):
 
 def write_scoring_md(rows):
     today = datetime.date.today().isoformat()
-    L = ["# SCORING & AUTO-APPROVAL — Java Code Quality Book", "",
-         f"> Generated by `status.py` · {today}. **Policy:** score **≥{APPROVE_THRESHOLD}%** "
-         f"(≥{APPROVE_THRESHOLD * SCORE_MAX // 100}/{SCORE_MAX}) **+ content floors PASS + independent gates run** "
-         "→ **auto-approve**. Otherwise **lift** (scorer bounded ≤3 passes); if lift cannot reach the bar → **human gate**.",
-         "> A main-loop *self*-score can only be *eligible* — never auto-approved — until the independent gates (VERIFY/CLARITY/AUDIT) leave their reports on disk.",
+    L = ["# SCORING & APPROVAL ROUTING — Java Code Quality Book", "",
+         f"> Generated by `status.py` · {today}. **Policy (lift → human gate):** an INDEPENDENT "
+         f"(different-model) score **≥{SHIP_BAR}%** (≥{SHIP_BAR * SCORE_MAX // 100}/{SCORE_MAX}) **+ content floors "
+         "PASS (A/B/C-source)** → **READY for the human approval gate (Step 12)**. Below the bar or a floor "
+         "unresolved → **lift** (≤3 passes). The human gives final approval.",
+         f"> A main-loop *self*-score must be independently re-scored before it advances. **≥{APPROVE_THRESHOLD}%** is "
+         "flagged as excellence. COMPILE/example-build is tracked separately (a later phase), not a blocker here.",
          "",
          "| Ch | Key | Score | % | A | B | C-src | C-compile | Indep? | Decision | Why |",
          "|---|---|---|---|---|---|---|---|---|---|---|"]
@@ -409,10 +443,10 @@ def write_scoring_md(rows):
                  f"**{r['decision']}** | {r['reason']} |")
     s = summary(rows)
     L += ["", "## Routing", "",
-          f"- **{s['auto']}** auto-approved (≥{APPROVE_THRESHOLD}% + floors + independent).",
-          f"- **{s['eligible']}** eligible — ≥{APPROVE_THRESHOLD}% on a self-score; need the independent gates to fire auto-approve.",
-          f"- **{s['lift']}** in the lift loop (below the bar or a floor unresolved).",
-          f"- **{s['human']}** at the human gate (lift exhausted).",
+          f"- **{s['ready']}** READY for human approval — independent score ≥{SHIP_BAR}% + content floors PASS (Step 12 queue).",
+          f"- **{s['needs_indep']}** need an independent score (self ≥{SHIP_BAR}%, run the independent scorer).",
+          f"- **{s['lift']}** in the lift loop (below the {SHIP_BAR}% bar or a floor unresolved).",
+          f"- **{s['approved']}** already human-approved (in 04-approved/).",
           "",
           "_Apply approvals for qualifying chapters: `python3 .claude/scripts/status.py --apply-approvals`._", ""]
     open(SCORING_OUT, "w", encoding="utf-8").write("\n".join(L))
@@ -456,17 +490,18 @@ def write_html(rows, ch2part, parts, findings, caps, audit, today):
     # --- Overview ---
     ov = ['<h2>Where the book stands</h2>', legend,
           f'<div class=box><div class=big>{s["n"]}/47</div>drafted</div>'
-          f'<div class=box><div class=big>{s["indep"]}</div>await independent gates 🟡</div>'
-          f'<div class=box><div class=big>{s["example"]}</div>need example-build</div>'
-          f'<div class=box><div class=big>{s["auto"]}</div>auto-approved 🟢</div>'
+          f'<div class=box><div class=big>{s["ready"]}</div>READY for human 🔵</div>'
           f'<div class=box><div class=big>{s["lift"]}</div>in lift 🟡</div>'
-          f'<div class=box><div class=big>{s["human"]}</div>human gate 🔵</div>']
+          f'<div class=box><div class=big>{s["needs_indep"]}</div>need indep score</div>'
+          f'<div class=box><div class=big>{s["example"]}</div>need example-build</div>'
+          f'<div class=box><div class=big>{s["approved"]}</div>approved 🟢</div>']
     if caps:
         cg = sum(1 for c in caps["capstones"] for v in c["gates"].values() if v == "done")
         ov.append(f'<div class=box><div class=big>{len(caps["capstones"])}</div>capstone apps</div>')
-    ov.append('<div class=q><b>Auto-approval policy:</b> score ≥%d%% + content floors PASS + independent gates run '
-              '→ auto-approve. Otherwise lift (≤3), then human gate. '
-              '<a href="scoring.html">See scoring →</a></div>' % APPROVE_THRESHOLD)
+    ov.append('<div class=q><b>Routing policy (lift → human gate):</b> an independent (different-model) score '
+              '≥%d%% + content floors PASS → READY for human approval (Step 12). Below the bar or a floor unresolved '
+              '→ lift. ≥%d%% is flagged as excellence. <a href="scoring.html">See scoring →</a></div>'
+              % (SHIP_BAR, APPROVE_THRESHOLD))
     if findings:
         ov.append('<div class=drift><b>❌ Drift ({} finding{}).</b> <a href="chapters.html">See details →</a></div>'
                   .format(len(findings), "s" if len(findings) != 1 else ""))
@@ -506,10 +541,10 @@ def write_html(rows, ch2part, parts, findings, caps, audit, today):
     write_page("chapters.html", "Chapters", "".join(ch), today)
 
     # --- Scoring & approval ---
-    sc = ['<div class=q><b>Policy:</b> score ≥%d%% (≥%d/%d) + floors PASS + independent gates run → '
-          '<b>auto-approve</b>. Else <b>lift</b> (≤3 passes); if lift can\'t reach the bar → <b>human gate</b>. '
-          'A self-score is only <i>eligible</i> until the independent gates run.</div>'
-          % (APPROVE_THRESHOLD, APPROVE_THRESHOLD * SCORE_MAX // 100, SCORE_MAX)]
+    sc = ['<div class=q><b>Policy (lift → human gate):</b> an independent score ≥%d%% (≥%d/%d) + content floors PASS → '
+          '<b>READY for human approval</b>. Else <b>lift</b> (≤3 passes) toward the bar. ≥%d%% flags excellence. '
+          'A self-score must be independently re-scored before it advances.</div>'
+          % (SHIP_BAR, SHIP_BAR * SCORE_MAX // 100, SCORE_MAX, APPROVE_THRESHOLD)]
     sc.append("<table><tr><th>Ch</th><th>Key</th><th>Score</th><th>%</th><th>A</th><th>B</th><th>C-src</th>"
               "<th>C-comp</th><th>Indep</th><th>Decision</th><th>Why</th></tr>")
     dcolor = {"AUTO-APPROVE": "#1a7f37", "APPROVED": "#1a7f37", "ELIGIBLE": "#bf8700",
@@ -627,12 +662,12 @@ def main():
         write_scoring_md(rows)
         write_html(rows, ch2part, parts, findings, caps, audit, today)
         log_milestone("report", "status.py",
-                      f"regenerated MD+HTML: {s['n']}/47 drafted, {s['auto']} approved, "
+                      f"regenerated MD+HTML: {s['n']}/47 drafted, {s['ready']} ready-for-human, "
                       f"{s['lift']} in lift, drift={'none' if not findings else len(findings)}")
         print(f"status: wrote STATUS-MATRIX.md + SCORING-APPROVAL.md + 5 HTML pages in 10-logs/")
 
-    print(f"status: {s['n']}/47 drafted · {s['indep']} await independent · {s['example']} need example · "
-          f"approve[{s['auto']} auto / {s['eligible']} eligible / {s['lift']} lift / {s['human']} human]")
+    print(f"status: {s['n']}/47 drafted · {s['example']} need example · "
+          f"route[{s['ready']} READY-human / {s['lift']} lift / {s['needs_indep']} need-indep / {s['approved']} approved] (bar {SHIP_BAR}%)")
     if caps:
         print(f"status: capstones — {len(caps['capstones'])} apps (build/test/checkstyle/spotbugs green; code-review pending)")
     if findings:

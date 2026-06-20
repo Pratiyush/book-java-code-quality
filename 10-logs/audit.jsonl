@@ -22,3 +22,7 @@
 {"ts":"2026-06-20T20:19:08Z","kind":"milestone","actor":"claude","action":"figure","target":"Ch 38,39,41,42,43,45,46","detail":"8 designed figures authored + rendered (Ch46 x2) via the pipeline; referenced in drafts; all traced"}
 {"ts":"2026-06-20T20:25:13Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 0 approved, 47 in lift, drift=none"}
 {"ts":"2026-06-20T20:25:13Z","kind":"milestone","actor":"claude","action":"score-indep","target":"Ch 38,39,41,42,43,45,46 (lift1)","detail":"after voice+figure: 70-80% (was 68-76%); none reach 90%; remaining caps = EXAMPLE-BUILD snippets + live-web pin-verify + residual prose"}
+{"ts":"2026-06-20T20:32:07Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 0 ready-for-human, 8 in lift, drift=none"}
+{"ts":"2026-06-20T20:33:58Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 1 ready-for-human, 7 in lift, drift=none"}
+{"ts":"2026-06-20T20:35:55Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 1 ready-for-human, 7 in lift, drift=none"}
+{"ts":"2026-06-20T20:36:26Z","kind":"milestone","actor":"claude","action":"engine","target":"status.py","detail":"retarget per user: ship bar 80%, lift->human-gate routing (no auto-approve); robust floor parser (3/4-col tables); Ch38 READY, 7 in lift"}
