@@ -141,7 +141,7 @@
 | — | 93 | Strangler-fig & incremental modernization | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 94 | Automated large-scale change (OpenRewrite/Refaster) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 95 | Migrating Java versions (8→17→21→25) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 96 | Taming a low-quality codebase — remediation playbook | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 40 | 96 | Automated change & the remediation playbook (Ch 40; folds 94) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 
 | — | 97 | Quality of AI/LLM-generated Java | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 98 | Using AI for code review | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
