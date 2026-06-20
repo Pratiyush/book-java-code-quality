@@ -126,7 +126,7 @@
 | 34 | 80 | Coverage strategy, PR automation & CI platforms (Ch 34; folds 77+78) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | 35 | 81 | Branch protection, trunk-based dev & pre-commit parity (Ch 35; folds 82) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | — | 82 | Pre-commit hooks & local↔CI parity | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 83 | Release quality (gates, canary, feedback) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
+| 36 | 83 | Release quality (Ch 36) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 
 | — | 84 | Code review practices (size/time, checklists) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 85 | Metrics that matter vs vanity (DORA/SPACE) | done | pending⁵ | pending | pending | pending | pending | pending | pending | pending | pending |
