@@ -34,3 +34,5 @@
 {"ts":"2026-06-20T21:06:09Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 1 ready-for-human, 7 in lift, drift=none"}
 {"ts":"2026-06-20T21:15:21Z","kind":"milestone","actor":"claude","action":"voice-lift","target":"Ch 25-32 (batch 5)","detail":"copyeditor voice pass"}
 {"ts":"2026-06-20T21:23:34Z","kind":"milestone","actor":"claude","action":"voice-lift","target":"Ch 33-37,40,44 (batch 6)","detail":"copyeditor voice pass; VOICE LIFT NOW COMPLETE on all 47 chapters"}
+{"ts":"2026-06-20T21:23:34Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 1 ready-for-human, 7 in lift, drift=none"}
+{"ts":"2026-06-20T21:33:11Z","kind":"milestone","actor":"claude","action":"figure","target":"Ch 1-8 (fig batch 1)","detail":"15 designed figures rendered + referenced; figure-designer realized per-chapter image budgets (some 2-3 figs)"}

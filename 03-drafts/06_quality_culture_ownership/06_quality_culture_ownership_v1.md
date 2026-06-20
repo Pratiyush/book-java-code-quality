@@ -35,6 +35,19 @@ The difference is not tooling. It is culture: who owns quality, when they addres
 
 ## How it works
 
+![Fig 06.1 — Westrum's three organizational culture types — Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.](../../05-figures/06_quality_culture_ownership/fig06_1.png)
+
+*Fig 06.1 — Westrum's three organizational culture types — Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.*
+
+![Fig 06.2 — Shift-left: defect cost rises with lifecycle stage — Catching a defect earlier is cheaper; the Ch 3 tool layers place quality activities as far left as possible.](../../05-figures/06_quality_culture_ownership/fig06_2.png)
+
+*Fig 06.2 — Shift-left: defect cost rises with lifecycle stage — Catching a defect earlier is cheaper; the Ch 3 tool layers place quality activities as far left as possible.*
+
+![Fig 06.3 — The three code-ownership models — Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.](../../05-figures/06_quality_culture_ownership/fig06_3.png)
+
+*Fig 06.3 — The three code-ownership models — Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.*
+
+
 ### Culture is causal
 
 Treating "culture" as the squishy preamble before the real, technical content is tempting. The data says otherwise. Sociologist **Ron Westrum** (1988) classified organizational cultures into three types:

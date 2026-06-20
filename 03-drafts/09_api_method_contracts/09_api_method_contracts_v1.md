@@ -36,6 +36,11 @@ The one idea worth holding: *push as much of the contract into the type system a
 
 ## How it works
 
+![Fig 09.1 — The two halves of a method contract — Push as much of the contract into the type system as possible — the cheapest feedback on a broken contract is "it didn't compile"](../../05-figures/09_api_method_contracts/fig09_1.png)
+
+*Fig 09.1 — The two halves of a method contract — Push as much of the contract into the type system as possible — the cheapest feedback on a broken contract is "it didn't compile"*
+
+
 ### The two halves of a contract
 
 Every method makes a promise with two parts, and they are enforced in completely different places.

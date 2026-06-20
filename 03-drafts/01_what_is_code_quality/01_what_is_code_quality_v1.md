@@ -36,6 +36,19 @@ The word "quality" cannot answer those questions. It is too vague to argue with 
 
 ## How it works
 
+![Fig 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.](../../05-figures/01_what_is_code_quality/fig01_1.png)
+
+*Fig 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.*
+
+![Fig 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).](../../05-figures/01_what_is_code_quality/fig01_2.png)
+
+*Fig 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).*
+
+![Fig 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.](../../05-figures/01_what_is_code_quality/fig01_3.png)
+
+*Fig 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.*
+
+
 ### Quality is not one thing — it is a decomposable set of attributes
 
 The reason "improve quality" is unarguable is that *quality* is an umbrella over many distinct properties. The international standard for software quality, **ISO/IEC 25010**, makes the decomposition explicit. Its **product quality model** breaks quality into top-level *characteristics*, each with sub-characteristics.

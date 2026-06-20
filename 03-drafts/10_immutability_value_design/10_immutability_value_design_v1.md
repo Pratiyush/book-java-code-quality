@@ -45,6 +45,11 @@ The central idea: *using the feature is not the same as getting the guarantee.* 
 
 ## How it works
 
+![Three instruments of Java immutability — Each instrument closes a specific gap — composed, they satisfy Effective Java](../../05-figures/10_immutability_value_design/fig10_1.png)
+
+*Three instruments of Java immutability — Each instrument closes a specific gap — composed, they satisfy Effective Java*
+
+
 ### Why immutability is the highest-leverage lever in Part II
 
 An immutable object has exactly one state for its entire life. That single property cascades: it is **simple** to reason about (no "what is its state *now*?" question arises), **inherently thread-safe** (no two threads can race on state that never changes; see Chapter 14), and **safe to share, cache, and pass around** without defensive thought. *Effective Java* Item 17 states the default plainly: classes should be immutable unless there is a very good reason to make them mutable. Immutability does not *guard against* a category of bug (shared mutable state changing under code that assumed it would not) — it *removes the category*.

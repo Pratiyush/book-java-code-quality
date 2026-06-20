@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 5 — Effective Java & modern Java for quality (dossier key 08, folds 13) · Part II
+  Figure:  Fig 08.2 — Records "serve not retire": decision tree for the immutability principle
+  Family:  Decision-shape / flow (top-to-bottom decision tree)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §The folklore to avoid: "records make immutability obsolete" (draft v1, §Deep dive)
+  One idea: A record serves the immutability principle for the common case (transparent data,
+            no invariants), but does not retire it — the decision tree routes each class shape
+            to the right form, traced to JEP 395 and Effective Java Items 15–17.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 08.2 — Records serve, not retire, the immutability principle</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 36px 26px;
+      width: 900px;
+    }
+
+    /* ── Shared geometry ── */
+    .center { display: flex; flex-direction: column; align-items: center; }
+    .vline  { width: 2px; background: var(--ink); }
+    .hline  { height: 2px; background: var(--ink); }
+
+    /* ── Start node ── */
+    .node-start {
+      width: 360px;
+      border: 2px solid var(--accent-bar);
+      box-shadow: inset 0 3px 0 var(--accent-bar);
+      border-radius: var(--radius);
+      background: var(--tint-1);
+      padding: 13px 20px;
+      text-align: center;
+    }
+    .node-start h4 { margin: 0 0 3px; font-size: 14px; font-weight: 700; }
+    .node-start p  { margin: 0; font-size: 12px; color: var(--ink-soft); }
+
+    /* ── Decision box (rhombus feel via skewed borders) ── */
+    .node-q {
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      background: var(--tint-2);
+      padding: 13px 18px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .node-q.wide { width: 340px; }
+    .node-q.med  { width: 240px; }
+
+    /* ── Leaf outcome nodes ── */
+    .node-leaf {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 13px 16px;
+      text-align: left;
+      background: var(--paper);
+    }
+    .node-leaf h4  { margin: 0 0 5px; font-size: 13px; font-weight: 700; }
+    .node-leaf p   { margin: 0; font-size: 12px; color: var(--ink-soft); line-height: 1.4; }
+    .node-leaf .jep { font-family: var(--mono); font-size: 10.5px; color: var(--ink-soft); margin-top: 6px; display: block; }
+    .node-leaf.accent {
+      border-color: var(--accent-bar);
+      box-shadow: inset 0 3px 0 var(--accent-bar);
+    }
+    .node-leaf.strong { background: var(--tint-3); }
+    .node-leaf.warn   { border-color: var(--warn); }
+
+    /* ── Branch label (YES / NO) ── */
+    .blabel {
+      font-size: 11.5px; font-weight: 700;
+      padding: 0 6px;
+    }
+    .blabel.yes { color: var(--ok); }
+    .blabel.no  { color: var(--stop); }
+
+    /* ── Bottom principle bar ── */
+    .principle-bar {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--tint-1);
+      padding: 11px 24px;
+      text-align: center;
+      width: 680px;
+    }
+
+    /* ── Mono inline ── */
+    .mn { font-family: var(--mono); font-size: 11px; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 08.2 — Records serve, not retire, the immutability principle</p>
+  <p class="fig-subtitle">Choose the right form — records cover the common case; the principle (EJ Items 15–17) applies to every form.</p>
+
+  <!-- ── TREE ROOT ── -->
+  <div class="center" style="margin-top:10px;">
+
+    <!-- START node -->
+    <div class="node-start">
+      <h4>The class under review</h4>
+      <p>Apply the immutability principle (EJ Items 15–17)<br>and select the expression form</p>
+    </div>
+    <div class="vline" style="height:20px;"></div>
+
+    <!-- Q1 -->
+    <div class="node-q wide">
+      Is the data <em>transparent</em> and <em>immutable</em><br>
+      with <em>no identity semantics</em>?
+    </div>
+
+    <!-- Q1 → YES left / NO right -->
+    <div style="display:flex; align-items:flex-start; width:830px; margin-top:0;">
+
+      <!-- LEFT (YES) branch -->
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center;">
+        <!-- H-line to left then down -->
+        <div style="display:flex; align-items:flex-start; width:100%;">
+          <div class="hline" style="flex:1; margin-top:11px;"></div>
+          <div class="vline" style="height:22px;"></div>
+          <div style="flex:1;"></div><!-- spacer so line ends at centre of this column -->
+        </div>
+        <div class="blabel yes">YES</div>
+        <div class="vline" style="height:12px;"></div>
+
+        <!-- Q2 -->
+        <div class="node-q med">
+          Needs validation or<br>normalization?
+        </div>
+
+        <!-- Q2 → NO left / YES right (both are leaves at this level) -->
+        <div style="display:flex; align-items:flex-start; width:500px; margin-top:0;">
+
+          <!-- Q2-NO: plain record -->
+          <div style="flex:1; display:flex; flex-direction:column; align-items:center;">
+            <div style="display:flex; align-items:flex-start; width:100%;">
+              <div class="hline" style="flex:1; margin-top:11px;"></div>
+              <div class="vline" style="height:22px;"></div>
+              <div style="flex:1;"></div>
+            </div>
+            <div class="blabel no" style="color:var(--ink-soft);">NO</div>
+            <div class="vline" style="height:10px;"></div>
+            <div class="node-leaf accent" style="width:210px;">
+              <h4 style="color:var(--accent-bar);">Plain record</h4>
+              <p><span class="mn">record Point(int x, int y) {}</span><br><br>
+                 equals / hashCode / toString auto-generated from components</p>
+              <span class="jep">JEP 395 · final Java 16</span>
+            </div>
+          </div>
+
+          <!-- Q2-YES: record + compact constructor -->
+          <div style="flex:1; display:flex; flex-direction:column; align-items:center;">
+            <div style="display:flex; align-items:flex-start; width:100%;">
+              <div style="flex:1;"></div>
+              <div class="vline" style="height:22px;"></div>
+              <div class="hline" style="flex:1; margin-top:11px;"></div>
+            </div>
+            <div class="blabel yes">YES</div>
+            <div class="vline" style="height:10px;"></div>
+            <div class="node-leaf warn" style="width:210px;">
+              <h4>Record + compact constructor</h4>
+              <p>Validate in canonical form; components remain immutable; invariant enforced at construction</p>
+              <span class="jep">JEP 395 · Java 16<br>EJ Item 17 (validation)</span>
+            </div>
+          </div>
+
+        </div><!-- Q2 branch row -->
+      </div><!-- LEFT (YES) branch -->
+
+      <!-- RIGHT (NO) branch -->
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center;">
+        <div style="display:flex; align-items:flex-start; width:100%;">
+          <div style="flex:1;"></div>
+          <div class="vline" style="height:22px;"></div>
+          <div class="hline" style="flex:1; margin-top:11px;"></div>
+        </div>
+        <div class="blabel no">NO</div>
+        <div class="vline" style="height:12px;"></div>
+
+        <!-- Reason note -->
+        <div class="fig-note" style="width:300px; font-size:11.5px; margin-bottom:10px;">
+          Has <b>identity</b>, hidden representation,<br>
+          behaviour, or mutable state —<br>
+          a record does not fit this shape.
+        </div>
+        <div class="vline" style="height:10px;"></div>
+
+        <!-- Q3: custom equals / encapsulated state -->
+        <div class="node-q" style="width:300px;">
+          Needs encapsulated state or<br>
+          custom <span class="mn">equals</span> / identity?
+        </div>
+        <div class="vline" style="height:14px;"></div>
+
+        <!-- Always reaches hand-written for the NO side -->
+        <div class="node-leaf strong" style="width:300px;">
+          <h4>Hand-written immutable class</h4>
+          <p>
+            Private final fields; no setters; defensive copies where needed.<br>
+            Override <span class="mn">equals</span> / <span class="mn">hashCode</span> / <span class="mn">toString</span> per the contract.
+          </p>
+          <span class="jep">EJ Items 15–17 (minimize mutability)<br>EJ Item 10 (equals contract)</span>
+        </div>
+      </div><!-- RIGHT (NO) branch -->
+
+    </div><!-- Q1 branch row -->
+
+    <!-- Bottom principle bar -->
+    <div class="vline" style="height:24px;"></div>
+    <div class="principle-bar">
+      <span style="font-size:13px; font-weight:700;">Principle: minimize mutability</span>
+      <span style="font-size:12.5px; color:var(--ink-soft);"> — stands regardless of which form is chosen above (EJ Items 15–17)</span>
+    </div>
+
+  </div><!-- center -->
+
+  <div class="fig-note" style="margin-top:18px;">
+    <b>Folklore to avoid:</b> "Records replace the immutability item." They do not. A record exposes all components
+    and is for <em>transparent data</em>. A class with behaviour, encapsulated state, or validation beyond a compact
+    constructor is not a record candidate. Use the feature where it fits the principle — not as a default.
+    (Draft v1 §Deep dive; traced to JEP 395 + EJ Item 15.)
+  </div>
+
+  <p class="fig-caption">
+    Decision traced to: <b>JEP 395</b> (records, final Java 16) for the record branches;
+    <b>Effective Java 3e Items 10–12, 15–17</b> (Bloch 2018) for object contracts and minimize-mutability.
+    "Compact constructor" term from JEP 395 §Compact constructors.
+    Every branch label appears in draft v1 §Deep dive or §How it works — see <b>fig08_2.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

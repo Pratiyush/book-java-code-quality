@@ -37,6 +37,15 @@ One idea carries the chapter: a principle can be timeless while the *idiom that 
 
 ## How it works
 
+![Fig 08.1 — Canon-dating: Effective Java principle → modern Java feature → verdict — The principle is kept; the idiom is updated. Three verdicts: Stands, Served by a feature, Reinforced-and-dated.](../../05-figures/08_effective_java/fig08_1.png)
+
+*Fig 08.1 — Canon-dating: Effective Java principle → modern Java feature → verdict — The principle is kept; the idiom is updated. Three verdicts: Stands, Served by a feature, Reinforced-and-dated.*
+
+![Fig 08.2 — Records serve, not retire, the immutability principle — Choose the right form — records cover the common case; the principle (EJ Items 15–17) applies to every form.](../../05-figures/08_effective_java/fig08_2.png)
+
+*Fig 08.2 — Records serve, not retire, the immutability principle — Choose the right form — records cover the common case; the principle (EJ Items 15–17) applies to every form.*
+
+
 ### The canon's load-bearing principles
 
 *Effective Java* (Joshua Bloch, 3rd edition, 2018) is organized as ~90 "Items." A handful carry most of the weight for code quality, and they are genuinely durable:

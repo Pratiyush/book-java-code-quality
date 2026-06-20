@@ -38,6 +38,11 @@ The division of labour matters. Naming, structure, and formatting are the lowest
 
 ## How it works
 
+![Fig 07.1 — The typography / meaning axis — What a tool can settle once vs. what only a human with domain knowledge can judge — the spine of Chapter 6](../../05-figures/07_naming_structure_formatting/fig07_1.png)
+
+*Fig 07.1 — The typography / meaning axis — What a tool can settle once vs. what only a human with domain knowledge can judge — the spine of Chapter 6*
+
+
 ### The three layers, and where each is enforced
 
 The chapter's spine is one picture. Three concerns that feel like taste are actually three different *kinds* of decision, and they get enforced in three different places.

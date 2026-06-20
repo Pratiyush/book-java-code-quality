@@ -35,6 +35,15 @@ The dashboard was not lying about coverage. It was lying about *quality*, becaus
 
 ## How it works
 
+![Fig 03.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting — Two methods, identical branch count, opposite nesting structure — equal cyclomatic score, very different cognitive score.](../../05-figures/03_readability_maintainability/fig03_1.png)
+
+*Fig 03.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting — Two methods, identical branch count, opposite nesting structure — equal cyclomatic score, very different cognitive score.*
+
+![Fig 03.2 — Contested prescriptions: function size &amp; comments — Two reputable schools hold opposed positions. Neither is universally correct — choose deliberately, apply consistently.](../../05-figures/03_readability_maintainability/fig03_2.png)
+
+*Fig 03.2 — Contested prescriptions: function size &amp; comments — Two reputable schools hold opposed positions. Neither is universally correct — choose deliberately, apply consistently.*
+
+
 ### Readability is the goal because reading is the cost
 
 From Chapter 1, internal quality's most leverage-heavy sub-characteristic is **analysability**: can a developer understand and locate things? The reason is pure economics. *Clean Code* states it: "the ratio of time spent reading versus writing is well over **10 to 1** … because this ratio is so high, we want the reading of code to be easy, even if it makes the writing harder." The operation performed ten times for every one write is the operation worth optimizing.
