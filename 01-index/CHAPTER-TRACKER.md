@@ -66,7 +66,7 @@
 | — | 24 | Testing & reproducing concurrency bugs (JCStress) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 25 | Static detection of concurrency issues | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | 15 | 26 | How static analysis works (Ch 15) | done | done² | **done** | PEND-RT⁶ | done | done | 41/50 | plan-set | pending | pending⁷ |
-| — | 27 | Checkstyle | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| 16 | 27 | Checkstyle, PMD, SpotBugs, Error Prone (Ch 16; folds 28+29+30) | done | done² | **done** | PEND-RT⁶ | done | done | 42/50 | plan-set | pending | pending⁷ |
 | — | 28 | PMD & CPD | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 29 | SpotBugs (+ FindSecBugs, fb-contrib) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 30 | Error Prone (+ Refaster) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
