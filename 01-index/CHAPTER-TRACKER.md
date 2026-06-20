@@ -53,7 +53,7 @@
 | 9 | 11 | Null-safety & Optional discipline (Ch 9; folds 31+32) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
 | 10 | 12 | Error handling & exceptions (Ch 10; folds 16+18) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
 | — | 13 | Modern Java for quality (records/sealed/patterns) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
-| — | 14 | Generics & type-safety | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
+| 11 | 14 | Generics & type-safety (Ch 11) | done | done² | **done** | PEND-RT⁶ | done | done | 40/50 | plan-set | pending | pending⁷ |
 | — | 15 | equals/hashCode/Comparable/toString | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 16 | Resource & lifecycle management | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
 | — | 17 | Comments, Javadoc & self-documenting code (contested) | done | done² | pending | pending | pending | pending | pending | pending | pending | pending |
