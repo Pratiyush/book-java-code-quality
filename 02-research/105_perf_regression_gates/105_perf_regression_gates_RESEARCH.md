@@ -26,7 +26,7 @@ Performance quietly degrades one PR at a time; without a gate, you discover it i
 - **Baseline-relative + trend** (keys 80/88) makes it adoptable like other ratcheted gates.
 
 ## 4. Evidence AGAINST / limits (HONEST-LIMITATIONS — central)
-- **Noisy → flaky gates** — naive absolute-threshold perf gates on shared CI runners flap, get ignored/disabled (key 49). Relative comparison + statistics + stable environments are mandatory; flag-then-investigate beats hard-block for small diffs.
+- **Noisy → flaky gates** — naive absolute-threshold perf gates on shared CI runners flap, get ignored/disabled (key 49). Relative comparison + statistics + stable environments are mandatory; flag-then-investigate is safer than hard-block for small diffs.
 - **Microbenchmark regression ≠ real regression** (key 104) — gating on JMH alone can block harmless changes or miss real end-to-end regressions; prefer macro/load gates (key 51) for what users feel.
 - **Cost** — perf gates are slow + need infra (load env, baselines); not every team/app needs them (when-NOT-to: a low-traffic internal tool).
 - **Threshold arbitrariness** (key 04) — perf thresholds must come from real requirements (key 101), not round numbers; false precision wastes effort.

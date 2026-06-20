@@ -14,10 +14,10 @@
 
 <!-- HOW TO FILL: one paragraph each. Start a new book at Phase 0 — Foundation; update as the pipeline advances. The chapter count is canonical in FINAL_INDEX.md (point to it, never hardcode it here). -->
 
-**Current phase:** Phase 1 — RESEARCH (Parts I–XIII done). **105/110 dossiers banked** (keys 01–105). Mode = **cheaper main-loop solo research** (no subagent fan-out; the spend limit aborted the Part V workflow). Verify status: 07–40 have `_VERIFY.md`; 01–06 + 41–105 are research-done with formal SOURCE-VERIFY pending → fold into `/pin-source`. SOURCE-PIN versions still `TO-PIN` (JUnit row = JUnit 6 current). Next: Parts XIV–XV (observability 106–108, capstone 109–110).
+**Current phase:** Phase 1 — RESEARCH **COMPLETE: all 110/110 dossiers banked** (keys 01–110, every Part I–XV). Built via multi-agent workflow (keys 07–40, each with a `_VERIFY.md`) then **cheaper main-loop solo research** (keys 01–06 pilot + 41–110, after the spend limit aborted the Part V workflow). Global neutrality sweep = 0 banned phrasings. Verify status: 07–40 have separate `_VERIFY.md`; 01–06 + 41–110 research-done, formal SOURCE-VERIFY pending → fold into `/pin-source`. SOURCE-PIN versions still `TO-PIN` (JUnit row = JUnit 6 current). **Next: `/pin-source` (resolve every TO-PIN + deferred verifies), then Phase 2 — SELECT (cull 110 → FINAL_INDEX, human-confirmed).**
 **Authority pin:** multi-authority set in `00-strategy/SOURCE-PIN.md` (Java 21+25 LTS anchor; each tool pinned per row). Exact tool versions are `TO-PIN` — run `/pin-source` before drafting. Until pinned, facts from a `TO-PIN` row are `⚠ UNVERIFIED`.
 **Repo state:** under git on `main`; remote `origin` = https://github.com/Pratiyush/book-java-code-quality (PUBLIC). Working dir `/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality`. No blocker.
-**Last updated:** 2026-06-15 — Parts I–III research banked (25 dossiers); git repo wired to the public GitHub remote; first push.
+**Last updated:** 2026-06-20 — Phase 1 RESEARCH COMPLETE: all 110 dossiers banked + pushed. Next: /pin-source then Phase 2 cull.
 
 ### Phase map
 
@@ -26,8 +26,8 @@
 | Phase | What | Status |
 |---|---|---|
 | 0 — Foundation | Strategy, authority pin, candidate pool, folder tree, tooling | **IN PROGRESS** — kernel adapted; pool built; pin structured (versions TO-PIN); law-file fine-tuning + `/pin-source` remain |
-| 1 — Research | Bank a verified dossier per candidate | not started |
-| 2 — Select | Score the pool, cull to ONE book; human confirms the cut | not started |
+| 1 — Research | Bank a verified dossier per candidate | **COMPLETE** — 110/110 dossiers banked (07–40 with `_VERIFY.md`; rest verify-pending → `/pin-source`) |
+| 2 — Select | Score the pool, cull to ONE book; human confirms the cut | next (after `/pin-source`) |
 | 3 — Draft + Gate | Draft confirmed chapters through the gated pipeline | not started |
 | 4 — Assemble | Compile approved chapters into the manuscript | not started |
 
