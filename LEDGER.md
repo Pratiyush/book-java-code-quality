@@ -14,11 +14,11 @@
 
 <!-- HOW TO FILL: one paragraph each. Start a new book at Phase 0 — Foundation; update as the pipeline advances. The chapter count is canonical in FINAL_INDEX.md (point to it, never hardcode it here). -->
 
-**Current phase:** Phase 3 — DRAFT (IN PROGRESS, main-loop / cheaper mode). Phases 0–2 ✅ + `/pin-source` ✅ done. FINAL_INDEX LOCKED = 47 chapters. **Pilot Ch 1 drafted** (v1+SCORE 40/50; floors A/B/C-source PASS; FLOOR-C compile = PENDING-RUNTIME, no JDK). **Drafting Part I next (Ch 2-4), build-pending.** RESUME: read this line + 01-index/FINAL_INDEX.md (locked TOC) + 01-index/CHAPTER-TRACKER.md (per-ch status); dossiers in 02-research/; drafts in 03-drafts/.
+**Current phase:** Phase 3 — DRAFT (IN PROGRESS, main-loop / cheaper mode). Phases 0–2 ✅ + `/pin-source` ✅ done. FINAL_INDEX LOCKED = 47 chapters. **15/47 drafted (Ch 1-15): Parts I-III complete + Part IV started (Ch 15 of 15-19).** Build toolchain READY (JDK 21.0.11 anchor + 25.0.3 forward installed 2026-06-20). FLOOR-C compile = PENDING on companion-module authoring+build (Step 4b EXAMPLE-BUILD), not a toolchain blocker. RESUME: read this line + 01-index/FINAL_INDEX.md (locked TOC) + 01-index/CHAPTER-TRACKER.md (per-ch status); dossiers in 02-research/; drafts in 03-drafts/.
 <!-- prior-phase note: Phase 1 — RESEARCH COMPLETE: all 110/110 dossiers banked (keys 01–110, every Part I–XV). Built via multi-agent workflow (keys 07–40, each with a `_VERIFY.md`) then **cheaper main-loop solo research** (keys 01–06 pilot + 41–110, after the spend limit aborted the Part V workflow). Global neutrality sweep = 0 banned phrasings. Verify status: 07–40 have separate `_VERIFY.md`; 01–06 + 41–110 research-done, formal SOURCE-VERIFY pending → fold into `/pin-source`. SOURCE-PIN versions still `TO-PIN`. -->
 **Authority pin:** multi-authority set in `00-strategy/SOURCE-PIN.md` (Java 21+25 LTS anchor; each tool pinned per row). ✅ PINNED 2026-06-20 (full /pin-source pass; versions web-verified). Rolling/SaaS rows (CodeQL, Renovate/Dependabot, Snyk, GitHub/GitLab) pinned at use; preview items marked AHEAD-OF-PIN.
-**Repo state:** under git on `main`; remote `origin` = https://github.com/Pratiyush/book-java-code-quality (PUBLIC). Working dir `/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality`. No blocker.
-**Last updated:** 2026-06-20 — Phase 0–2 complete + /pin-source done; Phase 3 started: pilot Ch 1 drafted (build PENDING-RUNTIME until JDK installed).
+**Repo state:** under git on `main`; remote `origin` = https://github.com/Pratiyush/book-java-code-quality (PUBLIC). Working dir `/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality`. **Build toolchain ready (2026-06-20): openjdk@21 21.0.11 (anchor) + openjdk@25 25.0.3 (forward LTS) installed; Maven 3.9.16 drives both via JAVA_HOME; ahead-of-pin JDK 26 removed.** No human blocker.
+**Last updated:** 2026-06-20 — Phase 0–2 complete + /pin-source done; 15/47 drafted (Parts I-III complete + Part IV Ch 15); build toolchain installed (JDK 21.0.11 + 25.0.3); FLOOR-C now PENDING on companion-module authoring+build, no longer on a missing JDK.
 
 ### Phase map
 
@@ -29,7 +29,7 @@
 | 0 — Foundation | Strategy, authority pin, candidate pool, folder tree, tooling | **✅ COMPLETE** — kernel adapted; pool built; SOURCE-PIN fully pinned (2026-06-20). (Optional law-file fine-tuning remains, non-gating.) |
 | 1 — Research | Bank a verified dossier per candidate | **COMPLETE** — 110/110 dossiers banked (07–40 with `_VERIFY.md`; rest verify-pending → `/pin-source`) |
 | 2 — Select | Score the pool, cull to ONE book; human confirms the cut | **✅ COMPLETE / LOCKED 2026-06-20** — 110 keys → 47 chapters (14 Parts), human-confirmed. See `01-index/FINAL_INDEX.md`. |
-| 3 — Draft + Gate | Draft confirmed chapters through the gated pipeline | **IN PROGRESS** — pilot Ch 1 drafted (v1 + SCORE 40/50; floors A/B/C-source PASS; FLOOR-C compile = PENDING-RUNTIME, no JDK). 15/47 drafted (Parts I-III complete + Part IV Ch 15 of 15-19). Next: Ch 16 (keys 27+28+29+30, Checkstyle, PMD, SpotBugs, Error Prone). |
+| 3 — Draft + Gate | Draft confirmed chapters through the gated pipeline | **IN PROGRESS** — 15/47 drafted (Parts I-III complete + Part IV Ch 15 of 15-19); per-chapter SCORE 40-43/50, floors A/B/C-source PASS; FLOOR-C compile = PENDING on companion-module authoring+build (toolchain READY: JDK 21.0.11 anchor + 25.0.3 forward installed 2026-06-20). Next: Ch 16 (keys 27+28+29+30, Checkstyle, PMD, SpotBugs, Error Prone). |
 | 4 — Assemble | Compile approved chapters into the manuscript | not started |
 
 ### Done
@@ -93,6 +93,11 @@
 > Dated entries: rule changes, promotions from `00-strategy/PIPELINE-LEARNINGS.md` into law, pin events, and gate-policy shifts. Newest first. Append; never delete.
 
 <!-- HOW TO FILL: every meaningful unit of work appends an entry (Continuous-improvement HARD RULE). Empty at Phase 0 start. -->
+
+### 2026-06-20 — Build toolchain installed (FLOOR-C toolchain blocker RESOLVED)
+
+- **JDK toolchain installed to the pin (human action, at author's request):** Homebrew `openjdk@21` = **21.0.11** (the SOURCE-PIN anchor) and `openjdk@25` = **25.0.3** (the SOURCE-PIN forward LTS); ahead-of-pin `openjdk` 26.0.1 **removed** (author decision: stay on the pinned 21/25 matrix). Maven 3.9.16 drives both via `JAVA_HOME` (anchor `/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home`; forward `/opt/homebrew/opt/openjdk@25/libexec/openjdk.jdk/Contents/Home`). Both keg-only (use `JAVA_HOME`, not a system symlink).
+- **Effect:** the former HUMAN-ONLY "install a JDK" blocker is resolved. FLOOR-C COMPILE for each chapter is now PENDING only on authoring + building its companion module (Step 4b EXAMPLE-BUILD) green under `mvn -B verify` (`--release 21`; optional 25 forward-check) — an in-pipeline task, not a toolchain/human blocker. Companion modules under `08-companion-code/` are currently spec-only (in each draft's foot).
 
 ### 2026-06-20 — Phase 1 complete + Phase 2 cull LOCKED
 
