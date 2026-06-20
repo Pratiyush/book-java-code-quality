@@ -25,7 +25,7 @@ Security controls only protect you if they run *automatically, every change*. Th
 - **DevSecOps framing:** security is everyone's, shifted left (key 06), automated as gates, with the SBOM/provenance layer (key 66) for the supply side.
 
 ## 3. Evidence FOR
-- **Automated, every-change security** beats periodic pen-tests for catching regressions early/cheaply (key 02 economics, shift-left key 06).
+- **Automated, every-change security** catches regressions earlier and more cheaply than periodic pen-tests alone (key 02 economics, shift-left key 06) — the two are complementary, not a contest.
 - **Layered types** (SAST+SCA+secrets+DAST) cover different blind spots — static misses runtime, dynamic misses unreached code.
 - **Maps to the existing gate machinery** (keys 75/76) — security is just more fitness functions.
 
