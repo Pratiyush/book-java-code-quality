@@ -42,10 +42,10 @@
 
 ### Next (in order)
 
-1. **Fine-tune the load-bearing law files** for our subject where the mechanical token pass left generic/clunky prose: `NEUTRALITY.md` (tool-comparison stance), `GUIDELINES-JAVA-QUALITY.md` §0–§1, `VOICE-GUIDE-JAVA-QUALITY.md`. (No human gate.)
-2. **Run `/pin-source`** — replace every `TO-PIN` in SOURCE-PIN.md with the exact latest-stable version + fetch reference per tool; stamp the pin date. (Verification task.)
-3. **Begin Phase 1 research** — bank a verified `_RESEARCH.md` dossier per candidate, topic-by-topic (start with a pilot Part, calibrate via `/retro`, then fan out).
-4. _(Human gate, later: confirm the Phase-2 cull of the candidate pool into FINAL_INDEX.md.)_
+1. **Run `/pin-source`** — replace every `TO-PIN` in SOURCE-PIN.md with the exact latest-stable version + fetch reference per tool/JDK/spec; stamp the pin date. (Big verification task — ~40 tools.)
+2. **Fold the deferred SOURCE-VERIFY** into the pin pass — produce `_VERIFY.md` for keys 01–06 + 41–110 and resolve the 60 `09-flags/` items (most are "verify-at-pin" atoms).
+3. **Fine-tune the load-bearing law files** where the mechanical token pass left generic prose: `GUIDELINES-JAVA-QUALITY.md` §0–§1, `VOICE-GUIDE-JAVA-QUALITY.md`. (No human gate.)
+4. **Phase 2 — SELECT (human gate):** score the 110-key pool, cull/merge to the FINAL_INDEX book of record (merge clusters in CANDIDATE_POOL), human-confirm + LOCK `FINAL_INDEX.md`. Then Phase 3 drafting.
 
 ---
 
