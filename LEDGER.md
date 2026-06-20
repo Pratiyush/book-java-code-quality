@@ -26,7 +26,7 @@
 
 | Phase | What | Status |
 |---|---|---|
-| 0 — Foundation | Strategy, authority pin, candidate pool, folder tree, tooling | **IN PROGRESS** — kernel adapted; pool built; pin structured (versions TO-PIN); law-file fine-tuning + `/pin-source` remain |
+| 0 — Foundation | Strategy, authority pin, candidate pool, folder tree, tooling | **✅ COMPLETE** — kernel adapted; pool built; SOURCE-PIN fully pinned (2026-06-20). (Optional law-file fine-tuning remains, non-gating.) |
 | 1 — Research | Bank a verified dossier per candidate | **COMPLETE** — 110/110 dossiers banked (07–40 with `_VERIFY.md`; rest verify-pending → `/pin-source`) |
 | 2 — Select | Score the pool, cull to ONE book; human confirms the cut | **✅ COMPLETE / LOCKED 2026-06-20** — 110 keys → 47 chapters (14 Parts), human-confirmed. See `01-index/FINAL_INDEX.md`. |
 | 3 — Draft + Gate | Draft confirmed chapters through the gated pipeline | not started |
@@ -43,10 +43,10 @@
 
 ### Next (in order)
 
-1. **Run `/pin-source`** — replace every `TO-PIN` in SOURCE-PIN.md with the exact latest-stable version + fetch reference per tool/JDK/spec; stamp the pin date. (Big verification task — ~40 tools.)
-2. **Fold the deferred SOURCE-VERIFY** into the pin pass — produce `_VERIFY.md` for keys 01–06 + 41–110 and resolve the 60 `09-flags/` items (most are "verify-at-pin" atoms).
-3. **Fine-tune the load-bearing law files** where the mechanical token pass left generic prose: `GUIDELINES-JAVA-QUALITY.md` §0–§1, `VOICE-GUIDE-JAVA-QUALITY.md`. (No human gate.)
-4. **Phase 2 — SELECT (human gate):** score the 110-key pool, cull/merge to the FINAL_INDEX book of record (merge clusters in CANDIDATE_POOL), human-confirm + LOCK `FINAL_INDEX.md`. Then Phase 3 drafting.
+1. **Phase 3 — DRAFT.** Draft the 47 locked chapters through the gated pipeline (`/draft` → example-build + CODE-REVIEW → VERIFY → clarity → audit → score → reconcile → human-approve). Start with a pilot chapter (e.g. Ch 1) to calibrate the draft pipeline, then fan out. Each chapter's draft re-confirms its dossier atoms against the now-pinned SOURCE-PIN (Step-5 SOURCE-VERIFY) and resolves its `09-flags/` "verify-at-pin" items.
+2. **Per-chapter (HARD, at draft):** Step-5 SOURCE-VERIFY (the deferred verify for keys 01–06 + 41–110 folds in here, per chapter) + FLOOR-C example-build (companion module green under `./mvnw -B verify`).
+3. **Optional, non-gating:** fine-tune `GUIDELINES-JAVA-QUALITY.md` §0–§1 + `VOICE-GUIDE-JAVA-QUALITY.md` prose; wire the multi-authority source-pin scripts.
+4. **Phase 4 — ASSEMBLE** approved chapters into the manuscript (`/assemble`).
 
 ---
 
