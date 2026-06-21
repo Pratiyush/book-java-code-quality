@@ -41,7 +41,7 @@ Bubble legend:
 Usage: python3 .claude/scripts/status.py [--check-only] [--apply-approvals]
 Owner: production-manager.  No external deps (stdlib only).
 """
-import os, re, sys, json, subprocess, datetime, shutil
+import os, re, sys, json, glob, subprocess, datetime, shutil
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 FINAL_INDEX = os.path.join(ROOT, "01-index", "FINAL_INDEX.md")
@@ -258,6 +258,10 @@ def parse_tracker():
         sip = report_path(slug, SCORE_INDEP)
         if sip and os.path.exists(sip):
             bubbles["score"] = BUB["done"]
+        # a rendered figure on disk upgrades the figure gate to 🟢
+        has_fig = bool(slug) and bool(glob.glob(os.path.join(ROOT, "05-figures", slug, "fig*_*.png")))
+        if has_fig:
+            bubbles["figure"] = BUB["done"]
         # approval engine drives the approve bubble
         score = parse_score(slug)
         decision, dkey, reason = approval_decision(score)
@@ -269,7 +273,7 @@ def parse_tracker():
         else:
             bubbles["approve"] = BUB[dkey]
         rows.append({"ch": int(ch), "nn": nn, "topic": topic, "slug": slug,
-                     "cells": cells, "bubbles": bubbles,
+                     "cells": cells, "bubbles": bubbles, "has_fig": has_fig,
                      "score": score, "decision": decision, "reason": reason})
     return sorted(rows, key=lambda r: r["ch"])
 
@@ -342,8 +346,11 @@ def summary(rows):
     lift = sum(1 for r in rows if r["decision"] == "LIFT")
     approved = sum(1 for r in rows if r["decision"] == "APPROVED")
     human = sum(1 for r in rows if r["bubbles"]["approve"] == BUB["human"])
+    figured = sum(1 for r in rows if r.get("has_fig"))
+    scored = sum(1 for r in rows if r["score"] and r["score"]["independent"])
     return dict(n=n, indep=need_indep, example=need_example,
-                ready=ready, needs_indep=needs_indep, lift=lift, approved=approved, human=human)
+                ready=ready, needs_indep=needs_indep, lift=lift, approved=approved, human=human,
+                figured=figured, scored=scored)
 
 
 # ----------------------------------------------------------------------------- markdown
@@ -453,162 +460,268 @@ def write_scoring_md(rows):
 
 
 # ----------------------------------------------------------------------------- html
-CSS = ("body{font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;margin:0;color:#1f2328;background:#f6f8fa}"
-       "header{background:#24292f;color:#fff;padding:14px 24px}header h1{margin:0;font-size:18px}"
-       "nav{background:#2d333b;padding:0 16px}nav a{display:inline-block;color:#cdd9e5;text-decoration:none;"
-       "padding:10px 14px;font-size:13px;border-bottom:3px solid transparent}nav a:hover{color:#fff}"
-       "nav a.active{color:#fff;border-bottom-color:#fb8500;font-weight:600}main{padding:20px 24px;max-width:1200px}"
-       "h2{font-weight:700;margin-top:1.6rem}table{border-collapse:collapse;margin:1rem 0;background:#fff;box-shadow:0 1px 3px #0002}"
-       "td,th{border:1px solid #d0d7de;padding:4px 8px;font-size:13px}th{background:#24292f;color:#fff;position:sticky;top:0}"
-       ".part td{background:#eaeef2;font-weight:700}.k{font-size:12px;color:#57606a}"
-       ".box{display:inline-block;background:#fff;border:1px solid #d0d7de;border-radius:8px;padding:10px 16px;margin:4px 8px 4px 0;min-width:90px}"
-       ".big{font-size:26px;font-weight:700}.q{background:#ddf4ff;border:1px solid #54aeff;border-radius:8px;padding:10px 14px;margin:1rem 0}"
-       ".drift{background:#ffebe9;border:1px solid #ff8182;border-radius:8px;padding:10px 14px;margin:1rem 0}"
-       ".ok{background:#dafbe1;border:1px solid #4ac26b;border-radius:8px;padding:10px 14px;margin:1rem 0}"
-       "code{background:#eaeef2;padding:1px 5px;border-radius:4px;font-size:12px}.mut{color:#57606a;font-size:12px}")
+CSS = """
+:root{--bg:#f4f6f9;--panel:#fff;--ink:#1f2328;--muted:#5b6675;--line:#e3e8ef;--brand:#3a5bd9;
+--brand2:#6b46c1;--done:#1a7f37;--self:#bf8700;--no:#cf222e;--human:#0969da;
+--shadow:0 1px 2px rgba(16,24,40,.05),0 6px 18px rgba(16,24,40,.06)}
+*{box-sizing:border-box}
+body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;margin:0;
+color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+a{color:var(--brand);text-decoration:none}a:hover{text-decoration:underline}
+.hd{background:linear-gradient(120deg,#1e2a4a,#2b1d52);color:#fff;padding:20px 28px 16px}
+.hd h1{margin:0;font-size:20px;font-weight:750;letter-spacing:.2px}
+.hd .sub{color:#aeb8d4;font-size:13px;margin-top:3px}
+.hd .prog{margin:14px 0 0;max-width:560px}
+.hd .prog .lbl{display:flex;justify-content:space-between;font-size:12px;color:#cdd5ee;margin-bottom:5px;font-weight:600}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#7aa2ff,#b794f6)}
+nav{position:sticky;top:0;z-index:9;background:#1b2440;display:flex;gap:2px;padding:0 16px;flex-wrap:wrap;box-shadow:var(--shadow)}
+nav a{color:#b7c0da;padding:12px 15px;font-size:13.5px;font-weight:600;border-bottom:3px solid transparent}
+nav a:hover{color:#fff;text-decoration:none}nav a.active{color:#fff;border-bottom-color:#7aa2ff}
+main{padding:24px 28px;max-width:1180px;margin:0 auto}
+h2{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:30px 0 12px}
+.hero{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 22px;box-shadow:var(--shadow);font-size:15px;line-height:1.65}
+.hero b{color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 17px;box-shadow:var(--shadow)}
+.kpi .n{font-size:29px;font-weight:760;line-height:1}.kpi .n small{font-size:15px;color:var(--muted);font-weight:600}
+.kpi .l{font-size:12.5px;color:var(--muted);margin:6px 0 10px;font-weight:600}
+.kpi .bar{background:#eef1f6;height:7px}.kpi .bar>i{background:linear-gradient(90deg,var(--brand),var(--brand2))}
+.note{border-radius:12px;padding:12px 16px;margin:14px 0;font-size:14px}
+.note.ok{background:#e9f8ee;border:1px solid #abe1bd;color:#0f6a2e}
+.note.bad{background:#fdeceb;border:1px solid #f5b5b1;color:#b42318}
+.note.info{background:#eef2ff;border:1px solid #c2cffc;color:#33409e}
+.scroll{overflow-x:auto;border-radius:12px;border:1px solid var(--line);box-shadow:var(--shadow)}
+table{border-collapse:separate;border-spacing:0;width:100%;background:var(--panel);font-size:13px}
+.scroll table{border:none;box-shadow:none}
+th,td{padding:8px 11px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:#f7f9fc;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;position:sticky;top:45px;z-index:2}
+tr:last-child td{border-bottom:none}tbody tr:hover td{background:#f9fbff}
+td.k{color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px}
+td.c{text-align:center}td.topic{white-space:normal;min-width:230px}
+.part td{background:#f0eefb;color:#4a2f8f;font-weight:750;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.bub{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:7px;font-size:13px}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-size:12.5px;color:var(--muted)}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.3px}
+.flr{display:inline-block;padding:2px 7px;border-radius:6px;font-size:10.5px;font-weight:700;margin-right:3px}
+.flr.PASS{background:#e9f8ee;color:#0f6a2e}.flr.PENDING{background:#fff4e0;color:#9a6700}
+.flr.FAIL{background:#fdeceb;color:#b42318}.flr.q{background:#eef1f6;color:#8893a4}
+.sbar{position:relative;height:20px;border-radius:6px;background:#eef1f6;overflow:hidden;min-width:140px}
+.sbar>i{display:block;height:100%}.sbar>span{position:absolute;left:8px;top:0;line-height:20px;font-size:11px;font-weight:700}
+.partbar{display:grid;grid-template-columns:170px 1fr 60px;gap:12px;align-items:center;margin:7px 0;font-size:13px}
+.partbar .bar{height:10px;background:#eef1f6}.partbar .bar>i{background:linear-gradient(90deg,var(--brand),var(--brand2))}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{position:relative;padding:0 0 16px 24px;border-left:2px solid var(--line);margin-left:7px}
+.tl li:last-child{border-left-color:transparent;padding-bottom:0}
+.tl .dot{position:absolute;left:-9px;top:0;width:16px;height:16px;border-radius:50%;background:var(--panel);border:2px solid var(--brand);font-size:8px;text-align:center;line-height:13px}
+.tl .when{font-size:11.5px;color:var(--muted);font-family:ui-monospace,monospace}
+.tl .what{font-weight:700}.tl .det{font-size:13px;color:var(--muted);margin-top:2px}
+.capgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.capcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+.capcard h3{margin:0 0 2px;font-size:15px}.capcard .dm{color:var(--muted);font-size:12.5px;margin-bottom:10px}
+.capcard .svc{font-size:12px;color:var(--muted);font-family:ui-monospace,monospace;margin-bottom:10px}
+.gline{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:3px 0;border-top:1px solid var(--line)}
+.foot{color:var(--muted);font-size:12.5px;margin:34px 0 12px;padding-top:14px;border-top:1px solid var(--line)}
+.foot code{background:#eef1f6;padding:1px 6px;border-radius:5px}
+@media(max-width:640px){main{padding:16px 14px}.hd{padding:16px}.partbar{grid-template-columns:110px 1fr 46px}}
+"""
+
+BUB_TIP = {"🟢": "done", "🟡": "in progress / self-pass", "🔴": "not started", "🔵": "awaiting human", "⚪": "n/a"}
+DCOLOR = {"READY": "#0969da", "APPROVED": "#1a7f37", "NEEDS-INDEP": "#bf8700", "LIFT": "#bf8700", "UNSCORED": "#cf222e"}
 
 
-def layout(title, active, body, today):
+def _bar(pct):
+    return f'<div class=bar><i style="width:{max(0, min(100, int(round(pct))))}%"></i></div>'
+
+
+def _kpi(num, total, label):
+    return (f'<div class=kpi><div class=n>{num}{("<small>/" + str(total) + "</small>") if total else ""}</div>'
+            f'<div class=l>{label}</div>{_bar((num / total * 100) if total else 0)}</div>')
+
+
+def layout(title, active, body, hdr):
     nav = "".join(f'<a href="{href}" class="{"active" if label == active else ""}">{label}</a>'
                   for href, label in PAGES)
-    return ("<!doctype html><meta charset=utf-8><title>Quality Book — " + title + "</title><style>" + CSS +
-            "</style><header><h1>📘 Java Code Quality Book — control dashboard</h1>"
-            f'<div class=mut style="color:#9da7b1">{title} · generated {today} by status.py</div></header>'
-            "<nav>" + nav + "</nav><main>" + body + "</main>")
+    return ("<!doctype html><html lang=en><meta charset=utf-8>"
+            "<meta name=viewport content='width=device-width,initial-scale=1'>"
+            f"<title>Quality Book · {title}</title><style>{CSS}</style>"
+            f"{hdr}<nav>{nav}</nav><main>{body}</main></html>")
 
 
 def htd(b):
-    return f'<td style="background:{HTML_COLOR.get(b,"#fff")};color:#fff;text-align:center;font-weight:600">{b}</td>'
+    return (f'<td class=c><span class=bub title="{BUB_TIP.get(b, "")}" '
+            f'style="background:{HTML_COLOR.get(b, "#fff")}22">{b}</span></td>')
 
 
 def write_html(rows, ch2part, parts, findings, caps, audit, today):
     os.makedirs(HTML_DIR, exist_ok=True)
     s = summary(rows)
-    legend = ('<p class=mut>🟢 done (independent gate + evidence) · 🟡 self/wip (independent agent not yet run) · '
-              '🔴 not-run · 🔵 awaiting-human · ⚪ n/a</p>')
+    stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    earned = s["n"] + s["figured"] + s["scored"] + s["ready"] + s["approved"]
+    overall = earned / (s["n"] * 4) * 100 if s["n"] else 0
+    hdr = ('<div class=hd><h1>📘 Java Code Quality — production dashboard</h1>'
+           f'<div class=sub>47-chapter manuscript · generated {stamp} · auto-refreshed after every gate</div>'
+           f'<div class=prog><div class=lbl><span>Pipeline progress</span><span>{int(round(overall))}%</span></div>'
+           f'{_bar(overall)}</div></div>')
+    foot = ('<div class=foot>Generated by <code>.claude/scripts/status.py</code> · ' + stamp +
+            ' · regenerate any time: <code>python3 .claude/scripts/status.py</code> · auto-runs after any gate '
+            '(CLAUDE.md “Reporting discipline”). Bubbles reflect on-disk evidence, not claims.</div>')
+    legend = ('<div class=legend><span class=chip>🟢 done</span><span class=chip>🟡 in progress</span>'
+              '<span class=chip>🔴 not started</span><span class=chip>🔵 awaiting human</span>'
+              '<span class=chip>⚪ n/a</span></div>')
+
+    def page(fn, active, body):
+        write_page(fn, active, body, hdr)
 
     # --- Overview ---
-    ov = ['<h2>Where the book stands</h2>', legend,
-          f'<div class=box><div class=big>{s["n"]}/47</div>drafted</div>'
-          f'<div class=box><div class=big>{s["ready"]}</div>READY for human 🔵</div>'
-          f'<div class=box><div class=big>{s["lift"]}</div>in lift 🟡</div>'
-          f'<div class=box><div class=big>{s["needs_indep"]}</div>need indep score</div>'
-          f'<div class=box><div class=big>{s["example"]}</div>need example-build</div>'
-          f'<div class=box><div class=big>{s["approved"]}</div>approved 🟢</div>']
+    drift_ok = not findings
+    hero = (f'<div class=hero>All <b>{s["n"]} of 47</b> chapters are drafted. <b>{s["figured"]}</b> have their '
+            f'figures rendered and <b>{s["scored"]}</b> carry an independent (different-model) score. '
+            f'<b>{s["ready"]}</b> are ready for the human approval gate, <b>{s["lift"]}</b> are in the lift loop, '
+            f'and <b>{s["approved"]}</b> are approved. '
+            + ('Records match the evidence on disk — no drift.' if drift_ok
+               else f'⚠ {len(findings)} drift finding(s) need attention.') + '</div>')
+    ov = [hero, '<h2>At a glance</h2><div class=kpis>',
+          _kpi(s["n"], 47, "Drafted"), _kpi(s["figured"], 47, "Figures rendered"),
+          _kpi(s["scored"], 47, "Independently scored"), _kpi(s["ready"], 47, "Ready for human 🔵"),
+          _kpi(s["lift"], 47, "In lift loop 🟡"), _kpi(s["approved"], 47, "Approved 🟢")]
     if caps:
-        cg = sum(1 for c in caps["capstones"] for v in c["gates"].values() if v == "done")
-        ov.append(f'<div class=box><div class=big>{len(caps["capstones"])}</div>capstone apps</div>')
-    ov.append('<div class=q><b>Routing policy (lift → human gate):</b> an independent (different-model) score '
-              '≥%d%% + content floors PASS → READY for human approval (Step 12). Below the bar or a floor unresolved '
-              '→ lift. ≥%d%% is flagged as excellence. <a href="scoring.html">See scoring →</a></div>'
-              % (SHIP_BAR, APPROVE_THRESHOLD))
-    if findings:
-        ov.append('<div class=drift><b>❌ Drift ({} finding{}).</b> <a href="chapters.html">See details →</a></div>'
-                  .format(len(findings), "s" if len(findings) != 1 else ""))
-    else:
-        ov.append('<div class=ok><b>✅ No drift</b> — every 🟢/🟡 gate has evidence on disk; gate-trail order holds.</div>')
-    ov.append('<p>Pages: <a href="chapters.html">Chapters matrix</a> · <a href="scoring.html">Scoring &amp; approval</a> · '
-              '<a href="capstones.html">Capstones</a> · <a href="audit.html">Audit log</a>.</p>')
-    write_page("dashboard.html", "Overview", "".join(ov), today)
+        ov.append(_kpi(len(caps["capstones"]), len(caps["capstones"]), "Capstone apps (green)"))
+    ov.append('</div>')
+    ov.append('<h2>Pipeline</h2><div class=card>')
+    for lbl, val in (("Drafted", s["n"]), ("Figures rendered", s["figured"]),
+                     ("Independent score", s["scored"]), ("Ready for human gate", s["ready"]),
+                     ("Approved", s["approved"])):
+        ov.append(f'<div class=partbar><span>{lbl}</span>{_bar(val / 47 * 100)}'
+                  f'<span style="text-align:right;color:var(--muted)">{val}/47</span></div>')
+    ov.append('</div>')
+    ov.append('<div class="note ' + ('ok' if drift_ok else 'bad') + '">'
+              + ('✅ <b>No drift</b> — every 🟢/🟡 gate has its evidence on disk and the gate order holds.'
+                 if drift_ok else f'❌ <b>{len(findings)} drift finding(s)</b> — see the Chapters page.') + '</div>')
+    ov.append('<div class="note info"><b>Routing:</b> an independent score ≥%d%% + content floors PASS → '
+              'READY for the human gate; below the bar → lift (≤3 passes). Review/scoring is delegated to an '
+              'external different-vendor LLM (<code>09-flags/external-review/</code>); Claude does the heavy '
+              'lifting. <a href="scoring.html">Scoring →</a></div>' % SHIP_BAR)
+    ov.append(foot)
+    page("dashboard.html", "Overview", "".join(ov))
 
     # --- Chapters matrix ---
-    ch = [legend]
-    ch.append("<h2>Per-Part rollup</h2><table><tr><th>Part</th><th>Chapters</th><th>Drafted 🟢</th><th>Await-independent 🟡</th><th>Human 🔵</th></tr>")
+    ch = ['<div class=hero>The gate matrix for every chapter — each cell is a gate’s state from the evidence on '
+          'disk. Hover a bubble for its meaning.</div>', legend]
+    ch.append('<h2>Progress by Part (figures rendered)</h2><div class=card>')
     for p in parts:
         chs = [r for r in rows if ch2part.get(r["ch"]) == p]
         if not chs:
             continue
-        drafted = sum(1 for r in chs if r["bubbles"]["draft"] == BUB["done"])
-        awaiting = sum(1 for r in chs if r["bubbles"]["audit"] != BUB["done"])
-        hum = sum(1 for r in chs if r["bubbles"]["approve"] == BUB["human"])
-        ch.append(f"<tr><td>{p}</td><td>{len(chs)}</td><td>{drafted}</td><td>{awaiting}</td><td>{hum}</td></tr>")
-    ch.append("</table><h2>Matrix</h2><table><tr><th>Ch</th><th>Key</th><th>Topic</th>" +
-              "".join(f"<th>{g[:4]}</th>" for g in GATES) + "<th>Next</th></tr>")
+        figpct = sum(1 for r in chs if r["bubbles"]["figure"] == BUB["done"]) / len(chs) * 100
+        ch.append(f'<div class=partbar><span title="{p}">{p[:26]}</span>{_bar(figpct)}'
+                  f'<span style="text-align:right;color:var(--muted)">{len(chs)} ch</span></div>')
+    ch.append('</div>')
+    ch.append('<h2>Gate matrix</h2><div class=scroll><table><thead><tr><th>Ch</th><th>Key</th><th>Topic</th>'
+              + "".join(f'<th title="{g}">{g[:4]}</th>' for g in GATES) + '<th>Next step</th></tr></thead><tbody>')
     cur = None
     for r in rows:
         p = ch2part.get(r["ch"], "—")
         if p != cur:
-            ch.append(f'<tr class=part><td colspan="{4+len(GATES)}">{p}</td></tr>')
+            ch.append(f'<tr class=part><td colspan="{4 + len(GATES)}">{p}</td></tr>')
             cur = p
-        ch.append(f"<tr><td>{r['ch']}</td><td class=k>{r['nn']}</td><td>{r['topic'][:50]}</td>" +
-                  "".join(htd(r["bubbles"][g]) for g in GATES) + f"<td class=k>{next_step(r)}</td></tr>")
-    ch.append("</table>")
+        ch.append(f'<tr><td><b>{r["ch"]}</b></td><td class=k>{r["nn"]}</td><td class=topic>{r["topic"][:60]}</td>'
+                  + "".join(htd(r["bubbles"][g]) for g in GATES) + f'<td class=k>{next_step(r)}</td></tr>')
+    ch.append('</tbody></table></div>')
     if findings:
-        ch.append('<div class=drift><b>❌ Drift ({} finding{}):</b><ul>'.format(len(findings), "s" if len(findings) != 1 else "") +
-                  "".join(f"<li>{x}</li>" for x in findings) + "</ul></div>")
-    else:
-        ch.append('<div class=ok><b>✅ No drift.</b></div>')
-    write_page("chapters.html", "Chapters", "".join(ch), today)
+        ch.append('<div class="note bad"><b>Drift ({}):</b><ul>'.format(len(findings))
+                  + "".join(f"<li>{x}</li>" for x in findings) + '</ul></div>')
+    ch.append(foot)
+    page("chapters.html", "Chapters", "".join(ch))
 
     # --- Scoring & approval ---
-    sc = ['<div class=q><b>Policy (lift → human gate):</b> an independent score ≥%d%% (≥%d/%d) + content floors PASS → '
-          '<b>READY for human approval</b>. Else <b>lift</b> (≤3 passes) toward the bar. ≥%d%% flags excellence. '
-          'A self-score must be independently re-scored before it advances.</div>'
-          % (SHIP_BAR, SHIP_BAR * SCORE_MAX // 100, SCORE_MAX, APPROVE_THRESHOLD)]
-    sc.append("<table><tr><th>Ch</th><th>Key</th><th>Score</th><th>%</th><th>A</th><th>B</th><th>C-src</th>"
-              "<th>C-comp</th><th>Indep</th><th>Decision</th><th>Why</th></tr>")
-    dcolor = {"AUTO-APPROVE": "#1a7f37", "APPROVED": "#1a7f37", "ELIGIBLE": "#bf8700",
-              "LIFT": "#bf8700", "UNSCORED": "#cf222e", "HUMAN": "#0969da"}
-    for r in rows:
-        scd = r["score"]
-        d = r["decision"]
-        col = dcolor.get(d, "#57606a")
-        if not scd:
-            sc.append(f"<tr><td>{r['ch']}</td><td class=k>{r['nn']}</td><td colspan=7 class=k>no score</td>"
-                      f'<td style="color:#fff;background:{col};font-weight:600">{d}</td><td class=mut>{r["reason"]}</td></tr>')
-            continue
-        f = scd["floors"]
-        pctcell = f'<td style="font-weight:700;color:{"#1a7f37" if scd["pct"]>=APPROVE_THRESHOLD else "#bf8700"}">{scd["pct"]}%</td>'
-        sc.append(f"<tr><td>{r['ch']}</td><td class=k>{r['nn']}</td><td>{scd['total']}/{SCORE_MAX}</td>{pctcell}"
-                  f"<td>{f.get('A','?')}</td><td>{f.get('B','?')}</td><td>{f.get('Csrc','?')}</td><td>{f.get('Ccompile','?')}</td>"
-                  f"<td>{'✅' if scd['independent'] else '—'}</td>"
-                  f'<td style="color:#fff;background:{col};font-weight:600">{d}</td><td class=mut>{r["reason"]}</td></tr>')
-    sc.append("</table>")
-    write_page("scoring.html", "Scoring & approval", "".join(sc), today)
+    scr = ['<div class="note info"><b>Policy (lift → human gate):</b> an independent score '
+           f'≥{SHIP_BAR}% (≥{SHIP_BAR * SCORE_MAX // 100}/{SCORE_MAX}) + content floors PASS → READY for human '
+           f'approval; else lift (≤3 passes). ≥{APPROVE_THRESHOLD}% flags excellence. Scoring is delegated to an '
+           'external different-vendor LLM (one-pager); Claude applies the lifts.</div>']
+    scored_rows = sorted([r for r in rows if r["score"] and r["score"]["total"] is not None],
+                         key=lambda r: (r["score"]["independent"], r["score"]["pct"]), reverse=True)
+    indep_n = sum(1 for r in scored_rows if r["score"]["independent"])
+    prov_n = len(scored_rows) - indep_n
+    scr.append(f'<h2>Chapter scores — {indep_n} independent ★ · {prov_n} provisional self-score (bar {SHIP_BAR}%)</h2>')
+    if scored_rows:
+        scr.append('<div class=scroll><table><thead><tr><th>Ch</th><th>Topic</th><th>Type</th><th>Score</th>'
+                   '<th>Floors A·B·C-src</th><th>Decision</th></tr></thead><tbody>')
+        for r in scored_rows:
+            sc = r["score"]; fl = sc["floors"]; pct = sc["pct"]; indep = sc["independent"]
+            if indep:
+                col = "var(--done)" if pct >= SHIP_BAR else "#e0a82e" if pct >= 60 else "var(--no)"
+                tag = '<span class=badge style="background:#0969da">★ independent</span>'
+            else:
+                col = "#c4ccd6"   # provisional self-score: greyed, not trustworthy until external review
+                tag = '<span class="flr q">self · provisional</span>'
+            sbar = (f'<div class=sbar><i style="width:{pct}%;background:{col}"></i>'
+                    f'<span>{sc["total"]}/{SCORE_MAX} · {pct}%</span></div>')
+            flrs = ""
+            for k, lab in (("A", "A"), ("B", "B"), ("Csrc", "C")):
+                v = fl.get(k, "?"); cls = v if v in ("PASS", "PENDING", "FAIL") else "q"
+                flrs += f'<span class="flr {cls}">{lab}·{v}</span>'
+            bd = f'<span class=badge style="background:{DCOLOR.get(r["decision"], "#5b6675")}">{r["decision"]}</span>'
+            scr.append(f'<tr><td><b>{r["ch"]}</b></td><td class=topic>{r["topic"][:42]}</td><td>{tag}</td>'
+                       f'<td>{sbar}</td><td>{flrs}</td><td>{bd}</td></tr>')
+        scr.append('</tbody></table></div>')
+    if prov_n:
+        scr.append(f'<div class="note info"><b>{prov_n}</b> chapters carry only a <b>provisional self-score</b> '
+                   '(greyed above) — they are voice-lifted and illustrated, and queued for the external '
+                   'independent reviewer in <code>09-flags/external-review/QUEUE.md</code>. A self-score never '
+                   'advances a chapter; only an independent score does.</div>')
+    scr.append(foot)
+    page("scoring.html", "Scoring & approval", "".join(scr))
 
     # --- Capstones ---
     cp = []
     if not caps:
-        cp.append("<p>No <code>CAPSTONE-STATUS.json</code> found.</p>")
+        cp.append('<div class=hero>No <code>CAPSTONE-STATUS.json</code> found.</div>')
     else:
-        cp.append(f'<p class=mut>{caps.get("as_of","")} — {caps.get("verified_by","")}</p>')
-        gos = caps.get("gate_order", [])
-        labels = caps.get("gate_labels", {})
-        cp.append("<table><tr><th>Capstone</th><th>Domain</th><th>Services</th><th>Tests</th>" +
-                  "".join(f"<th>{labels.get(g,g)}</th>" for g in gos) + "</tr>")
+        cp.append('<div class=hero>Three enterprise, microservice-based capstones on one shared platform. '
+                  f'<span class=k>{caps.get("as_of", "")} — {caps.get("verified_by", "")}</span></div>')
+        gos = caps.get("gate_order", []); labels = caps.get("gate_labels", {})
+        cp.append('<div class=capgrid>')
         for c in caps["capstones"]:
-            svc = "<br>".join(c["services"])
-            cp.append(f"<tr><td><b>{c['id']}</b><div class=mut>{c.get('title','')}</div></td><td>{c['domain']}</td>"
-                      f"<td class=k>{svc}</td><td style='text-align:center'>{c.get('tests','?')}</td>" +
-                      "".join(htd(cap_bubble(c['gates'].get(g, 'no'))) for g in gos) + "</tr>")
-        cp.append("</table>")
-        cp.append('<p class=mut>Gate values are the last verified state (update <code>CAPSTONE-STATUS.json</code> after a build/review). '
-                  'Code-review (FLOOR C) is the independent/human gate; Phase-4 assemble runs in Phase 4.</p>')
-    write_page("capstones.html", "Capstones", "".join(cp), today)
+            gl = "".join(
+                f'<div class=gline><span>{labels.get(g, g)}</span>'
+                f'<span class=bub style="background:{HTML_COLOR.get(cap_bubble(c["gates"].get(g, "no")), "#fff")}22">'
+                f'{cap_bubble(c["gates"].get(g, "no"))}</span></div>' for g in gos)
+            cp.append(f'<div class=capcard><h3>{c["id"]}</h3><div class=dm>{c.get("title", "")} · {c["domain"]}</div>'
+                      f'<div class=svc>{", ".join(c["services"])} · {c.get("tests", "?")} tests</div>{gl}</div>')
+        cp.append('</div>')
+        cp.append('<div class="note info">Gate values are the last verified state — update '
+                  '<code>CAPSTONE-STATUS.json</code> after a build/review. Code-review (FLOOR C) is the '
+                  'independent/human gate; Phase-4 assemble runs in Phase 4.</div>')
+    cp.append(foot)
+    page("capstones.html", "Capstones", "".join(cp))
 
     # --- Audit ---
-    au = ['<p class=mut>The action trail — milestones from <code>audit_log.sh</code> and (once enabled) every tool '
-          'call from the <code>PostToolUse</code> hook. Newest first; tail of <code>10-logs/audit.jsonl</code>.</p>']
+    au = ['<div class=hero>The action trail — milestones from <code>audit_log.sh</code>, plus every tool call once '
+          'the <code>PostToolUse</code> hook is enabled. Newest first.</div>']
     if not audit:
-        au.append("<p>No audit entries yet.</p>")
+        au.append('<div class="note info">No audit entries yet.</div>')
     else:
-        au.append("<table><tr><th>When (UTC)</th><th>Kind</th><th>Action / tool</th><th>Target</th><th>Detail</th></tr>")
+        au.append('<ul class=tl>')
         for e in audit:
-            kind = e.get("kind", "")
+            kind = e.get("kind", ""); icon = "🔧" if kind == "tool" else "📌"
             act = e.get("action") or e.get("tool") or ""
-            tgt = (e.get("target") or "")[:90]
-            det = (e.get("detail") or "")
-            badge = "🔧" if kind == "tool" else "📌"
-            au.append(f"<tr><td class=k>{e.get('ts','')}</td><td>{badge} {kind}</td><td>{act}</td>"
-                      f"<td class=k>{tgt}</td><td class=mut>{det}</td></tr>")
-        au.append("</table>")
-    au.append('<p class=mut>Enable automatic per-tool capture: see <code>.claude/hooks/AUDIT-LOG.md</code>.</p>')
-    write_page("audit.html", "Audit log", "".join(au), today)
+            tgt = (e.get("target") or "")[:110]
+            det = (e.get("detail") or "")[:240]
+            au.append(f'<li><span class=dot>{icon}</span><span class=when>{e.get("ts", "")}</span> · '
+                      f'<span class=what>{act}</span> <span class=k>{tgt}</span>'
+                      + (f'<div class=det>{det}</div>' if det else '') + '</li>')
+        au.append('</ul>')
+    au.append('<div class="note info">Enable automatic per-tool capture: see '
+              '<code>.claude/hooks/AUDIT-LOG.md</code>.</div>')
+    au.append(foot)
+    page("audit.html", "Audit log", "".join(au))
 
 
-def write_page(filename, active, body, today):
+def write_page(filename, active, body, hdr):
     title = next(label for href, label in PAGES if href == filename)
-    open(os.path.join(HTML_DIR, filename), "w", encoding="utf-8").write(layout(title, active, body, today))
+    open(os.path.join(HTML_DIR, filename), "w", encoding="utf-8").write(layout(title, active, body, hdr))
 
 
 # ----------------------------------------------------------------------------- approvals

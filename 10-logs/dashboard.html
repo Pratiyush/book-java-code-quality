@@ -1,1 +1,66 @@
-<!doctype html><meta charset=utf-8><title>Quality Book — Overview</title><style>body{font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;margin:0;color:#1f2328;background:#f6f8fa}header{background:#24292f;color:#fff;padding:14px 24px}header h1{margin:0;font-size:18px}nav{background:#2d333b;padding:0 16px}nav a{display:inline-block;color:#cdd9e5;text-decoration:none;padding:10px 14px;font-size:13px;border-bottom:3px solid transparent}nav a:hover{color:#fff}nav a.active{color:#fff;border-bottom-color:#fb8500;font-weight:600}main{padding:20px 24px;max-width:1200px}h2{font-weight:700;margin-top:1.6rem}table{border-collapse:collapse;margin:1rem 0;background:#fff;box-shadow:0 1px 3px #0002}td,th{border:1px solid #d0d7de;padding:4px 8px;font-size:13px}th{background:#24292f;color:#fff;position:sticky;top:0}.part td{background:#eaeef2;font-weight:700}.k{font-size:12px;color:#57606a}.box{display:inline-block;background:#fff;border:1px solid #d0d7de;border-radius:8px;padding:10px 16px;margin:4px 8px 4px 0;min-width:90px}.big{font-size:26px;font-weight:700}.q{background:#ddf4ff;border:1px solid #54aeff;border-radius:8px;padding:10px 14px;margin:1rem 0}.drift{background:#ffebe9;border:1px solid #ff8182;border-radius:8px;padding:10px 14px;margin:1rem 0}.ok{background:#dafbe1;border:1px solid #4ac26b;border-radius:8px;padding:10px 14px;margin:1rem 0}code{background:#eaeef2;padding:1px 5px;border-radius:4px;font-size:12px}.mut{color:#57606a;font-size:12px}</style><header><h1>📘 Java Code Quality Book — control dashboard</h1><div class=mut style="color:#9da7b1">Overview · generated 2026-06-21 by status.py</div></header><nav><a href="dashboard.html" class="active">Overview</a><a href="chapters.html" class="">Chapters</a><a href="scoring.html" class="">Scoring & approval</a><a href="capstones.html" class="">Capstones</a><a href="audit.html" class="">Audit log</a></nav><main><h2>Where the book stands</h2><p class=mut>🟢 done (independent gate + evidence) · 🟡 self/wip (independent agent not yet run) · 🔴 not-run · 🔵 awaiting-human · ⚪ n/a</p><div class=box><div class=big>47/47</div>drafted</div><div class=box><div class=big>1</div>READY for human 🔵</div><div class=box><div class=big>7</div>in lift 🟡</div><div class=box><div class=big>39</div>need indep score</div><div class=box><div class=big>46</div>need example-build</div><div class=box><div class=big>0</div>approved 🟢</div><div class=box><div class=big>4</div>capstone apps</div><div class=q><b>Routing policy (lift → human gate):</b> an independent (different-model) score ≥80% + content floors PASS → READY for human approval (Step 12). Below the bar or a floor unresolved → lift. ≥90% is flagged as excellence. <a href="scoring.html">See scoring →</a></div><div class=ok><b>✅ No drift</b> — every 🟢/🟡 gate has evidence on disk; gate-trail order holds.</div><p>Pages: <a href="chapters.html">Chapters matrix</a> · <a href="scoring.html">Scoring &amp; approval</a> · <a href="capstones.html">Capstones</a> · <a href="audit.html">Audit log</a>.</p></main>
+<!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><title>Quality Book · Overview</title><style>
+:root{--bg:#f4f6f9;--panel:#fff;--ink:#1f2328;--muted:#5b6675;--line:#e3e8ef;--brand:#3a5bd9;
+--brand2:#6b46c1;--done:#1a7f37;--self:#bf8700;--no:#cf222e;--human:#0969da;
+--shadow:0 1px 2px rgba(16,24,40,.05),0 6px 18px rgba(16,24,40,.06)}
+*{box-sizing:border-box}
+body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;margin:0;
+color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+a{color:var(--brand);text-decoration:none}a:hover{text-decoration:underline}
+.hd{background:linear-gradient(120deg,#1e2a4a,#2b1d52);color:#fff;padding:20px 28px 16px}
+.hd h1{margin:0;font-size:20px;font-weight:750;letter-spacing:.2px}
+.hd .sub{color:#aeb8d4;font-size:13px;margin-top:3px}
+.hd .prog{margin:14px 0 0;max-width:560px}
+.hd .prog .lbl{display:flex;justify-content:space-between;font-size:12px;color:#cdd5ee;margin-bottom:5px;font-weight:600}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#7aa2ff,#b794f6)}
+nav{position:sticky;top:0;z-index:9;background:#1b2440;display:flex;gap:2px;padding:0 16px;flex-wrap:wrap;box-shadow:var(--shadow)}
+nav a{color:#b7c0da;padding:12px 15px;font-size:13.5px;font-weight:600;border-bottom:3px solid transparent}
+nav a:hover{color:#fff;text-decoration:none}nav a.active{color:#fff;border-bottom-color:#7aa2ff}
+main{padding:24px 28px;max-width:1180px;margin:0 auto}
+h2{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:30px 0 12px}
+.hero{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 22px;box-shadow:var(--shadow);font-size:15px;line-height:1.65}
+.hero b{color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 17px;box-shadow:var(--shadow)}
+.kpi .n{font-size:29px;font-weight:760;line-height:1}.kpi .n small{font-size:15px;color:var(--muted);font-weight:600}
+.kpi .l{font-size:12.5px;color:var(--muted);margin:6px 0 10px;font-weight:600}
+.kpi .bar{background:#eef1f6;height:7px}.kpi .bar>i{background:linear-gradient(90deg,var(--brand),var(--brand2))}
+.note{border-radius:12px;padding:12px 16px;margin:14px 0;font-size:14px}
+.note.ok{background:#e9f8ee;border:1px solid #abe1bd;color:#0f6a2e}
+.note.bad{background:#fdeceb;border:1px solid #f5b5b1;color:#b42318}
+.note.info{background:#eef2ff;border:1px solid #c2cffc;color:#33409e}
+.scroll{overflow-x:auto;border-radius:12px;border:1px solid var(--line);box-shadow:var(--shadow)}
+table{border-collapse:separate;border-spacing:0;width:100%;background:var(--panel);font-size:13px}
+.scroll table{border:none;box-shadow:none}
+th,td{padding:8px 11px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:#f7f9fc;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;position:sticky;top:45px;z-index:2}
+tr:last-child td{border-bottom:none}tbody tr:hover td{background:#f9fbff}
+td.k{color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px}
+td.c{text-align:center}td.topic{white-space:normal;min-width:230px}
+.part td{background:#f0eefb;color:#4a2f8f;font-weight:750;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.bub{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:7px;font-size:13px}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-size:12.5px;color:var(--muted)}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.3px}
+.flr{display:inline-block;padding:2px 7px;border-radius:6px;font-size:10.5px;font-weight:700;margin-right:3px}
+.flr.PASS{background:#e9f8ee;color:#0f6a2e}.flr.PENDING{background:#fff4e0;color:#9a6700}
+.flr.FAIL{background:#fdeceb;color:#b42318}.flr.q{background:#eef1f6;color:#8893a4}
+.sbar{position:relative;height:20px;border-radius:6px;background:#eef1f6;overflow:hidden;min-width:140px}
+.sbar>i{display:block;height:100%}.sbar>span{position:absolute;left:8px;top:0;line-height:20px;font-size:11px;font-weight:700}
+.partbar{display:grid;grid-template-columns:170px 1fr 60px;gap:12px;align-items:center;margin:7px 0;font-size:13px}
+.partbar .bar{height:10px;background:#eef1f6}.partbar .bar>i{background:linear-gradient(90deg,var(--brand),var(--brand2))}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{position:relative;padding:0 0 16px 24px;border-left:2px solid var(--line);margin-left:7px}
+.tl li:last-child{border-left-color:transparent;padding-bottom:0}
+.tl .dot{position:absolute;left:-9px;top:0;width:16px;height:16px;border-radius:50%;background:var(--panel);border:2px solid var(--brand);font-size:8px;text-align:center;line-height:13px}
+.tl .when{font-size:11.5px;color:var(--muted);font-family:ui-monospace,monospace}
+.tl .what{font-weight:700}.tl .det{font-size:13px;color:var(--muted);margin-top:2px}
+.capgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.capcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+.capcard h3{margin:0 0 2px;font-size:15px}.capcard .dm{color:var(--muted);font-size:12.5px;margin-bottom:10px}
+.capcard .svc{font-size:12px;color:var(--muted);font-family:ui-monospace,monospace;margin-bottom:10px}
+.gline{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:3px 0;border-top:1px solid var(--line)}
+.foot{color:var(--muted);font-size:12.5px;margin:34px 0 12px;padding-top:14px;border-top:1px solid var(--line)}
+.foot code{background:#eef1f6;padding:1px 6px;border-radius:5px}
+@media(max-width:640px){main{padding:16px 14px}.hd{padding:16px}.partbar{grid-template-columns:110px 1fr 46px}}
+</style><div class=hd><h1>📘 Java Code Quality — production dashboard</h1><div class=sub>47-chapter manuscript · generated 2026-06-21 08:28 · auto-refreshed after every gate</div><div class=prog><div class=lbl><span>Pipeline progress</span><span>55%</span></div><div class=bar><i style="width:55%"></i></div></div></div><nav><a href="dashboard.html" class="active">Overview</a><a href="chapters.html" class="">Chapters</a><a href="scoring.html" class="">Scoring & approval</a><a href="capstones.html" class="">Capstones</a><a href="audit.html" class="">Audit log</a></nav><main><div class=hero>All <b>47 of 47</b> chapters are drafted. <b>47</b> have their figures rendered and <b>8</b> carry an independent (different-model) score. <b>1</b> are ready for the human approval gate, <b>7</b> are in the lift loop, and <b>0</b> are approved. Records match the evidence on disk — no drift.</div><h2>At a glance</h2><div class=kpis><div class=kpi><div class=n>47<small>/47</small></div><div class=l>Drafted</div><div class=bar><i style="width:100%"></i></div></div><div class=kpi><div class=n>47<small>/47</small></div><div class=l>Figures rendered</div><div class=bar><i style="width:100%"></i></div></div><div class=kpi><div class=n>8<small>/47</small></div><div class=l>Independently scored</div><div class=bar><i style="width:17%"></i></div></div><div class=kpi><div class=n>1<small>/47</small></div><div class=l>Ready for human 🔵</div><div class=bar><i style="width:2%"></i></div></div><div class=kpi><div class=n>7<small>/47</small></div><div class=l>In lift loop 🟡</div><div class=bar><i style="width:15%"></i></div></div><div class=kpi><div class=n>0<small>/47</small></div><div class=l>Approved 🟢</div><div class=bar><i style="width:0%"></i></div></div><div class=kpi><div class=n>4<small>/4</small></div><div class=l>Capstone apps (green)</div><div class=bar><i style="width:100%"></i></div></div></div><h2>Pipeline</h2><div class=card><div class=partbar><span>Drafted</span><div class=bar><i style="width:100%"></i></div><span style="text-align:right;color:var(--muted)">47/47</span></div><div class=partbar><span>Figures rendered</span><div class=bar><i style="width:100%"></i></div><span style="text-align:right;color:var(--muted)">47/47</span></div><div class=partbar><span>Independent score</span><div class=bar><i style="width:17%"></i></div><span style="text-align:right;color:var(--muted)">8/47</span></div><div class=partbar><span>Ready for human gate</span><div class=bar><i style="width:2%"></i></div><span style="text-align:right;color:var(--muted)">1/47</span></div><div class=partbar><span>Approved</span><div class=bar><i style="width:0%"></i></div><span style="text-align:right;color:var(--muted)">0/47</span></div></div><div class="note ok">✅ <b>No drift</b> — every 🟢/🟡 gate has its evidence on disk and the gate order holds.</div><div class="note info"><b>Routing:</b> an independent score ≥80% + content floors PASS → READY for the human gate; below the bar → lift (≤3 passes). Review/scoring is delegated to an external different-vendor LLM (<code>09-flags/external-review/</code>); Claude does the heavy lifting. <a href="scoring.html">Scoring →</a></div><div class=foot>Generated by <code>.claude/scripts/status.py</code> · 2026-06-21 08:28 · regenerate any time: <code>python3 .claude/scripts/status.py</code> · auto-runs after any gate (CLAUDE.md “Reporting discipline”). Bubbles reflect on-disk evidence, not claims.</div></main></html>
