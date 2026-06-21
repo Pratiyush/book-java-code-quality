@@ -36,10 +36,28 @@
 | 23 | `03-drafts/48_coverage_mutation_effectiveness/48_coverage_mutation_effectiveness_v1.md` |
 | 24 | `03-drafts/50_contract_approval_testing/50_contract_approval_testing_v1.md` |
 
-## ◷ Heavy-lift in progress (Claude finishing figures; review after)
+## ▶ Also ready now (voice + figure done as of 2026-06-21)
 
-Ch 25–37, 40, 44 — voice done; figures being rendered now. They join the "ready" list as each figure
-lands.
+| Ch | Draft to attach |
+|---|---|
+| 25 | `03-drafts/53_solid_coupling_cohesion_packages/53_solid_coupling_cohesion_packages_v1.md` |
+| 26 | `03-drafts/55_enforcing_architecture_fitness_functions/55_enforcing_architecture_fitness_functions_v1.md` |
+| 27 | `03-drafts/62_build_dependency_hygiene/62_build_dependency_hygiene_v1.md` |
+| 28 | `03-drafts/65_dependency_scanning_sbom_supply_chain/65_dependency_scanning_sbom_supply_chain_v1.md` |
+| 29 | `03-drafts/67_reproducible_builds_license_compliance/67_reproducible_builds_license_compliance_v1.md` |
+| 30 | `03-drafts/69_secure_coding_owasp/69_secure_coding_owasp_v1.md` |
+| 31 | `03-drafts/70_sast_secrets_detection/70_sast_secrets_detection_v1.md` |
+| 32 | `03-drafts/73_security_in_ci/73_security_in_ci_v1.md` |
+| 33 | `03-drafts/75_ci_pipeline_quality_gates/75_ci_pipeline_quality_gates_v1.md` |
+| 34 | `03-drafts/80_coverage_pr_automation_platforms/80_coverage_pr_automation_platforms_v1.md` |
+| 35 | `03-drafts/81_branch_protection_precommit_parity/81_branch_protection_precommit_parity_v1.md` |
+| 36 | `03-drafts/83_release_quality/83_release_quality_v1.md` |
+| 37 | `03-drafts/84_code_review_standards_documentation/84_code_review_standards_documentation_v1.md` |
+| 40 | `03-drafts/96_remediation_playbook_automated_change/96_remediation_playbook_automated_change_v1.md` |
+| 44 | `03-drafts/105_performance_regression_gates/105_performance_regression_gates_v1.md` |
+
+**Voice + figures are now COMPLETE on all 47 chapters.** Every chapter above is ready for an external
+independent review whenever you are; Claude applies the lifts the one-pagers call for.
 
 ## ✓ Already independently scored (Sonnet lift-1, 70–80%) — a fresh external pass is welcome
 

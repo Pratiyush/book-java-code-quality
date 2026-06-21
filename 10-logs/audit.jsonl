@@ -41,3 +41,5 @@
 {"ts":"2026-06-21T05:51:09Z","kind":"milestone","actor":"claude","action":"delegation","target":"09-flags/external-review","detail":"external-review kit (README+REVIEW-PROMPT+QUEUE+inbox): route review/scoring to external LLM, Claude does heavy lifting"}
 {"ts":"2026-06-21T05:51:09Z","kind":"milestone","actor":"claude","action":"figure","target":"Ch 25-28,30,32 (fig batch 4 partial)","detail":"rendered+referenced; Ch29(67)+Ch31(70) interrupted -> re-run"}
 {"ts":"2026-06-21T05:58:44Z","kind":"milestone","actor":"claude","action":"figure","target":"Ch 29,31,33-37,40,44 (Opus)","detail":"figures COMPLETE on all 47 chapters"}
+{"ts":"2026-06-21T05:58:45Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 1 ready-for-human, 7 in lift, drift=none"}
+{"ts":"2026-06-21T06:00:38Z","kind":"milestone","actor":"claude","action":"milestone","target":"all 47 chapters","detail":"VOICE + FIGURES COMPLETE on all 47 (67 figures); external-review delegation kit live; awaiting one-pager feedback to drive Opus best-effort deep lifts"}
