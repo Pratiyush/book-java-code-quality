@@ -37,6 +37,13 @@ The assumption does not hold, and this closing chapter of Part IX is the layer t
 
 ## How it works
 
+![Fig 36.1 &mdash; The release-quality loop: shift-left gates &harr; shift-right release quality — Every gate lowers the odds a defect ships; none reaches zero. Release quality assumes one slips, limits its
+    blast radius, and feeds the lesson back into the gates &mdash; one continuous cycle, not two phases.](../../05-figures/83_release_quality/fig83_1.png)
+
+*Fig 36.1 &mdash; The release-quality loop: shift-left gates &harr; shift-right release quality — Every gate lowers the odds a defect ships; none reaches zero. Release quality assumes one slips, limits its
+    blast radius, and feeds the lesson back into the gates &mdash; one continuous cycle, not two phases.*
+
+
 ### Release gates: the final checks on the artifact
 
 The release is the last place to verify, and the release gates are the final, artifact-level checks before shipping. They build on everything prior: **all CI gates green on the release commit** (the pipeline of Chapters 33–35), the artifact **signed and attested** with its **SBOM** generated (SLSA/cosign, Part VII, so the shipped thing is verifiable and incident-ready), a **version bump honoring semver** (so consumers know what changed), release notes or a changelog, and **smoke tests against a staged build** (a final sanity check that the packaged artifact actually starts and serves). These gates do not re-litigate code quality; the pipeline did that. They verify the *release artifact* is the green, traceable thing the pipeline produced.

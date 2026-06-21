@@ -39,6 +39,11 @@ The last chapter set the pipeline's shape and left two things as promises: clean
 
 ## How it works
 
+![Fig 80.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback — Focus everything on the code this change](../../05-figures/80_coverage_pr_automation_platforms/fig80_1.png)
+
+*Fig 80.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback — Focus everything on the code this change*
+
+
 ### Coverage strategy: gate new code, ratchet, back with mutation
 
 Coverage is the most-gated and most-abused quality metric, and the senior question is not "what percentage?" but **"how do we gate coverage so it improves tests without incentivizing bad ones?"** Absolute whole-repo thresholds fail both ways: an 80% gate on a legacy codebase is *unreachable* (it blocks every PR on pre-existing untested code), and a freshly imposed one is *gamed* (the assertion-free tests from the hook). The modern answer, building directly on the last chapter's clean-as-you-code policy, has three parts:

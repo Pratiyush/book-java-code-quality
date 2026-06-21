@@ -38,6 +38,11 @@ But a performance gate is uniquely treacherous to build, and the reason is the l
 
 ## How it works
 
+![Fig 105.1 — The performance-regression gate: a fitness function that knows its own noise — Measure against a baseline, compare relative](../../05-figures/105_performance_regression_gates/fig105_1.png)
+
+*Fig 105.1 — The performance-regression gate: a fitness function that knows its own noise — Measure against a baseline, compare relative*
+
+
 ### Load and macro testing: the system-level truth
 
 The last chapter ended on *micro is not macro*: a microbenchmark answers a narrow question about one method, and what users actually feel is end-to-end behavior under real concurrent load. **Load and macro testing** is that macro level: driving the *whole system* with realistic concurrent demand and measuring the latency and throughput it delivers. Where JMH measures a hot method in isolation, a load test (with a tool of the Gatling/JMeter/k6 class; cite the specific tool when naming one) measures the service the way production does: many concurrent users, real request mixes, real data sizes, with the caches, contention, I/O, and GC pressure that a microbenchmark deliberately excludes. This is the level that matters most for a gate, because it measures *what users experience*, and it is the truth against which a microbenchmark's promise is checked.

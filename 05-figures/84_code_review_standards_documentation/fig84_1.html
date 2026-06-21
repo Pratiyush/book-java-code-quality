@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 37 — The Part the Machine Can't Do (dossier key 84, folds 86+89; Ch 37 in FINAL_INDEX, OPENS Part X)
+  Figure:  Figure 37.1 — The review-effectiveness curve: small and fast, or it does not work
+  Family:  Comparison / curve (defect-detection vs. pull-request size; effective zone band)
+  Method:  Authored HTML + inline SVG → rendered to PNG via render.mjs (NEVER image-generated)
+  Placement: §"Code review: the human catch" — beside the CONCEPT callout "Small and fast, or it does not work"
+  One idea: Code-review defect detection holds only in a small effective zone (~100–300 lines,
+             ~30–60 minutes) and collapses past roughly 300–400 lines as reviewer fatigue sets in,
+             so the hook's "LGTM" on a 2,400-line pull request catches nothing — small pull
+             requests are a precondition for review, not a nicety.
+  Note: the size/time figures are the Cohen/SmartBear study's, attributed; that source is a
+        SOURCE-PIN §7 named-canon gap (TO-PIN) — see fig84_1.sources.md (Source-trace status: FLAGGED).
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 37.1 — The review-effectiveness curve</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + shared components from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 22px;
+      max-width: 860px;
+    }
+
+    .chart-wrap { margin-top: 16px; }
+
+    /* SVG chart text reuses house variables */
+    svg text { font-family: var(--font); fill: var(--ink); }
+    .ax-title  { font-size: 13px; font-weight: 700; fill: var(--ink); }
+    .ax-tick   { font-size: 11px; fill: var(--ink-soft); }
+    .zone-lbl  { font-size: 12px; font-weight: 700; }
+    .zone-sub  { font-size: 10.5px; fill: var(--ink-soft); }
+    .curve     { fill: none; stroke: var(--ink); stroke-width: 3; }
+    .grid      { stroke: var(--tint-2); stroke-width: 1; }
+    .axis      { stroke: var(--ink); stroke-width: 1.5; }
+
+    /* Legend / reading row below the chart */
+    .read-row { display: flex; gap: 14px; margin-top: 16px; flex-wrap: wrap; }
+    .read-card {
+      flex: 1; min-width: 200px;
+      border: 1.5px solid var(--ink); border-radius: var(--radius);
+      overflow: hidden; background: var(--paper);
+    }
+    .read-card .hd {
+      padding: 7px 11px; font-size: 12.5px; font-weight: 700;
+      border-bottom: 1.5px solid var(--ink);
+    }
+    .read-card.zone .hd  { background: var(--tint-3); }
+    .read-card.fatigue .hd { background: var(--ink); color: var(--paper); }
+    .read-card .bd { padding: 9px 11px; font-size: 12px; color: var(--ink); line-height: 1.4; }
+    .read-card .bd b { color: var(--ink); }
+
+    .fig-caption { margin-top: 14px; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 37.1 &mdash; The review-effectiveness curve: small and fast, or it does not work</p>
+  <p class="fig-subtitle">
+    Defect detection holds in a small effective zone and collapses past it as reviewer fatigue sets in &mdash; figures are the Cohen / SmartBear study's.
+  </p>
+
+  <div class="chart-wrap">
+    <!-- viewBox: 760 x 360. Plot area x:[70,720] y:[30,300] -->
+    <svg width="760" height="372" viewBox="0 0 760 372" role="img" aria-labelledby="f371title">
+      <title id="f371title">Defect-detection vs. pull-request size, with an effective zone band</title>
+
+      <!-- Effective-zone band (~100–300 LOC) — grayscale tint, not hue-only -->
+      <rect x="158" y="30" width="138" height="270" fill="#dde3ea" />
+      <!-- Fatigue zone (past ~300–400 LOC) — heavier tint -->
+      <rect x="360" y="30" width="360" height="270" fill="#f0f3f6" />
+
+      <!-- Horizontal gridlines -->
+      <line class="grid" x1="70" y1="80"  x2="720" y2="80" />
+      <line class="grid" x1="70" y1="135" x2="720" y2="135" />
+      <line class="grid" x1="70" y1="190" x2="720" y2="190" />
+      <line class="grid" x1="70" y1="245" x2="720" y2="245" />
+
+      <!-- Axes -->
+      <line class="axis" x1="70" y1="30"  x2="70"  y2="300" />
+      <line class="axis" x1="70" y1="300" x2="720" y2="300" />
+
+      <!-- Y axis title (rotated) -->
+      <text class="ax-title" x="-165" y="22" transform="rotate(-90)" text-anchor="middle">Defects caught per review</text>
+      <text class="ax-tick"  x="62" y="304" text-anchor="end">low</text>
+      <text class="ax-tick"  x="62" y="64"  text-anchor="end">high</text>
+
+      <!-- X axis title + ticks (LOC reviewed) -->
+      <text class="ax-title" x="395" y="358" text-anchor="middle">Lines changed per pull request (LOC reviewed)</text>
+      <text class="ax-tick"  x="70"  y="318" text-anchor="middle">0</text>
+      <text class="ax-tick"  x="158" y="318" text-anchor="middle">100</text>
+      <text class="ax-tick"  x="296" y="318" text-anchor="middle">300</text>
+      <text class="ax-tick"  x="360" y="318" text-anchor="middle">~400</text>
+      <text class="ax-tick"  x="540" y="318" text-anchor="middle">1,000+</text>
+      <text class="ax-tick"  x="700" y="318" text-anchor="middle">2,400</text>
+
+      <!-- The curve: rises into the effective zone, plateaus, then drops past ~300–400 LOC.
+           Shape is qualitative (the study reports detection DROPS past the zone); no invented y-values. -->
+      <path class="curve" d="M 70 250
+                             C 110 150, 140 95, 170 85
+                             C 210 78, 260 80, 300 92
+                             C 340 110, 372 150, 400 190
+                             C 460 250, 560 280, 720 290" />
+
+      <!-- Effective-zone label -->
+      <text class="zone-lbl" x="227" y="52" text-anchor="middle">Effective zone</text>
+      <text class="zone-sub" x="227" y="68" text-anchor="middle">~100&ndash;300 LOC</text>
+      <text class="zone-sub" x="227" y="82" text-anchor="middle">~30&ndash;60 min</text>
+
+      <!-- Fatigue arrow + label -->
+      <text class="zone-lbl" x="540" y="120" text-anchor="middle" fill="#57606a">Detection drops</text>
+      <text class="zone-sub" x="540" y="136" text-anchor="middle">reviewer fatigue</text>
+
+      <!-- "Theater" marker at 2,400 LOC (the hook) — single warm accent, the one "look here" point -->
+      <circle cx="700" cy="290" r="5.5" fill="#fb8500" stroke="#1f2328" stroke-width="1.5" />
+      <line x1="700" y1="284" x2="700" y2="206" stroke="#fb8500" stroke-width="1.5" stroke-dasharray="3 3" />
+      <text x="700" y="200" text-anchor="end" style="font-size:11.5px;font-weight:700;fill:#1f2328;">2,400-line PR =</text>
+      <text x="700" y="215" text-anchor="end" style="font-size:11.5px;font-weight:700;fill:#1f2328;">&ldquo;LGTM&rdquo; in 4 min, theater</text>
+    </svg>
+  </div>
+
+  <div class="read-row">
+    <div class="read-card zone">
+      <div class="hd">Inside the zone &mdash; review works</div>
+      <div class="bd">
+        Roughly <b>100&ndash;300 lines</b> over <b>~30&ndash;60 minutes</b> of attention. The reviewer
+        can hold the change in their head, so design and logic flaws get caught. Small pull requests are a
+        <b>precondition</b> for review, not a nicety &mdash; which is why trunk-based development
+        (Chapter 35) and effective review reinforce each other.
+      </div>
+    </div>
+    <div class="read-card fatigue">
+      <div class="hd">Past the zone &mdash; review skims</div>
+      <div class="bd">
+        Beyond roughly <b>300&ndash;400 lines</b>, defect detection drops sharply as reviewer fatigue sets
+        in. A &ldquo;LGTM&rdquo; on a 2,000-line diff is theater: the act of approval without the substance
+        of review &mdash; the same <b>presence-without-quality</b> trap a green automated gate can hide.
+      </div>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Effective review zone (~100&ndash;300 LOC, ~30&ndash;60 min) and the drop in defect detection past it:
+    Jason Cohen / SmartBear, <em>Best Kept Secrets of Peer Code Review</em> &mdash; the figures are the
+    study's, attributed. The curve shape is qualitative (the study reports detection <em>drops</em> past the
+    zone); no defect-rate value is invented. This source is a SOURCE-PIN &sect;7 named-canon gap (to be
+    pinned); see the source trace. Full trace in <b>fig84_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

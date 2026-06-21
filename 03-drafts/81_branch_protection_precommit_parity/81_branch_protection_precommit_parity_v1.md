@@ -38,6 +38,11 @@ This chapter is the *workflow* that fixes all three — the last piece of making
 
 ## How it works
 
+![Fig 81.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable enforcement at the merge — Push each check to the leftmost rung that can catch it. The left rungs are deliberately skippable feedback; the right rungs are the enforcement that re-runs everything regardless.](../../05-figures/81_branch_protection_precommit_parity/fig81_1.png)
+
+*Fig 81.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable enforcement at the merge — Push each check to the leftmost rung that can catch it. The left rungs are deliberately skippable feedback; the right rungs are the enforcement that re-runs everything regardless.*
+
+
 ### Branch protection: giving the gate teeth
 
 A quality gate only protects `main` if the workflow *requires* it — and that requirement is **branch protection**. It makes the gate's status check a **required** one: a pull request cannot merge until the check passes, and the rules around it (require review, Chapter 84; require the branch be up-to-date with base; restrict force-push and deletion) close the ways the protection could be circumvented. This is the mechanism that turns a gate from a suggestion into a wall — the teeth the hook's first failure was missing. Without it, every gate in Parts IV–VIII is advisory, and advisory loses to deadline pressure every time.

@@ -38,6 +38,15 @@ That is the first of two ways a build can betray a project even when the code is
 
 ## How it works
 
+![Fig 67.1 &mdash; The reproducibility chain — Five sources of Java build non-determinism, their fixes, and the verify step that closes the chain.](../../05-figures/67_reproducible_builds_license_compliance/fig67_1.png)
+
+*Fig 67.1 &mdash; The reproducibility chain — Five sources of Java build non-determinism, their fixes, and the verify step that closes the chain.*
+
+![Fig 67.2 &mdash; The license-obligation spectrum, by distribution mode — The same SPDX license carries a different obligation depending on how the artifact is distributed &mdash; tune the policy gate to the distribution mode. Categories are factual; tools report declared](../../05-figures/67_reproducible_builds_license_compliance/fig67_2.png)
+
+*Fig 67.2 &mdash; The license-obligation spectrum, by distribution mode — The same SPDX license carries a different obligation depending on how the artifact is distributed &mdash; tune the policy gate to the distribution mode. Categories are factual; tools report declared*
+
+
 ### Reproducible builds: the artifact as a pure function of source
 
 A **reproducible build** produces a **bit-for-bit identical** artifact from the same source, independent of *when*, *where*, or *by whom* it is built. That single property does two jobs. As a **quality** property, the artifact becomes a pure function of source plus pinned inputs, which kills an entire class of "works on my machine" build bugs. As a **security** property, anyone can rebuild from source and confirm the published artifact was not tampered with — the verification that gives Chapter 28's provenance and SLSA their meaning. Without reproducibility, "this source produced this artifact" is unfalsifiable; with it, the claim is checkable by anyone.

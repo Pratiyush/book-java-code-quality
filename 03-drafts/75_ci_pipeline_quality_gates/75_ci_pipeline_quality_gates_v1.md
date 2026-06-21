@@ -39,6 +39,11 @@ Designing the pipeline so the team *keeps it on* is the subject of Part IX, and 
 
 ## How it works
 
+![Fig 75.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by feedback latency — Each stage is one fitness function; the pipeline is the portfolio. Order cheap → expensive so the most-likely-to-fail checks fail first. Keep the blocking PR path short; defer the slow, expensive checks to main and nightly so they never fall on a developer waiting to merge.](../../05-figures/75_ci_pipeline_quality_gates/fig75_1.png)
+
+*Fig 75.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by feedback latency — Each stage is one fitness function; the pipeline is the portfolio. Order cheap → expensive so the most-likely-to-fail checks fail first. Keep the blocking PR path short; defer the slow, expensive checks to main and nightly so they never fall on a developer waiting to merge.*
+
+
 ### Pipeline design: order for fast feedback
 
 A CI pipeline is where every quality gate in this book actually runs, on every change, and its *design* — which checks, in what order, with what feedback latency — decides whether quality is enforced or theatre. The organizing principle is the one from the analyzer and build chapters, now applied to the whole program: **fail fast, cheapest and most-likely-to-fail first.**

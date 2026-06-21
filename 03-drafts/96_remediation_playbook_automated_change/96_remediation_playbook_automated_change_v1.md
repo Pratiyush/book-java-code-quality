@@ -38,6 +38,15 @@ Two answers follow. The **remediation playbook** is an ordered, incremental, val
 
 ## How it works
 
+![Figure 40.1 — The remediation playbook: an ordered, incremental program — Inherited low-quality codebase &middot; the order is the strategy &middot; the codebase is always improving and never blocked](../../05-figures/96_remediation_playbook_automated_change/fig96_1.png)
+
+*Figure 40.1 — The remediation playbook: an ordered, incremental program — Inherited low-quality codebase &middot; the order is the strategy &middot; the codebase is always improving and never blocked*
+
+![Figure 40.2 — The automation engine: type-aware change at scale — Scaling the manual craft from one method to ten thousand files across hundreds of repositories &mdash; without removing the safety net the craft requires](../../05-figures/96_remediation_playbook_automated_change/fig96_2.png)
+
+*Figure 40.2 — The automation engine: type-aware change at scale — Scaling the manual craft from one method to ten thousand files across hundreds of repositories &mdash; without removing the safety net the craft requires*
+
+
 ### The playbook: an ordered, incremental program
 
 Reaching for techniques at random does not tame an inherited disaster; the *order* is the strategy. The remediation playbook sequences the book's techniques so the codebase improves without delivery stopping or the team burning out:

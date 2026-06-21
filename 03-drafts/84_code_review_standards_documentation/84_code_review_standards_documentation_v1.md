@@ -39,6 +39,15 @@ That is the territory of Part X: the human side of quality that automation canno
 
 ## How it works
 
+![Figure 37.1 &mdash; The review-effectiveness curve: small and fast, or it does not work — Defect detection holds in a small effective zone and collapses past it as reviewer fatigue sets in &mdash; figures are the Cohen / SmartBear study's.](../../05-figures/84_code_review_standards_documentation/fig84_1.png)
+
+*Figure 37.1 &mdash; The review-effectiveness curve: small and fast, or it does not work — Defect detection holds in a small effective zone and collapses past it as reviewer fatigue sets in &mdash; figures are the Cohen / SmartBear study's.*
+
+![Figure 37.2 &mdash; One move, three practices: automate the mechanical, reserve humans for the substantive — Review, standards, and documentation each take a category of mechanical work off the human&rsquo;s plate &mdash; so scarce human attention goes only to what only a human can do.](../../05-figures/84_code_review_standards_documentation/fig84_2.png)
+
+*Figure 37.2 &mdash; One move, three practices: automate the mechanical, reserve humans for the substantive — Review, standards, and documentation each take a category of mechanical work off the human&rsquo;s plate &mdash; so scarce human attention goes only to what only a human can do.*
+
+
 ### Code review: the human catch, done the way that works
 
 Code review is the human quality gate that catches what tools structurally cannot: design problems, wrong abstractions, missing edge cases, broken authorization, and the question no analyzer asks — *is this even the right change?* It is the catch for the logic flaw that defeated Part IX's pipeline, and a major channel for knowledge transfer and shared ownership. Its effectiveness depends entirely on *how* it is done, and the evidence is unusually concrete:

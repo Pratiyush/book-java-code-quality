@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 37 — The Part the Machine Can't Do (dossier key 84, folds 86+89; Ch 37 in FINAL_INDEX, OPENS Part X)
+  Figure:  Figure 37.2 — One move, three practices: automate the mechanical, reserve humans for the substantive
+  Family:  Concept-map / matrix (three practice rows × mechanical|substantive columns; one shared failure-mode anchor)
+  Method:  Authored HTML + inline SVG → rendered to PNG via render.mjs (NEVER image-generated)
+  Placement: §"Deep dive: separate the mechanical from the substantive, everywhere" — the chapter's unifying frame
+  One idea: Code review, coding standards, and documentation are three instances of one move — automate
+             the mechanical (style, lint, coverage, Javadoc presence) so scarce human attention goes only
+             to the substantive (design, the right abstraction, the why) — and all three share one failure
+             mode: automation enforces presence, never quality, and quality is the human judgment.
+  Note: tool atoms (Spotless / google-java-format goals spotless:apply, spotless:check; Checkstyle) are
+        on-pin (SOURCE-PIN §2). Cohen/SmartBear, Google eng-practices, Nygard ADR are §7 named-canon gaps
+        (TO-PIN), attributed — see fig84_2.sources.md (Source-trace status: FLAGGED).
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 37.2 — One move, three practices</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + shared components from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 22px;
+      max-width: 1000px;
+    }
+
+    /* The matrix: a leading practice label column + mechanical column + arrow + substantive column */
+    .matrix {
+      display: grid;
+      grid-template-columns: 132px 1fr 40px 1fr;
+      gap: 12px;
+      align-items: stretch;
+      margin-top: 16px;
+    }
+
+    /* Column header strip (sits above the two content columns) */
+    .col-head {
+      font-size: 11.5px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
+      color: var(--ink-soft); padding-bottom: 6px; margin-bottom: 0;
+      border-bottom: 2px solid var(--ink);
+    }
+    .col-head .sub { display: block; font-size: 10.5px; font-weight: 400; text-transform: none; letter-spacing: 0; margin-top: 2px; }
+    .head-spacer {}  /* empty cell over the practice-label + arrow columns */
+
+    /* Practice row label (left rail) */
+    .prow-label {
+      display: flex; flex-direction: column; justify-content: center;
+      border: 1.5px solid var(--ink); border-radius: var(--radius);
+      background: var(--tint-2); padding: 10px 11px;
+    }
+    .prow-label h4 { margin: 0 0 2px; font-size: 13.5px; font-weight: 700; }
+    .prow-label .ch { font-family: var(--mono); font-size: 10px; color: var(--ink-soft); }
+
+    /* Mechanical cell (bot) — lighter fill */
+    .cell {
+      border: 1.5px solid var(--ink); border-radius: var(--radius);
+      padding: 9px 11px; font-size: 12px; line-height: 1.38;
+    }
+    .cell.bot   { background: var(--tint-1); }
+    .cell.human { background: var(--tint-0); border-width: 2px; }
+    .cell .who {
+      display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .4px;
+      text-transform: uppercase; color: var(--ink-soft); margin-bottom: 4px;
+    }
+    .cell.human .who { color: var(--ink); }
+    .cell b { color: var(--ink); }
+    .cell .k {
+      font-family: var(--mono); font-size: 11px;
+      background: var(--paper); border: 1px solid var(--tint-3); border-radius: 4px; padding: 1px 5px;
+    }
+
+    /* The "→ human" arrow cell */
+    .arrow-cell {
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 700; color: var(--ink);
+    }
+
+    /* Footer: the shared failure mode (the unifying anchor) */
+    .anchor { margin-top: 18px; }
+    .anchor .fig-note { font-size: 12.5px; }
+    .anchor .fig-note b { color: var(--ink); }
+
+    .fig-caption { margin-top: 14px; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 37.2 &mdash; One move, three practices: automate the mechanical, reserve humans for the substantive</p>
+  <p class="fig-subtitle">
+    Review, standards, and documentation each take a category of mechanical work off the human&rsquo;s plate &mdash; so scarce human attention goes only to what only a human can do.
+  </p>
+
+  <div class="matrix">
+
+    <!-- Header row -->
+    <div class="head-spacer"></div>
+    <div class="col-head">Mechanical &rarr; automated <span class="sub">the bot does it &mdash; cheap, deterministic, at scale</span></div>
+    <div class="head-spacer"></div>
+    <div class="col-head">Substantive &rarr; human <span class="sub">the human judgment a check cannot make</span></div>
+
+    <!-- Row 1: Code review -->
+    <div class="prow-label">
+      <h4>Code review</h4>
+      <span class="ch">human catch · Ch 34 bot layer</span>
+    </div>
+    <div class="cell bot">
+      <span class="who">Bots check</span>
+      Style, lint, and coverage gates run before a human looks &mdash; the mechanical findings are
+      already triaged.
+    </div>
+    <div class="arrow-cell">&rarr;</div>
+    <div class="cell human">
+      <span class="who">Humans judge</span>
+      Design, logic, correctness, and <b>&ldquo;is this the right change?&rdquo;</b> &mdash; on a small
+      PR (~100&ndash;300 LOC) the reviewer can actually think about.
+    </div>
+
+    <!-- Row 2: Coding standards -->
+    <div class="prow-label">
+      <h4>Coding standards</h4>
+      <span class="ch">Ch 6 formatter · Ch 16 Checkstyle</span>
+    </div>
+    <div class="cell bot">
+      <span class="who">Formatter applies</span>
+      A deterministic formatter (Spotless / google-java-format) is the canonical standard:
+      <span class="k">spotless:apply</span> fixes drift, CI <span class="k">spotless:check</span>
+      fails on it; Checkstyle enforces the convention rules a formatter does not.
+    </div>
+    <div class="arrow-cell">&rarr;</div>
+    <div class="cell human">
+      <span class="who">Humans never debate it</span>
+      Once the formatter is the source of truth, reviewers <b>never comment on formatting</b> &mdash;
+      style is not a choice anymore. Human attention returns to substance.
+    </div>
+
+    <!-- Row 3: Documentation -->
+    <div class="prow-label">
+      <h4>Documentation</h4>
+      <span class="ch">Ch 16 Javadoc-presence check</span>
+    </div>
+    <div class="cell bot">
+      <span class="who">Checkstyle enforces</span>
+      Javadoc <b>presence</b> on the public API &mdash; the comment is required to be <em>there</em>.
+    </div>
+    <div class="arrow-cell">&rarr;</div>
+    <div class="cell human">
+      <span class="who">Humans write</span>
+      The <b>contract</b> (params, <span class="k">@throws</span>, pre/post, nullability) and the
+      <b>why</b> (an ADR&rsquo;s decision + consequences) that a presence check cannot evaluate.
+    </div>
+
+  </div><!-- .matrix -->
+
+  <!-- The shared failure mode (the unifying anchor) -->
+  <div class="anchor">
+    <div class="fig-note">
+      <b>The shared failure mode &mdash; the same in all three:</b>
+      automation enforces <b>presence, never quality</b>, and quality is the human judgment a check
+      cannot replace. A coverage gate confirms tests <em>exist</em>, not that they assert anything; a
+      formatter confirms style is <em>consistent</em>, not that the design is good; a Javadoc-presence
+      check confirms a comment is <em>there</em>, not that it is true; a required review confirms someone
+      <em>clicked approve</em>, not that they read it. Each is a <b>floor, not a ceiling</b> &mdash;
+      necessary, automatable, and worthless if mistaken for the quality it gestures at. The
+      &ldquo;LGTM&rdquo; on the 2,400-line PR, the perfectly-formatted God class, the present-but-stale
+      Javadoc: each is presence without substance.
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    The bot/human division of labor, carried from Chapter 34: code review (Cohen / SmartBear effective-zone
+    finding; Google <em>eng-practices</em> &ldquo;does this improve overall code health?&rdquo;), coding
+    standards (Spotless / google-java-format and Checkstyle, on-pin), and documentation (Javadoc-as-contract;
+    ADRs, Nygard). Named-study and ADR sources are SOURCE-PIN &sect;7 canon gaps (to be pinned), attributed;
+    tool atoms are on-pin (&sect;2). Full trace in <b>fig84_2.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

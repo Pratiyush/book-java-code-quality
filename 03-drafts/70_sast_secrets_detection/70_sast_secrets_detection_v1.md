@@ -38,6 +38,15 @@ This chapter is the automated detection that the last one's secure-coding princi
 
 ## How it works
 
+![Fig 70.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.](../../05-figures/70_sast_secrets_detection/fig70_1.png)
+
+*Fig 70.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.*
+
+![Fig 71.1 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents](../../05-figures/70_sast_secrets_detection/fig71_1.png)
+
+*Fig 71.1 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents*
+
+
 ### SAST: tracing untrusted input to a dangerous sink
 
 **Static application security testing** analyzes the project's own source or bytecode for security weaknesses (injection, XSS, path traversal, crypto misuse) without running it. It is the security-focused sibling of the general analyzers from Part IV, and the complement to the software composition analysis of Part VII: SCA scans the project's *dependencies*, SAST scans the code the development team wrote. It is the automation of Chapter 30, the tool that finds the string-concatenated query and the unsafe `readObject` so the pattern need not be remembered every time.
