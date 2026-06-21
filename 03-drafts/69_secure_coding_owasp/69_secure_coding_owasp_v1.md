@@ -39,6 +39,13 @@ That inward turn is Part VIII, and this opening chapter frames it. The reassurin
 
 ## How it works
 
+![Fig 69.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically.
+    A vulnerability in the eliminate](../../05-figures/69_secure_coding_owasp/fig69_1.png)
+
+*Fig 69.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically.
+    A vulnerability in the eliminate*
+
+
 ### Secure coding: design out the class
 
 Security is not a separate discipline bolted onto quality. It *is* quality, one of the characteristics in the same ISO 25010 model that gives maintainability and reliability (Chapter 1). The vast majority of exploited vulnerabilities are not clever novel attacks; they are instances of a small set of well-understood *classes*. That changes the goal from "find every bug" to "design out the class." The highest-quality fix is not a mitigation that makes a vulnerability harder to exploit; it is a construction that makes the class *impossible*. A `PreparedStatement` does not make SQL injection harder; it eliminates it. Avoiding native deserialization of untrusted data does not reduce gadget-chain risk; it removes the attack surface entirely.

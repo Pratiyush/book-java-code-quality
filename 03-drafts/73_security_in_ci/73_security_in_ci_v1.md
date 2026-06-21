@@ -37,6 +37,11 @@ That failure, and how to avoid it, is this closing chapter of Part VIII. The too
 
 ## How it works
 
+![Fig 73.1 — The security gate: five testing types ordered fast-to-slow — Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.](../../05-figures/73_security_in_ci/fig73_1.png)
+
+*Fig 73.1 — The security gate: five testing types ordered fast-to-slow — Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.*
+
+
 ### The five testing types
 
 A security gate layers complementary lenses, because each is blind to what the others see:

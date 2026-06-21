@@ -39,6 +39,11 @@ That erosion is inevitable for any architecture a team merely *agrees* to, and t
 
 ## How it works
 
+![Fig 55.1 &mdash; Architecture-enforcement spectrum — Convention &rarr; ArchUnit rule &rarr; JPMS compiler boundary: enforcement strength rises with adoption cost. Choice is a trade-off, not an upgrade path.](../../05-figures/55_enforcing_architecture_fitness_functions/fig55_1.png)
+
+*Fig 55.1 &mdash; Architecture-enforcement spectrum — Convention &rarr; ArchUnit rule &rarr; JPMS compiler boundary: enforcement strength rises with adoption cost. Choice is a trade-off, not an upgrade path.*
+
+
 ### Enforcement: from documented to executable
 
 Architecture decays because documentation has no teeth. A decision written in a wiki ("the domain layer must not depend on the web layer") is invisible to the compiler and the build, so a single import added under pressure violates it silently and nothing notices until the next big-bang review finds the rot. **Enforcement** closes that gap: it turns the architectural decision into an *executable rule* that fails the build on violation, catching drift the moment it is introduced rather than months later (the shift-left logic of Chapter 1 applied to architecture).

@@ -39,6 +39,11 @@ Both failures live in the **build**, and the build is the subject of this openin
 
 ## How it works
 
+![Fig 62.1 — The build lifecycle as quality-gate host — Maven phases and Gradle check task · bind checks cheapest-first · no winner between the two tools](../../05-figures/62_build_dependency_hygiene/fig62_1.png)
+
+*Fig 62.1 — The build lifecycle as quality-gate host — Maven phases and Gradle check task · bind checks cheapest-first · no winner between the two tools*
+
+
 ### The build as the gate host
 
 Everything the book has gated runs through the build tool: the formatter, the analyzers, the tests, coverage, mutation, the architecture rules. The build is where the quality program physically lives (Chapter 3's toolchain map), which makes a disciplined build itself a quality artifact. The lifecycle is the gate host: in Maven, checks bind to phases (`validate` → `compile` → `test` → `verify`); in Gradle, the `check` task aggregates verification. The ordering principle from the analyzer chapters applies: cheap, fast, common-failure checks first (format, lint), heavier ones later (SpotBugs, Sonar), coverage and mutation last, so the build fails fast on the cheapest offense.

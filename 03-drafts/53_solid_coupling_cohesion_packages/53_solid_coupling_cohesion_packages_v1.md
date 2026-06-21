@@ -39,6 +39,15 @@ Hitting the middle is the subject of Part VI, and this opening chapter lays its 
 
 ## How it works
 
+![Fig 53.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.](../../05-figures/53_solid_coupling_cohesion_packages/fig53_1.png)
+
+*Fig 53.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.*
+
+![Fig 53.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.](../../05-figures/53_solid_coupling_cohesion_packages/fig53_2.png)
+
+*Fig 53.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.*
+
+
 ### SOLID: useful vocabulary, not a law to maximize
 
 SOLID is five object-oriented design principles popularized by Robert C. Martin, aimed at the same target as maintainability: low coupling, high cohesion, and safe change. The book's stance, stated up front, is that they are a useful *vocabulary and set of heuristics* — not a law to push to its limit, because applied dogmatically they produce the over-abstracted maze from the hook.

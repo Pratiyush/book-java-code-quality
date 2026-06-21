@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 30 — The Vulnerabilities You Write Yourself (key 69, folds 72+74)
+  Figure:  Fig 69.1 — Design-out hierarchy: three Java vulnerability classes
+  Family:  Concept-map / decision-hierarchy
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"How it works" — after the OWASP map discussion, before §Injection detail
+  One idea: For each of the three core Java vulnerability classes (Injection, Deserialization,
+             Crypto misuse), a three-tier hierarchy shows: root cause → eliminate-by-construction
+             → mitigate-when-elimination-is-not-feasible → detect-the-rest-automatically.
+             The design-out tier is always preferred; detection is the last layer, not the first.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 69.1 — Design-out hierarchy: three Java vulnerability classes</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      width: 960px;
+      padding: 28px 30px 24px;
+    }
+
+    /* ── Three-column layout: one col per vulnerability class ── */
+    .class-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    /* Column heading (class name) */
+    .class-head {
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      background: var(--tint-3);
+      padding: 10px 12px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 13.5px;
+      line-height: 1.3;
+    }
+    .class-head .owasp-tag {
+      display: inline-block;
+      margin-top: 5px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 5px;
+      background: var(--tint-1);
+    }
+
+    /* Root-cause row */
+    .rc-box {
+      border: 1.5px solid var(--ink);
+      border-radius: 6px;
+      background: var(--tint-2);
+      padding: 8px 11px;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+    .rc-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      margin-bottom: 3px;
+    }
+
+    /* Tier rows */
+    .tier {
+      margin-top: 6px;
+      border-radius: 6px;
+      padding: 8px 11px;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .tier .tier-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 3px;
+    }
+    .tier code {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--tint-2);
+      border-radius: 3px;
+      padding: 0 3px;
+    }
+
+    /* Tier 1 = Eliminate (strongest; darkest tint) */
+    .tier-elim {
+      border: 1.5px solid var(--ink);
+      background: var(--tint-1);
+      border-left: 4px solid var(--ink);
+    }
+    .tier-elim .tier-label { color: var(--ink); }
+
+    /* Tier 2 = Mitigate (when elimination not feasible; dashed border) */
+    .tier-mitig {
+      border: 1.5px dashed var(--ink);
+      background: var(--tint-0);
+    }
+    .tier-mitig .tier-label { color: var(--ink-soft); }
+
+    /* Tier 3 = Detect (last layer; warn colour) */
+    .tier-detect {
+      border: 1.5px solid var(--warn);
+      background: var(--tint-0);
+    }
+    .tier-detect .tier-label { color: var(--warn); }
+
+    /* Connector arrows between tiers (down arrows) */
+    .down-arrow {
+      text-align: center;
+      font-size: 13px;
+      color: var(--line);
+      margin: 2px 0;
+      line-height: 1;
+    }
+
+    /* Tier preference note */
+    .pref-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 3px;
+      padding: 1px 5px;
+    }
+    .pref-badge.preferred {
+      background: var(--tint-3);
+      border: 1px solid var(--ink);
+      color: var(--ink);
+    }
+    .pref-badge.fallback {
+      background: var(--tint-0);
+      border: 1px dashed var(--ink-soft);
+      color: var(--ink-soft);
+    }
+
+    /* Bottom legend */
+    .legend {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      align-items: center;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+    }
+    .l-swatch {
+      width: 22px; height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .l-swatch.elim   { background: var(--tint-1); border: 1.5px solid var(--ink); border-left: 4px solid var(--ink); }
+    .l-swatch.mitig  { background: var(--tint-0); border: 1.5px dashed var(--ink-soft); }
+    .l-swatch.detect { background: var(--tint-0); border: 1.5px solid var(--warn); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 69.1 — Three Java vulnerability classes: design-out hierarchy</p>
+  <p class="fig-subtitle">
+    Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically.
+    A vulnerability in the <em>eliminate</em> tier is impossible by construction; one only in the <em>detect</em> tier depends on tools not missing it.
+  </p>
+
+  <div class="class-grid">
+
+    <!-- ═══════════════════════════════════════════════════
+         COLUMN A: Injection (SQL / Command / LDAP / EL)
+         ═══════════════════════════════════════════════════ -->
+    <div>
+      <div class="class-head">
+        Injection<br>
+        <span style="font-weight:400;font-size:12px;">SQL · Command · LDAP · EL/SpEL/OGNL</span>
+        <div><span class="owasp-tag">OWASP Top 10:2025 · A03 · CWE-89/78</span></div>
+      </div>
+
+      <div class="rc-box">
+        <div class="rc-label">Root cause</div>
+        Untrusted input concatenated into an interpreter (SQL, shell, LDAP, expression language) that then executes it as code.
+      </div>
+
+      <div class="down-arrow">↓</div>
+
+      <!-- Eliminate -->
+      <div class="tier tier-elim">
+        <div class="tier-label">Eliminate <span class="pref-badge preferred">preferred</span></div>
+        Parameterize — never concatenate.<br>
+        <code>PreparedStatement</code> bind params (SQL);<br>
+        JPA/Criteria parameter binding.<br>
+        <code>ProcessBuilder</code> with fixed args (command).<br>
+        Encode/parameterize LDAP, XPath, EL/SpEL/OGNL.
+      </div>
+
+      <div class="down-arrow">↓</div>
+
+      <!-- Mitigate -->
+      <div class="tier tier-mitig">
+        <div class="tier-label">Defense-in-depth <span class="pref-badge fallback">not a substitute</span></div>
+        Jakarta Bean Validation (structural input checks).<br>
+        <em>Note: validation alone does not stop injection — a "valid" string still injects; parameterization is mandatory.</em>
+      </div>
+
+      <div class="down-arrow">↓</div>
+
+      <!-- Detect -->
+      <div class="tier tier-detect">
+        <div class="tier-label">Detect automatically</div>
+        SAST taint analysis (untrusted source → dangerous sink).<br>
+        FindSecBugs SQL-injection rule.<br>
+        Semgrep / CodeQL taint rules (Ch 31).
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+         COLUMN B: Insecure Deserialization
+         ═══════════════════════════════════════════════════ -->
+    <div>
+      <div class="class-head">
+        Insecure Deserialization<br>
+        <span style="font-weight:400;font-size:12px;">native Java serialization of untrusted data</span>
+        <div><span class="owasp-tag">OWASP Top 10:2025 · A08 · CWE-502</span></div>
+      </div>
+
+      <div class="rc-box">
+        <div class="rc-label">Root cause</div>
+        Untrusted bytes reconstituted into live objects via <code>readObject</code>; gadget chains of existing classpath classes reach RCE.
+      </div>
+
+      <div class="down-arrow">↓</div>
+
+      <!-- Eliminate -->
+      <div class="tier tier-elim">
+        <div class="tier-label">Eliminate <span class="pref-badge preferred">preferred</span></div>
+        Avoid native Java serialization for untrusted data entirely.<br>
+        Use JSON or Protobuf without polymorphic typing enabled.<br>
+        (<em>Effective Java</em>, Ch 5: "prefer alternatives to Java serialization.")
+      </div>
+
+      <div class="down-arrow">↓</div>
+
+      <!-- Mitigate -->
+      <div class="tier tier-mitig">
+        <div class="tier-label">Mitigate (unavoidable only) <span class="pref-badge fallback">fallback</span></div>
+        <code>ObjectInputFilter</code> (JEP 290, Java 9+) — allow-list permitted classes before deserialization.<br>
+        <em>Note: allow-list is a mitigation of an evolving gadget-chain threat, not the elimination a safe format provides.</em>
+      </div>
+
+      <div class="down-arrow">↓</div>
+
+      <!-- Detect -->
+      <div class="tier tier-detect">
+        <div class="tier-label">Detect automatically</div>
+        FindSecBugs deserialization rule (<code>readObject</code> on untrusted input).<br>
+        SAST taint: untrusted stream → <code>ObjectInputStream</code> (Ch 31).
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+         COLUMN C: Cryptographic-API Misuse
+         ═══════════════════════════════════════════════════ -->
+    <div>
+      <div class="class-head">
+        Cryptographic-API Misuse<br>
+        <span style="font-weight:400;font-size:12px;">wrong mode · weak alg · bad randomness · hardcoded keys</span>
+        <div><span class="owasp-tag">OWASP Top 10:2025 · A02 · CWE-327/330</span></div>
+      </div>
+
+      <div class="rc-box">
+        <div class="rc-label">Root cause</div>
+        Failure is API misuse, not a broken algorithm — wrong mode, weak choice, predictable IV/key, or bad PRNG.
+      </div>
+
+      <div class="down-arrow">↓</div>
+
+      <!-- Eliminate -->
+      <div class="tier tier-elim">
+        <div class="tier-label">Eliminate via safe defaults <span class="pref-badge preferred">preferred</span></div>
+        <code>SecureRandom</code> (not <code>Random</code>/<code>Math.random</code>).<br>
+        <code>AES/GCM</code> authenticated mode (not <code>Cipher.getInstance("AES")</code> ECB default).<br>
+        bcrypt / scrypt / Argon2 / PBKDF2 for password hashing (not plain SHA).<br>
+        Externalized keys; fresh random IVs per encryption.
+      </div>
+
+      <div class="down-arrow">↓</div>
+
+      <!-- Mitigate -->
+      <div class="tier tier-mitig">
+        <div class="tier-label">Mitigate (suppress FP with justification) <span class="pref-badge fallback">fallback</span></div>
+        Flagged <code>MD5</code> may be a legitimate non-security checksum — record a justified suppression (Ch 19).<br>
+        Date algorithm guidance against current OWASP/NIST (key sizes and recommendations evolve).
+      </div>
+
+      <div class="down-arrow">↓</div>
+
+      <!-- Detect -->
+      <div class="tier tier-detect">
+        <div class="tier-label">Detect automatically</div>
+        FindSecBugs: weak-algorithm, ECB, predictable-random rules.<br>
+        Error Prone: <code>@CheckReturnValue</code> + crypto rules (Ch 18).<br>
+        CryptoGuard / CogniCrypt deeper analysis.<br>
+        <em>Detects misuse patterns — not protocol or key-management design flaws.</em>
+      </div>
+    </div>
+
+  </div><!-- .class-grid -->
+
+  <!-- Legend -->
+  <div class="legend">
+    <span style="font-size:11.5px;font-weight:700;color:var(--ink);margin-right:4px;">Tier:</span>
+    <div class="legend-item">
+      <div class="l-swatch elim"></div>
+      <span><strong>Eliminate</strong> — impossible by construction; no runtime dependency</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-swatch mitig"></div>
+      <span><strong>Mitigate</strong> — control that can be bypassed; use only if elimination is infeasible</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-swatch detect"></div>
+      <span><strong>Detect</strong> — catches pattern-matchable signatures; misses design/logic flaws (Ch 31)</span>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Sources: OWASP Top 10:2025 (owasp.org/www-project-top-ten); OWASP A02/A03/A08 category definitions;
+    JEP 290 (JDK 9 <em>ObjectInputFilter</em>); Bloch, <em>Effective Java</em> 3rd ed., Ch 12 "Serialization" (prefer alternatives);
+    Jakarta Bean Validation specification; JCA/JCE documentation (<em>Cipher.getInstance</em> transformation strings);
+    FindSecBugs rule catalogue; OWASP Cheat Sheet Series — SQL Injection Prevention, Deserialization, Cryptographic Storage.
+    CWE-89 (SQL Injection), CWE-78 (OS Command Injection), CWE-502 (Unsafe Deserialization), CWE-327 (Broken Crypto Algorithm), CWE-330 (Insufficient Randomness) — mitre.org/cwe.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

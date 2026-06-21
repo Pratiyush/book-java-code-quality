@@ -38,6 +38,11 @@ That gap is the subject of this chapter, the security half of Part VII. The last
 
 ## How it works
 
+![Fig 65.1 — Supply-chain pipeline: three questions, one chain — Ch 28 · dossier key 65 (folds 66) · Part VII · each stage answers one question and enables the next](../../05-figures/65_dependency_scanning_sbom_supply_chain/fig65_1.png)
+
+*Fig 65.1 — Supply-chain pipeline: three questions, one chain — Ch 28 · dossier key 65 (folds 66) · Part VII · each stage answers one question and enables the next*
+
+
 ### SCA: is anything known-vulnerable?
 
 **Software composition analysis** answers one precise question: do the project's dependencies contain *known* vulnerabilities? It is distinct from SAST (Part VIII), which analyzes first-party code; SCA analyzes third-party dependencies, which constitute most of a modern Java application and where Log4Shell-class incidents live. It is, dollar for dollar, the highest-ROI security control in Java, because the majority of breaches exploit known, unpatched CVEs in dependencies rather than novel attacks.
