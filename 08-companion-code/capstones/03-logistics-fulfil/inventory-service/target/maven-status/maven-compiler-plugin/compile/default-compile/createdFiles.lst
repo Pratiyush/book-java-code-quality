@@ -1,0 +1,9 @@
+org/acme/logistics/inventory/InventoryService.class
+org/acme/logistics/inventory/InventoryRepository.class
+org/acme/logistics/inventory/InMemoryInventoryRepository.class
+org/acme/logistics/inventory/Reservation.class
+org/acme/logistics/inventory/InventoryRepository$ReleaseOutcome.class
+org/acme/logistics/inventory/InventoryApi.class
+org/acme/logistics/inventory/InventoryApi$1.class
+org/acme/logistics/inventory/InventoryRepository$ReserveOutcome.class
+org/acme/logistics/inventory/Main.class

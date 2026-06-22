@@ -1,0 +1,16 @@
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/client/ServiceClient.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/config/Config.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/error/ApiException.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/error/ProblemDetails.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/event/DomainEvent.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/event/EventBus.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/http/Handler.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/http/HttpApp.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/http/Request.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/http/Response.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/http/Route.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/id/Ids.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/json/Json.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/money/Money.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/obs/Metrics.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/result/Result.java

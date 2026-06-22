@@ -1,0 +1,14 @@
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/01-commerce-checkout/order-service/src/main/java/org/acme/commerce/order/CatalogPricingClient.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/01-commerce-checkout/order-service/src/main/java/org/acme/commerce/order/InMemoryOrderRepository.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/01-commerce-checkout/order-service/src/main/java/org/acme/commerce/order/Main.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/01-commerce-checkout/order-service/src/main/java/org/acme/commerce/order/Order.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/01-commerce-checkout/order-service/src/main/java/org/acme/commerce/order/OrderApi.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/01-commerce-checkout/order-service/src/main/java/org/acme/commerce/order/OrderItem.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/01-commerce-checkout/order-service/src/main/java/org/acme/commerce/order/OrderRepository.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/01-commerce-checkout/order-service/src/main/java/org/acme/commerce/order/OrderService.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/01-commerce-checkout/order-service/src/main/java/org/acme/commerce/order/OrderStatus.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/01-commerce-checkout/order-service/src/main/java/org/acme/commerce/order/PaymentGatewayClient.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/01-commerce-checkout/order-service/src/main/java/org/acme/commerce/order/PaymentPort.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/01-commerce-checkout/order-service/src/main/java/org/acme/commerce/order/PricingPort.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/01-commerce-checkout/order-service/src/main/java/org/acme/commerce/order/event/OrderPaid.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/01-commerce-checkout/order-service/src/main/java/org/acme/commerce/order/event/OrderPlaced.java

@@ -1,0 +1,4 @@
+org/acme/storefront/payment/PaymentSimulatorTest.class
+org/acme/storefront/checkout/CheckoutServiceTest.class
+org/acme/storefront/api/CheckoutHttpServerTest.class
+org/acme/storefront/domain/MoneyTest.class

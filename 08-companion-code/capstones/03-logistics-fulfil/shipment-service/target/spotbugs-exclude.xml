@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!-- Reviewed suppressions (Chapter 16: suppress with a reason, never disable a whole detector). -->
+
+  <!--
+    EI_EXPOSE_REP2 on a service/client/orchestrator that stores an injected collaborator (a
+    repository port, an event bus, a service client). This is dependency injection, not a leak: the
+    object is a shared dependency the component is meant to hold, not internal state it must defend by
+    copying — and a port is an interface, which cannot be defensively copied. The collaborators
+    themselves are concurrency-safe. Scoped to the wiring seams (Service / Client / Api), so genuine
+    representation leaks on value and domain types are still reported.
+  -->
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+    <Or>
+      <Class name="~.*Service"/>
+      <Class name="~.*Client"/>
+      <Class name="~.*Api"/>
+    </Or>
+  </Match>
+</FindBugsFilter>
