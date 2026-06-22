@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 20 — The testing landscape & quality (dossier key 41, Ch 20 in FINAL_INDEX, opens Part V)
+  Figure:  Fig 41.1 — The test pyramid: three layers, two rules, one anti-pattern
+  Family:  Architecture / concept-map (stacked shape with annotation lanes)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"The pyramid: how much, and where" — after the two rules, before §Two axes
+  One idea: The pyramid encodes a cost/speed/confidence trade-off — many fast unit tests at
+             the base, fewer integration tests in the middle, fewest E2E tests at the apex —
+             and its inversion (the ice-cream cone) is the named failure mode to prevent.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 41.1 — The test pyramid</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 1060px;
+    }
+
+    /* ── Overall two-column layout ── */
+    .layout {
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+      margin-top: 10px;
+    }
+
+    /* Left: pyramid + anti-pattern pair */
+    .pyramid-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Right: rules + routing notes */
+    .notes-col {
+      width: 300px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* ── Pyramid itself: trapezoid layers via CSS clip-path ── */
+    .pyramid-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+    .pyramid-label-row {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .layer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      text-align: center;
+    }
+
+    /* Trapezoid shapes achieved with border-left / border-right tricks */
+    /* We use a box with border-radius 0 and variable widths to create stacked blocks */
+    .layer-inner {
+      border: 1.5px solid var(--ink);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+    }
+
+    .layer-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .layer-sub {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      line-height: 1.35;
+      max-width: 28ch;
+    }
+    .layer-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--ink);
+      background: var(--paper);
+      color: var(--ink);
+      margin-top: 5px;
+    }
+
+    /* E2E (apex) — narrowest, darkest fill */
+    .layer-e2e .layer-inner {
+      width: 280px;
+      background: var(--tint-3);
+    }
+    /* Integration (middle) */
+    .layer-int .layer-inner {
+      width: 460px;
+      background: var(--tint-2);
+    }
+    /* Unit (base) — widest, lightest fill */
+    .layer-unit .layer-inner {
+      width: 640px;
+      background: var(--tint-1);
+      border-top: none; /* visual join to integration layer */
+    }
+
+    /* Connector ticks between layers */
+    .layer-connector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 16px;
+      width: 640px;
+    }
+    .conn-line {
+      width: 2px;
+      height: 16px;
+      background: var(--ink);
+    }
+
+    /* Build-split annotation below pyramid */
+    .build-note {
+      margin-top: 8px;
+      text-align: center;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      line-height: 1.45;
+    }
+    .build-note strong { color: var(--ink); }
+
+    /* ── Anti-pattern: ice-cream cone ── */
+    .icecream-wrap {
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 14px 14px 12px;
+    }
+    .icecream-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--stop);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 8px;
+    }
+    .icecream-shape {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+    /* Inverted: E2E at bottom-wide, unit at top-narrow */
+    .ic-unit .layer-inner {
+      width: 120px;
+      background: var(--tint-1);
+      border-color: var(--line);
+    }
+    .ic-int .layer-inner {
+      width: 190px;
+      background: var(--tint-2);
+      border-color: var(--line);
+      border-top: none;
+    }
+    .ic-e2e .layer-inner {
+      width: 260px;
+      background: var(--tint-3);
+      border-color: var(--line);
+      border-top: none;
+    }
+    .ic-unit .layer-name, .ic-int .layer-name, .ic-e2e .layer-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0;
+    }
+    .icecream-caption {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    /* ── Notes column ── */
+    .rule-block {
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      padding: 10px 12px;
+      border-radius: 0 8px 8px 0;
+    }
+    .rule-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--warn);
+      margin-bottom: 4px;
+    }
+    .rule-text {
+      font-size: 12px;
+      color: var(--ink);
+      line-height: 1.45;
+      font-style: italic;
+    }
+
+    .heuristic-block {
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 10px 12px;
+    }
+    .heuristic-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 5px;
+    }
+    .heuristic-body {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+
+    .routing-block {
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 10px 12px;
+    }
+    .routing-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .routing-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-bottom: 3px;
+    }
+    .routing-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      background: var(--tint-2);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: var(--ink);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 41.1 &mdash; The test pyramid</p>
+  <p class="fig-subtitle">
+    Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
+    &ldquo;The more high-level you get the fewer tests you should have.&rdquo;
+  </p>
+
+  <div class="layout">
+
+    <!-- ── LEFT: pyramid + anti-pattern ── -->
+    <div class="pyramid-col">
+
+      <!-- Pyramid proper -->
+      <div class="pyramid-wrap">
+        <div class="pyramid-label-row">The pyramid: shape encodes cost / speed / confidence</div>
+
+        <!-- E2E apex -->
+        <div class="layer layer-e2e">
+          <div class="layer-inner">
+            <div class="layer-name">UI / End-to-End</div>
+            <div class="layer-sub">Full-stack behaviour; slowest, costliest to run and maintain</div>
+            <span class="layer-badge">fewest</span>
+          </div>
+        </div>
+
+        <!-- connector E2E → Integration -->
+        <div class="layer-connector" style="width:460px;">
+          <div class="conn-line"></div>
+        </div>
+
+        <!-- Integration middle -->
+        <div class="layer layer-int">
+          <div class="layer-inner">
+            <div class="layer-name">Integration / Service</div>
+            <div class="layer-sub">
+              Application &ldquo;correctly interacts with external dependencies like
+              databases, filesystems, and separate services&rdquo;
+            </div>
+            <span class="layer-badge">fewer</span>
+          </div>
+        </div>
+
+        <!-- connector Integration → Unit -->
+        <div class="layer-connector" style="width:640px;">
+          <div class="conn-line"></div>
+        </div>
+
+        <!-- Unit base -->
+        <div class="layer layer-unit">
+          <div class="layer-inner">
+            <div class="layer-name">Unit</div>
+            <div class="layer-sub">
+              &ldquo;Focused, isolated tests of individual code components with the
+              narrowest scope.&rdquo; Fast, cheap, plentiful.
+            </div>
+            <span class="layer-badge">most</span>
+          </div>
+        </div>
+
+        <!-- Build expression -->
+        <div class="build-note">
+          Build expression &mdash;
+          <strong>Maven Surefire</strong> (<code style="font-family:var(--mono);font-size:10.5px;">test</code> phase) runs unit tests;
+          <strong>Maven Failsafe</strong> (<code style="font-family:var(--mono);font-size:10.5px;">verify</code> phase) runs <code style="font-family:var(--mono);font-size:10.5px;">*IT</code> integration tests.
+          That split <em>is</em> the pyramid in the build.
+        </div>
+      </div><!-- .pyramid-wrap -->
+
+      <!-- Ice-cream cone anti-pattern -->
+      <div class="icecream-wrap">
+        <div class="icecream-title">Anti-pattern: the ice-cream cone</div>
+        <div class="icecream-shape">
+          <div class="layer ic-unit">
+            <div class="layer-inner"><div class="layer-name">Unit &mdash; few</div></div>
+          </div>
+          <div class="layer ic-int">
+            <div class="layer-inner"><div class="layer-name">Integration</div></div>
+          </div>
+          <div class="layer ic-e2e">
+            <div class="layer-inner"><div class="layer-name">E2E &mdash; many (widest base)</div></div>
+          </div>
+        </div>
+        <div class="icecream-caption">
+          &ldquo;Excessive high-level tests that become maintenance nightmares and run slowly&rdquo;
+          (Vocke verbatim). E2E tests are &ldquo;notoriously flaky and often fail for unexpected
+          and unforeseeable reasons.&rdquo;
+        </div>
+      </div>
+
+    </div><!-- .pyramid-col -->
+
+    <!-- ── RIGHT: rules + heuristic note + routing ── -->
+    <div class="notes-col">
+
+      <!-- Rule 1 -->
+      <div class="rule-block">
+        <div class="rule-label">Vocke rule 1 (verbatim)</div>
+        <div class="rule-text">&ldquo;Write tests with different granularity.&rdquo;</div>
+      </div>
+
+      <!-- Rule 2 -->
+      <div class="rule-block">
+        <div class="rule-label">Vocke rule 2 (verbatim)</div>
+        <div class="rule-text">&ldquo;The more high-level you get the fewer tests you should have.&rdquo;</div>
+      </div>
+
+      <!-- Heuristic caveat -->
+      <div class="heuristic-block">
+        <div class="heuristic-title">Heuristic, not a law</div>
+        <div class="heuristic-body">
+          Vocke&rsquo;s layer names are &ldquo;deliberately fuzzy&rdquo; and the shape is a rule
+          of thumb, not a 70/20/10 quota. Alternative weightings (testing trophy, honeycomb) put
+          more weight on integration tests. Each is a different trade-off; none is crowned.
+        </div>
+      </div>
+
+      <!-- Solitary vs sociable -->
+      <div class="heuristic-block">
+        <div class="heuristic-title">Solitary vs. sociable</div>
+        <div class="heuristic-body">
+          <strong>Solitary</strong>: stubs all collaborators for isolation.<br>
+          <strong>Sociable</strong>: lets the unit interact with real collaborators where practical.
+          Root of the mocking debate &rarr; Ch 21.
+        </div>
+      </div>
+
+      <!-- Observable behaviour note -->
+      <div class="rule-block">
+        <div class="rule-label">Vocke prescription (verbatim)</div>
+        <div class="rule-text">&ldquo;Test observable behaviour, not implementation details.&rdquo;</div>
+      </div>
+
+      <!-- Chapter routing -->
+      <div class="routing-block">
+        <div class="routing-title">Deep routes (this chapter maps; depth elsewhere)</div>
+        <div class="routing-row"><span class="routing-badge">Ch 21</span> JUnit 5, assertions, Mockito</div>
+        <div class="routing-row"><span class="routing-badge">Ch 22</span> Testcontainers (integration layer)</div>
+        <div class="routing-row"><span class="routing-badge">later</span> PITest mutation, JaCoCo gating</div>
+        <div class="routing-row"><span class="routing-badge">later</span> jqwik property-based</div>
+        <div class="routing-row"><span class="routing-badge">later</span> REST-assured / Pact (API seam)</div>
+      </div>
+
+    </div><!-- .notes-col -->
+
+  </div><!-- .layout -->
+
+  <p class="fig-caption">
+    Sources: Cohn, <em>Succeeding with Agile</em> (2009) — origin; three layers Unit/Service/UI.
+    Vocke, &ldquo;The Practical Test Pyramid&rdquo; (martinfowler.com/articles/practical-test-pyramid.html) —
+    two rules verbatim; unit = &ldquo;focused, isolated tests of individual code components&rdquo;;
+    integration = &ldquo;correctly interacts with external dependencies like databases, filesystems,
+    and separate services&rdquo;; E2E = &ldquo;notoriously flaky and often fail for unexpected and
+    unforeseeable reasons&rdquo;; ice-cream cone = &ldquo;excessive high-level tests that become
+    maintenance nightmares and run slowly&rdquo;; &ldquo;test observable behaviour&rdquo;; solitary
+    vs. sociable. Maven Surefire / Failsafe phase split: Maven docs (maven.apache.org).
+    Trophy/honeycomb named as alternatives — no tool or shape crowned.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

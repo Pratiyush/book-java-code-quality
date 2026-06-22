@@ -1,0 +1,120 @@
+/* figures.css — the shared house style for the book's designed diagrams.
+   Authored-HTML diagrams link this with <link rel="stylesheet" href="../_assets/figures.css">
+   and wrap their content in <div id="figure">…</div> (the render.mjs crop target).
+
+   Design constraints (GUIDELINES §8 + accessibility):
+   - GRAYSCALE-SAFE: meaning never carried by hue alone — shapes, borders, labels, and
+     fill *weight* (tints, not just colors) distinguish elements, so the figure reads in B/W.
+   - Legible at print size; one restrained, neutral palette across every chapter. */
+
+:root {
+  --ink: #1f2328;          /* primary text / strong borders */
+  --ink-soft: #57606a;     /* secondary text */
+  --line: #8c959f;         /* connectors, light borders */
+  --paper: #ffffff;
+  --tint-0: #ffffff;       /* fill weights (grayscale-safe ramp) */
+  --tint-1: #f0f3f6;
+  --tint-2: #dde3ea;
+  --tint-3: #c4ccd6;
+  --accent: #24292f;       /* emphasis (used sparingly; reads dark in grayscale) */
+  --accent-bar: #fb8500;   /* a single warm accent for one "start here" marker */
+  --ok: #1a7f37;
+  --warn: #bf8700;
+  --stop: #cf222e;
+  --radius: 10px;
+  --gap: 16px;
+  --font: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "SF Mono", "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+}
+
+#figure {
+  box-sizing: border-box;
+  display: inline-block;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.4;
+  padding: 28px 30px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+#figure *, #figure *::before, #figure *::after { box-sizing: border-box; }
+
+/* Title + caption ------------------------------------------------------------ */
+.fig-title { font-size: 17px; font-weight: 700; margin: 0 0 4px; letter-spacing: .2px; }
+.fig-subtitle { font-size: 13px; color: var(--ink-soft); margin: 0 0 18px; }
+.fig-caption { font-size: 12px; color: var(--ink-soft); margin-top: 16px; max-width: 70ch; }
+.fig-caption b { color: var(--ink); }
+
+/* Layout helpers ------------------------------------------------------------- */
+.fig-row { display: flex; gap: var(--gap); align-items: stretch; }
+.fig-col { display: flex; flex-direction: column; gap: var(--gap); }
+.fig-center { align-items: center; justify-content: center; }
+.fig-wrap { flex-wrap: wrap; }
+.fig-grid { display: grid; gap: var(--gap); }
+
+/* Boxes / nodes -------------------------------------------------------------- */
+.fig-box {
+  background: var(--tint-1);
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  min-width: 120px;
+}
+.fig-box h4 { margin: 0 0 4px; font-size: 14px; font-weight: 700; }
+.fig-box p { margin: 0; font-size: 12.5px; color: var(--ink-soft); }
+.fig-box.is-strong { background: var(--tint-3); }
+.fig-box.is-light  { background: var(--tint-0); }
+.fig-box.is-dashed { border-style: dashed; }
+.fig-box.is-accent { border-color: var(--accent-bar); box-shadow: inset 4px 0 0 var(--accent-bar); }
+
+/* Stage / lane (for roadmaps, pipelines) ------------------------------------ */
+.fig-stage {
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--paper);
+  min-width: 150px;
+  flex: 1;
+}
+.fig-stage > .hd {
+  background: var(--tint-2);
+  border-bottom: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  font-weight: 700;
+  font-size: 13.5px;
+}
+.fig-stage > .bd { padding: 10px 12px; font-size: 12.5px; color: var(--ink); }
+.fig-stage ul { margin: 0; padding-left: 18px; }
+.fig-stage li { margin: 2px 0; }
+
+/* Badges / pills ------------------------------------------------------------- */
+.fig-badge {
+  display: inline-block;
+  font-size: 11px; font-weight: 600;
+  padding: 2px 8px; border-radius: 999px;
+  border: 1px solid var(--ink); background: var(--tint-1); color: var(--ink);
+}
+.fig-badge.ok   { border-color: var(--ok);   color: var(--ok); }
+.fig-badge.warn { border-color: var(--warn); color: var(--warn); }
+.fig-badge.stop { border-color: var(--stop); color: var(--stop); }
+.fig-chapter { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); }
+
+/* Connectors ---------------------------------------------------------------- */
+.fig-arrow { display: flex; align-items: center; color: var(--ink); font-weight: 700; }
+.fig-arrow::after { content: "→"; font-size: 22px; }
+.fig-arrow.down::after { content: "↓"; }
+.fig-divider { height: 1px; background: var(--line); margin: 8px 0; border: 0; }
+
+/* Notes / callouts ----------------------------------------------------------- */
+.fig-note {
+  border-left: 3px solid var(--accent-bar);
+  background: var(--tint-1);
+  padding: 8px 12px; font-size: 12.5px; border-radius: 0 8px 8px 0;
+}
+.fig-note b { color: var(--ink); }
+
+.fig-mono { font-family: var(--mono); font-size: 12px; }
+.fig-muted { color: var(--ink-soft); }
+.fig-strike { text-decoration: line-through; color: var(--ink-soft); }

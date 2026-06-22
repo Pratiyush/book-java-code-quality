@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 21 — The Base of the Pyramid (dossier key 42, folds 43+44) · Part V
+  Figure:  Fig 42.2 — The five test-double taxonomy and state vs. behaviour verification
+  Family:  Concept-map / spectrum with annotation rows
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Test doubles: isolating the unit, and the discipline of doing it" — after
+             the five-double list and the state-vs-behaviour CONCEPT callout
+  One idea: The Fowler/Meszaros five-double taxonomy runs Dummy→Fake→Stub→Spy→Mock
+            along a spectrum from "inert" to "interaction-checking"; the hinge is
+            state verification (stub) vs. behaviour verification (mock), because
+            behaviour verification couples a test to the implementation's call structure.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 42.2 — Five test-double taxonomy: state vs. behaviour verification</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 24px;
+      width: 1060px;
+    }
+
+    /* ── Spectrum bar ── */
+    .spectrum-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin: 18px 0 0;
+      border: 1.5px solid var(--ink);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .double-card {
+      flex: 1;
+      min-width: 170px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1.5px solid var(--ink);
+      background: var(--tint-1);
+    }
+    .double-card:last-child {
+      border-right: none;
+    }
+    /* Gradient tint: lightest at left (Dummy), darkest at right (Mock) */
+    .double-card:nth-child(1) { background: var(--tint-0); }
+    .double-card:nth-child(2) { background: var(--tint-1); }
+    .double-card:nth-child(3) { background: var(--tint-2); }
+    .double-card:nth-child(4) { background: var(--tint-2); }
+    .double-card:nth-child(5) { background: var(--tint-3); }
+
+    .dc-head {
+      padding: 9px 10px 6px;
+      font-size: 13px;
+      font-weight: 700;
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+      letter-spacing: .1px;
+    }
+    .dc-body {
+      padding: 8px 9px;
+      font-size: 11.5px;
+      color: var(--ink);
+      line-height: 1.45;
+      flex: 1;
+    }
+    .dc-quote {
+      font-style: italic;
+      font-size: 11px;
+      color: var(--ink-soft);
+      border-left: 2px solid var(--line);
+      padding-left: 7px;
+      margin-top: 6px;
+      line-height: 1.4;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    .dc-example {
+      font-size: 10.5px;
+      font-family: var(--mono);
+      color: var(--ink-soft);
+      margin-top: 6px;
+      padding: 3px 6px;
+      background: var(--paper);
+      border-radius: 4px;
+      border: 1px solid var(--line);
+      word-break: break-all;
+      overflow-wrap: break-word;
+    }
+
+    /* Spectrum direction arrow underneath the cards */
+    .spectrum-arrow {
+      display: flex;
+      align-items: center;
+      margin: 6px 0 16px;
+      gap: 8px;
+    }
+    .sa-label-left {
+      font-size: 11px;
+      color: var(--ink-soft);
+      font-style: italic;
+      white-space: nowrap;
+    }
+    .sa-bar {
+      flex: 1;
+      height: 4px;
+      background: linear-gradient(to right, var(--tint-2), var(--ink));
+      border-radius: 2px;
+    }
+    .sa-label-right {
+      font-size: 11px;
+      color: var(--ink);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* Verification type row — below spectrum */
+    .verif-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 0;
+      align-items: stretch;
+    }
+
+    .verif-card {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .verif-card.state {
+      background: var(--tint-1);
+      border-left: 4px solid var(--ink);
+    }
+    .verif-card.behaviour {
+      background: var(--tint-2);
+      border-left: 4px solid var(--accent);
+    }
+    .verif-head {
+      font-size: 13px;
+      font-weight: 700;
+      margin: 0;
+    }
+    .verif-desc {
+      font-size: 12px;
+      color: var(--ink);
+      line-height: 1.45;
+      margin: 0;
+    }
+    .verif-applies {
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-top: 2px;
+    }
+    .verif-cost {
+      font-size: 11px;
+      color: var(--ink-soft);
+      border-top: 1px solid var(--line);
+      padding-top: 6px;
+      margin-top: 4px;
+    }
+    .verif-cost b { color: var(--ink); }
+
+    /* Mockito mechanism strip */
+    .mech-strip {
+      margin-top: 14px;
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .mech-head {
+      background: var(--tint-2);
+      border-bottom: 1.5px solid var(--ink);
+      padding: 7px 14px;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+    .mech-body {
+      display: flex;
+      gap: 0;
+      background: var(--paper);
+    }
+    .mech-cell {
+      flex: 1;
+      border-right: 1px solid var(--line);
+      padding: 8px 12px;
+      font-size: 11.5px;
+    }
+    .mech-cell:last-child { border-right: none; }
+    .mech-cell .mc-label {
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--ink-soft);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .mech-cell code {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink);
+      background: var(--tint-1);
+      padding: 1px 4px;
+      border-radius: 3px;
+      display: inline-block;
+      margin: 1px 0;
+    }
+
+    /* strict-stubbing callout */
+    .strict-note {
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 42.2 — The five test-double taxonomy</p>
+  <p class="fig-subtitle">Fowler / Meszaros spectrum: Dummy → Mock. The hinge: state verification (stub) vs. behaviour verification (mock).</p>
+
+  <!-- Five-card spectrum -->
+  <div class="spectrum-row">
+
+    <!-- 1: Dummy -->
+    <div class="double-card">
+      <div class="dc-head">Dummy</div>
+      <div class="dc-body">
+        Passed around, never actually used.
+        <div class="dc-quote">"just used to fill parameter lists"</div>
+        <div class="dc-example">null / new DummyLogger()</div>
+      </div>
+    </div>
+
+    <!-- 2: Fake -->
+    <div class="double-card">
+      <div class="dc-head">Fake</div>
+      <div class="dc-body">
+        Working implementation with a shortcut — not production-suitable.
+        <div class="dc-quote">"take some shortcut which makes them not suitable for production"</div>
+        <div class="dc-example">HashMap-backed repository</div>
+      </div>
+    </div>
+
+    <!-- 3: Stub -->
+    <div class="double-card">
+      <div class="dc-head">Stub</div>
+      <div class="dc-body">
+        Returns canned answers to calls made during the test.
+        <div class="dc-quote">"provide canned answers to calls made during the test"</div>
+        <div class="dc-example">when(catalog.price(id)).thenReturn(Money.of(90))</div>
+      </div>
+    </div>
+
+    <!-- 4: Spy -->
+    <div class="double-card">
+      <div class="dc-head">Spy</div>
+      <div class="dc-body">
+        A stub that also records how it was called (partial real).
+        <div class="dc-quote">"stubs that also record some information based on how they were called"</div>
+        <div class="dc-example">@Spy / Mockito.spy(real)</div>
+      </div>
+    </div>
+
+    <!-- 5: Mock -->
+    <div class="double-card">
+      <div class="dc-head">Mock</div>
+      <div class="dc-body">
+        Pre-programmed with call expectations — a behavioural specification.
+        <div class="dc-quote">"pre-programmed with expectations which form a specification of the calls they are expected to receive"</div>
+        <div class="dc-example">verify(gateway)<br>.charge(eq(id), any())</div>
+      </div>
+    </div>
+
+  </div><!-- .spectrum-row -->
+
+  <!-- Spectrum direction -->
+  <div class="spectrum-arrow">
+    <span class="sa-label-left">inert placeholder</span>
+    <div class="sa-bar"></div>
+    <span class="sa-label-right">interaction-checking ▶</span>
+  </div>
+
+  <!-- State vs behaviour verification -->
+  <div class="verif-row">
+
+    <div class="verif-card state">
+      <p class="verif-head">State verification</p>
+      <p class="verif-desc">
+        The test checks the <em>outcome</em> — the state of the system after the method runs.
+        Used with stubs and fakes; doubles supply inputs, the assertion checks outputs.
+      </p>
+      <span class="verif-applies">Applies to: <strong>Dummy · Fake · Stub</strong> (and Spy used as stub)</span>
+      <div class="verif-cost">
+        <b>Strength:</b> Tests survive refactoring of internal call structure — the assertion is on observable behaviour, not how it was achieved.
+      </div>
+    </div>
+
+    <div class="verif-card behaviour">
+      <p class="verif-head">Behaviour verification</p>
+      <p class="verif-desc">
+        The test asserts an <em>interaction</em> — that the unit made the right calls on its collaborator.
+        "Mock objects always use behaviour verification, while a stub can go either way."
+      </p>
+      <span class="verif-applies">Applies to: <strong>Mock</strong> (and Spy when verifying calls)</span>
+      <div class="verif-cost">
+        <b>Cost:</b> Couples the test to the implementation's call structure — breaks on a refactor that changes <em>how</em> the code collaborates, even when the observable behaviour is unchanged.
+      </div>
+    </div>
+
+  </div><!-- .verif-row -->
+
+  <!-- Mockito mechanism strip -->
+  <div class="mech-strip">
+    <div class="mech-head">Mockito 5.23.0 — mechanism (STRICT_STUBS default via MockitoExtension)</div>
+    <div class="mech-body">
+      <div class="mech-cell">
+        <div class="mc-label">Create</div>
+        <code>@Mock</code> <code>@Spy</code> <code>@Captor</code> <code>@InjectMocks</code><br>
+        via <code>@ExtendWith(MockitoExtension.class)</code>
+      </div>
+      <div class="mech-cell">
+        <div class="mc-label">Stub (for stub/spy)</div>
+        <code>when().thenReturn()</code><br>
+        <code>when().thenThrow()</code><br>
+        <code>doReturn().when()</code> (void / spy)
+      </div>
+      <div class="mech-cell">
+        <div class="mc-label">Verify (for mock)</div>
+        <code>verify(m, times(1))</code><br>
+        <code>verify(m, never())</code><br>
+        <code>verifyNoMoreInteractions()</code>
+      </div>
+      <div class="mech-cell">
+        <div class="mc-label">Quality guard</div>
+        <code>STRICT_STUBS</code> (default):<br>
+        unused stub → <code>UnnecessaryStubbing</code><br>
+        arg mismatch → <code>PotentialStubbingProblem</code>
+      </div>
+    </div>
+  </div><!-- .mech-strip -->
+
+  <!-- Strict-stubbing note -->
+  <div class="strict-note">
+    <div class="fig-note">
+      <b>Built-in quality guard:</b> <code style="font-family:var(--mono);font-size:11.5px;">MockitoExtension</code> defaults to
+      <code style="font-family:var(--mono);font-size:11.5px;">Strictness.STRICT_STUBS</code> — a dead stub fails the build
+      (<code style="font-family:var(--mono);font-size:11.5px;">UnnecessaryStubbingException</code>); an argument mismatch on a
+      stubbed call raises <code style="font-family:var(--mono);font-size:11.5px;">PotentialStubbingProblem</code>.
+      Do not mock value objects (<code style="font-family:var(--mono);font-size:11.5px;">record</code>s / immutable data) — use the real instance.
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Taxonomy (five doubles + verbatim quotes): Fowler, "Mocks Aren't Stubs" (martinfowler.com/articles/mocksArentStubs.html),
+    crediting Meszaros, <em>xUnit Test Patterns</em> (2007). "Mock objects always use behaviour verification …" — Fowler, ibid.
+    Mockito API: site.mockito.org + javadoc.io/doc/org.mockito/mockito-core; Mockito 5.23.0 (pinned 2026-06-20);
+    STRICT_STUBS default via MockitoExtension — Mockito docs §Strict stubbing with JUnit5 MockitoExtension.
+    Draft §"Test doubles: isolating the unit, and the discipline of doing it" (Ch 21 v1).
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Capstone 01 — commerce-checkout. An e-commerce checkout split into three microservices that
+    each own one responsibility and talk over HTTP:
+        catalog-service   the product catalog + pricing — the source of truth for prices
+        payment-service   a deterministic payment authorizer with idempotency by key
+        order-service     places an order: prices it via catalog-service, authorizes it via
+                          payment-service, and records the lifecycle (PENDING -> PAID / DECLINED)
+    The real problem this models: an order total must be computed from authoritative prices, and a
+    payment must be charged at most once even if the client retries. Each service is independently
+    runnable; the integration test wires all three in one JVM on ephemeral ports.
+  -->
+  <parent>
+    <groupId>org.acme.capstones</groupId>
+    <artifactId>capstones</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>commerce-checkout</artifactId>
+  <packaging>pom</packaging>
+  <name>Capstone 01 — commerce-checkout (order / payment / catalog)</name>
+
+  <properties>
+    <!-- This capstone nests its services one level below its single shared config dir. -->
+    <checkstyle.config.location>../config/checkstyle/checkstyle.xml</checkstyle.config.location>
+    <spotbugs.exclude.location>../config/spotbugs/spotbugs-exclude.xml</spotbugs.exclude.location>
+  </properties>
+
+  <modules>
+    <module>catalog-service</module>
+    <module>payment-service</module>
+    <module>order-service</module>
+  </modules>
+</project>

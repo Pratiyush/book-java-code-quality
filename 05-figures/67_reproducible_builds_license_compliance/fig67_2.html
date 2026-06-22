@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 29 — A Build You Can Stand Behind (dossier key 67, folds 68; Ch 29 in FINAL_INDEX; CLOSES Part VII)
+  Figure:  Fig 67.2 — The license-obligation spectrum mapped to distribution mode
+  Family:  Data / domain model (obligation tiers) × decision grid (distribution modes)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"License compliance: the obligations in the tree" — beside the CONCEPT callout
+             "Obligation depends on how the product is distributed — and this is not legal advice."
+  One idea: The SAME SPDX license carries a different obligation depending on how the artifact is
+            distributed — so the policy gate is tuned to the distribution mode, and the tool reports
+            declared licenses, NOT legal advice.
+  Grayscale-safe: risk reads by fill weight + the word in the cell, never hue alone; the single
+            accent bar marks the one "this is not legal advice" caution.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 67.2 — License obligation spectrum × distribution mode</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout only — palette + components come from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 940px;
+    }
+
+    /* ── The four pipeline steps strip (Identify → Categorize → Gate → Attribute) ── */
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr 26px 1fr 26px 1fr 26px 1fr;
+      align-items: stretch;
+      margin: 14px 0 20px;
+    }
+    .step-card {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--tint-1);
+      padding: 8px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .step-card .st-n {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+    .step-card .st-title { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+    .step-card .st-body { font-size: 10.5px; color: var(--ink-soft); line-height: 1.3; }
+    .step-card .st-body code,
+    .step-card .st-title code {
+      font-family: var(--mono);
+      font-size: 10px;
+      background: var(--tint-0);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      padding: 0 3px;
+    }
+    .step-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* ── The obligation × distribution matrix ── */
+    .matrix {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .mx-row { display: flex; border-bottom: 1px solid var(--line); }
+    .mx-row:last-child { border-bottom: none; }
+
+    /* header row */
+    .mx-row.is-head { background: var(--tint-2); }
+    .mx-row.is-head .mx-cell {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink);
+      text-align: center;
+      padding: 9px 10px;
+    }
+    .mx-row.is-head .mx-rowhd { text-align: left; }
+    .mx-head-sub { display:block; font-size:10px; font-weight:400; color:var(--ink-soft); margin-top:1px; }
+
+    /* row-head cell (the obligation tier) */
+    .mx-rowhd {
+      width: 244px;
+      flex-shrink: 0;
+      border-right: 1.5px solid var(--ink);
+      padding: 11px 13px;
+      background: var(--tint-1);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .mx-rowhd .tier-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+    .mx-rowhd .tier-ids {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    .mx-rowhd .tier-ob { font-size: 10.5px; color: var(--ink-soft); line-height: 1.3; }
+
+    /* the three distribution-mode cells */
+    .mx-cell {
+      flex: 1;
+      border-right: 1px solid var(--line);
+      padding: 9px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      justify-content: center;
+    }
+    .mx-cell:last-child { border-right: none; }
+    .mx-cell .risk-pill {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1.5px solid var(--ink);
+    }
+    .mx-cell .risk-note { font-size: 10.5px; color: var(--ink-soft); line-height: 1.32; }
+
+    /* grayscale-safe risk weights: fill tint + border weight differ, label always present */
+    .risk-low   { background: var(--tint-0); }
+    .risk-low   .risk-pill { background: var(--tint-0); border-style: dashed; color: var(--ink-soft); }
+    .risk-mid   { background: var(--tint-1); }
+    .risk-mid   .risk-pill { background: var(--tint-2); }
+    .risk-high  { background: var(--tint-3); }
+    .risk-high  .risk-pill { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+    /* ── Legend for the risk weights ── */
+    .risk-legend {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .risk-legend .rl-title { font-size: 11px; font-weight: 700; color: var(--ink-soft); }
+    .rl-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink); }
+    .rl-swatch {
+      width: 26px; height: 14px; border-radius: 3px; border: 1.5px solid var(--ink); flex-shrink: 0;
+    }
+    .rl-swatch.s-low  { background: var(--tint-0); border-style: dashed; }
+    .rl-swatch.s-mid  { background: var(--tint-1); }
+    .rl-swatch.s-high { background: var(--tint-3); }
+
+    /* ── The "not legal advice" caution + transitive-surprise notes ── */
+    .notes-row { display: flex; gap: 14px; margin-top: 16px; align-items: stretch; }
+    .not-advice {
+      flex: 1.3;
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 13px;
+    }
+    .not-advice .na-h {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+      color: var(--ink); margin-bottom: 4px;
+    }
+    .not-advice .na-b { font-size: 11.5px; color: var(--ink); line-height: 1.4; }
+    .limit-card {
+      flex: 1;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      background: var(--tint-0);
+      padding: 10px 13px;
+    }
+    .limit-card .lc-h { font-size: 11px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+    .limit-card .lc-b { font-size: 10.5px; color: var(--ink-soft); line-height: 1.38; }
+    .limit-card .lc-b b { color: var(--ink); }
+    .limit-card code {
+      font-family: var(--mono); font-size: 10px;
+      background: var(--tint-1); border: 1px solid var(--line); border-radius: 3px; padding: 0 3px;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 67.2 &mdash; The license-obligation spectrum, by distribution mode</p>
+  <p class="fig-subtitle">The same SPDX license carries a different obligation depending on how the artifact is distributed &mdash; tune the policy gate to the distribution mode. Categories are factual; tools report <em>declared</em> licenses, not legal advice.</p>
+
+  <!-- ── The four steps: Identify → Categorize → Gate → Attribute ── -->
+  <div class="steps">
+    <div class="step-card">
+      <span class="st-n">1 &middot; Identify</span>
+      <span class="st-title">SPDX identifier</span>
+      <span class="st-body">Normalize each component's license (<code>Apache-2.0</code>, <code>GPL-3.0-only</code>); read off the SBOM (Ch 28)</span>
+    </div>
+    <div class="step-arrow">&rarr;</div>
+    <div class="step-card">
+      <span class="st-n">2 &middot; Categorize</span>
+      <span class="st-title">By obligation</span>
+      <span class="st-body">Permissive &rarr; weak copyleft &rarr; strong copyleft (the rows below)</span>
+    </div>
+    <div class="step-arrow">&rarr;</div>
+    <div class="step-card">
+      <span class="st-n">3 &middot; Gate</span>
+      <span class="st-title">Allow / deny policy</span>
+      <span class="st-body"><code>license-maven-plugin</code> / FOSSA / ScanCode <em>fails the build</em> on a banned license (a fitness function, Ch 26)</span>
+    </div>
+    <div class="step-arrow">&rarr;</div>
+    <div class="step-card">
+      <span class="st-n">4 &middot; Attribute</span>
+      <span class="st-title">THIRD-PARTY / NOTICE</span>
+      <span class="st-body">Auto-generate the attribution file permissive licenses require</span>
+    </div>
+  </div>
+
+  <!-- ── Matrix: obligation tier (rows) × distribution mode (columns) ── -->
+  <div class="matrix">
+
+    <!-- Header row -->
+    <div class="mx-row is-head">
+      <div class="mx-rowhd">Obligation tier &mdash; SPDX example</div>
+      <div class="mx-cell">Internal only<span class="mx-head-sub">never distributed</span></div>
+      <div class="mx-cell">SaaS / network<span class="mx-head-sub">served over a network</span></div>
+      <div class="mx-cell">Shipped binary<span class="mx-head-sub">redistributed to users</span></div>
+    </div>
+
+    <!-- Permissive -->
+    <div class="mx-row">
+      <div class="mx-rowhd">
+        <span class="tier-name">Permissive</span>
+        <span class="tier-ids">Apache-2.0 &middot; MIT &middot; BSD</span>
+        <span class="tier-ob">Attribution only</span>
+      </div>
+      <div class="mx-cell risk-low">
+        <span class="risk-pill">Low</span>
+        <span class="risk-note">No obligation triggered</span>
+      </div>
+      <div class="mx-cell risk-low">
+        <span class="risk-pill">Low</span>
+        <span class="risk-note">Attribution where applicable</span>
+      </div>
+      <div class="mx-cell risk-low">
+        <span class="risk-pill">Low</span>
+        <span class="risk-note">Ship the attribution / NOTICE file</span>
+      </div>
+    </div>
+
+    <!-- Weak copyleft -->
+    <div class="mx-row">
+      <div class="mx-rowhd">
+        <span class="tier-name">Weak copyleft</span>
+        <span class="tier-ids">LGPL-2.1 &middot; MPL &middot; EPL</span>
+        <span class="tier-ob">File- / library-level share-alike</span>
+      </div>
+      <div class="mx-cell risk-low">
+        <span class="risk-pill">Low</span>
+        <span class="risk-note">Not distributed &rarr; no trigger</span>
+      </div>
+      <div class="mx-cell risk-mid">
+        <span class="risk-pill">Review</span>
+        <span class="risk-note">Share-alike scoped to the file / library</span>
+      </div>
+      <div class="mx-cell risk-mid">
+        <span class="risk-pill">Review</span>
+        <span class="risk-note">File / library obligations on redistribution</span>
+      </div>
+    </div>
+
+    <!-- Strong copyleft -->
+    <div class="mx-row">
+      <div class="mx-rowhd">
+        <span class="tier-name">Strong copyleft</span>
+        <span class="tier-ids">GPL-3.0-only &middot; AGPL</span>
+        <span class="tier-ob">Derivative-work obligations</span>
+      </div>
+      <div class="mx-cell risk-mid">
+        <span class="risk-pill">Review</span>
+        <span class="risk-note">GPL low if never distributed; <b style="color:var(--ink)">AGPL reaches network use</b></span>
+      </div>
+      <div class="mx-cell risk-high">
+        <span class="risk-pill">High</span>
+        <span class="risk-note"><b style="color:var(--paper);background:var(--ink);padding:0 3px;border-radius:2px;">AGPL</b> reaches the SaaS deployment</span>
+      </div>
+      <div class="mx-cell risk-high">
+        <span class="risk-pill">High</span>
+        <span class="risk-note">Derivative-work obligation on a proprietary shipped product</span>
+      </div>
+    </div>
+
+  </div><!-- .matrix -->
+
+  <!-- ── Risk-weight legend (grayscale-safe) ── -->
+  <div class="risk-legend">
+    <span class="rl-title">Risk reads by cell weight + label:</span>
+    <div class="rl-item"><span class="rl-swatch s-low"></span> Low &mdash; no obligation triggered</div>
+    <div class="rl-item"><span class="rl-swatch s-mid"></span> Review &mdash; obligation depends on use</div>
+    <div class="rl-item"><span class="rl-swatch s-high"></span> High &mdash; serious obligation for this mode</div>
+  </div>
+
+  <!-- ── Caution + limits ── -->
+  <div class="notes-row">
+    <div class="not-advice">
+      <div class="na-h">Not legal advice</div>
+      <div class="na-b">Tools detect the <em>declared</em> license; they do <strong>not</strong> interpret your specific obligations. The categories here are factual; license <em>strategy</em> and the policy itself are questions for legal counsel, not a build plugin.</div>
+    </div>
+    <div class="limit-card">
+      <div class="lc-h">Detection is imperfect</div>
+      <div class="lc-b">Missing, ambiguous, multi-licensed, relicensed, and dual-licensed components confuse scanners; a POM-declared license may not be the actual one. <b>Verify high-risk findings by hand.</b></div>
+    </div>
+    <div class="limit-card">
+      <div class="lc-h">Transitive surprise &middot; license &ne; security</div>
+      <div class="lc-b">A <b>permissive direct</b> dependency can pull a <b>copyleft transitive</b> &mdash; scan the full graph (Ch 27). And a license-clean dependency can still be vulnerable (Ch 28).</div>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    SPDX identifiers (<span style="font-family:var(--mono);font-size:10.5px;">Apache-2.0</span>, <span style="font-family:var(--mono);font-size:10.5px;">MIT</span>, <span style="font-family:var(--mono);font-size:10.5px;">GPL-3.0-only</span>, <span style="font-family:var(--mono);font-size:10.5px;">LGPL-2.1</span>): SPDX license list, <span style="font-family:var(--mono);font-size:10.5px;">spdx.org/licenses</span> (SPDX = ISO/IEC 5962:2021, SOURCE-PIN §4). Obligation tiers and the distribution-mode dependence: draft v1 §"License compliance: the obligations in the tree" + the CONCEPT callout (key 68 dossier §2). Policy gate / attributions: <span style="font-family:var(--mono);font-size:10.5px;">license-maven-plugin</span> · FOSSA · ScanCode. License data carried by the SBOM: Ch 28 (key 66). Full-graph scan: Ch 27 (key 63). <b>Categories are factual; this is not legal advice.</b>
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

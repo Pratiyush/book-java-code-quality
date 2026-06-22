@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 5 — Effective Java & modern Java for quality (dossier key 08, folds 13) · Part II
+  Figure:  Fig 08.1 — Canon-dating: EJ principle → modern Java feature → verdict
+  Family:  Concept-map / table layout
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §Canon-dating: rule → feature → verdict (draft v1, §How it works)
+  One idea: Each load-bearing Effective Java principle maps to the modern Java feature that
+            changed how to apply it, with a three-state verdict (Stands / Served by a feature /
+            Reinforced-and-dated) so readers can update the canon rather than discard it.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 08.1 — Canon-dating: EJ principle → modern Java feature → verdict</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout only — palette + components from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 26px;
+      max-width: 980px;
+    }
+
+    /* Column header row */
+    .cd-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr 160px;
+      gap: 0;
+      margin-bottom: 0;
+    }
+    .cd-header .col {
+      padding: 8px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      background: var(--tint-2);
+      border: 1.5px solid var(--ink);
+    }
+    .cd-header .col:first-child  { border-radius: var(--radius) 0 0 0; }
+    .cd-header .col:last-child   { border-radius: 0 var(--radius) 0 0; }
+    .cd-header .col + .col       { border-left: none; }
+
+    /* Each row */
+    .cd-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 160px;
+      gap: 0;
+      border-top: none;
+    }
+    .cd-row:last-of-type .cd-cell { border-bottom: 1.5px solid var(--ink); }
+    .cd-row:last-of-type .cd-cell:first-child  { border-radius: 0 0 0 var(--radius); }
+    .cd-row:last-of-type .cd-cell:last-child   { border-radius: 0 0 var(--radius) 0; }
+
+    .cd-cell {
+      padding: 11px 14px;
+      border: 1.5px solid var(--ink);
+      border-top: none;
+      border-right: none;
+      font-size: 12.5px;
+      line-height: 1.4;
+      background: var(--paper);
+      vertical-align: top;
+    }
+    .cd-cell:last-child { border-right: 1.5px solid var(--ink); }
+    .cd-cell b { font-weight: 700; }
+    .cd-cell .sub { font-size: 11px; color: var(--ink-soft); margin-top: 3px; }
+
+    /* Verdict badges */
+    .verdict {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1.5px solid;
+      white-space: nowrap;
+    }
+    .verdict.stands    { border-color: var(--ink); background: var(--tint-3); color: var(--ink); }
+    .verdict.served    { border-color: var(--ok);  background: var(--tint-0); color: var(--ok); }
+    .verdict.reinforced { border-color: var(--warn); background: var(--tint-0); color: var(--warn); }
+
+    .verdict-note {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      margin-top: 5px;
+      line-height: 1.35;
+    }
+
+    /* JEP tag */
+    .jep {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink-soft);
+    }
+
+    /* Legend row */
+    .legend {
+      margin-top: 14px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .legend-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      margin-right: 6px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 08.1 — Canon-dating: Effective Java principle → modern Java feature → verdict</p>
+  <p class="fig-subtitle">The principle is kept; the idiom is updated. Three verdicts: Stands, Served by a feature, Reinforced-and-dated.</p>
+
+  <!-- Column headers -->
+  <div class="cd-header">
+    <div class="col">Effective Java principle (3e, 2018)</div>
+    <div class="col">Modern Java feature — JEP / version</div>
+    <div class="col">Verdict</div>
+  </div>
+
+  <!-- Row 1: Immutability / Records -->
+  <div class="cd-row">
+    <div class="cd-cell">
+      <b>Minimize mutability</b> — immutable value classes reduce state, are thread-safe, freely shareable
+      <div class="sub">Items 15–17, Effective Java 3e</div>
+    </div>
+    <div class="cd-cell">
+      <b>Records</b> — transparent, final-field data carrier; all components immutable by definition
+      <div class="jep">JEP 395 · final Java 16</div>
+      <div class="sub">A compact constructor adds validation where invariants are required</div>
+    </div>
+    <div class="cd-cell">
+      <span class="verdict served">Served by a feature</span>
+      <div class="verdict-note">Common case (transparent data) is one line. Hand-write when invariants, identity, or hidden representation are needed.</div>
+    </div>
+  </div>
+
+  <!-- Row 2: equals/hashCode/toString -->
+  <div class="cd-row">
+    <div class="cd-cell">
+      <b>Obey the <code style="font-family:var(--mono);font-size:11.5px">equals</code> / <code style="font-family:var(--mono);font-size:11.5px">hashCode</code> / <code style="font-family:var(--mono);font-size:11.5px">toString</code> contracts</b> — violate them and collections and sorting silently misbehave
+      <div class="sub">Items 10–12, Effective Java 3e</div>
+    </div>
+    <div class="cd-cell">
+      <b>Records</b> generate all three from the declared components by spec
+      <div class="jep">JEP 395 · final Java 16</div>
+      <div class="sub">For classes with identity or custom equality, the hand-written form still applies</div>
+    </div>
+    <div class="cd-cell">
+      <span class="verdict served">Served</span><br>
+      <span class="verdict stands" style="margin-top:5px;display:inline-block">Stands</span>
+      <div class="verdict-note">Served for data carriers; Stands for identity-bearing classes.</div>
+    </div>
+  </div>
+
+  <!-- Row 3: Sealed types / closed sets -->
+  <div class="cd-row">
+    <div class="cd-cell">
+      <b>Model a closed set of types safely</b> — avoid fragile open hierarchies and unchecked casts; make alternatives explicit
+      <div class="sub">Items 23, 41 (visitor / instanceof pattern), Effective Java 3e</div>
+    </div>
+    <div class="cd-cell">
+      <b>Sealed types + pattern matching for <code style="font-family:var(--mono);font-size:11.5px">switch</code></b> — declare the closed set; compiler enforces exhaustiveness
+      <div class="jep">JEP 409 (sealed · Java 17) · JEP 441 (pattern switch · Java 21)</div>
+    </div>
+    <div class="cd-cell">
+      <span class="verdict served">Served / Reinforced</span>
+      <div class="verdict-note">Exhaustive, compiler-checked alternative to the instanceof ladder; hierarchy is legible.</div>
+    </div>
+  </div>
+
+  <!-- Row 4: Enums / singletons -->
+  <div class="cd-row">
+    <div class="cd-cell">
+      <b>Prefer enums for fixed instances; use enums for singletons</b>
+      <div class="sub">Items 3, 34, Effective Java 3e</div>
+    </div>
+    <div class="cd-cell">
+      <b>enum</b> — unchanged; Item 3's recommended singleton idiom is still the idiom
+      <div class="jep">JLS §8.9 (unchanged)</div>
+    </div>
+    <div class="cd-cell">
+      <span class="verdict stands">Stands</span>
+      <div class="verdict-note">No modern feature displaces this idiom.</div>
+    </div>
+  </div>
+
+  <!-- Row 5: Generics -->
+  <div class="cd-row">
+    <div class="cd-cell">
+      <b>Use generics; avoid raw types</b> — let the compiler enforce type-safety rather than casting at runtime
+      <div class="sub">Items 26–33, Effective Java 3e</div>
+    </div>
+    <div class="cd-cell">
+      <b>JLS ch. 4</b> (generics, unchanged since Java 5)
+      <div class="jep">JLS §4 — no JEP changes at pin (JDK 21.0.11 / 25.0.3)</div>
+    </div>
+    <div class="cd-cell">
+      <span class="verdict stands">Stands</span>
+      <div class="verdict-note">Deep dive: Chapter 11.</div>
+    </div>
+  </div>
+
+  <!-- Row 6: Serialization -->
+  <div class="cd-row">
+    <div class="cd-cell">
+      <b>Prefer alternatives to Java serialization</b> — native serialization is a security and maintenance hazard
+      <div class="sub">Item 85, Effective Java 3e</div>
+    </div>
+    <div class="cd-cell">
+      No new JEP retired this advice; deprecation-for-removal of <code style="font-family:var(--mono);font-size:11.5px">ObjectInputFilter</code> complexities continue
+      <div class="jep">JDK 21 release notes (serialization status unchanged)</div>
+    </div>
+    <div class="cd-cell">
+      <span class="verdict stands">Stands</span>
+      <div class="verdict-note">Deep dive: Chapter 30 (deserialization security).</div>
+    </div>
+  </div>
+
+  <!-- Row 7: Concurrency -->
+  <div class="cd-row">
+    <div class="cd-cell">
+      <b>Prefer concurrency utilities over <code style="font-family:var(--mono);font-size:11.5px">wait</code>/<code style="font-family:var(--mono);font-size:11.5px">notify</code></b> — high-level constructs are safer and clearer
+      <div class="sub">Item 81, Effective Java 3e</div>
+    </div>
+    <div class="cd-cell">
+      <b>Virtual threads</b> — one-thread-per-task model at low cost; structured concurrency = preview (AHEAD-OF-PIN)
+      <div class="jep">JEP 444 (virtual threads · Java 21) · structured concurrency = preview</div>
+    </div>
+    <div class="cd-cell">
+      <span class="verdict reinforced">Reinforced-and-dated</span>
+      <div class="verdict-note">Advice holds; the tool set expanded. Preview features are AHEAD-OF-PIN — not stable. Chapter 14.</div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <span class="legend-label">Legend</span>
+    <span class="legend-item"><span class="verdict stands" style="font-size:10.5px;padding:2px 8px">Stands</span> principle + idiom both current</span>
+    <span class="legend-item"><span class="verdict served" style="font-size:10.5px;padding:2px 8px">Served by a feature</span> principle stands; language satisfies the common idiom</span>
+    <span class="legend-item"><span class="verdict reinforced" style="font-size:10.5px;padding:2px 8px">Reinforced-and-dated</span> principle and direction hold; tool set expanded</span>
+  </div>
+
+  <div class="fig-note" style="margin-top:14px;">
+    <b>Canon-dating discipline:</b> a book is a secondary authority. Where a modern JEP or the JLS changes
+    the terrain, the primary source wins and the EJ item is contextualized, not presented as current fact
+    without primary confirmation. Preview/exploratory features (structured concurrency, Valhalla value classes)
+    are AHEAD-OF-PIN — never cited as stable replacements.
+  </div>
+
+  <p class="fig-caption">
+    EJ principles: <b>Effective Java</b>, Joshua Bloch, 3rd ed. 2018 (Items cited above).
+    JEP sources pinned at JDK 21.0.11 / 25.0.3: JEP 395 (records), JEP 409 (sealed types),
+    JEP 441 (pattern matching for switch), JEP 444 (virtual threads); JLS §4 (generics), JLS §8.9 (enum).
+    Every JEP number and since-version is verified at the pin — see <b>fig08_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

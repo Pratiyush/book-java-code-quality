@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Capstones aggregator (DEMO-CATALOG.md §4). The book ships THREE enterprise, microservice-based
+    capstones over three distinct real-world domains, all built on one shared platform library:
+        shared-platform        the zero-dependency JDK-only platform (HTTP, JSON, Result, Money,
+                               EventBus, service client, RFC-7807 errors, config, metrics)
+        01-commerce-checkout   order / payment / catalog services  (e-commerce checkout)
+        02-fintech-ledger      account / ledger / transfer services (double-entry money movement)
+        03-logistics-fulfil    inventory / shipment / orchestrator  (warehouse fulfilment)
+    This is the SINGLE bounded exception (GUIDELINES §8): cross-module wiring + over-cap full-file
+    listings are allowed in the capstones and nowhere else. Each service is an independently
+    runnable microservice; services talk over HTTP (JDK HttpClient) and an in-process EventBus.
+    Persistence is hexagonal: a repository PORT with an in-memory adapter that ships runnable, and
+    a documented seam where a real datastore adapter slots in.
+
+    Zero runtime dependencies — JDK only (com.sun.net.httpserver + virtual threads + java.net.http)
+    — so the capstones dogfood the book and build fast + green offline. The quality gates
+    (Checkstyle + SpotBugs from Chapter 16) are layered in once here via the `quality` profile and
+    inherited by every child; each module group sets `checkstyle.config.location` to its own config.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.acme.capstones</groupId>
+  <artifactId>capstones</artifactId>
+  <packaging>pom</packaging>
+  <name>Java Code Quality — capstones (aggregator)</name>
+
+  <modules>
+    <module>shared-platform</module>
+    <module>01-commerce-checkout</module>
+    <module>02-fintech-ledger</module>
+    <module>03-logistics-fulfil</module>
+  </modules>
+
+  <properties>
+    <!-- Reactor-internal version of the platform lib every service depends on. -->
+    <platform.version>1.0.0-SNAPSHOT</platform.version>
+    <!-- Default config location (relative to a leaf module's basedir). A capstone aggregator that
+         nests its services one level deeper overrides this to ../config/... so the path still
+         resolves to the capstone's single shared config dir. -->
+    <checkstyle.config.location>config/checkstyle/checkstyle.xml</checkstyle.config.location>
+    <spotbugs.exclude.location>config/spotbugs/spotbugs-exclude.xml</spotbugs.exclude.location>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.acme.capstones</groupId>
+        <artifactId>shared-platform</artifactId>
+        <version>${platform.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <!--
+    The static-analysis rule gates (Chapter 16), opt-in via `-Pquality` so the default build stays
+    fast. Defined once here; every capstone child inherits it. The maven-checkstyle-plugin bundles
+    an OLD engine (9.3) — we override it to a current engine via a plugin-level dependency (the
+    "two-pin" lesson: the build plugin and the analyzer engine are separate versions).
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>${checkstyle.config.location}</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>${spotbugs.exclude.location}</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

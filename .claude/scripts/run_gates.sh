@@ -80,4 +80,12 @@ else
   run_one "$slug" || total_fail=1
 fi
 echo "run_gates: $([ $total_fail -eq 0 ] && echo '✅ all clean' || echo "❌ $total_fail chapter(s) with FAILs")"
+
+# Reporting discipline (CLAUDE.md HARD RULE): regenerate the status reports after any gate run, so
+# STATUS-MATRIX.md / SCORING-APPROVAL.md / the HTML dashboard never lag the evidence.
+if [ -f "$SC/status.py" ]; then
+  echo "run_gates: regenerating status reports (post-gate) …"
+  python3 "$SC/status.py" >/dev/null 2>&1 && echo "run_gates: reports refreshed (10-logs/ + 01-index/)" \
+    || echo "run_gates: ⚠ status.py reported drift or an error — run it directly to inspect"
+fi
 exit $((total_fail>0))

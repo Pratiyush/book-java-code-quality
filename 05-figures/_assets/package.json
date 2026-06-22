@@ -1,0 +1,13 @@
+{
+  "name": "java-quality-figures",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Figure-render toolchain for the Java Code Quality book: HTML diagram -> cropped print-DPI PNG via headless Chrome. NEVER an image model.",
+  "scripts": {
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "puppeteer-core": "^24.43.1"
+  }
+}

@@ -62,13 +62,35 @@ Each row: the chapter's **demo** (what the module does), the **Java code quality
 
 ---
 
-## 4. The capstone (assembly)
+## 4. The capstones (assembly) — THREE microservice applications
 
-The capstone has a reserved home: **`08-companion-code/99_capstone_<domain>/`** (frozen slug sorted last so it never collides with a dossier key). One capstone module wires several areas into a single runnable app — so a reader sees the pieces compose.
+The book ships **three** capstones, not one. Each is a small but real, **microservice-based**
+application over a **distinct** real-world domain, and all three are built on one shared platform
+library. They live under a single reserved home, `08-companion-code/capstones/` (sorted after every
+dossier-key module so they never collide with a key):
 
-**This is the SINGLE bounded exception** carved into `GUIDELINES.md` §8 and `templates/EXAMPLES-GUIDE.md`: its **over-cap full-file listings** and **cross-module wiring** are allowed here and **nowhere else** — every other module stays standalone, and every other snippet stays within the snippet cap as a `// tag::` region.
+| Path | Domain | Services | The real problem it models |
+|---|---|---|---|
+| `capstones/shared-platform/` | — (the platform lib) | — | the zero-dependency JDK-only base every service is built on: `HttpApp` (httpserver + virtual threads + template routing, `/health`, `/metrics`), `Json`, `Result`, `Money`, `EventBus`, `ServiceClient`, RFC-7807 `ProblemDetails`/`ApiException`, `Config`, `Metrics`, `Ids` |
+| `capstones/01-commerce-checkout/` | e-commerce checkout | catalog · payment · order | authoritative pricing + at-most-once payment (idempotency) |
+| `capstones/02-fintech-ledger/` | money movement | account · ledger · transfer | balanced double-entry + no overdraft + idempotent transfer |
+| `capstones/03-logistics-fulfil/` | warehouse fulfilment | inventory · shipment · orchestrator | no oversell under concurrency + saga compensation + no double-ship |
 
-**Still gated, just on a different track.** The capstone does **not** ride a chapter's per-chapter Step 4b. It is gated on its own — green `./mvnw -B verify` (with the strictest lint clean at the pins in SOURCE-PIN.md) plus the CODE-REVIEW gate (FLOOR C) — and is built and assembled in **Phase 4 (ASSEMBLE)** once the chapters it composes are approved.
+Each capstone is a Maven aggregator whose children are **independently-runnable microservices** that
+talk over HTTP (`ServiceClient` / JDK `HttpClient`) and an in-process `EventBus`. Persistence is
+**hexagonal**: every service depends on a repository *port* and ships an in-memory adapter, with a
+documented seam where a real datastore plugs in. Outbound cross-service calls also go through ports,
+so an orchestrator's logic is unit-tested with fakes; each capstone additionally has an **end-to-end
+test** that drives the real HTTP adapters against lightweight stubs. See `capstones/README.md` and
+each capstone's `README.md` for the service map, endpoints, and honest limitations.
+
+**This is the SINGLE bounded exception** carved into `GUIDELINES.md` §8 and `templates/EXAMPLES-GUIDE.md`: the capstones' **over-cap full-file listings** and **cross-service / cross-module wiring** are allowed here and **nowhere else** — every other (per-chapter) module stays standalone, and every other snippet stays within the snippet cap as a `// tag::` region.
+
+**Still gated, just on a different track.** The capstones do **not** ride a chapter's per-chapter Step 4b. Each is gated on its own — green `mvn -B -Pquality verify` (tests + the Chapter-16 Checkstyle + SpotBugs gate clean at the pins in SOURCE-PIN.md) plus the CODE-REVIEW gate (FLOOR C) — and built and assembled in **Phase 4 (ASSEMBLE)** once the chapters they compose are approved. The reactor pins the toolchain once (`08-companion-code/pom.xml` → `capstones/pom.xml`); a re-pin is a one-line edit.
+
+> **Legacy note.** Earlier drafts of this catalog reserved a single capstone at
+> `08-companion-code/99_capstone_<domain>/`. That is superseded by the three-capstone layout above;
+> there is no `99_capstone_*` module.
 
 ---
 

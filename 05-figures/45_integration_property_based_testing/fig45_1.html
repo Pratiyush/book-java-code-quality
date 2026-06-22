@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 22 — The Database That Does Not Exist in Production (dossier key 45, folds 46, Ch 22 in FINAL_INDEX, Part V)
+  Figure:  Fig 45.1 — Two blind-spot axes: fidelity (mock → real) × input coverage (chosen → generated)
+  Family:  Concept-map / two-axis grid with tool placement and input-ladder strip
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §Overview / §"How it works" — introduces the two-axis framing before the deep-dive sections
+  One idea: A unit test has two structural blind spots — the collaborator it models (closed by
+             integration testing with Testcontainers) and the inputs it chose (closed by property-based
+             testing with jqwik) — and the chapter places each technique on its own axis.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 45.1 — Two blind-spot axes: fidelity × input coverage</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 26px 30px 22px;
+      width: 980px;
+    }
+
+    /* ── Overall layout ── */
+    .outer-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 10px;
+    }
+
+    /* ── Top row: two-axis grid + right legend strip ── */
+    .top-row {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    /* ── Two-axis grid ── */
+    .grid-wrap {
+      flex: 1;
+      position: relative;
+    }
+
+    .axis-label-top {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .axis-label-bottom {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    .grid-and-yaxis {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .y-axis-label-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .y-axis-label {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      white-space: nowrap;
+    }
+
+    /* 2×2 grid of cells */
+    .grid-2x2 {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 0;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .grid-cell {
+      padding: 14px 16px;
+      border: 1px solid var(--tint-3);
+      position: relative;
+      min-height: 130px;
+    }
+
+    /* Quadrant shading — grayscale-safe by weight */
+    .cell-q1 { background: var(--tint-1); }   /* top-left: mock + chosen */
+    .cell-q2 { background: var(--tint-2); }   /* top-right: real + chosen */
+    .cell-q3 { background: var(--tint-2); }   /* bottom-left: mock + generated */
+    .cell-q4 { background: var(--tint-3); }   /* bottom-right: real + generated (target) */
+
+    /* diagonal dividers between cells */
+    .cell-q1 { border-right: 2px solid var(--line); border-bottom: 2px solid var(--line); }
+    .cell-q2 { border-bottom: 2px solid var(--line); }
+    .cell-q3 { border-right: 2px solid var(--line); }
+
+    .cell-corner-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--ink-soft);
+      margin-bottom: 6px;
+    }
+
+    .cell-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+
+    .cell-body {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+
+    .cell-tools {
+      margin-top: 7px;
+      font-size: 11px;
+      color: var(--ink);
+    }
+
+    .cell-tools .tool {
+      font-family: var(--mono);
+      font-size: 10.5px;
+    }
+
+    .blind-spot-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1.5px solid var(--stop);
+      color: var(--stop);
+      background: var(--tint-0);
+      margin-bottom: 5px;
+    }
+
+    .ok-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1.5px solid var(--ok);
+      color: var(--ok);
+      background: var(--tint-0);
+      margin-bottom: 5px;
+    }
+
+    /* Target cell highlight (real + generated) */
+    .cell-q4 {
+      position: relative;
+    }
+    .target-marker {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--ink);
+      border: 1.5px solid var(--accent-bar);
+      border-radius: 999px;
+      padding: 1px 8px;
+      background: var(--tint-0);
+    }
+
+    /* Axis arrow ticks */
+    .x-axis-arrows {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 28px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .x-arrow {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ── Right legend strip ── */
+    .right-legend {
+      width: 192px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .legend-block {
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      background: var(--tint-0);
+    }
+
+    .legend-block-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .45px;
+      color: var(--ink-soft);
+      margin-bottom: 8px;
+    }
+
+    .legend-row-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-bottom: 5px;
+      line-height: 1.35;
+    }
+
+    .legend-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1.5px solid var(--line);
+      flex-shrink: 0;
+    }
+
+    /* Cost callout block */
+    .cost-block {
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      padding: 9px 11px;
+      border-radius: 0 8px 8px 0;
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+    .cost-block b { color: var(--ink); }
+
+    /* ── Bottom strip: input-coverage ladder ── */
+    .bottom-ladder {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    .ladder-header {
+      background: var(--tint-2);
+      border-bottom: 1.5px solid var(--ink);
+      padding: 7px 16px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .ladder-rows {
+      display: flex;
+      gap: 0;
+    }
+
+    .ladder-rung {
+      flex: 1;
+      padding: 10px 14px;
+      border-right: 1px solid var(--tint-3);
+      position: relative;
+    }
+    .ladder-rung:last-child { border-right: none; }
+
+    .rung-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      margin-bottom: 3px;
+    }
+
+    .rung-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+
+    .rung-body-text {
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+
+    .rung-api {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--ink);
+      margin-top: 5px;
+      display: block;
+    }
+
+    /* depth bar at left of each rung, growing with level */
+    .rung-depth {
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 5px;
+    }
+    .depth-1 { background: var(--tint-2); }
+    .depth-2 { background: var(--tint-3); }
+    .depth-3 { background: var(--ink); }
+
+    /* Arrow between rungs */
+    .rung-sep {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      flex-shrink: 0;
+      font-size: 16px;
+      color: var(--ink);
+      font-weight: 700;
+      border-right: 1px solid var(--tint-3);
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 45.1 — Two blind-spot axes: fidelity &times; input coverage</p>
+  <p class="fig-subtitle">
+    A unit test has two structural limits — the collaborator it models, and the inputs it chose.
+    Integration testing and property-based testing each close one.
+  </p>
+
+  <div class="outer-layout">
+
+    <!-- ── TOP: two-axis grid + legend ── -->
+    <div class="top-row">
+
+      <div class="grid-wrap">
+
+        <!-- X-axis header -->
+        <div class="axis-label-top">
+          Fidelity axis &mdash; what the test exercises against
+          &nbsp;&nbsp; &#8592; in-memory model &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; real dependency &#8594;
+        </div>
+
+        <div class="grid-and-yaxis">
+
+          <!-- Y-axis label -->
+          <div class="y-axis-label-wrap">
+            <div class="y-axis-label">
+              chosen inputs &#8593; &nbsp; &#8595; generated
+            </div>
+          </div>
+
+          <!-- 2×2 grid -->
+          <div class="grid-2x2">
+
+            <!-- Q1: mock/fake + chosen inputs (top-left) -->
+            <div class="grid-cell cell-q1">
+              <div class="cell-corner-label">mock / fake &nbsp;&bull;&nbsp; chosen inputs</div>
+              <div class="blind-spot-badge">two blind spots</div>
+              <div class="cell-title">Unit test (baseline)</div>
+              <div class="cell-body">
+                Isolates one class; doubles stand in for collaborators; author writes every input case.
+                Fast, deterministic, cheap to run.
+              </div>
+              <div class="cell-tools">
+                Tools: <span class="tool">JUnit&nbsp;6</span> <span class="tool">@Test</span>,
+                <span class="tool">Mockito&nbsp;5.23.0</span> mocks,
+                <span class="tool">AssertJ&nbsp;3.27.7</span>
+              </div>
+            </div>
+
+            <!-- Q2: real + chosen inputs (top-right) -->
+            <div class="grid-cell cell-q2">
+              <div class="cell-corner-label">real dependency &nbsp;&bull;&nbsp; chosen inputs</div>
+              <div class="ok-badge">closes fidelity gap</div>
+              <div class="cell-title">Integration test (Testcontainers)</div>
+              <div class="cell-body">
+                Real Postgres / Kafka in a throwaway container. Catches dialect, driver, and behaviour
+                bugs that an H2 substitute or mock hides. Inputs still author-chosen.
+              </div>
+              <div class="cell-tools">
+                <span class="tool">PostgreSQLContainer</span> /
+                <span class="tool">KafkaContainer</span> via
+                <span class="tool">org.testcontainers:testcontainers:2.0.5</span>;<br>
+                <span class="tool">@Testcontainers</span> +
+                <span class="tool">@Container</span> (JUnit&nbsp;6 lifecycle)
+              </div>
+            </div>
+
+            <!-- Q3: mock + generated inputs (bottom-left) -->
+            <div class="grid-cell cell-q3">
+              <div class="cell-corner-label">mock / fake &nbsp;&bull;&nbsp; generated inputs</div>
+              <div class="ok-badge">closes input gap</div>
+              <div class="cell-title">Property-based test (jqwik)</div>
+              <div class="cell-body">
+                Framework generates inputs; asserts an invariant for all of them. Collaborators can
+                still be mocked; fidelity gap remains if it matters.
+              </div>
+              <div class="cell-tools">
+                <span class="tool">net.jqwik:jqwik:1.10.1</span> &#9888;&nbsp;maintenance&nbsp;mode;<br>
+                <span class="tool">@Property</span> + <span class="tool">@ForAll</span> +
+                <span class="tool">Arbitraries</span> / <span class="tool">@Provide</span>;
+                shrinks on failure
+              </div>
+            </div>
+
+            <!-- Q4: real + generated inputs (bottom-right) — target zone -->
+            <div class="grid-cell cell-q4">
+              <div class="target-marker">target zone</div>
+              <div class="cell-corner-label">real dependency &nbsp;&bull;&nbsp; generated inputs</div>
+              <div class="ok-badge">both gaps closed</div>
+              <div class="cell-title">Integration + property-based</div>
+              <div class="cell-body">
+                Real container + generated inputs; highest coverage, highest cost. Use where the
+                real dependency's behaviour <em>is</em> the invariant under test.
+              </div>
+              <div class="cell-tools">
+                <span class="tool">jqwik-testcontainers</span> integration module;
+                costs: Docker runtime + generated-input volume
+              </div>
+            </div>
+
+          </div><!-- .grid-2x2 -->
+
+        </div><!-- .grid-and-yaxis -->
+
+        <div class="axis-label-bottom">
+          Input axis &mdash; who picks the inputs
+          &nbsp;&nbsp; &#8592; author-chosen &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; framework-generated &#8594;
+        </div>
+
+      </div><!-- .grid-wrap -->
+
+      <!-- ── RIGHT LEGEND ── -->
+      <div class="right-legend">
+
+        <div class="legend-block">
+          <div class="legend-block-title">Fidelity axis</div>
+          <div class="legend-row-item">
+            <div class="legend-swatch" style="background:var(--tint-1);"></div>
+            <span><b>In-memory fake / mock:</b> fast, no Docker; tests a different engine (H2 ≠ Postgres dialect, null order, JSONB)</span>
+          </div>
+          <div class="legend-row-item">
+            <div class="legend-swatch" style="background:var(--tint-3);"></div>
+            <span><b>Real container:</b> production fidelity; requires Docker everywhere; adds seconds per run</span>
+          </div>
+        </div>
+
+        <div class="legend-block">
+          <div class="legend-block-title">Input axis</div>
+          <div class="legend-row-item">
+            <div class="legend-swatch" style="background:var(--tint-1);"></div>
+            <span><b>Chosen:</b> <span style="font-family:var(--mono);font-size:10px;">@Test</span> / <span style="font-family:var(--mono);font-size:10px;">@ParameterizedTest</span> — you enumerate cases; covers what you imagined</span>
+          </div>
+          <div class="legend-row-item">
+            <div class="legend-swatch" style="background:var(--tint-3);"></div>
+            <span><b>Generated:</b> <span style="font-family:var(--mono);font-size:10px;">@Property</span> — jqwik generates; reaches empty / boundary / emoji / huge automatically</span>
+          </div>
+        </div>
+
+        <div class="cost-block">
+          <b>Cost rule (from prose):</b> pay the container's cost only where the
+          <em>interaction with the real dependency is the behaviour under test</em>.
+          Pay the property's cost only for invariants, not every case.
+        </div>
+
+      </div><!-- .right-legend -->
+
+    </div><!-- .top-row -->
+
+    <!-- ── BOTTOM: input-coverage ladder ── -->
+    <div class="bottom-ladder">
+      <div class="ladder-header">
+        Input-coverage ladder &mdash; three rungs, each widening the input space (not replacing the prior)
+      </div>
+      <div class="ladder-rows">
+
+        <!-- Rung 1: @Test example -->
+        <div class="ladder-rung" style="padding-left:19px;">
+          <div class="rung-depth depth-1"></div>
+          <div class="rung-num">RUNG 1</div>
+          <div class="rung-name">Example test</div>
+          <div class="rung-body-text">
+            Author writes the input <em>and</em> expected output.
+            Covers cases the author thought of; misses any unlisted edge.
+          </div>
+          <code class="rung-api">@Test (JUnit&nbsp;6)</code>
+        </div>
+
+        <div class="rung-sep">&#8594;</div>
+
+        <!-- Rung 2: @ParameterizedTest -->
+        <div class="ladder-rung" style="padding-left:19px;">
+          <div class="rung-depth depth-2"></div>
+          <div class="rung-num">RUNG 2</div>
+          <div class="rung-name">Parameterized test</div>
+          <div class="rung-body-text">
+            One test body; author supplies a table of inputs.
+            Kills copy-paste near-duplicate tests; still author-enumerated.
+          </div>
+          <code class="rung-api">@ParameterizedTest + @CsvSource / @MethodSource
+(junit-jupiter-params, JUnit&nbsp;6)</code>
+        </div>
+
+        <div class="rung-sep">&#8594;</div>
+
+        <!-- Rung 3: @Property -->
+        <div class="ladder-rung" style="padding-left:19px;">
+          <div class="rung-depth depth-3"></div>
+          <div class="rung-num">RUNG 3</div>
+          <div class="rung-name">Property-based test</div>
+          <div class="rung-body-text">
+            Author describes domain + invariant; jqwik generates hundreds of inputs.
+            Shrinks any failure to a minimal counterexample.
+            &#9888;&nbsp;jqwik&nbsp;1.10.1 = maintenance mode (2026).
+          </div>
+          <code class="rung-api">@Property + @ForAll + Arbitraries / @Provide
+(net.jqwik:jqwik:1.10.1)</code>
+        </div>
+
+        <div class="rung-sep" style="border-right:none;font-size:11px;writing-mode:vertical-rl;transform:rotate(180deg);color:var(--ink-soft);width:28px;padding:6px 2px;justify-content:flex-start;">
+          wider input space &#8593;
+        </div>
+
+      </div><!-- .ladder-rows -->
+    </div><!-- .bottom-ladder -->
+
+  </div><!-- .outer-layout -->
+
+  <p class="fig-caption">
+    <b>Sources:</b>
+    Testcontainers Java <b>2.0.5</b> (<span style="font-family:var(--mono);font-size:11px;">testcontainers.org</span>):
+    <span style="font-family:var(--mono);font-size:11px;">@Testcontainers</span> +
+    <span style="font-family:var(--mono);font-size:11px;">@Container</span> lifecycle (instance-field = per-test; static-field = per-class shared);
+    <span style="font-family:var(--mono);font-size:11px;">PostgreSQLContainer</span>,
+    <span style="font-family:var(--mono);font-size:11px;">KafkaContainer</span>;
+    GAV <span style="font-family:var(--mono);font-size:11px;">org.testcontainers:testcontainers:2.0.5</span> + module (e.g. <span style="font-family:var(--mono);font-size:11px;">:postgresql</span>), test scope.
+    jqwik <b>1.10.1</b> (<span style="font-family:var(--mono);font-size:11px;">jqwik.net</span>):
+    <span style="font-family:var(--mono);font-size:11px;">@Property</span>,
+    <span style="font-family:var(--mono);font-size:11px;">@ForAll</span>,
+    <span style="font-family:var(--mono);font-size:11px;">Arbitraries</span>,
+    <span style="font-family:var(--mono);font-size:11px;">@Provide</span>, shrinking to minimal counterexample;
+    maintenance mode (2026, per jqwik project status);
+    GAV <span style="font-family:var(--mono);font-size:11px;">net.jqwik:jqwik:1.10.1</span>, test scope.
+    JUnit&nbsp;6 <b>6.1.0</b> (<span style="font-family:var(--mono);font-size:11px;">docs.junit.org</span>):
+    <span style="font-family:var(--mono);font-size:11px;">@ParameterizedTest</span> +
+    <span style="font-family:var(--mono);font-size:11px;">@CsvSource</span> / <span style="font-family:var(--mono);font-size:11px;">@MethodSource</span>
+    (<span style="font-family:var(--mono);font-size:11px;">junit-jupiter-params</span>).
+    Mockito <b>5.23.0</b>, AssertJ <b>3.27.7</b>.
+    No tool is crowned; tool-vitality caveat (jqwik maintenance mode) stated per chapter prose.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

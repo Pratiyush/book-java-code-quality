@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 18 — Teaching the Build Your Rules (dossier key 38, folds 40 · Ch 18 in FINAL_INDEX, Part IV)
+  Figure:  Fig 38.1 — One shape, five artifacts: the custom-rule skeleton over five substrates
+  Family:  Architecture / comparison — shared shape instantiated across five tool substrates
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"The shared shape of a custom rule" — after the four-step list, before the three-realization prose
+  One idea: Every custom rule is select→predicate→report→register; each tool realizes that skeleton over
+            a different artifact (source tokens / source AST / typed javac AST / bytecode / class graph),
+            and that substrate difference — not a quality ranking — fixes what the rule can see and when it runs.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 38.1 — One shape, five artifacts</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 24px;
+      width: 1020px;
+    }
+
+    /* ── Top: shared shape strip ── */
+    .shape-strip {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 20px;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--tint-0);
+    }
+
+    .shape-step {
+      flex: 1;
+      padding: 10px 14px;
+      background: var(--tint-1);
+      border-right: 1.5px solid var(--ink);
+      text-align: center;
+    }
+    .shape-step:last-child { border-right: none; }
+
+    .shape-step-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      margin-bottom: 3px;
+    }
+    .shape-step-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .shape-step-desc {
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+
+    .shape-arrow {
+      width: 24px;
+      flex-shrink: 0;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+      padding: 0 2px;
+    }
+
+    /* ── Five-tool matrix ── */
+    .matrix {
+      display: grid;
+      grid-template-columns: 140px 1fr 1fr 1fr 1fr;
+      gap: 0;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .mx-cell {
+      padding: 8px 10px;
+      font-size: 11.5px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      line-height: 1.35;
+      vertical-align: top;
+    }
+    .mx-cell:last-child { border-right: none; }
+
+    /* Header row */
+    .mx-row-header .mx-cell {
+      background: var(--tint-3);
+      font-weight: 700;
+      font-size: 12px;
+      border-bottom: 1.5px solid var(--ink);
+    }
+    .mx-row-header .mx-cell.row-label-hd {
+      background: var(--tint-2);
+      color: var(--ink-soft);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* Dimension label column */
+    .mx-row .mx-cell.row-label {
+      background: var(--tint-1);
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--ink-soft);
+      border-right: 1.5px solid var(--ink);
+    }
+
+    /* Last data row — no bottom border */
+    .mx-row:last-child .mx-cell {
+      border-bottom: none;
+    }
+
+    /* Auto-fix highlight */
+    .autofix-yes {
+      font-weight: 700;
+      color: var(--ok);
+    }
+
+    /* Mono spans in cells */
+    .m { font-family: var(--mono); font-size: 10.5px; color: var(--ink); }
+
+    /* Tool name header cells */
+    .tool-hd {
+      text-align: center;
+    }
+    .tool-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      display: block;
+    }
+    .tool-sub {
+      font-size: 10px;
+      color: var(--ink-soft);
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* ── Bottom note ── */
+    .bottom-row {
+      display: flex;
+      gap: 14px;
+      margin-top: 14px;
+      align-items: flex-start;
+    }
+    .note-box {
+      flex: 1;
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      padding: 8px 12px;
+      border-radius: 0 8px 8px 0;
+      font-size: 11.5px;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    .note-box b { color: var(--ink); }
+
+    .routing-box {
+      width: 230px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 8px 12px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+    .routing-box b { color: var(--ink); font-size: 11px; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 38.1 &mdash; One shape, five artifacts: the custom-rule skeleton</p>
+  <p class="fig-subtitle">Every custom rule is select &rarr; predicate &rarr; report &rarr; register. The artifact each tool reasons over fixes what the rule can see &mdash; not a ranking.</p>
+
+  <!-- ── Shared shape strip ── -->
+  <div class="shape-strip">
+    <div class="shape-step">
+      <div class="shape-step-num">Step 1</div>
+      <div class="shape-step-name">Select</div>
+      <div class="shape-step-desc">program elements of interest</div>
+    </div>
+    <div class="shape-arrow">&rarr;</div>
+    <div class="shape-step">
+      <div class="shape-step-num">Step 2</div>
+      <div class="shape-step-name">Predicate</div>
+      <div class="shape-step-desc">does this element violate the invariant?</div>
+    </div>
+    <div class="shape-arrow">&rarr;</div>
+    <div class="shape-step">
+      <div class="shape-step-num">Step 3</div>
+      <div class="shape-step-name">Report</div>
+      <div class="shape-step-desc">emit a violation (+ optional suggested fix)</div>
+    </div>
+    <div class="shape-arrow">&rarr;</div>
+    <div class="shape-step">
+      <div class="shape-step-num">Step 4</div>
+      <div class="shape-step-name">Register &amp; gate</div>
+      <div class="shape-step-desc">wire into analyzer config; violation fails CI</div>
+    </div>
+  </div>
+
+  <!-- ── Five-tool matrix ── -->
+  <div class="matrix">
+
+    <!-- Header row -->
+    <div class="mx-row mx-row-header" style="display:contents;">
+      <div class="mx-cell row-label-hd">Dimension</div>
+      <div class="mx-cell tool-hd">
+        <span class="tool-name">Checkstyle</span>
+        <span class="tool-sub">13.6.0</span>
+      </div>
+      <div class="mx-cell tool-hd">
+        <span class="tool-name">PMD</span>
+        <span class="tool-sub">7.25.0 (Java + XPath)</span>
+      </div>
+      <div class="mx-cell tool-hd">
+        <span class="tool-name">Error Prone</span>
+        <span class="tool-sub">latest 2.x + Refaster</span>
+      </div>
+      <div class="mx-cell tool-hd">
+        <span class="tool-name">SpotBugs</span>
+        <span class="tool-sub">4.10.2</span>
+      </div>
+      <div class="mx-cell tool-hd" style="border-right:none;">
+        <span class="tool-name">ArchUnit</span>
+        <span class="tool-sub">1.4.2</span>
+      </div>
+    </div>
+
+    <!-- Row: Artifact -->
+    <div class="mx-row" style="display:contents;">
+      <div class="mx-cell row-label">Artifact<br>reasoned over</div>
+      <div class="mx-cell">source token AST</div>
+      <div class="mx-cell">source node AST</div>
+      <div class="mx-cell">typed <span class="m">javac</span> AST (compile-time)</div>
+      <div class="mx-cell">compiled bytecode (<span class="m">.class</span>)</div>
+      <div class="mx-cell" style="border-right:none;">imported class graph</div>
+    </div>
+
+    <!-- Row: Runs at -->
+    <div class="mx-row" style="display:contents;">
+      <div class="mx-cell row-label">Runs at</div>
+      <div class="mx-cell">source pass</div>
+      <div class="mx-cell">source pass</div>
+      <div class="mx-cell">compile</div>
+      <div class="mx-cell">post-compile</div>
+      <div class="mx-cell" style="border-right:none;">test phase (JUnit)</div>
+    </div>
+
+    <!-- Row: Select API -->
+    <div class="mx-row" style="display:contents;">
+      <div class="mx-cell row-label">&ldquo;Select&rdquo; API</div>
+      <div class="mx-cell"><span class="m">getDefaultTokens()</span> /<br><span class="m">TokenTypes.*</span></div>
+      <div class="mx-cell"><span class="m">visit(ASTNode, data)</span><br><span style="font-size:10.5px;color:var(--ink-soft);">or XPath expression</span></div>
+      <div class="mx-cell">matcher interface<br>e.g. <span class="m">matchMethodInvocation(tree, state)</span></div>
+      <div class="mx-cell"><span class="m">OpcodeStackDetector</span><br><span class="m">.sawOpcode(int)</span></div>
+      <div class="mx-cell" style="border-right:none;"><span class="m">classes().that(</span><br><span class="m">&nbsp;&nbsp;DescribedPredicate)</span></div>
+    </div>
+
+    <!-- Row: Report API -->
+    <div class="mx-row" style="display:contents;">
+      <div class="mx-cell row-label">&ldquo;Report&rdquo; API</div>
+      <div class="mx-cell"><span class="m">log(DetailAST, key, &hellip;)</span><br><span style="font-size:10.5px;color:var(--ink-soft);">key resolves in <span class="m">messages.properties</span></span></div>
+      <div class="mx-cell"><span class="m">asCtx(data)</span><br><span class="m">&nbsp;.addViolation(node)</span></div>
+      <div class="mx-cell"><span class="m">describeMatch(tree,</span><br><span class="m">&nbsp;SuggestedFix)</span></div>
+      <div class="mx-cell"><span class="m">BugInstance</span> &rarr;<br><span class="m">bugReporter.reportBug()</span></div>
+      <div class="mx-cell" style="border-right:none;"><span class="m">ArchCondition.check(</span><br><span class="m">&nbsp;item, events)</span> &rarr;<br><span class="m">SimpleConditionEvent</span><br><span class="m">&nbsp;.violated(&hellip;)</span></div>
+    </div>
+
+    <!-- Row: Register -->
+    <div class="mx-row" style="display:contents;">
+      <div class="mx-cell row-label">&ldquo;Register&rdquo;</div>
+      <div class="mx-cell">JAR on Checkstyle classpath; FQN under <span class="m">Checker &rarr; TreeWalker</span></div>
+      <div class="mx-cell">ruleset XML <span class="m">&lt;rule class=&quot;&hellip;&quot;&gt;</span></div>
+      <div class="mx-cell"><span class="m">@AutoService(BugChecker</span><span class="m">.class)</span>; annotation-processor path</div>
+      <div class="mx-cell"><span class="m">findbugs.xml</span> <span class="m">&lt;Detector&gt;</span> + <span class="m">messages.xml</span></div>
+      <div class="mx-cell" style="border-right:none;"><span class="m">@AnalyzeClasses</span> +<br><span class="m">@ArchTest</span> (JUnit 5);<br>throws <span class="m">AssertionError</span></div>
+    </div>
+
+    <!-- Row: Auto-fix -->
+    <div class="mx-row" style="display:contents;">
+      <div class="mx-cell row-label">Auto-fix?</div>
+      <div class="mx-cell">no</div>
+      <div class="mx-cell">no</div>
+      <div class="mx-cell"><span class="autofix-yes">yes</span> &mdash; <span class="m">SuggestedFix</span>;<br>Refaster <span class="m">@BeforeTemplate</span><br>&rarr; <span class="m">@AfterTemplate</span></div>
+      <div class="mx-cell">no</div>
+      <div class="mx-cell" style="border-right:none;">no</div>
+    </div>
+
+    <!-- Row: Characteristic limit -->
+    <div class="mx-row" style="display:contents;">
+      <div class="mx-cell row-label">Characteristic<br>limitation</div>
+      <div class="mx-cell">limited type resolution; sees source shape, not behavior</div>
+      <div class="mx-cell">source-only; PMD 7.x reworked AST node names (upgrade-sensitive)</div>
+      <div class="mx-cell">requires compile step; <span class="m">@BugPattern</span> zero-arg ctor mandatory</div>
+      <div class="mx-cell">distance from source; no source-only constructs</div>
+      <div class="mx-cell" style="border-right:none;">type-level only; needs compiled classes + test run</div>
+    </div>
+
+  </div><!-- .matrix -->
+
+  <!-- ── Bottom row ── -->
+  <div class="bottom-row">
+    <div class="note-box">
+      <b>Pick the tool whose artifact the invariant naturally lives in.</b>
+      A structural or textual convention (naming, token pattern) fits Checkstyle or PMD.
+      A type-aware rule that needs resolved overloads fits Error Prone.
+      A pattern only visible after erasure fits SpotBugs.
+      An architectural constraint (who may depend on whom) fits ArchUnit.
+      The choice follows the artifact &mdash; not a ranking of the tools.
+      (Which analyzer to run for a given rule type &rarr; Ch&nbsp;17.)
+    </div>
+    <div class="routing-box">
+      <b>Adoption guidance</b><br>
+      Ship as <code style="font-family:var(--mono);font-size:10.5px;">WARNING</code> first &mdash;
+      a bespoke rule has far less field-testing than a stock one.<br>
+      Promote to <code style="font-family:var(--mono);font-size:10.5px;">ERROR</code> after
+      gathering signal.<br>
+      A custom rule is code the team maintains on every tool upgrade.
+      Baseline &amp; ratchet &rarr; Ch&nbsp;19.
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Sources: Checkstyle <span style="font-family:var(--mono);font-size:10.5px;">AbstractCheck</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">getDefaultTokens()</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">visitToken(DetailAST)</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">log(DetailAST, key, args)</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">TokenTypes.*</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">Checker&rarr;TreeWalker</span> FQN
+    (checkstyle.org/writingchecks.html, 13.6.0).
+    PMD <span style="font-family:var(--mono);font-size:10.5px;">AbstractJavaRule</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">AbstractJavaRulechainRule</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">visit(ASTNode,data)</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">asCtx(data).addViolation</span> + XPath mode
+    (docs.pmd-code.org, 7.25.0).
+    Error Prone <span style="font-family:var(--mono);font-size:10.5px;">BugChecker</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">@BugPattern</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">matchMethodInvocation(tree,state)</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">describeMatch+SuggestedFix</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">@AutoService(BugChecker.class)</span> zero-arg ctor;
+    Refaster <span style="font-family:var(--mono);font-size:10.5px;">@BeforeTemplate/@AfterTemplate</span>
+    (errorprone.info/docs/plugins, /refaster, latest 2.x).
+    SpotBugs <span style="font-family:var(--mono);font-size:10.5px;">Detector</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">OpcodeStackDetector.sawOpcode</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">BugInstance</span>&rarr;<span style="font-family:var(--mono);font-size:10.5px;">reportBug</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">findbugs.xml&lt;Detector&gt;</span>+<span style="font-family:var(--mono);font-size:10.5px;">messages.xml</span>
+    (spotbugs.readthedocs.io/implement-plugin.html, 4.10.2).
+    ArchUnit <span style="font-family:var(--mono);font-size:10.5px;">DescribedPredicate</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">ArchCondition.check(item,events)</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">SimpleConditionEvent.violated</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">ClassFileImporter().importPackages</span> /
+    <span style="font-family:var(--mono);font-size:10.5px;">@AnalyzeClasses+@ArchTest</span>; throws
+    <span style="font-family:var(--mono);font-size:10.5px;">AssertionError</span>; FreezingArchRule
+    (archunit.org/userguide, 1.4.2).
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

@@ -37,3 +37,25 @@
 3. **The independent gates still need to run** — VERIFY (source-verifier), CLARITY (tech-clarity),
    AUDIT (auditor), ORIGINALITY + RED-TEAM (on a *different model*), EXAMPLE-BUILD (FLOOR-C compile),
    Step-12 human approval. The matrix shows these as 🟡/🔴/🔵 across all 47 chapters.
+
+## Added 2026-06-20 (round 2) — audit log + auto-approval engine + multi-page dashboard
+
+- **Audit log** (`10-logs/audit.jsonl`). Two writers: `.claude/scripts/audit_log.sh "<action>"
+  "<target>" "[detail]"` for semantic milestones (works now), and `.claude/hooks/post-tool-audit.sh`
+  for **every tool call** via a `PostToolUse` hook. The hook needs a one-time user enable of
+  `.claude/settings.json` (agent self-config is gated) — snippet + instructions in
+  `.claude/hooks/AUDIT-LOG.md`. The trail is backfilled with this session's milestones and rendered as
+  the **Audit** page.
+- **Auto-approval engine** (in `status.py` → `01-index/SCORING-APPROVAL.md`). Policy: score
+  **≥90 %** (≥45/50) **+ content floors PASS + the independent gates have run** (reports on disk) →
+  **AUTO-APPROVE**; else **LIFT** (scorer bounded ≤3); if lift can't reach the bar → **HUMAN GATE**.
+  A main-loop self-score can only be *eligible*, never auto-approved — honest by construction.
+  `--apply-approvals` copies qualifying drafts into `04-approved/` and logs each (default: report-only).
+  Current routing: 0 auto / 0 eligible / **47 in lift** (all self-scored 80–94 %, COMPILE pending) /
+  0 human. Ch 46 (92 %) and Ch 47 (94 %) are one independent-gate + compile away from auto-approval.
+- **Capstones in the report** — `08-companion-code/capstones/CAPSTONE-STATUS.json` is the data source;
+  the **Capstones** page/section shows the three apps × their gates (build/tests/checkstyle/spotbugs 🟢,
+  code-review 🔵, assemble 🔴). Update the JSON after a build or review.
+- **Multi-page HTML** — `status.py` now emits `10-logs/{dashboard,chapters,scoring,capstones,audit}.html`
+  (Overview · Chapters · Scoring · Capstones · Audit), cross-linked, plus the two MD reports. One
+  command regenerates everything: `python3 .claude/scripts/status.py`.

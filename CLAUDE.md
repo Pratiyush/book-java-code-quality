@@ -121,3 +121,22 @@ After every meaningful unit of work:
 4. Log each learning in `LEDGER.md`
 
 Use `/retro` to formalize this at phase boundaries.
+
+## Reporting discipline (HARD RULE)
+
+**After ANY gate completes — every time, no exception — regenerate the status reports.** A gate is
+"complete" when a gate report lands on disk or a gate cell changes: research, source-verify, draft,
+example-build, clarity, audit, score (self OR independent `_SCORE_INDEP.md`), reconcile, approve,
+figure, or an auto-approval applied. Run:
+
+```
+python3 .claude/scripts/status.py          # rewrites STATUS-MATRIX.md + SCORING-APPROVAL.md + the 5 HTML pages; runs the drift guard
+```
+
+This keeps `01-index/STATUS-MATRIX.md`, `01-index/SCORING-APPROVAL.md`, and
+`10-logs/{dashboard,chapters,scoring,capstones,audit}.html` true to the evidence at all times — the
+reports must never lag the gates. The scripted runner `run_gates.sh` regenerates automatically at the
+end of its run; when a gate is run any other way (an agent leaving a `_VERIFY/_AUDIT/_SCORE_INDEP`
+report, an approval, a rendered figure), regenerate explicitly. Also log the gate to the audit trail
+(`.claude/scripts/audit_log.sh "<gate>" "<target>" "<result>"`). The drift verdict from this run is
+reported to the human; a non-clean drift result blocks treating the gate as truly done.
