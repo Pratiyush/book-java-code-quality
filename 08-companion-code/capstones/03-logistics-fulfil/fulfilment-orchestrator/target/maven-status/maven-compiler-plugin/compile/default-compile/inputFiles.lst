@@ -1,0 +1,11 @@
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/03-logistics-fulfil/fulfilment-orchestrator/src/main/java/org/acme/logistics/fulfilment/Fulfilment.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/03-logistics-fulfil/fulfilment-orchestrator/src/main/java/org/acme/logistics/fulfilment/FulfilmentApi.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/03-logistics-fulfil/fulfilment-orchestrator/src/main/java/org/acme/logistics/fulfilment/FulfilmentRepository.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/03-logistics-fulfil/fulfilment-orchestrator/src/main/java/org/acme/logistics/fulfilment/FulfilmentRequest.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/03-logistics-fulfil/fulfilment-orchestrator/src/main/java/org/acme/logistics/fulfilment/FulfilmentService.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/03-logistics-fulfil/fulfilment-orchestrator/src/main/java/org/acme/logistics/fulfilment/InMemoryFulfilmentRepository.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/03-logistics-fulfil/fulfilment-orchestrator/src/main/java/org/acme/logistics/fulfilment/InventoryClient.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/03-logistics-fulfil/fulfilment-orchestrator/src/main/java/org/acme/logistics/fulfilment/InventoryPort.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/03-logistics-fulfil/fulfilment-orchestrator/src/main/java/org/acme/logistics/fulfilment/Main.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/03-logistics-fulfil/fulfilment-orchestrator/src/main/java/org/acme/logistics/fulfilment/ShipmentClient.java
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/03-logistics-fulfil/fulfilment-orchestrator/src/main/java/org/acme/logistics/fulfilment/ShipmentPort.java

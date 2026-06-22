@@ -1,0 +1,22 @@
+#Sat Jun 20 20:51:51 CEST 2026
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/client/ServiceClient.java=1781979268019
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/config/Config.java=1781979104939
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/error/ApiException.java=1781979219104
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/error/ProblemDetails.java=1781979092786
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/event/DomainEvent.java=1781979122455
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/event/EventBus.java=1781979136171
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/http/Handler.java=1781979191182
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/http/HttpApp.java=1781979249651
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/http/Request.java=1781979185432
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/http/Response.java=1781979174267
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/http/Route.java=1781979204209
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/id/Ids.java=1781979283648
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/json/Json.java=1781979081333
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/money/Money.java=1781979304000
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/obs/Metrics.java=1781979113943
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/main/java/org/acme/platform/result/Result.java=1781979030594
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/test/java/org/acme/platform/EventBusTest.java=1781979334952
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/test/java/org/acme/platform/HttpAppTest.java=1781979327112
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/test/java/org/acme/platform/MoneyTest.java=1781979293659
+/Users/pratiyush/Desktop/AI/Book-Java-Code-Quality/08-companion-code/capstones/shared-platform/src/test/java/org/acme/platform/ResultTest.java=1781979404412
+configuration*?=91D0ED4FD54EA8EAFD51504F43C38C08B0303527

@@ -1,0 +1,5 @@
+org/acme/logistics/fulfilment/FulfilmentFlowIntegrationTest.class
+org/acme/logistics/fulfilment/FulfilmentServiceTest.class
+org/acme/logistics/fulfilment/FulfilmentServiceTest$FakeInventory.class
+org/acme/logistics/fulfilment/FulfilmentServiceTest$FakeShipment.class
+org/acme/logistics/fulfilment/FulfilmentFlowIntegrationTest$StubInventory.class

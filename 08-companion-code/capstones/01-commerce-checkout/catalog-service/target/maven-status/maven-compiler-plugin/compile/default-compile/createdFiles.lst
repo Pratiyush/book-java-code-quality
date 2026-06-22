@@ -1,0 +1,6 @@
+org/acme/commerce/catalog/CatalogService.class
+org/acme/commerce/catalog/CatalogRepository.class
+org/acme/commerce/catalog/CatalogApi.class
+org/acme/commerce/catalog/Product.class
+org/acme/commerce/catalog/Main.class
+org/acme/commerce/catalog/InMemoryCatalogRepository.class

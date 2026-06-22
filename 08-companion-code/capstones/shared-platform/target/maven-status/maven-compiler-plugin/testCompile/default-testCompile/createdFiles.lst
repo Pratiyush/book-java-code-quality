@@ -1,0 +1,5 @@
+org/acme/platform/ResultTest.class
+org/acme/platform/EventBusTest.class
+org/acme/platform/MoneyTest.class
+org/acme/platform/EventBusTest$ThingHappened.class
+org/acme/platform/HttpAppTest.class

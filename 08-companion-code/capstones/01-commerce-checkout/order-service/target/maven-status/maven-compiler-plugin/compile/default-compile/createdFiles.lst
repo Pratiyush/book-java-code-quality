@@ -1,0 +1,15 @@
+org/acme/commerce/order/InMemoryOrderRepository.class
+org/acme/commerce/order/OrderItem.class
+org/acme/commerce/order/Order.class
+org/acme/commerce/order/OrderApi.class
+org/acme/commerce/order/PaymentPort$PaymentDecision.class
+org/acme/commerce/order/OrderRepository.class
+org/acme/commerce/order/PaymentPort.class
+org/acme/commerce/order/event/OrderPlaced.class
+org/acme/commerce/order/OrderStatus.class
+org/acme/commerce/order/Main.class
+org/acme/commerce/order/PricingPort.class
+org/acme/commerce/order/event/OrderPaid.class
+org/acme/commerce/order/OrderService.class
+org/acme/commerce/order/CatalogPricingClient.class
+org/acme/commerce/order/PaymentGatewayClient.class
