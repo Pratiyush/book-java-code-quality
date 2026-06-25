@@ -1,6 +1,0 @@
-org/acme/fintech/account/AccountApi.class
-org/acme/fintech/account/Account.class
-org/acme/fintech/account/InMemoryAccountRepository.class
-org/acme/fintech/account/AccountService.class
-org/acme/fintech/account/AccountRepository.class
-org/acme/fintech/account/Main.class

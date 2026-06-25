@@ -1,8 +1,0 @@
-org/acme/commerce/payment/PaymentService.class
-org/acme/commerce/payment/Payment.class
-org/acme/commerce/payment/PaymentRepository.class
-org/acme/commerce/payment/PaymentApi.class
-org/acme/commerce/payment/Main.class
-org/acme/commerce/payment/PaymentStatus.class
-org/acme/commerce/payment/PaymentRequest.class
-org/acme/commerce/payment/InMemoryPaymentRepository.class

@@ -1,4 +1,0 @@
-org/acme/fintech/transfer/TransferServiceTest.class
-org/acme/fintech/transfer/TransferFlowIntegrationTest.class
-org/acme/fintech/transfer/TransferServiceTest$FakeLedger.class
-org/acme/fintech/transfer/TransferServiceTest$FakeAccounts.class
