@@ -1,8 +1,0 @@
-org/acme/logistics/shipment/Main.class
-org/acme/logistics/shipment/ShipmentService$CreateResult.class
-org/acme/logistics/shipment/ShipmentRepository.class
-org/acme/logistics/shipment/InMemoryShipmentRepository.class
-org/acme/logistics/shipment/ShipmentStatus.class
-org/acme/logistics/shipment/ShipmentApi.class
-org/acme/logistics/shipment/ShipmentService.class
-org/acme/logistics/shipment/Shipment.class
