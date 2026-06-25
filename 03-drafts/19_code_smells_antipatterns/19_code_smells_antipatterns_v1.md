@@ -2,7 +2,7 @@
 Dossier key: 19 (owner) + folds 61 — per 01-index/FINAL_INDEX.md Ch 12 (CLOSES Part II)
 Slug: 19_code_smells_antipatterns
 Part / arc position: Part II — Writing Quality Java, Chapter 12 (closes Part II; Part III = Concurrency, Ch 13+)
-Companion module: 08-companion-code/19_code_smells_antipatterns/ — ⚠ EXAMPLE-BUILD = PENDING-RUNTIME (no JDK). Spec at foot.
+Companion module: 08-companion-code/19_code_smells_antipatterns/ — EXAMPLE-BUILD = BUILT GREEN (mvn -B -Pquality verify; JDK 21.0.11). Spec at foot.
 Verified against SOURCE-PIN: 2026-06-20. Sources: Fowler *Refactoring* 2e (2018) smell catalogue + named refactorings; Bloch *Effective Java* 3e (2018) idiom anti-patterns (Items 2/8/10-11/17/26/62); GoF *Design Patterns*; Brown et al. *AntiPatterns*; Ousterhout *APoSD* (over-decomposition); tool rules Sonar java:S3776(15)/S107(7)/S138/S1192(3)/S1448, PMD GodClass/CyclomaticComplexity(10/80)/CognitiveComplexity(15)/NPathComplexity(200)/ExcessiveParameterList(10)/TooManyMethods(10)/TooManyFields(15)/DataClass/LawOfDemeter/NcssCount(60/1500), SpotBugs EI_EXPOSE_REP(2)/SE_NO_SERIALVERSIONID/DM_DEFAULT_ENCODING, Error Prone EqualsHashCode/DeadException/StringSplitter/ReferenceEquality; OpenRewrite common-static-analysis recipe; modern-Java JEP 395/409/441/378 (records/sealed/pattern-switch/text-blocks).
 ⚠ contested (key 61): patterns-as-vocabulary vs simplicity-first — two-schools, no crown. ⚠ verify-at-pin: tool thresholds (move per version, differ per tool); Fowler 2e complete smell list; EJ item numbers; GoF/AntiPatterns verbatim; JEP numbers; Sonar RSPEC pages; undetectable-smell list.
 DRAFT v1 — gates manual; smell-card + canon-dating + two-schools + item-to-rule shapes; EXAMPLE-BUILD pending JDK.
@@ -118,6 +118,24 @@ This is also where the catalogue's honesty about *detection* matters most. The s
 
 One worked smell shows why even the tool-found ones deserve respect rather than reflexive obedience. The hook's leaking getter trips SpotBugs `EI_EXPOSE_REP`, and it is not merely stylistic: a caller who mutates the returned `List<LineItem>` silently corrupts the order's internal state. That smell *bites at runtime*. The fix (a defensive copy or `List.copyOf`, Chapter 8) closes a real bug. Contrast a sixty-line method that reads as one linear recipe: Sonar may flag its length, but extracting it into five tiny methods can scatter a story that was clearer whole (the *Clean Code* vs *A Philosophy of Software Design* tension from Chapter 2). Same catalogue, opposite verdicts. Which is exactly why a smell is a hint to investigate, not a verdict to obey.
 
+The companion module makes both verdicts concrete. The leaking getter is the half that bites: the order hands its internal list straight back, so a caller mutates the order through the returned reference.
+
+<!-- include: 19_code_smells_antipatterns/src/main/java/org/acme/smells/OrderLeaky.java#smell-expose-rep -->
+
+The refactoring is the defensive copy — one line in the compact constructor that snapshots the list, so neither the caller's reference nor the accessor's result can reach the order's state.
+
+<!-- include: 19_code_smells_antipatterns/src/main/java/org/acme/smells/Order.java#refactor-defensive-copy -->
+
+The Long Method is the half that may not. Its smelly form runs long and nests a type-code branch deep inside the body, the shape `java:S3776` measures.
+
+<!-- include: 19_code_smells_antipatterns/src/main/java/org/acme/smells/OrderServiceSmelly.java#smell-long-method -->
+
+Extract Function resolves it: the public method becomes a short recipe of named steps, each holding one whole idea — though pushed too far the same move yields the opposite Middle Man smell, which is the judgment the catalogue only names.
+
+<!-- include: 19_code_smells_antipatterns/src/main/java/org/acme/smells/OrderService.java#refactor-extract -->
+
+A behaviour-preservation test in the module proves the refactored service returns the identical receipt as the smelly one for every loyalty tier and across the free-shipping boundary: the structure changed, the result did not.
+
 ## Limitations & when NOT to reach for it
 
 - **A smell is a hint, and false positives are inherent.** Fowler says smells "suggest"; not every Long Method or `switch` is wrong. Treating every linter flag as a defect produces churn and trains developers to ignore the tool.
@@ -161,7 +179,7 @@ That closes Part II. Across eight chapters, Part II has built code that is trust
 - **OpenRewrite** — `common-static-analysis` recipe ("50+ issues"), the automated-apply bridge to Chapter 39. *(⚠ recipe id/GAV @pin.)*
 - **Modern Java** — `record` (JEP 395, Java 16), `sealed` (JEP 409, Java 17), pattern matching for `switch` (JEP 441, Java 21), text blocks (JEP 378, Java 15). *(⚠ JEP numbers @pin; Chapter 5.)*
 
-**Companion module (spec — ⚠ EXAMPLE-BUILD = PENDING-RUNTIME, no JDK):** `08-companion-code/19_code_smells_antipatterns/` — a smelly `OrderService` (a 60-line, deeply-nested `placeOrder` flagged by `java:S3776`; an `Order` getter leaking its mutable `List<LineItem>`, flagged by `EI_EXPOSE_REP`) beside a refactored version (Extract Function + guard clauses; `List.copyOf`). **Failure path:** a test mutates the leaked list and corrupts the order — proving the smell is a *real* latent bug — then passes safely against the defensive-copy fix. Analyzers (PMD/SpotBugs/Error Prone) bound to `verify`; optional `rewrite:run` auto-applies the `common-static-analysis` recipe. **TRY-IT:** run `verify` on the smelly module, watch the rule keys fire, apply the named refactoring (or the recipe), watch them clear with behavior unchanged. Snippet tags: `smell-long-method`, `refactor-extract`, `smell-expose-rep`, `refactor-defensive-copy`.
+**Companion module (built green · `08-companion-code/19_code_smells_antipatterns/`):** a smelly `OrderServiceSmelly` (a long, deeply-nested `placeOrder` whose shape `java:S3776` cognitive complexity and PMD `NcssCount` measure) and a leaky `OrderLeaky` (a getter returning its mutable `List<LineItem>`) beside the refactored `OrderService` (Extract Function + guard clauses) and the encapsulated `Order` (`List.copyOf`). A `LoyaltyTier` enum carries its own discount, retiring a type-code branch (Primitive Obsession). **Failure path:** a test mutates the leaked list and the order's state changes — proving the smell is a *real* latent bug — while the same scenario leaves the defensive-copy `Order` unchanged; malformed orders become a typed `OrderRejectedException`. **Detection boundary, made honest:** the house `quality` profile runs Checkstyle + SpotBugs, which raises `EI_EXPOSE_REP` on the leaky getter (held quiet by one reviewed suppression naming the counter-example), and does *not* measure method length — so the Long Method is not flagged here, the chapter's point that different tools see different smells shown rather than asserted. A behaviour-preservation test proves the refactored and smelly services return the identical receipt for every tier. **TRY-IT:** run `mvn -B -Pquality verify`; read the smelly method top-to-bottom, then its refactored twin; watch the tests prove the result is unchanged and the leak is real. Snippet tags: `smell-long-method`, `refactor-extract`, `smell-expose-rep`, `refactor-defensive-copy`.
 
 ## Next chapter teaser
 

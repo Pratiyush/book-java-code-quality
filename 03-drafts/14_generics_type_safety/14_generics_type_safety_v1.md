@@ -2,7 +2,7 @@
 Dossier key: 14 (owner, single key) — per 01-index/FINAL_INDEX.md Ch 11
 Slug: 14_generics_type_safety
 Part / arc position: Part II — Writing Quality Java, Chapter 11 (Part II = Ch 5-12; Ch 12 closes it)
-Companion module: 08-companion-code/14_generics_type_safety/ — ⚠ EXAMPLE-BUILD = PENDING-RUNTIME (no JDK). Spec at foot.
+Companion module: 08-companion-code/14_generics_type_safety/ — EXAMPLE-BUILD = GREEN (Java 21.0.11; mvn -Pquality verify; 7/7 tests, 0 Checkstyle, 0 SpotBugs). Snippet tags bound: pecs-pushall, pecs-popall, suppress-justified, unsafe-varargs. Spec at foot.
 Verified against SOURCE-PIN: 2026-06-20. Sources: JLS SE 21 §4.5 (parameterized types), §4.6 (type erasure — verbatim), §4.7 (reifiable types — verbatim list), §4.8 (raw types + §4.8-1 example), §4.10.2 (subtyping/variance), §5.1.9 (unchecked conversion), §4.12.2 (heap pollution), §9.6.4.7 (@SafeVarargs); Effective Java 3e (2018) Items 26-33 (titles verified); JEP 213 (Milling Project Coin — diamond on anon, @SafeVarargs on private, Java 9); diamond + @SafeVarargs (Java SE 7); var (JEP 286, Java 10); record patterns JEP 440 / pattern-switch JEP 441 (Java 21); tool rules Sonar java:S3740 (raw types)/java:S1452 (wildcard returns), PMD UseDiamondOperator/LooseCoupling, Error Prone TypeParameterUnusedInFormals, Checker Framework.
 ⚠ verify-at-pin: tool rule IDs/defaults/severities; Sonar RSPEC pages (ECONNREFUSED at research); EJ verbatims; JLS §§ re-confirm; JEP 440/441 numbers. ⚠ AHEAD-OF-PIN: Project Valhalla reified/specialized generics (NOT in 21/25 — flag, never assert).
 DRAFT v1 — gates manual; PECS-variance-ladder + erasure-timeline + earned-assertion + item-to-rule shapes; EXAMPLE-BUILD pending JDK.
@@ -71,6 +71,10 @@ A **raw type** (JLS §4.8) is a generic type used with no type argument (`List` 
 
 The rule the canon draws here is unambiguous: *Effective Java* Item 26, "Don't use raw types," and Item 27, "Eliminate every unchecked warning." A warning that cannot be eliminated by fixing the code is suppressed with `@SuppressWarnings("unchecked")` at the **narrowest possible scope** (a single local, never a whole method or class) and accompanied by a comment that proves why the operation is in fact type-safe. The suppression discharges the obligation the compiler could not close: the warning said "I can't prove this," and the comment says "here is the proof."
 
+The companion module's generic `Stack<E>` hits this exactly once — at the unavoidable `(E[]) new Object[…]` that erasure leaves no way around — and discharges it on the single local:
+
+<!-- include: 14_generics_type_safety/src/main/java/org/acme/generics/Stack.java#suppress-justified -->
+
 Two distinctions matter and are often missed:
 
 - **`List<Object>` is not the raw `List`.** `List<Object>` is fully type-checked, explicitly opting into "a list of any object." Raw `List` opts *out* of all checking. The first is safe; the second is the hook.
@@ -89,6 +93,14 @@ Java generics are **invariant**: `List<String>` is *not* a subtype of `List<Obje
 | `?` (unbounded) | — | type is irrelevant | the reifiable wildcard form |
 
 The mnemonic is **PECS: Producer-Extends, Consumer-Super** (Item 31): if a parameter *produces* `T` values, type it `<? extends T>`; if it *consumes* `T` values, type it `<? super T>`. A method that copies from a source to a destination wants both, as in `copy(List<? extends T> src, List<? super T> dst)`, and the wildcards make it accept the widest possible range of caller types without ever permitting an unsound write.
+
+The companion module's `Stack<E>` shows the pair on a single type. The producer end reads elements *in* — so its source is `Iterable<? extends E>`, and a `Stack<Number>` accepts a `List<Integer>`:
+
+<!-- include: 14_generics_type_safety/src/main/java/org/acme/generics/Stack.java#pecs-pushall -->
+
+The consumer end writes elements *out* — so its destination is `Collection<? super E>`, and a `Stack<Integer>` drains into a `List<Object>`:
+
+<!-- include: 14_generics_type_safety/src/main/java/org/acme/generics/Stack.java#pecs-popall -->
 
 > **CONCEPT** *PECS has a hard exception: not on return types.* Item 31's own caveat: *do not* use a bounded wildcard as a method's return type. A `List<? extends Number>` return forces every caller to deal with a wildcard in their own code, propagating the awkwardness outward instead of containing it. Sonar `java:S1452` flags exactly this (and is itself contested, because interface contracts sometimes mandate a wildcard return, which makes the rule a strong default rather than a law).
 
@@ -116,6 +128,10 @@ Generics are the opposite — **invariant and erased**: `List<String>` is not a 
 Where this turns subtle is **varargs**, because a varargs parameter is an array under the hood. A method like `static <T> List<T> asList(T... elements)` secretly creates a `T[]` — a generic array, which the language otherwise forbids. So the compiler allows it but warns: the method can leak that array or store into it, producing **heap pollution** (JLS §4.12.2) — a variable of a parameterized type pointing at an object that is not of that type, the same corruption as the hook, now arising from an array the compiler generated.
 
 `@SafeVarargs` is best understood as an **earned assertion**. The annotation (Java 7; extended to private instance methods by JEP 213 in Java 9) suppresses the warning by promising that the method body does nothing unsafe with the array — it never stores into it and never lets a reference to it escape. *Effective Java* Item 32 is precise: apply `@SafeVarargs` *only* when that promise actually holds. A method that returns the varargs array, or stashes it in a field, is genuinely unsafe, and the warning is correct. Silencing it with `@SafeVarargs` ships the heap pollution to a caller. The annotation is not "make the warning go away"; it is "I have personally verified this is safe" — and that verification must be done before the annotation goes on.
+
+The companion module keeps a deliberately unsafe method as a counter-example: it aliases its own generic array as `Object[]` and writes a foreign element into it, so reading the slot back throws. It carries *no* `@SafeVarargs` — the warning is correct, and a test proves the `ClassCastException` rather than describing it:
+
+<!-- include: 14_generics_type_safety/src/main/java/org/acme/generics/VarargsHeapPollution.java#unsafe-varargs -->
 
 At every turn (the raw type, the wildcard, the generic array) the compiler is willing to carry the type-safety burden, but only as far as erasure lets it see. The unchecked warning marks the exact line where its sight ends and the developer's obligation begins. Quality generic code is code where that obligation is always, visibly, discharged.
 
@@ -161,7 +177,7 @@ Across Part II the code has been made trustworthy method by method: clear names,
 - **Tool rules** — compiler `-Xlint:unchecked,rawtypes`; Sonar `java:S3740` (raw types), `java:S1452` (wildcard return types); PMD `UseDiamondOperator`, `LooseCoupling`; Error Prone `TypeParameterUnusedInFormals`; Checker Framework (pluggable type qualifiers). *(IDs cited to each tool; ⚠ defaults/severities @pin; Sonar RSPEC pages ECONNREFUSED at research — re-fetch @pin.)*
 - **⚠ AHEAD-OF-PIN** — Project Valhalla reified/specialized generics: not in Java 21/25; never asserted as shipped.
 
-**Companion module (spec — ⚠ EXAMPLE-BUILD = PENDING-RUNTIME, no JDK):** `08-companion-code/14_generics_type_safety/` — a type-safe `Stack<E>` with a PECS pair: `pushAll(Iterable<? extends E>)` (producer-extends) and `popAll(Collection<? super E>)` (consumer-super), a narrowest-scope `@SuppressWarnings("unchecked")` carrying a proof comment (Item 27), and a deliberately **unsafe** varargs method (stores/leaks the array) contrasted with a genuinely safe `@SafeVarargs` one. Built with `-Xlint:unchecked,rawtypes` so a raw type fails the build. **Failure path / TRY-IT:** introduce a raw-type assignment and a wildcard-return method → the compiler `unchecked` warning + Sonar `java:S3740`/`java:S1452` fire; the unsafe-varargs demo shows the heap-pollution warning. **Tests:** `pushAll` accepts a `List<Integer>` into a `Stack<Number>`; `popAll` drains into a `List<Object>` (PECS proven by compilation + behavior). Snippet tags: `pecs-pushall`, `pecs-popall`, `suppress-justified`, `unsafe-varargs`.
+**Companion module:** `08-companion-code/14_generics_type_safety/` (`generics-type-safety`) — a type-safe `Stack<E>` (`Stack.java`) with a PECS pair: `pushAll(Iterable<? extends E>)` (producer-extends) and `popAll(Collection<? super E>)` (consumer-super), a narrowest-scope `@SuppressWarnings("unchecked")` carrying a proof comment on the unavoidable `(E[]) new Object[…]` (Item 27), and (`VarargsHeapPollution.java`) a deliberately **unsafe** varargs method (`dangerous`, which poisons its own array) contrasted with a genuinely safe `@SafeVarargs` one (`flatten`). The aggregator compiles with `-Xlint:all`, so the unchecked/rawtypes and varargs hazards surface as build warnings — type-safety's "health surface" in the absence of a runtime endpoint. **Failure path:** the unsafe-varargs method causes heap pollution; the test `unsafeVarargsPoisonsItsArrayAndThrowsClassCastException` proves the resulting `ClassCastException` rather than describing it. **TRY-IT:** introduce a raw-type assignment and a wildcard-return method → the compiler `unchecked` warning + Sonar `java:S3740`/`java:S1452` fire. **Tests:** `pushAll` accepts a `List<Integer>` into a `Stack<Number>`; `popAll` drains into a `List<Object>` (PECS proven by compilation + behavior). Snippet tags: `pecs-pushall`, `pecs-popall`, `suppress-justified`, `unsafe-varargs`. **Build:** `mvn -B -Pquality -f 08-companion-code/14_generics_type_safety/pom.xml verify` → BUILD SUCCESS, 7/7 tests, 0 Checkstyle, 0 SpotBugs (Java 21.0.11).
 
 ## Next chapter teaser
 

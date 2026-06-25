@@ -23,6 +23,9 @@
     <module>09_api_method_contracts</module>
     <module>10_immutability_value_design</module>
     <module>11_null_safety_optional</module>
+    <module>12_error_handling_exceptions</module>
+    <module>14_generics_type_safety</module>
+    <module>19_code_smells_antipatterns</module>
     <module>capstones</module>
   </modules>
 

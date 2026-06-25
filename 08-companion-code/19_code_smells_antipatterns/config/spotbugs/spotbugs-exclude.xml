@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    Reviewed suppressions (Chapter 16: suppress with a reason, never disable a whole detector).
+
+    This module ships ONE deliberate counter-example whose contract violation IS the lesson, so a test
+    can prove the failure the prose describes rather than merely assert it. The detectors are left
+    fully ENABLED for the rest of the module (the encapsulated Order, the value types, both services
+    all stay clean); only the named counter-example class carries a finding, suppressed narrowly, with
+    a reason, and pointed at the test that demonstrates why it matters. Fixing the class — which Order
+    already does — is the real advice; the suppression exists only so the teaching counter-example can
+    ship green.
+  -->
+
+  <!--
+    OrderLeaky returns its internal list directly, so a caller can mutate the order through the returned
+    reference — the chapter's worked smell that is also a latent mutation bug. At this module's
+    threshold SpotBugs raises EI_EXPOSE_REP on the lines() accessor (verified: the finding fires here,
+    so the suppression is load-bearing, not decorative); EI_EXPOSE_REP2 is matched too as the related
+    store-side pattern in case a stricter threshold raises it. Proven by
+    CodeSmellsTest#leakedListMutationCorruptsTheOrder. The fix is the defensive copy in Order's compact
+    constructor (List.copyOf), never this suppression.
+  -->
+  <Match>
+    <Class name="org.acme.smells.OrderLeaky"/>
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+  </Match>
+</FindBugsFilter>
