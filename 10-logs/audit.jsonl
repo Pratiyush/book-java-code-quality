@@ -52,3 +52,6 @@
 {"ts":"2026-06-25T20:52:18Z","kind":"milestone","actor":"claude","action":"spec-adopt","target":"workstream A+B","detail":"88% auto-approve engine + review_figures.py/figures.html + Generate-Prompt + AUDIENCE x2 + PROVENANCE-LOG + CI + validate.sh + 4 figure sidecars"}
 {"ts":"2026-06-25T21:11:51Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 0 ready-for-human, 42 in lift, drift=none"}
 {"ts":"2026-06-25T21:12:55Z","kind":"milestone","actor":"claude","action":"capstone","target":"04-quality-operations","detail":"4th capstone built green: ingest/metrics/gate, 21 tests, 0 checkstyle/spotbugs; 18-module reactor BUILD SUCCESS"}
+{"ts":"2026-06-25T21:30:11Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 0 ready-for-human, 42 in lift, drift=none"}
+{"ts":"2026-06-25T21:30:59Z","kind":"milestone","actor":"claude","action":"report","target":"status.py","detail":"regenerated MD+HTML: 47/47 drafted, 0 ready-for-human, 42 in lift, drift=none"}
+{"ts":"2026-06-25T21:30:59Z","kind":"milestone","actor":"claude","action":"example-build","target":"09_api_method_contracts","detail":"pilot: companion module green (11 tests, 0 checkstyle/spotbugs) + 5 snippet tags bound, check_snippets 5/5 PASS"}

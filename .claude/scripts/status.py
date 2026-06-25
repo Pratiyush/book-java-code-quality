@@ -262,6 +262,10 @@ def parse_tracker():
         has_fig = bool(slug) and bool(glob.glob(os.path.join(ROOT, "05-figures", slug, "fig*_*.png")))
         if has_fig:
             bubbles["figure"] = BUB["done"]
+        # an EXAMPLE-BUILD report on disk (green companion module + bound snippets) upgrades example to 🟢
+        ep = report_path(slug, "_EXAMPLE.md")
+        if ep and os.path.exists(ep):
+            bubbles["example"] = BUB["done"]
         # approval engine drives the approve bubble
         score = parse_score(slug)
         decision, dkey, reason = approval_decision(score)

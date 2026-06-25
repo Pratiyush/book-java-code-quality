@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    Reviewed suppressions (Chapter 16: suppress with a reason, never disable a whole detector).
+
+    This module has NONE: that is the chapter's point made by the build. The value types copy in and
+    copy out (Item 50) and the immutable records carry no exposed mutable state, so the
+    representation-exposure detectors (EI_EXPOSE_REP / EI_EXPOSE_REP2) stay quiet without any
+    suppression. The service holds only an injected interface port, which SpotBugs does not treat as
+    a leak. The filter is kept (empty) so a future, genuinely-reviewed suppression has a home with a
+    reason, rather than being added inline.
+  -->
+</FindBugsFilter>
