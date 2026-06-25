@@ -73,12 +73,20 @@ The precondition half of the contract is enforced by **checking parameters at th
 
 The documented exception conventions are part of the contract too: `NullPointerException` for null, `IndexOutOfBoundsException` for a bad index, `IllegalArgumentException` for other bad values, `IllegalStateException` for bad object state. (Heavier *declarative* validation — Jakarta Bean Validation `@NotNull`/`@Size` — is Chapter 10's territory; the in-method fail-fast idiom is what this chapter covers.)
 
+In the companion module, a transfer guards every argument before it reads or writes anything — `requireNonNull` for the references, `checkIndex` for the bounded retry attempt, an explicit range test for the amount — so a broken call fails at the call site, not deep in the computation:
+
+<!-- include: 09_api_method_contracts/src/main/java/org/acme/contracts/MoneyTransferService.java#precondition-guards -->
+
 ### Design the signature, return type, and parameters (Items 51–55)
 
 - **Signatures (Item 51):** name methods carefully; keep parameter lists short (Bloch's guidance: aim for four or fewer); for long lists, prefer a builder or a parameter object; favour interfaces over classes for parameter types; prefer a two-value enum over a `boolean` parameter when the call site is not otherwise self-explanatory (`setVisible(Visibility.HIDDEN)` over `setVisible(false)`).
 - **Overloading (Item 52) and varargs (Item 53):** use both judiciously. Overload *resolution* is static (compile-time, by declared type — JLS §15.12.2), which surprises callers who expect override-like dynamic dispatch; avoid two same-arity overloads a single argument could match either way. Varargs (JLS §8.4.1) allocate an array per call; for "at least one required," use an explicit first parameter plus varargs for the rest. (PMD `UseVarargs` nudges toward varargs where an array parameter is used.)
 - **Return empty, not null (Item 54):** a method that can return "no elements" returns an empty collection or array, never `null`, so callers need no guard.
 - **Return `Optional` judiciously (Item 55):** `Optional<T>`, used as a *return type only*, puts "a result may be absent" into the type, as the hook showed. Bloch's caveats: never `Optional` of a boxed primitive (use `OptionalInt`/`OptionalLong`/`OptionalDouble`); never for collection element types (return empty); avoid `Optional` fields and parameters.
+
+The companion module's account-lookup port returns the absence in its signature, so a caller cannot reach a balance without first handling the empty case:
+
+<!-- include: 09_api_method_contracts/src/main/java/org/acme/contracts/AccountRepository.java#optional-return -->
 
 ### Do not leak the representation (Item 50)
 
@@ -87,16 +95,25 @@ When a class stores or returns a mutable object, copy it on the way **in** and o
 - SpotBugs `EI_EXPOSE_REP` (a getter returns a mutable internal field) and `EI_EXPOSE_REP2` (a constructor/setter stores an externally-supplied mutable object directly).
 - PMD `MethodReturnsInternalArray` and `ArrayIsStoredDirectly`.
 
+The companion module's batch type copies its list on the way in and on the way out, so neither the caller's original list nor the returned one is a handle on internal state:
+
+<!-- include: 09_api_method_contracts/src/main/java/org/acme/contracts/TransferBatch.java#defensive-copy -->
+
 ### Encode the contract in the type system
 
-- **Nullness as a signature fact (JSpecify 1.0).** JSpecify standardizes `@Nullable`, `@NonNull`, `@NullMarked` (everything in scope is non-null unless marked otherwise), and `@NullUnmarked`. Crucially, JSpecify is a *specification, not a checker*: it gives a tool-agnostic vocabulary so a method's null contract lives in its signature, and any conforming checker (NullAway, the Checker Framework, the IDE) can verify it (Chapter 9). The design statement here is narrow: *nullness is part of the signature*; tooling depth is Chapter 9's territory.
+- **Nullness as a signature fact (JSpecify 1.0).** JSpecify standardizes `@Nullable`, `@NonNull`, `@NullMarked` (everything in scope is non-null unless marked otherwise), and `@NullUnmarked`. Crucially, JSpecify is a *specification, not a checker*: it gives a tool-agnostic vocabulary so a method's null contract lives in its signature, and any conforming checker (NullAway, the Checker Framework, the IDE) can verify it (Chapter 9). The design statement here is narrow: *nullness is part of the signature*; tooling depth is Chapter 9's territory. The companion module marks its whole package non-null by default in one declaration, then opts a single return out explicitly where absence is real:
+
+<!-- include: 09_api_method_contracts/src/main/java/org/acme/contracts/package-info.java#nullness-marked -->
+
 - **Real overrides (`@Override`).** Error Prone `MissingOverride` flags a method that overrides a supertype method without the annotation; with it, the compiler verifies the override is genuine, catching signature drift.
 - **Un-ignorable return values.** When a return value *is* the result (a check, a new immutable value), dropping it is a bug. Error Prone `CheckReturnValue` (error) makes the result un-ignorable; `CanIgnoreReturnValue` exempts builders that return `this`. SpotBugs `RV_RETURN_VALUE_IGNORED` and Sonar `java:S2201` cover the same ground from their own angles.
 - **Do not silently reassign parameters.** PMD `AvoidReassigningParameters` and Sonar `java:S1226` flag overwriting a parameter before reading it; `final` parameters make it a compile constraint.
 
 ### Document the part types cannot carry (Item 56)
 
-For everything the signature cannot express, the doc comment *is* the contract. *Effective Java* Item 56 — "Write doc comments for all exposed API elements." The conventions: `@param` per parameter (its preconditions), `@return` for every non-void method, `@throws` for each exception with its triggering condition, and a first sentence that stands alone as the summary. `@implSpec` documents the contract a subclass may rely on. (The contested question of *how much* to comment implementation code belongs to the previous chapter; the point here is narrower — a published API's contract is documented.)
+For everything the signature cannot express, the doc comment *is* the contract. *Effective Java* Item 56 — "Write doc comments for all exposed API elements." The conventions: `@param` per parameter (its preconditions), `@return` for every non-void method, `@throws` for each exception with its triggering condition, and a first sentence that stands alone as the summary. `@implSpec` documents the contract a subclass may rely on. (The contested question of *how much* to comment implementation code belongs to the previous chapter; the point here is narrower — a published API's contract is documented.) A query method in the companion module carries each of those clauses, so the parts the signature cannot state are stated where a reader and a doc generator both find them:
+
+<!-- include: 09_api_method_contracts/src/main/java/org/acme/contracts/MoneyTransferService.java#javadoc-contract -->
 
 > **AHEAD-OF-PIN** Markdown doc comments (`///`, JEP 467) ship in JDK 23, past the Java 21 anchor — a 25-era authoring change, not anchor fact. Do not present it as available at the pin.
 

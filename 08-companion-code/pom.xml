@@ -19,6 +19,7 @@
 
   <modules>
     <module>storefront-checkout</module>
+    <module>09_api_method_contracts</module>
     <module>capstones</module>
   </modules>
 
