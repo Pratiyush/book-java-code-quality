@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 14 companion (Let the Compiler Carry It). Puts the chapter's type-safety craft into one
+    buildable module: a generic Stack<E> with a PECS pair (pushAll(Iterable<? extends E>) producer-
+    extends; popAll(Collection<? super E>) consumer-super, Item 31), the one place erasure forces a
+    generic-array cast discharged with a narrowest-scope @SuppressWarnings("unchecked") and a proof
+    comment (Item 27), and a varargs pair contrasting a genuinely-safe @SafeVarargs method with a
+    deliberately UNSAFE one whose heap pollution a test proves (Item 32). The hazards are the
+    compiler's to report — the aggregator runs -Xlint:all, so an unchecked/rawtypes use or a varargs
+    leak surfaces at build time — which is this chapter's "health surface" for type-safety. Zero
+    runtime dependencies — JDK only — so it dogfoods the book and builds fast and green. The
+    source-level rules are machine-checked by the `quality` profile (Checkstyle + SpotBugs, Chapter 16).
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>generics-type-safety</artifactId>
+  <name>Chapter 14 — Let the Compiler Carry It (generics-type-safety)</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The maven-checkstyle-plugin ships an OLD bundled engine (Checkstyle 9.3); we override it to
+    the pinned engine via a plugin-level dependency — the "two-pin" lesson (the build plugin and the
+    analyzer engine are separate versions). This module is a direct child of the companion-code root,
+    which pins no quality profile of its own, so the profile is declared here (the same shape the
+    flagship storefront-checkout and the Chapter 09/10 modules use) and reads the config under this
+    module's config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16) — complementary to Checkstyle's source
+            view. Like the Chapter 09 module, this filter is empty: the type-safety hazards this
+            chapter teaches are reported by the compiler (unchecked/rawtypes and varargs heap
+            pollution), not by SpotBugs, and the unsafe varargs counter-example keeps its corruption
+            local rather than leaking it to a field, so the representation-exposure detectors stay
+            quiet without a suppression. A genuine, reviewed false positive would go in the filter
+            with a reason, never by disabling a detector wholesale.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

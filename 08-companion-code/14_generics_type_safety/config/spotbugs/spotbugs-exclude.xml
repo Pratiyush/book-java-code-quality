@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    Reviewed suppressions (Chapter 16: suppress with a reason, never disable a whole detector).
+
+    This module has NONE, which is the chapter's point made by the build. The hazards this chapter
+    teaches live in the COMPILER's view, not SpotBugs': the unchecked/rawtypes warnings and the
+    varargs heap-pollution warning are emitted by javac (surfaced by the aggregator's -Xlint:all),
+    and the one place erasure forces a cast — the generic-array creation inside Stack — is discharged
+    with a narrowest-scope @SuppressWarnings("unchecked") plus a proof comment (Item 27), which is a
+    compiler annotation, not a SpotBugs suppression. The deliberately unsafe varargs method keeps its
+    corruption local (it never stores the array in a field nor returns it), so the representation-
+    exposure detectors stay quiet without any filter entry; a test proves the resulting heap pollution
+    instead. The filter is kept (empty) so a future, genuinely-reviewed SpotBugs false positive has a
+    home with a reason, rather than being added inline.
+  -->
+</FindBugsFilter>

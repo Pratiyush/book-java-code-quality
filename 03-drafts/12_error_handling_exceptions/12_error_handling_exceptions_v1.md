@@ -66,6 +66,10 @@ Java's error channel is the `Throwable` hierarchy (JLS §11): `Throwable` splits
 
 Item 70's summary directive: "throw checked exceptions for recoverable conditions and unchecked exceptions for programming errors. When in doubt, throw unchecked exceptions."
 
+The companion module puts both kinds in one method: a broken precondition fails fast with an unchecked exception, while a recoverable store failure is a declared checked one:
+
+<!-- include: 12_error_handling_exceptions/src/main/java/org/acme/orders/OrderService.java#checked-vs-unchecked -->
+
 > **CONCEPT** *The failure model is a contract.* The set and shape of exceptions a module exposes is part of its API, exactly like its return types (Chapter 7). A caller plans recovery around the checked exceptions a module declares and debugs around its unchecked ones. Choosing the wrong kind, or swallowing one, breaks the contract as surely as returning the wrong value.
 
 ### The nine exception items, and the rule that catches each
@@ -86,6 +90,10 @@ Item 70's summary directive: "throw checked exceptions for recoverable condition
 
 The hook violates three at once: it catches too broadly (Item 70 / Checkstyle `IllegalCatch`), it ignores the exception (Item 77 / `EmptyCatchBlock`), and by discarding the cause it fails Item 73 (`PreserveStackTrace`). Item 71 also ties back to the previous chapter: if recovery is possible, first consider returning an `Optional`; only throw a checked exception if `Optional` gives the caller too little information.
 
+Item 73 done right is exception translation that chains the cause; the companion module's repository translates a low-level store failure into a domain exception and keeps the original as the cause:
+
+<!-- include: 12_error_handling_exceptions/src/main/java/org/acme/orders/OrderRepository.java#exception-translation -->
+
 ### Fail fast: detect the violation at its cause
 
 Fail-fast means detecting a broken contract as close to its cause as possible and throwing immediately, rather than letting a corrupted value travel to a distant, confusing failure. In Java that is guard clauses at method entry: `Objects.requireNonNull(x, "x")` for null, `Objects.checkIndex` for range, an explicit `throw new IllegalArgumentException(...)` for everything else, following Item 72's exception conventions. And when a null still slips through, **JEP 358** helpful NullPointerExceptions name the exact null expression (on by default since JDK 15 — ⚠ verify @pin), so even the failure that was not caught early is diagnosable in one read. (The full defensive-coding treatment is its own section below.)
@@ -93,6 +101,10 @@ Fail-fast means detecting a broken contract as close to its cause as possible an
 ### Modern error models: the typed alternative
 
 Exceptions are not the only way to model failure. A closed set of outcomes can be a *value*: a `sealed` interface (JEP 409, Java 17) with record (JEP 395) cases, deconstructed exhaustively by pattern matching for `switch` (JEP 441, GA in Java 21). The compiler rejects a `switch` that misses a permitted case. This is a `Result`/`Either`-style model, presented here as an *approach alongside* exceptions, not a winner: it puts every failure in the type (every call site must destructure it), which is precise but verbose and interoperates awkwardly with the exception-throwing libraries (JDBC, Spring) most code crosses. These features are post-2018, so they are not *Effective Java* recommendations. They are the modern modelling option, with their own trade-offs in the Limitations section. (Structured concurrency's `StructuredTaskScope`, which streamlines concurrent error handling, is **preview** across 21→25 — Part III, not anchor fact.)
+
+The companion module models that closed set as a sealed `Result` with record cases:
+
+<!-- include: 12_error_handling_exceptions/src/main/java/org/acme/orders/Result.java#result-model -->
 
 ## Deep dive: resources and inputs — the two failure paths code forgets
 
@@ -109,11 +121,23 @@ try (var in = Files.newInputStream(path);
 }   // close() called on out, then in — reverse order — on every path
 ```
 
+The companion module makes the close order observable, with two channels that record when they close:
+
+<!-- include: 12_error_handling_exceptions/src/main/java/org/acme/orders/ReceiptWriter.java#twr-basic -->
+
 Three semantics make this more than syntactic sugar. Resources close in **reverse order** of initialization (LIFO). `close()` runs on **every** path: normal completion, a `try`-block throw, or a later resource's failed init. The critical fix over the old `try`/`finally` idiom: if the body throws E1 and a `close()` then throws E2, **E1 propagates and E2 is suppressed** (attached via `Throwable.addSuppressed`, readable via `getSuppressed`). The old `finally`-with-close pattern did the opposite: the close exception *replaced* the real one, masking the failure. *Effective Java* Item 9 ("prefer try-with-resources to try-finally") documents exactly that masking-and-scaling problem.
+
+In the module, a failing body and a failing `close()` together leave the body's exception in charge and the close exception in `getSuppressed()`:
+
+<!-- include: 12_error_handling_exceptions/src/main/java/org/acme/orders/ReceiptWriter.java#suppressed -->
 
 > **CONCEPT** *The `AutoCloseable` contract (a lifecycle card).* `AutoCloseable.close()` is `void close() throws Exception` and is **not** required to be idempotent. `Closeable` (its subtype) narrows to `throws IOException` and **is** required to have no effect when called more than once (verbatim, JDK 21 Javadoc). Writing a quality `AutoCloseable`: make `close()` idempotent anyway, throw a *specific* exception or none, never throw `InterruptedException` (a suppressed one corrupts the interrupt status), and release the resource before throwing.
 
 For objects whose `close()` might be forgotten (typically native handles), `Cleaner` (Java 9) registers a cleaning action that runs after the object becomes phantom-reachable. It is a *safety net, not a release mechanism*: it runs some time later, possibly only at JVM exit, so relying on it for prompt release reintroduces the finalizer problem. (Finalization itself is deprecated for removal, JEP 421.) The analyzers enforce the primary path: Sonar `java:S2095`, PMD `CloseResource`, SpotBugs `OS_OPEN_STREAM`, Error Prone `MustBeClosed`/`StreamResourceLeak` all flag a resource that escapes a try-with-resources.
+
+The companion module registers such a backstop, with the cleaning action holding no reference back to the owning object:
+
+<!-- include: 12_error_handling_exceptions/src/main/java/org/acme/orders/NativeCounter.java#cleaner-backstop -->
 
 ### Defensive coding: don't trust the input
 
@@ -130,7 +154,15 @@ public record Money(String currency, long cents) {
 }
 ```
 
+The companion module's `Money` puts that guard in a compact constructor, so an invalid amount can never be constructed:
+
+<!-- include: 12_error_handling_exceptions/src/main/java/org/acme/orders/Money.java#guard-clause -->
+
 **Jakarta Validation (declarative, annotation-driven)** is the boundary mechanism: constraints (`@NotNull`, `@Size`, `@Email`, `@Valid` to cascade) declared on fields, record components, or method parameters, then enforced by a `Validator` programmatically or by the container (Jakarta REST, Persistence) at a request boundary. A `ConstraintViolation` carries the message, the property path, and the invalid value: a structured, reusable rejection. (Jakarta Validation 3.1, Final 2024-03-28; RI Hibernate Validator 9.1.0.Final, Java 17+.)
+
+The companion module declares those constraints on a request record, cascading into each line with `@Valid`:
+
+<!-- include: 12_error_handling_exceptions/src/main/java/org/acme/orders/OrderRequest.java#constraints -->
 
 These are complementary, not rivals: guard clauses give local, visible, zero-dependency checks ideal for invariants and private methods; Jakarta Validation gives declarative, reusable, container-integrated checks ideal for request and DTO boundaries with structured reporting. Teams combine them: constraints at the edge, guards on internal invariants.
 
@@ -166,6 +198,10 @@ These layer rather than compete: guard clauses and constraints stop bad input, e
 
 - **Choosing a throwable:** recoverable → checked (or `Optional`); programming error → unchecked; never `Error`. When in doubt, unchecked (Item 70).
 - **Catching:** catch the narrowest type the handler can act on; never empty-catch; preserve the cause on translation (`new DomainException(e)`); reserve broad `catch (Exception)` for a justified boundary handler that logs and maps.
+
+The companion module's boundary handler is the one place that justified broad catch lives — a narrow recoverable case first, then a backstop that logs the cause and maps it, so nothing escapes and nothing is swallowed:
+
+<!-- include: 12_error_handling_exceptions/src/main/java/org/acme/orders/OrderBoundary.java#boundary-handler -->
 - **Resources:** anything `AutoCloseable` goes in a try-with-resources header; never a hand-rolled `finally`. Use `Cleaner` only as a native-resource backstop; let owners (pools, long-lived executors) manage field-held resources by their own lifecycle.
 - **Validating input:** guard clauses (and record compact constructors) for internal invariants and private methods; Jakarta Validation at request/DTO/entity boundaries; `assert` only for private preconditions.
 - **Security-critical input:** validate as a *supporting* control, allowlist over denylist, server-side. Rely on parameterized queries and output encoding as the frontline (security part).

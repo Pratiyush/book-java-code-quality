@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 19 companion (Names for What's Wrong). Puts the chapter's smell -> refactoring -> rule
+    triple into one buildable module: a smelly OrderService whose placeOrder runs long and nests deep
+    (the Long Method / high cognitive-complexity smell, the shape Sonar java:S3776 and PMD NcssCount
+    measure) beside the refactored service that resolves it with Extract Function + guard clauses; and
+    a leaky Order that hands back its mutable List<LineItem> (the representation-exposure smell SpotBugs
+    EI_EXPOSE_REP reports, which is also a latent mutation bug) beside the encapsulated Order that closes
+    it with List.copyOf. A behaviour-preservation test proves the refactor changes structure, not
+    results, and the failure-path test proves the leak is a real bug. Zero runtime dependencies — JDK
+    only — so it dogfoods the book and builds fast and green. The contracts are machine-checked by the
+    `quality` profile (Checkstyle + SpotBugs, Chapter 16).
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>code-smells-antipatterns</artifactId>
+  <name>Chapter 19 — Names for What's Wrong (code-smells-antipatterns)</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The maven-checkstyle-plugin ships an OLD bundled engine (Checkstyle 9.3); we override it to
+    the pinned engine via a plugin-level dependency — the "two-pin" lesson (the build plugin and the
+    analyzer engine are separate versions). This module is a direct child of the companion-code root,
+    which pins no quality profile of its own, so the profile is declared here (the same shape the
+    Chapter 09 and Chapter 10 modules use) and reads the config under this module's config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16) — complementary to Checkstyle's source
+            view. Where the Chapter 09 module's filter is empty, this module ships a DELIBERATE
+            counter-example (OrderLeaky) whose representation-exposure finding is the teaching point,
+            so the exclude filter carries one narrowly-scoped, reasoned suppression (the leaked
+            List<LineItem>). That is the chapter's own "suppress with a documented reason, never
+            disable a detector" discipline (Chapter 16) made concrete — not a way to hide a real
+            defect. The smelly long method carries no SpotBugs finding (a Long Method is a
+            metric/AST smell, not a bytecode bug), so it needs no suppression.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

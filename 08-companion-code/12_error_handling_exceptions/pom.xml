@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 12 companion (When Things Go Wrong). An order-service error model that puts the chapter's
+    failure-path surfaces into one buildable module: the checked-vs-unchecked decision (Item 70), a
+    record compact-constructor guard that fails fast (Item 49), exception translation that chains the
+    cause across a boundary (Item 73), a sealed Result<T, E> typed alternative deconstructed by an
+    exhaustive switch (JEP 441), try-with-resources with reverse-order close and a suppressed (not
+    masked) close exception (JLS SE 21 §14.20.3 / Item 9), a Cleaner backstop (Item 8), the one
+    justified broad-catch boundary handler that logs and maps, and Jakarta Validation constraints
+    declared at a request boundary. Runtime is JDK-only plus the single pinned Jakarta Validation API
+    annotations GAV, so the module dogfoods the book and builds fast and green. The contracts are
+    machine-checked by the `quality` profile (Checkstyle + SpotBugs, Chapter 16).
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>error-handling-exceptions</artifactId>
+  <name>Chapter 12 — When Things Go Wrong (error-handling-exceptions)</name>
+
+  <dependencies>
+    <!--
+      Jakarta Validation API (SOURCE-PIN.md §1: jakarta.validation:jakarta.validation-api:3.1.1). The
+      single version literal here is the one pinned GAV the chapter's boundary constraints need — the
+      annotation types (@NotNull, @NotEmpty, @Valid) and the Validator/ConstraintViolation contracts.
+      It is the API only; a constraint-engine implementation (e.g. an RI plus a Jakarta EL provider) is
+      NOT pinned in SOURCE-PIN.md, so this module declares the constraints and asserts they are present
+      as type metadata rather than wiring an off-pin engine to evaluate them at runtime (the engine is
+      this module's documented Floor-C boundary, not an invented coordinate). `provided` scope keeps the
+      annotations on the compile path only, so the module's runtime stays JDK-only like the rest of the
+      companion code.
+    -->
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>3.1.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The maven-checkstyle-plugin ships an OLD bundled engine (Checkstyle 9.3); we override it to
+    the pinned engine via a plugin-level dependency — the "two-pin" lesson (the build plugin and the
+    analyzer engine are separate versions). This module is a direct child of the companion-code root,
+    which pins no quality profile of its own, so the profile is declared here (the same shape the
+    Chapter 09 module uses) and reads the config under this module's config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16) — complementary to Checkstyle's source
+            view. The error model here handles every failure path the way the chapter argues for, so the
+            exclude filter is empty: zero reviewed suppressions are needed (the broad boundary catch has
+            a checked exception genuinely reaching it, so REC_CATCH_EXCEPTION does not fire). A genuine,
+            reviewed false positive would go in the filter with a reason, never by disabling a detector.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
