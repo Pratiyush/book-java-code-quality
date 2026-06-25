@@ -88,16 +88,16 @@ Three conditions, all required. First, **zero invented detail**: every rule IDs,
 
 ## The ship bar
 
-> The ship bar is **≥35 / 50 with no single cluster below 6, and all three floors PASS**. The floors-gate-the-aggregate structure is invariant.
+> The active **auto-approval bar is ≥44 / 50 (88%) with no single cluster below 6, and floors A/B/C-source PASS** — scored by an **independent** (different-model) gate. The floors-gate-the-aggregate structure is invariant.
 
-A chapter (step 8) ships, and a candidate (step 3) is included, **only when both hold**:
+A chapter (step 8) **auto-approves into `04-approved/`** when both hold:
 
-1. **All three floors PASS** — unconditionally, per `A NEUTRALITY / B HONEST-LIMITATIONS / C SOURCE-TRACE + COMPILE + CODE-REVIEW`.
-2. **The aggregate clears the bar** — the five clusters sum to **≥35 / 50**, **with no single cluster below 6**.
+1. **Floors A/B/C-source PASS** — unconditionally, per `A NEUTRALITY / B HONEST-LIMITATIONS / C SOURCE-TRACE`. The remaining FLOOR-C parts (COMPILE + CODE-REVIEW) are tracked separately (the EXAMPLE-BUILD phase) and do not block auto-approval, but **must** be green across the book before the whole-book Step 16 MANUSCRIPT-GATE.
+2. **The aggregate clears the bar** — the five clusters sum to **≥44 / 50 (88%)**, **with no single cluster below 6**, on an **independent** score. A main-loop *self*-score never approves a chapter; only an independent re-score does.
 
-Both conditions are required. A 38/50 with a floor failing does not ship. A 40/50 with a red companion build does not ship. A 40/50 with CLARITY at 5 does not ship until that cluster is lifted. Floors are not averaged into the aggregate — they gate it.
+Both conditions are required. A 44/50 with a floor failing does not approve. A 43/50 does not approve until lifted. A 44/50 with CLARITY at 5 does not approve until that cluster is lifted. Floors are not averaged into the aggregate — they gate it. The only human gate is the whole-book **Step 16 MANUSCRIPT-GATE**; per-chapter approval at 88% is automatic.
 
-At **step 3 (cull)**, the same bar decides inclusion: a candidate that cannot clear it — most often on DEPTH or ACCURACY — is a **cut or merge candidate**, recorded as such in `CHAPTER-TRACKER.md`. The cull is confirmed by the human.
+At **step 3 (cull)** — Phase 2, now LOCKED — a lower inclusion threshold of **≥35 / 50** decided candidate inclusion: a candidate that could not clear it was a **cut or merge candidate**. The active *approval* bar for drafted chapters is the 88% bar above.
 
 ---
 

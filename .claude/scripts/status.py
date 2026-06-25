@@ -23,13 +23,13 @@ DRIFT CHECK (the anti-drift guard), exit 1 on drift:
   (A) gate-trail order — no HARD gate may be done while an EARLIER HARD gate is not-run.
   (B) evidence — every gate cell that claims done/self must have its report on disk.
 
-AUTO-APPROVAL POLICY (the 90% rule):
-  score >= 90% (>= 45/50) AND content floors PASS AND the INDEPENDENT gates have
-  run (their reports on disk) -> AUTO-APPROVE. Otherwise -> LIFT (raise via the
-  scorer's bounded loop); if lift cannot reach 90% -> HUMAN GATE. A self-score
-  (main loop, no independent evidence) can only be "eligible", never auto-approved
-  -- honest by construction.  Use --apply-approvals to actually approve the
-  chapters that qualify (default: report only, mutates nothing).
+AUTO-APPROVAL POLICY (the 88% rule — spec):
+  independent score >= 88% (>= 44/50) AND content floors A/B/C-source PASS
+  -> AUTO-APPROVE: the draft is promoted into 04-approved/ on the next normal run.
+  Otherwise -> LIFT (raise via the bounded lift loop). A self-score (main loop, no
+  independent evidence) can only be NEEDS-INDEP, never auto-approved -- honest by
+  construction. The only human gate is the whole-book Step 16 MANUSCRIPT-GATE.
+  A normal run applies approvals automatically; --check-only and --no-apply never mutate.
 
 Bubble legend:
   🟢 done   independent gate passed + evidence on disk  /  capstone gate green
@@ -38,7 +38,7 @@ Bubble legend:
   🔵 human  awaiting a human action (approval / sign-off / code-review)
   ⚪ n/a
 
-Usage: python3 .claude/scripts/status.py [--check-only] [--apply-approvals]
+Usage: python3 .claude/scripts/status.py [--check-only] [--no-apply]
 Owner: production-manager.  No external deps (stdlib only).
 """
 import os, re, sys, json, glob, subprocess, datetime, shutil
@@ -56,7 +56,7 @@ HTML_DIR    = os.path.join(ROOT, "10-logs")
 AUDIT_SH    = os.path.join(ROOT, ".claude", "scripts", "audit_log.sh")
 
 APPROVE_THRESHOLD = 90          # percent; the "excellence" flag (45/50) — informational
-SHIP_BAR = 80                   # ship bar (user-set): ≥80% (40/50) + floors → ready for the human gate
+SHIP_BAR = 88                   # auto-approval bar (spec): ≥88% (44/50) + floors A/B/Csrc PASS → auto-approve into 04-approved
 SCORE_MAX = 50
 
 GATES = ["research", "verify", "draft", "example", "clarity", "audit",
@@ -75,8 +75,8 @@ SCORE_INDEP = "_SCORE_INDEP.md"   # an independent (different-model) score — t
 BUB = {"done": "🟢", "self": "🟡", "no": "🔴", "human": "🔵", "na": "⚪"}
 HTML_COLOR = {"🟢": "#1a7f37", "🟡": "#bf8700", "🔴": "#cf222e", "🔵": "#0969da", "⚪": "#8c959f"}
 PAGES = [("dashboard.html", "Overview"), ("chapters.html", "Chapters"),
-         ("scoring.html", "Scoring & approval"), ("capstones.html", "Capstones"),
-         ("audit.html", "Audit log")]
+         ("scoring.html", "Scoring & approval"), ("figures.html", "Figures"),
+         ("capstones.html", "Capstones"), ("audit.html", "Audit log")]
 
 
 # ----------------------------------------------------------------------------- bubbles
@@ -202,15 +202,15 @@ def parse_score(slug):
 
 
 def approval_decision(score):
-    """Routing policy (lift → human gate) → (decision, bubble_key, reason).
+    """Approval policy (88% auto-approve) → (decision, bubble_key, reason).
 
-    A chapter is READY for the human approval gate (Step 12) when it has an INDEPENDENT
-    (different-model) score that clears the book's ship bar (≥70% = 35/50) AND the editorial content
-    floors (A NEUTRALITY / B HONEST-LIMITATIONS / C SOURCE-TRACE) PASS. Below the bar or a floor not
-    PASS → LIFT. A self-score (no independent gate yet) can only be NEEDS-INDEP. The COMPILE/
-    example-build floor is tracked separately (the EXAMPLE-BUILD module suite is a later phase) and
-    does NOT block reaching the human gate; ≥90% is reported as an excellence flag, not a separate
-    route (final approval is the human's, per the chosen lift→human-gate plan)."""
+    A chapter AUTO-APPROVES (promoted into 04-approved by apply_approvals) when it has an INDEPENDENT
+    (different-model) score ≥ the ship bar (SHIP_BAR = 88% = 44/50) AND the editorial content floors
+    (A NEUTRALITY / B HONEST-LIMITATIONS / C SOURCE-TRACE) PASS. Below the bar or a floor not PASS →
+    LIFT. A self-score (no independent gate yet) can only be NEEDS-INDEP — a self-score never approves
+    a chapter; only an independent score does. The COMPILE / example-build floor is tracked separately
+    and does NOT block auto-approval; ≥90% is reported as an excellence flag. The only human gate is
+    the whole-book Step 16 MANUSCRIPT-GATE, not per-chapter."""
     if not score or score["total"] is None:
         return ("UNSCORED", "no", "no score / no aggregate found")
     f = score["floors"]
@@ -221,13 +221,13 @@ def approval_decision(score):
     if not score["independent"]:
         if floors_pass and pct >= SHIP_BAR:
             return ("NEEDS-INDEP", "self",
-                    f"{pct}% self ≥{SHIP_BAR}% — run the independent scorer to advance to the human gate")
+                    f"{pct}% self ≥{SHIP_BAR}% — needs an INDEPENDENT score to auto-approve")
         return ("LIFT", "self", f"{pct}% self-score — lift + independent-score toward the {SHIP_BAR}% bar")
     if not floors_pass:
         return ("LIFT", "self", f"{pct}% (independent) but a content floor is not PASS (A/B/C-src) → fix")
     if pct >= SHIP_BAR:
-        return ("READY", "human",
-                f"{pct}% (independent) ≥{SHIP_BAR}% + floors PASS → ready for human approval (Step 12){star}{cnote}")
+        return ("AUTO-APPROVE", "human",
+                f"{pct}% (independent) ≥{SHIP_BAR}% + floors PASS → auto-approve into 04-approved{star}{cnote}")
     return ("LIFT", "self", f"{pct}% (independent) <{SHIP_BAR}% → lift loop (≤3) toward the bar")
 
 
@@ -341,7 +341,7 @@ def summary(rows):
     n = len(rows)
     need_indep = sum(1 for r in rows if any(r["bubbles"][g] == BUB["self"] for g in INDEP_GATES + ("score",)))
     need_example = sum(1 for r in rows if r["bubbles"]["example"] in (BUB["no"], BUB["self"]))
-    ready = sum(1 for r in rows if r["decision"] == "READY")
+    ready = sum(1 for r in rows if r["decision"] in ("AUTO-APPROVE", "READY"))
     needs_indep = sum(1 for r in rows if r["decision"] == "NEEDS-INDEP")
     lift = sum(1 for r in rows if r["decision"] == "LIFT")
     approved = sum(1 for r in rows if r["decision"] == "APPROVED")
@@ -376,16 +376,16 @@ def write_matrix(rows, ch2part, parts, findings, caps):
         f"- **{s['n']}/47 chapters** drafted (🟢 `draft`).",
         f"- **{s['indep']}** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).",
         f"- **{s['example']}** need EXAMPLE-BUILD (FLOOR-C compile).",
-        f"- **Routing (ship bar {SHIP_BAR}% + floors → human gate):** {s['ready']} READY for human approval 🔵 · {s['lift']} in lift · {s['needs_indep']} need an independent score · {s['approved']} approved.",
+        f"- **Routing (auto-approve at {SHIP_BAR}% + floors):** {s['ready']} eligible/at-gate · {s['lift']} in lift · {s['needs_indep']} need an independent score · {s['approved']} approved (in 04-approved/).",
         f"- **DRIFT: {'❌ ' + str(len(findings)) + ' finding(s)' if findings else '✅ none'}**.",
         "",
         "## Needs-human queue 🔵",
         "",
     ]
     hq = [r for r in rows if r["bubbles"]["approve"] == BUB["human"]]
-    L.append(("Chapters at the human gate (Step 12): " + ", ".join(f"Ch {r['ch']}" for r in hq) + ".")
-             if hq else "_None yet — chapters reach the human gate only after the lift loop cannot reach "
-                        f"{APPROVE_THRESHOLD}%._")
+    L.append(("Chapters eligible to auto-approve (independent ≥%d%% + floors, applied next run): " % SHIP_BAR
+              + ", ".join(f"Ch {r['ch']}" for r in hq) + ".")
+             if hq else f"_None yet — a chapter auto-approves once an INDEPENDENT score reaches {SHIP_BAR}% + floors PASS._")
     L += ["", "## Matrix", "", hdr, sep]
     cur = None
     for r in rows:
@@ -429,10 +429,10 @@ def write_matrix(rows, ch2part, parts, findings, caps):
 def write_scoring_md(rows):
     today = datetime.date.today().isoformat()
     L = ["# SCORING & APPROVAL ROUTING — Java Code Quality Book", "",
-         f"> Generated by `status.py` · {today}. **Policy (lift → human gate):** an INDEPENDENT "
+         f"> Generated by `status.py` · {today}. **Policy (88% auto-approve):** an INDEPENDENT "
          f"(different-model) score **≥{SHIP_BAR}%** (≥{SHIP_BAR * SCORE_MAX // 100}/{SCORE_MAX}) **+ content floors "
-         "PASS (A/B/C-source)** → **READY for the human approval gate (Step 12)**. Below the bar or a floor "
-         "unresolved → **lift** (≤3 passes). The human gives final approval.",
+         "PASS (A/B/C-source)** → **AUTO-APPROVE** (promoted into 04-approved/). Below the bar or a floor "
+         "unresolved → **lift** (≤3 passes). The only human gate is the whole-book Step 16 MANUSCRIPT-GATE.",
          f"> A main-loop *self*-score must be independently re-scored before it advances. **≥{APPROVE_THRESHOLD}%** is "
          "flagged as excellence. COMPILE/example-build is tracked separately (a later phase), not a blocker here.",
          "",
@@ -450,12 +450,12 @@ def write_scoring_md(rows):
                  f"**{r['decision']}** | {r['reason']} |")
     s = summary(rows)
     L += ["", "## Routing", "",
-          f"- **{s['ready']}** READY for human approval — independent score ≥{SHIP_BAR}% + content floors PASS (Step 12 queue).",
+          f"- **{s['ready']}** eligible to auto-approve — independent score ≥{SHIP_BAR}% + content floors PASS (applied into 04-approved/ on the next run).",
           f"- **{s['needs_indep']}** need an independent score (self ≥{SHIP_BAR}%, run the independent scorer).",
           f"- **{s['lift']}** in the lift loop (below the {SHIP_BAR}% bar or a floor unresolved).",
-          f"- **{s['approved']}** already human-approved (in 04-approved/).",
+          f"- **{s['approved']}** approved (in 04-approved/).",
           "",
-          "_Apply approvals for qualifying chapters: `python3 .claude/scripts/status.py --apply-approvals`._", ""]
+          "_Approvals apply automatically on a normal `status.py` run; `--check-only`/`--no-apply` are read-only._", ""]
     open(SCORING_OUT, "w", encoding="utf-8").write("\n".join(L))
 
 
@@ -528,7 +528,7 @@ td.c{text-align:center}td.topic{white-space:normal;min-width:230px}
 """
 
 BUB_TIP = {"🟢": "done", "🟡": "in progress / self-pass", "🔴": "not started", "🔵": "awaiting human", "⚪": "n/a"}
-DCOLOR = {"READY": "#0969da", "APPROVED": "#1a7f37", "NEEDS-INDEP": "#bf8700", "LIFT": "#bf8700", "UNSCORED": "#cf222e"}
+DCOLOR = {"AUTO-APPROVE": "#1a7f37", "APPROVED": "#1a7f37", "READY": "#0969da", "NEEDS-INDEP": "#bf8700", "LIFT": "#bf8700", "UNSCORED": "#cf222e"}
 
 
 def _bar(pct):
@@ -600,9 +600,9 @@ def write_html(rows, ch2part, parts, findings, caps, audit, today):
               + ('✅ <b>No drift</b> — every 🟢/🟡 gate has its evidence on disk and the gate order holds.'
                  if drift_ok else f'❌ <b>{len(findings)} drift finding(s)</b> — see the Chapters page.') + '</div>')
     ov.append('<div class="note info"><b>Routing:</b> an independent score ≥%d%% + content floors PASS → '
-              'READY for the human gate; below the bar → lift (≤3 passes). Review/scoring is delegated to an '
-              'external different-vendor LLM (<code>09-flags/external-review/</code>); Claude does the heavy '
-              'lifting. <a href="scoring.html">Scoring →</a></div>' % SHIP_BAR)
+              'AUTO-APPROVE (promoted into 04-approved/); below the bar → lift (≤3 passes). Review/scoring is '
+              'delegated to an external different-vendor LLM (<code>09-flags/external-review/</code>); Claude does '
+              'the heavy lifting. Only the whole-book Step 16 is human. <a href="scoring.html">Scoring →</a></div>' % SHIP_BAR)
     ov.append(foot)
     page("dashboard.html", "Overview", "".join(ov))
 
@@ -636,10 +636,10 @@ def write_html(rows, ch2part, parts, findings, caps, audit, today):
     page("chapters.html", "Chapters", "".join(ch))
 
     # --- Scoring & approval ---
-    scr = ['<div class="note info"><b>Policy (lift → human gate):</b> an independent score '
-           f'≥{SHIP_BAR}% (≥{SHIP_BAR * SCORE_MAX // 100}/{SCORE_MAX}) + content floors PASS → READY for human '
-           f'approval; else lift (≤3 passes). ≥{APPROVE_THRESHOLD}% flags excellence. Scoring is delegated to an '
-           'external different-vendor LLM (one-pager); Claude applies the lifts.</div>']
+    scr = ['<div class="note info"><b>Policy (88% auto-approve):</b> an independent score '
+           f'≥{SHIP_BAR}% (≥{SHIP_BAR * SCORE_MAX // 100}/{SCORE_MAX}) + content floors PASS → AUTO-APPROVE '
+           f'(into 04-approved/); else lift (≤3 passes). ≥{APPROVE_THRESHOLD}% flags excellence. Scoring is delegated to an '
+           'external different-vendor LLM (one-pager); Claude applies the lifts. Only Step 16 is human.</div>']
     scored_rows = sorted([r for r in rows if r["score"] and r["score"]["total"] is not None],
                          key=lambda r: (r["score"]["independent"], r["score"]["pct"]), reverse=True)
     indep_n = sum(1 for r in scored_rows if r["score"]["independent"])
@@ -738,7 +738,7 @@ def apply_approvals(rows):
             shutil.copyfile(src, dst)
             applied.append(r)
             log_milestone("auto-approve", f"Ch {r['ch']} (key {r['nn']})",
-                          f"{r['score']['pct']}% ≥{APPROVE_THRESHOLD}% + floors PASS + independent → {r['slug']}.md")
+                          f"{r['score']['pct']}% ≥{SHIP_BAR}% + floors PASS + independent → {r['slug']}.md")
     return applied
 
 
@@ -753,20 +753,22 @@ def log_milestone(action, target, detail):
 # ----------------------------------------------------------------------------- main
 def main():
     check_only = "--check-only" in sys.argv
-    do_apply = "--apply-approvals" in sys.argv
+    no_apply = "--no-apply" in sys.argv          # escape hatch; --check-only also never mutates
     ch2part, parts = parse_parts()
     rows = parse_tracker()
     caps = parse_capstones()
     findings = drift_check(rows)
     s = summary(rows)
 
-    if do_apply and not check_only:
+    # A normal run auto-approves qualifying chapters (independent ≥88% + floors PASS) into 04-approved.
+    # --check-only and --no-apply are read-only.
+    if not check_only and not no_apply:
         applied = apply_approvals(rows)
-        print(f"status: applied {len(applied)} auto-approval(s)" +
-              (": " + ", ".join(f"Ch {r['ch']}" for r in applied) if applied else " (none qualified)"))
-        rows = parse_tracker()  # re-read so the report reflects new approvals
-        findings = drift_check(rows)
-        s = summary(rows)
+        if applied:
+            print(f"status: auto-approved {len(applied)}: " + ", ".join(f"Ch {r['ch']}" for r in applied))
+            rows = parse_tracker()  # re-read so the report reflects new approvals
+            findings = drift_check(rows)
+            s = summary(rows)
 
     if not check_only:
         audit = read_audit()
@@ -780,7 +782,7 @@ def main():
         print(f"status: wrote STATUS-MATRIX.md + SCORING-APPROVAL.md + 5 HTML pages in 10-logs/")
 
     print(f"status: {s['n']}/47 drafted · {s['example']} need example · "
-          f"route[{s['ready']} READY-human / {s['lift']} lift / {s['needs_indep']} need-indep / {s['approved']} approved] (bar {SHIP_BAR}%)")
+          f"route[{s['ready']} auto-eligible / {s['lift']} lift / {s['needs_indep']} need-indep / {s['approved']} approved] (auto-approve bar {SHIP_BAR}%)")
     if caps:
         print(f"status: capstones — {len(caps['capstones'])} apps (build/test/checkstyle/spotbugs green; code-review pending)")
     if findings:
