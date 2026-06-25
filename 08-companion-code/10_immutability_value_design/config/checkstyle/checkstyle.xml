@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<!--
+  The same small, curated house ruleset the flagship modules use (Chapter 16: curate a ruleset,
+  don't enable everything and flood the build). High-signal checks the code is held to: naming
+  conventions, import hygiene, braces, and a few coding/structure rules. Deliberately omits the
+  finicky, high-noise checks (Indentation, MagicNumber, whitespace, mandatory Javadoc on every
+  member) so the gate stays credible. The column limit (120) is this team's cited choice, not a
+  universal truth (Chapter 6, style-value neutrality).
+
+  ONE divergence from the Chapter 09 copy of this file: a SuppressWithNearbyCommentFilter is added so
+  the EqualsHashCode check can be turned off on a single, reviewed line. This module deliberately
+  ships BrokenPrice — a class that overrides equals but not hashCode — as a teaching counter-example
+  whose violation a test proves; the filter lets that one line carry an inline "// CSOFF" comment
+  with a reason, which is the chapter's own "suppress with a documented reason, never disable a
+  detector" discipline. No other module needs this, because no other module ships a deliberate defect.
+-->
+<module name="Checker">
+  <property name="severity" value="error"/>
+  <property name="charset" value="UTF-8"/>
+  <property name="fileExtensions" value="java"/>
+
+  <!-- File-level (no AST needed) -->
+  <module name="LineLength">
+    <property name="max" value="120"/>
+    <property name="ignorePattern" value="^(package|import) .*"/>
+  </module>
+
+  <module name="TreeWalker">
+    <!--
+      Inline, reviewed suppression for the single deliberate counter-example (BrokenPrice). A
+      "// CSOFF: EqualsHashCode <reason>" comment on the line above a check disables only that check
+      on the next line; the audit trail is the comment itself, in the code, with its reason.
+    -->
+    <module name="SuppressWithNearbyCommentFilter">
+      <property name="commentFormat" value="CSOFF: ([\w\|]+).*"/>
+      <property name="checkFormat" value="$1"/>
+      <property name="influenceFormat" value="4"/>
+    </module>
+
+    <!-- Naming conventions (Chapter 6) -->
+    <module name="PackageName"/>
+    <module name="TypeName"/>
+    <module name="MethodName"/>
+    <module name="MemberName"/>
+    <module name="ParameterName"/>
+    <module name="LocalVariableName"/>
+    <module name="ConstantName"/>
+    <module name="StaticVariableName"/>
+    <module name="LambdaParameterName"/>
+    <module name="PatternVariableName"/>
+    <module name="RecordComponentName"/>
+    <module name="CatchParameterName"/>
+
+    <!-- Import hygiene -->
+    <module name="AvoidStarImport"/>
+    <module name="RedundantImport"/>
+    <module name="UnusedImports"/>
+
+    <!-- Blocks and braces -->
+    <module name="NeedBraces"/>
+    <module name="LeftCurly"/>
+    <module name="RightCurly"/>
+    <module name="EmptyBlock">
+      <property name="option" value="text"/>
+    </module>
+
+    <!-- Modifiers -->
+    <module name="ModifierOrder"/>
+    <module name="RedundantModifier"/>
+
+    <!-- Coding / structure -->
+    <module name="OneTopLevelClass"/>
+    <module name="EqualsHashCode"/>
+    <module name="SimplifyBooleanExpression"/>
+    <module name="EmptyStatement"/>
+    <module name="UpperEll"/>
+    <module name="ArrayTypeStyle"/>
+    <module name="OuterTypeFilename"/>
+  </module>
+</module>

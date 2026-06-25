@@ -85,6 +85,10 @@ These are encoded as regexes by every major linter, and the regexes are *not ide
 
 Checkstyle, PMD, and SonarQube each ship their *own* naming defaults; they overlap heavily but the exact regexes differ. State each from its own source; do not present one as *the* canonical default. (Which to run, and how to stop them fighting, is Chapter 17.)
 
+In the companion module the naming layer is a curated block of Checkstyle modules — each settling one element's *case*, none of them reaching its meaning:
+
+<!-- include: 07_naming_structure_formatting/config/checkstyle/checkstyle.xml#checkstyle-naming -->
+
 The deterministic part of even naming is the **camel-case algorithm** (Google Java Style §5.3): take the prose phrase, transliterate to ASCII, split into words, lowercase everything, then uppercase the first letter of each word. It settles the case that trips everyone: `XMLHTTPRequest` becomes `XmlHttpRequest`, not `XMLHTTPRequest`, by treating an acronym as one word.
 
 The hard part, which no algorithm reaches, is whether the name is *true*. A linter confirms `data` matches `lowerCamelCase`; it cannot flag `data` as a uselessly vague name for the customer's unsettled invoices. The grammatical and semantic part of naming (the part *Effective Java* calls "looser") is where the value is, and it is unenforceable. Enforcing naming with a tool does not give good names.
@@ -108,6 +112,14 @@ Google Java Style §4 fixes the values teams argue about: indentation "+2 spaces
 - **Engines** that do the reflow. **google-java-format** renders Google Java Style and states its defining choice in its own README: "There is no configurability as to the formatter's algorithm for formatting. This is a deliberate design decision to unify our code formatting on a single format." Its one documented variation is `--aosp` (4-space). **palantir-java-format** describes itself as "a modern, lambda-friendly, 120 character Java formatter," "based on the excellent google-java-format": a *different* fixed opinion (120 columns, chain-tuned wrapping), not a tunable one.
 - **An orchestrator** (**Spotless**), which defines no style of its own but wires an engine plus auxiliary steps (`importOrder`, `removeUnusedImports`, `licenseHeader`, `trimTrailingWhitespace`) into Maven (`spotless:check` / `spotless:apply`) and Gradle (`spotlessCheck` / `spotlessApply`). Its `ratchetFrom` step ("only format files which have changed since `origin/main`") is the documented answer to the "10,000-line reformat PR" problem.
 - **An author-time baseline** (**EditorConfig**): a `.editorconfig` file that carries a few whitespace settings (`indent_style`, `indent_size`, `end_of_line`, `charset`, `trim_trailing_whitespace`, `insert_final_newline`) to every contributor's editor *as they type*, with "closer files take precedence" and `root=true` to stop the upward search.
+
+The companion module wires the orchestrator and the engine together — Spotless driving google-java-format, with `ratchetFrom` so only files changed since trunk are touched:
+
+<!-- include: 07_naming_structure_formatting/config/spotless/spotless-reference.xml#spotless-config -->
+
+and carries the author-time baseline as a `.editorconfig` at the module root:
+
+<!-- include: 07_naming_structure_formatting/.editorconfig#editorconfig-baseline -->
 
 > **CONCEPT** *Format/lint split.* A linter *detects* a deviation and asks a human to fix it; a formatter *computes* the canonical rendering and writes it. Formatting is decidable, so it belongs to the formatter; once it does, the whitespace-checking linter rules can be deleted so two tools do not fight over the same bytes (Chapter 17's layering call).
 
@@ -146,6 +158,10 @@ public class orderthing {
 }
 ```
 
+The same before-state lives in the companion module, kept inside a comment so the naming gate it would otherwise fail can stay green:
+
+<!-- include: 07_naming_structure_formatting/src/main/java/org/acme/storefront/readability/ReadabilityNotes.java#naming-bad -->
+
 Run the **formatter** (`spotless:apply`) and the typography is gone as a topic: indentation, braces, spacing, import order are now canonical, computed not argued. Run the **linter** and it flags what the formatter does not own: `orderthing` fails `java:S101`/Checkstyle `TypeName` (class is not `UpperCamelCase`), `maxRetries` fails `ConstantName` (a real constant must be `CONSTANT_CASE`), `X` and `calc` and `data` are legal-but-poor. The machine has now done everything it can.
 
 What remains is the part only a person does. `orderthing` → `OutstandingInvoices`. `data` → `invoices`. `calc` → `totalOutstanding`. `X` → `taxRatePercent`. None of those renames is something a regex could have produced; each is a claim about what the code *means*, checked by a human who understands the domain. And the result reads as a sentence:
@@ -159,6 +175,10 @@ public final class OutstandingInvoices {
   public Money totalOutstanding(BigDecimal taxRatePercent) { ... }
 }
 ```
+
+The companion module carries the conventionally-named, conventionally-formatted result — an order line whose constant is `static final` *and* deeply immutable (the only kind that earns `CONSTANT_CASE`), and whose method name reads as what it returns:
+
+<!-- include: 07_naming_structure_formatting/src/main/java/org/acme/storefront/readability/OrderLine.java#naming-good -->
 
 The formatter made it *uniform*. The linter made the *case* correct. The human made it *true*. Three layers, three enforcers, in that order. Only the last one required understanding the business.
 

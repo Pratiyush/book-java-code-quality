@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Reference configuration (NOT wired into this module's live build) for the deterministic-formatter half
+  of Chapter 6: Spotless orchestrating google-java-format, with the aux steps and ratchetFrom the chapter
+  describes. It is shown here rather than executed because the SOURCE-PIN identifier "Spotless 8.7.0" is
+  the project / Gradle-plugin release line and does not resolve as a Maven-plugin coordinate (the
+  spotless-maven-plugin is versioned on its own line); the Maven-plugin version literal is therefore left
+  as a property to be set at pin time. See 09-flags/34_spotless_maven_plugin_version_unresolved.md.
+
+  google-java-format is pinned to the SOURCE-PIN value (1.35.0, min JDK 21). Pinning the formatter GAV is
+  itself the chapter's point: a formatter's rendering can shift between its own versions, so it is pinned,
+  not floated. google-java-format states it has "no configurability as to the formatter's algorithm … a
+  deliberate design decision to unify our code formatting on a single format"; palantir-java-format is a
+  different fixed opinion (120 columns) that would slot in as <palantirJavaFormat> in the same place.
+
+  To activate: set the spotless.maven.plugin.version property to the pinned spotless-maven-plugin version,
+  then `mvn -B spotless:check` (report in CI) and `mvn -B spotless:apply` (rewrite locally / pre-commit).
+-->
+<plugin xmlns="http://maven.apache.org/POM/4.0.0">
+  <!-- tag::spotless-config[] -->
+  <groupId>com.diffplug.spotless</groupId>
+  <artifactId>spotless-maven-plugin</artifactId>
+  <version>${spotless.maven.plugin.version}</version> <!-- pin at /pin-source -->
+  <configuration>
+    <ratchetFrom>origin/main</ratchetFrom> <!-- format only files changed since trunk -->
+    <java>
+      <googleJavaFormat><version>1.35.0</version></googleJavaFormat>
+    </java>
+  </configuration>
+  <!-- end::spotless-config[] -->
+</plugin>

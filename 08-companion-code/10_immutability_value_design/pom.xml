@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 10 companion (Objects That Don't Change Their Mind). Puts the chapter's three instruments
+    of immutability into one buildable module: records as value carriers (JEP 395, Money / LineItem /
+    Order), the JDK immutable-collection factories (List.of / Map.ofEntries / copyOf, Catalog), and
+    defensive copies (Item 50) for the mutable component a record does not freeze (Order's compact
+    constructor + copying accessor). Two deliberate counter-examples ship beside the correct types —
+    OrderLeaky (the hook's leak) and BrokenPrice (equals without hashCode) — so a test proves the
+    failure rather than asserting it; they are the module's explicit failure path. Zero runtime
+    dependencies — JDK only — so it dogfoods the book and builds fast and green. The contracts are
+    machine-checked by the `quality` profile (Checkstyle + SpotBugs, Chapter 16).
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>immutability-value-design</artifactId>
+  <name>Chapter 10 — Objects That Don't Change Their Mind (immutability-value-design)</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The maven-checkstyle-plugin ships an OLD bundled engine (Checkstyle 9.3); we override it to
+    the pinned engine via a plugin-level dependency — the "two-pin" lesson (the build plugin and the
+    analyzer engine are separate versions). This module is a direct child of the companion-code root,
+    which pins no quality profile of its own, so the profile is declared here (the same shape the
+    flagship storefront-checkout and Chapter 09 modules use) and reads the config under this module's
+    config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16) — complementary to Checkstyle's source
+            view. Where the Chapter 09 module's filter is empty (it defends every representation),
+            this module ships two DELIBERATE counter-examples whose contract violations are the
+            teaching point, so the exclude filter carries two narrowly-scoped, reasoned suppressions
+            (OrderLeaky's representation-exposure leak, BrokenPrice's equals-without-hashCode). That
+            is the chapter's own "suppress with a documented reason, never disable a detector"
+            discipline (Chapter 16) made concrete — not a way to hide a real defect.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

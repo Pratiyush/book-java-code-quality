@@ -2,7 +2,7 @@
 Dossier key: 10 (owner) + folds 15 — per 01-index/FINAL_INDEX.md Ch 8
 Slug: 10_immutability_value_design
 Part / arc position: Part II — Writing Quality Java, Chapter 8
-Companion module: 08-companion-code/10_immutability_value_design/ — ⚠ EXAMPLE-BUILD = PENDING-RUNTIME (no JDK). Spec at foot.
+Companion module: 08-companion-code/10_immutability_value_design/ — EXAMPLE-BUILD = BUILT (green at Java 21.0.11; `mvn -Pquality verify`). 7 snippet tags bound. Spec at foot.
 Verified against SOURCE-PIN: 2026-06-20. Sources: JEP 395 (records, final Java 16); JEP 390 (value-based classes, Java 16); JEP 401 (value classes, PREVIEW — ⚠ AHEAD-OF-PIN); JDK 21 API (List/Set/Map.of+copyOf, Collections.unmodifiable*, Object equals/hashCode/toString contracts verbatim, Comparable.compareTo contract verbatim, Objects.hash/equals, Comparator combinators); Effective Java 3e (2018) Items 10/11/12/14/17/50; SonarQube java:S2384/S1206/S1210/S1244; PMD ImmutableField/ArrayIsStoredDirectly/MethodReturnsInternalArray/OverrideBothEqualsAndHashcode; Error Prone @Immutable/ImmutableChecker/EqualsHashCode/CompareToZero/EqualsGetClass; SpotBugs HE_*/EQ_*/CO_*; Checkstyle EqualsHashCode/CovariantEquals/EqualsAvoidNull.
 ⚠ verify-at-pin: copyOf version (Java 10); tool rule defaults/IDs; EJ verbatims; BigDecimal inconsistency; JEP numbers. ⚠ AHEAD-OF-PIN: JEP 401 value classes (preview at 25), Valhalla.
 DRAFT v1 — gates manual; three-instruments + contract-card shapes; EXAMPLE-BUILD pending JDK.
@@ -78,14 +78,22 @@ Java provides three instruments for immutability. None is complete on its own; e
 
 **Records (JEP 395, GA in Java 16).** A record is a transparent carrier for immutable data. For `record Range(int lo, int hi) {}` the compiler generates a private final field per component, a canonical constructor, an accessor per component (named `lo()`, `hi()`, no `get` prefix), and `equals`/`hashCode`/`toString` derived from the components. The record is implicitly `final`, extends `java.lang.Record` (so it cannot extend another class), and cannot declare extra instance fields. The seam for validation and defensive copying is the **compact canonical constructor**: the constructor body can validate and reassign the *parameters* (`if (hi < lo) throw new IllegalArgumentException(...)`), and the reassigned value is what gets stored. That is where `items = List.copyOf(items);` goes.
 
-The pitfall the hook showed, stated precisely: a record makes the component *reference* final, but does **not** deep-copy or freeze a mutable component. `record Order(List<LineItem> items)` is *shallowly* immutable. The fix is a defensive copy in the compact constructor and, if the component type is still mutable, a copying accessor.
+The pitfall the hook showed, stated precisely: a record makes the component *reference* final, but does **not** deep-copy or freeze a mutable component. `record Order(List<LineItem> items)` is *shallowly* immutable. The companion module keeps the leaky version runnable so a test can watch the order change underneath it:
+
+<!-- include: 10_immutability_value_design/src/main/java/org/acme/immutability/OrderLeaky.java#leaky-record -->
+
+The fix is a defensive copy in the compact constructor and, if the component type is still mutable, a copying accessor — `copyOf` already returns an unmodifiable list, so the accessor can hand the snapshot straight back:
+
+<!-- include: 10_immutability_value_design/src/main/java/org/acme/immutability/Order.java#sealed-record -->
 
 **Immutable collections (JDK 9+).** Keep two things separate:
 
 - `List.of(...)`, `Set.of(...)`, `Map.of(...)`, and `copyOf(...)` return *conventionally immutable* collections: any `add`/`set`/`remove` throws `UnsupportedOperationException`. These factories are null-hostile (no null elements/keys/values), reject duplicates in `Set.of`/`Map.of` with `IllegalArgumentException`, and randomize iteration order across runs (intentionally, to surface order-dependent bugs).
 - `Collections.unmodifiableList(x)` returns a read-only *view* over `x` — **not a copy**. If `x` is mutated, the view reflects it. Storing `unmodifiableList(someField)` over a retained mutable source still leaks mutation through the source.
 
-The JDK doc's own line is the rule to remember: *an immutable collection of objects is not the same as a collection of immutable objects.* `List.of(mutableThings)` freezes the list, not the things in it. `List.copyOf(incoming)` is the defensive-copy primitive, returning an immutable snapshot (it may skip the copy if the argument is already an immutable JDK collection).
+The JDK doc's own line is the rule to remember: *an immutable collection of objects is not the same as a collection of immutable objects.* `List.of(mutableThings)` freezes the list, not the things in it. `List.copyOf(incoming)` is the defensive-copy primitive, returning an immutable snapshot (it may skip the copy if the argument is already an immutable JDK collection). The module shows the three factories side by side:
+
+<!-- include: 10_immutability_value_design/src/main/java/org/acme/immutability/Catalog.java#immutable-collections -->
 
 **Defensive copies (Item 50).** The manual seal for rule 5: copy each mutable parameter in the constructor and store the copy; copy *before* validating and validate the copy (so another thread cannot mutate the original between check and store); return copies from accessors. Avoid `clone` on a parameter whose type can be subclassed by untrusted code. The modern shortcut: prefer an immutable type in the first place. The classic mutable-`Date` field becomes an immutable `Instant`/`LocalDateTime`, and the copy disappears.
 
@@ -120,7 +128,13 @@ Tools are named here as *checkers of the same contracts*, not rivals; where two 
 
 ### The modern answer: derive, do not write
 
-The single most reliable way to get `equals`/`hashCode`/`toString` right is to not write them. A record derives all three component-by-component, consistent by construction (JEP 395). For the rare hand-written case, `Objects.hash(a, b, c)` is the recommended `hashCode` body and `Comparator.comparing(...).thenComparing(...)` is the overflow-safe way to implement ordering without manual subtraction. (Records do *not* auto-implement `Comparable`; ordering remains the developer's responsibility.)
+The single most reliable way to get `equals`/`hashCode`/`toString` right is to not write them. A record derives all three component-by-component, consistent by construction (JEP 395). For the rare hand-written case, `Objects.hash(a, b, c)` is the recommended `hashCode` body and `Comparator.comparing(...).thenComparing(...)` is the overflow-safe way to implement ordering without manual subtraction. (Records do *not* auto-implement `Comparable`; ordering remains the developer's responsibility.) The module's `Money` is exactly this — a record for the derived contracts, with a `Comparator`-built `compareTo` added by hand:
+
+<!-- include: 10_immutability_value_design/src/main/java/org/acme/immutability/Money.java#value-money -->
+
+A test confirms the payoff the deriving buys: two value-equal instances are equal, share a hash code, and so resolve correctly as a map key — the property the next section shows a broken type losing.
+
+<!-- include: 10_immutability_value_design/src/test/java/org/acme/immutability/ImmutabilityContractTest.java#contract-test -->
 
 ## Deep dive: why a HashMap loses a key
 
@@ -128,7 +142,11 @@ Walk the mechanism, because it is the clearest demonstration that these contract
 
 A `HashMap` stores an entry by computing `key.hashCode()`, reducing it to a bucket index, and placing the entry in that bucket. To *retrieve*, it does the same: compute the lookup key's `hashCode()`, find the bucket, then walk the bucket calling `equals` to confirm a match. Two steps, two methods, both required.
 
-Suppose `Money` overrides `equals` (so `new Money(5, "USD")` equals another `new Money(5, "USD")`) but inherits `Object.hashCode` (identity-based). Two value-equal `Money` objects have *different* hash codes, so they reduce to *different* buckets. One instance goes in via `put` and a second equal instance is used with `get`:
+Suppose `Money` overrides `equals` (so `new Money(5, "USD")` equals another `new Money(5, "USD")`) but inherits `Object.hashCode` (identity-based). Two value-equal `Money` objects have *different* hash codes, so they reduce to *different* buckets. The companion module keeps this broken type alongside the correct `Money`, named `BrokenPrice` so the working value type stays untouched:
+
+<!-- include: 10_immutability_value_design/src/main/java/org/acme/immutability/BrokenPrice.java#broken-hashcode -->
+
+One instance goes in via `put` and a second equal instance is used with `get`:
 
 ```java
 var map = new HashMap<Money, String>();
@@ -136,7 +154,9 @@ map.put(new Money(5, "USD"), "five");
 map.get(new Money(5, "USD"));   // → null. The key is "in" the map, but in a different bucket.
 ```
 
-`get` computes a bucket from the lookup key's identity hash, looks there, finds nothing, returns `null` — even though an `equals`-equal key is sitting in a different bucket. The map did not lose data; it looked in the wrong place, because the inherited `hashCode` signalled that equal objects live in different places. This is why Item 11 is not advice but a contract: `equals` and `hashCode` are two halves of one mechanism, and the analyzer rules above exist to prevent shipping half of it.
+`get` computes a bucket from the lookup key's identity hash, looks there, finds nothing, returns `null` — even though an `equals`-equal key is sitting in a different bucket. The map did not lose data; it looked in the wrong place, because the inherited `hashCode` signalled that equal objects live in different places. This is why Item 11 is not advice but a contract: `equals` and `hashCode` are two halves of one mechanism, and the analyzer rules above exist to prevent shipping half of it. The module's test asserts exactly this loss — the key is `equals` to one in the map, yet `get` returns `null`:
+
+<!-- include: 10_immutability_value_design/src/test/java/org/acme/immutability/ImmutabilityContractTest.java#hashmap-loses-key -->
 
 The cleanest fix is to make `Money` a record: derived `equals` and `hashCode` are guaranteed consistent, and the bug cannot occur. Immutability and the contracts converge on the same move — *describe the value once, let the language derive the behavior, and the silent failures disappear.*
 
@@ -188,7 +208,7 @@ Value types that do not change their state and that answer equality and ordering
 - **Error Prone** — `@Immutable`/`ImmutableChecker`, `MixedMutabilityReturnType`, `EqualsHashCode`, `EqualsGetClass`, `EqualsIncompatibleType`, `CompareToZero`. *(⚠ severities/presence @pin.)*
 - **SpotBugs** — `HE_EQUALS_NO_HASHCODE`/`HE_HASHCODE_NO_EQUALS`, `EQ_OVERRIDING_EQUALS_NOT_SYMMETRIC`, `EQ_COMPARING_CLASS_NAMES`, `CO_COMPARETO_INCORRECT_FLOATING`, `CO_COMPARETO_RESULTS_MIN_VALUE`, `NP_EQUALS_SHOULD_HANDLE_NULL_ARGUMENT`. **Checkstyle** — `EqualsHashCode`, `CovariantEquals`, `EqualsAvoidNull`. *(IDs cited; ⚠ versions @pin.)*
 
-**Companion module (spec — ⚠ EXAMPLE-BUILD = PENDING-RUNTIME, no JDK):** `08-companion-code/10_immutability_value_design/` — a `Money` value record (correct, derived contracts) and a leaky `Order(List<LineItem>)` shown first *without* a defensive copy (a test mutates the caller's list and watches the order change), then sealed with a compact constructor `List.copyOf` + copying accessor. A seeded `BrokenPrice` overrides `equals` but not `hashCode`; a test puts it in a `HashMap` and shows `map.get(key) == null`. A `strict` Maven profile turns the contract rules (`java:S2384`, `java:S1206`/`HE_EQUALS_NO_HASHCODE`) into a build gate. Snippet tags: `leaky-record`, `sealed-record`, `value-money`, `immutable-collections`, `broken-hashcode`, `hashmap-loses-key`, `contract-test`.
+**Companion module (BUILT — green at Java 21.0.11):** `08-companion-code/10_immutability_value_design/` — a `Money` value record (correct, derived contracts, plus a `Comparator`-built `compareTo`) and a leaky `OrderLeaky(List<LineItem>)` shown first *without* a defensive copy (a test mutates the caller's list and watches the order change), then sealed in `Order` with a compact constructor `List.copyOf` + copying accessor. A seeded `BrokenPrice` overrides `equals` but not `hashCode`; a test puts it in a `HashMap` and shows `map.get(key) == null`. A `Catalog` shows `List.of`/`Map.ofEntries`/`copyOf`, and an `OrderBook` service carries the observability surface (`rejectedCount()`, `isReady()`) and the explicit failure path (typed `OrderRejectedException` on empty/mixed-currency orders). The opt-in `quality` Maven profile turns the contract rules into a build gate (Checkstyle `EqualsHashCode` + SpotBugs `HE_EQUALS_USE_HASHCODE`/`EI_EXPOSE_REP`/`EI_EXPOSE_REP2`); the two deliberate counter-examples carry narrowly-scoped, reasoned suppressions so the gate stays green while the violations remain visible. Snippet tags: `leaky-record`, `sealed-record`, `value-money`, `immutable-collections`, `broken-hashcode`, `hashmap-loses-key`, `contract-test`.
 
 ## Next chapter teaser
 

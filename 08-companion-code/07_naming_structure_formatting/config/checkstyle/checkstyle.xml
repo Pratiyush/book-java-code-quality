@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<!--
+  The same small, curated house ruleset the flagship modules use (Chapter 16: curate a ruleset,
+  don't enable everything and flood the build). This module is Chapter 6's subject made buildable, so
+  the naming checks below are the load-bearing part: a tool settles the typographical case of an
+  identifier, and a human still settles whether the name is true. The column limit (120) is this
+  team's cited choice, not a universal truth (Chapter 6, style-value neutrality — Google uses 100,
+  AOSP uses 4-space, palantir uses 120; the value is in picking one, not in which one).
+-->
+<module name="Checker">
+  <property name="severity" value="error"/>
+  <property name="charset" value="UTF-8"/>
+  <property name="fileExtensions" value="java"/>
+
+  <!-- File-level (no AST needed) -->
+  <module name="LineLength">
+    <property name="max" value="120"/>
+    <property name="ignorePattern" value="^(package|import) .*"/>
+  </module>
+
+  <module name="TreeWalker">
+    <!-- tag::checkstyle-naming[] -->
+    <!-- Naming conventions (Chapter 6): the tool checks the *case*, never the meaning. -->
+    <module name="TypeName"/>        <!-- UpperCamelCase classes/interfaces/enums -->
+    <module name="MethodName"/>      <!-- lowerCamelCase methods -->
+    <module name="ConstantName"/>    <!-- CONSTANT_CASE static-final, deeply-immutable fields -->
+    <module name="MemberName"/>      <!-- lowerCamelCase non-constant fields -->
+    <module name="ParameterName"/>   <!-- lowerCamelCase parameters -->
+    <module name="LocalVariableName"/>
+    <!-- end::checkstyle-naming[] -->
+    <module name="PackageName"/>
+    <module name="StaticVariableName"/>
+    <module name="LambdaParameterName"/>
+    <module name="PatternVariableName"/>
+    <module name="RecordComponentName"/>
+    <module name="CatchParameterName"/>
+
+    <!-- Import hygiene (Google Java Style §3.3: no wildcards; a formatter sorts them) -->
+    <module name="AvoidStarImport"/>
+    <module name="RedundantImport"/>
+    <module name="UnusedImports"/>
+
+    <!-- Blocks and braces -->
+    <module name="NeedBraces"/>
+    <module name="LeftCurly"/>
+    <module name="RightCurly"/>
+    <module name="EmptyBlock">
+      <property name="option" value="text"/>
+    </module>
+
+    <!-- Modifiers -->
+    <module name="ModifierOrder"/>
+    <module name="RedundantModifier"/>
+
+    <!-- Coding / structure (Google Java Style §3: exactly one top-level class) -->
+    <module name="OneTopLevelClass"/>
+    <module name="EqualsHashCode"/>
+    <module name="SimplifyBooleanExpression"/>
+    <module name="EmptyStatement"/>
+    <module name="UpperEll"/>
+    <module name="ArrayTypeStyle"/>
+    <module name="OuterTypeFilename"/>
+  </module>
+</module>
