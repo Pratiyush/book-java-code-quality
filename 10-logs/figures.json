@@ -1,0 +1,5768 @@
+{
+ "generated": "2026-06-25 22:51",
+ "count": 67,
+ "results": [
+  {
+   "name": "fig01_1",
+   "slug": "01_what_is_code_quality",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 304 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "23 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "134 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig01_2",
+   "slug": "01_what_is_code_quality",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 277 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "16 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "121 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig01_3",
+   "slug": "01_what_is_code_quality",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 477 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "25 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "121 chars"
+    ],
+    "no_placeholder": [
+     "WARN",
+     "placeholder(s) in figure: TODO"
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig03_1",
+   "slug": "03_readability_maintainability",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 729 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "24 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "201 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig03_2",
+   "slug": "03_readability_maintainability",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 804 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "28 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "186 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "WARN",
+     "check wording: worse than"
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig05_1",
+   "slug": "05_java_quality_toolchain",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 652 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "40 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "143 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig05_2",
+   "slug": "05_java_quality_toolchain",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 672 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "29 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "139 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig06_1",
+   "slug": "06_quality_culture_ownership",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 507 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "29 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "202 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig06_2",
+   "slug": "06_quality_culture_ownership",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 396 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "23 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "172 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig06_3",
+   "slug": "06_quality_culture_ownership",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 655 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "28 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "184 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig07_1",
+   "slug": "07_naming_structure_formatting",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 1011 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "30 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "149 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig08_1",
+   "slug": "08_effective_java",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 930 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "58 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "195 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig08_2",
+   "slug": "08_effective_java",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 507 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "41 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "175 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig09_1",
+   "slug": "09_api_method_contracts",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 1198 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "53 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "178 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig10_1",
+   "slug": "10_immutability_value_design",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 440 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "14 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "118 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig11_1",
+   "slug": "11_null_safety_optional",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 868 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "39 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "167 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig12_1",
+   "slug": "12_error_handling_exceptions",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 537 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "23 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "97 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig12_2",
+   "slug": "12_error_handling_exceptions",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 696 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "23 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "100 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig14_1",
+   "slug": "14_generics_type_safety",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 604 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "14 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "135 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig14_2",
+   "slug": "14_generics_type_safety",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 923 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "19 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "187 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig19_1",
+   "slug": "19_code_smells_antipatterns",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 1068 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "62 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "236 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig20_1",
+   "slug": "20_thread_safety_jmm",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 896 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "35 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "198 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig22_1",
+   "slug": "22_virtual_threads_structured_concurrency",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 537 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "16 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "150 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig22_2",
+   "slug": "22_virtual_threads_structured_concurrency",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 1225 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "46 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "197 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig26_1",
+   "slug": "26_how_static_analysis_works",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 1052 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "50 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "121 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig27_1",
+   "slug": "27_checkstyle",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 730 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "33 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "156 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig35_1",
+   "slug": "35_sonarqube_ide_layered_stack",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 1210 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "35 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "216 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig38_1",
+   "slug": "38_custom_rules_codegen_lombok",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 923 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "48 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "233 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig38_2",
+   "slug": "38_custom_rules_codegen_lombok",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 1142 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "40 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "268 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig39_1",
+   "slug": "39_managing_findings",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 1533 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "41 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "196 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig41_1",
+   "slug": "41_testing_landscape_quality",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 696 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "23 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "197 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig41_2",
+   "slug": "41_testing_landscape_quality",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 995 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "29 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "235 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig42_1",
+   "slug": "42_unit_testing_assertions_mocking",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 422 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "22 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "178 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig42_2",
+   "slug": "42_unit_testing_assertions_mocking",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 798 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "36 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "156 chars"
+    ],
+    "no_placeholder": [
+     "WARN",
+     "placeholder(s) in figure: PLACEHOLDER"
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig45_1",
+   "slug": "45_integration_property_based_testing",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 939 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "34 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "225 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig48_1",
+   "slug": "48_coverage_mutation_effectiveness",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 1279 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "45 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "221 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig50_1",
+   "slug": "50_contract_approval_testing",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 602 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "31 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "143 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig50_2",
+   "slug": "50_contract_approval_testing",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 804 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "35 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "168 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig53_1",
+   "slug": "53_solid_coupling_cohesion_packages",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 790 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "28 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "170 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig53_2",
+   "slug": "53_solid_coupling_cohesion_packages",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 700 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "22 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "164 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig55_1",
+   "slug": "55_enforcing_architecture_fitness_functions",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 1292 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "53 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "206 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig62_1",
+   "slug": "62_build_dependency_hygiene",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 804 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "50 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "151 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig65_1",
+   "slug": "65_dependency_scanning_sbom_supply_chain",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 742 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "40 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "162 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig67_1",
+   "slug": "67_reproducible_builds_license_compliance",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 787 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "25 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "144 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig67_2",
+   "slug": "67_reproducible_builds_license_compliance",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 680 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "26 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "271 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig69_1",
+   "slug": "69_secure_coding_owasp",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 983 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "37 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "207 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig70_1",
+   "slug": "70_sast_secrets_detection",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 964 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "33 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "WARN",
+     "non-contiguous: [1, 1]"
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "180 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig71_1",
+   "slug": "70_sast_secrets_detection",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 794 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "29 trace rows"
+    ],
+    "file_naming": [
+     "WARN",
+     "key 71 in dir 70 (folded key?)"
+    ],
+    "numbering": [
+     "WARN",
+     "non-contiguous: [1, 1]"
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "231 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig73_1",
+   "slug": "73_security_in_ci",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 728 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "32 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "259 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig75_1",
+   "slug": "75_ci_pipeline_quality_gates",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 826 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "48 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "379 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig80_1",
+   "slug": "80_coverage_pr_automation_platforms",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 862 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "43 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "141 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig81_1",
+   "slug": "81_branch_protection_precommit_parity",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 776 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "35 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "290 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig83_1",
+   "slug": "83_release_quality",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 994 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "45 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "309 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig84_1",
+   "slug": "84_code_review_standards_documentation",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 375 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "17 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "239 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig84_2",
+   "slug": "84_code_review_standards_documentation",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 645 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "23 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "286 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig85_1",
+   "slug": "85_metrics_rollout_dashboards",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 767 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "54 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "103 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig91_1",
+   "slug": "91_refactoring_legacy_modernization",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 1016 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "43 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "156 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig96_1",
+   "slug": "96_remediation_playbook_automated_change",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 704 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "40 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "199 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig96_2",
+   "slug": "96_remediation_playbook_automated_change",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 746 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "37 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "219 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig97_1",
+   "slug": "97_ai_generated_code_quality",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 628 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "35 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "145 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "WARN",
+     "check wording: unlike"
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig100_1",
+   "slug": "100_governing_ai_ai_review",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 864 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "50 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "135 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig101_1",
+   "slug": "101_performance_profiling_memory_benchmarking",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 796 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "48 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "163 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig105_1",
+   "slug": "105_performance_regression_gates",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 929 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "38 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "135 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig106_1",
+   "slug": "106_observability_logging_metrics_feedback",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 546 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "38 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "129 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig109_1",
+   "slug": "109_reference_quality_stack_gate",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 1138 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "41 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "98 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig109_2",
+   "slug": "109_reference_quality_stack_gate",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 629 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "29 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "71 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  },
+  {
+   "name": "fig110_1",
+   "slug": "110_maturity_model_roadmap",
+   "params": {
+    "png_integrity": [
+     "PASS",
+     "valid PNG, 490 KB"
+    ],
+    "sidecar": [
+     "PASS",
+     "41 trace rows"
+    ],
+    "file_naming": [
+     "PASS",
+     ""
+    ],
+    "numbering": [
+     "PASS",
+     ""
+    ],
+    "crossref": [
+     "PASS",
+     "referenced in draft"
+    ],
+    "alt_text": [
+     "PASS",
+     "207 chars"
+    ],
+    "no_placeholder": [
+     "PASS",
+     ""
+    ],
+    "neutral": [
+     "PASS",
+     ""
+    ],
+    "source_trace": [
+     "REVIEW",
+     "authored-HTML present"
+    ],
+    "correctness": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "chapter_fit": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "caption": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "long_desc": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "visual_hier": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "contrast": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "readability": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "responsive": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_overclaim": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_benchmark": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ],
+    "no_dup_role": [
+     "REVIEW",
+     "needs agent/human judgement"
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,36 @@
+# .gitlab-ci.yml — parity mirror of the GitHub CI, kept for portability to a GitLab `dev` workflow.
+# This repo's live remote is GitHub; this file is kept valid and spec-aligned so the same pipeline can
+# run on GitLab if the project moves there. It runs ONLY on the `dev` branch and never assumes `master`.
+# Python/bash checks are required; the Java quality build is allow_failure until a JDK-21 runner is proven.
+stages:
+  - validate
+  - quality
+
+default:
+  image: python:3.12-slim
+
+variables:
+  GIT_DEPTH: "0"
+
+book-validate:
+  stage: validate
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq git ruby >/dev/null 2>&1 || true
+  script:
+    - python3 .claude/scripts/status.py --check-only
+    - bash .claude/scripts/check_snippets.sh 04-approved
+    - if [ -d 06-assembly ] && [ -n "$(ls -A 06-assembly 2>/dev/null)" ]; then bash .claude/scripts/check_crossrefs.sh 06-assembly; else echo "06-assembly empty - skip"; fi
+    - python3 .claude/scripts/review_figures.py --check-only
+    - git diff --check
+
+companion-quality:
+  stage: quality
+  image: maven:3.9-eclipse-temurin-21
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+  script:
+    - mvn -B -Pquality -f 08-companion-code/pom.xml verify
+    - mvn -B -Pquality -f 08-companion-code/capstones/pom.xml verify
