@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 06 companion (Naming, structure & formatting — the readability fundamentals). One small
+    storefront domain (an order line) carried through the chapter's readability pass: intention-revealing
+    names, the genuine-constant CONSTANT_CASE rule (Google Java Style §5.2.4: a constant is static final
+    AND deeply immutable, not merely static final), one top-level class per file (§3), and an explicit
+    fail-fast failure path. Zero runtime dependencies — JDK only — so it dogfoods the book and builds fast
+    and green. The naming case is machine-checked by the `quality` profile (Checkstyle naming modules +
+    SpotBugs, Chapter 16); the semantic rename is the part only a person can do.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>naming-structure-formatting</artifactId>
+  <name>Chapter 06 — Naming, structure &amp; formatting (naming-structure-formatting)</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays fast.
+    This module is the chapter's enforcement surface made buildable: the Checkstyle naming modules
+    (TypeName / MethodName / ConstantName / MemberName / ParameterName / LocalVariableName) settle the
+    typographical CASE of every identifier; the semantic rename is left to a human. The
+    maven-checkstyle-plugin ships an OLD bundled engine, so we override it to the pinned engine via a
+    plugin-level dependency — the "two-pin" lesson (the build plugin and the analyzer engine are separate
+    versions). The profile reads the config under this module's own config/ dir, the same self-contained
+    shape the flagship storefront-checkout module uses.
+
+    The deterministic-formatter half of the chapter (Spotless driving google-java-format, with
+    ratchetFrom) is shown as a reference configuration in config/spotless/spotless-reference.xml rather
+    than wired live here: the SOURCE-PIN "Spotless 8.7.0" identifier is the project/Gradle-plugin release
+    line and does not resolve as a Maven-plugin coordinate (the spotless-maven-plugin is versioned on a
+    separate line), so activating it would require a version literal not yet pinned. See
+    09-flags/34_spotless_maven_plugin_version_unresolved.md. The naming gate below is fully live.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16) — complementary to Checkstyle's source view.
+            The domain types are immutable records/values, so the representation-exposure detectors stay
+            quiet without any suppression; the exclude filter is kept (empty) so a future, genuinely-reviewed
+            suppression has a home with a reason, never by disabling a detector wholesale.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

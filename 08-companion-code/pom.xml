@@ -19,7 +19,10 @@
 
   <modules>
     <module>storefront-checkout</module>
+    <module>07_naming_structure_formatting</module>
     <module>09_api_method_contracts</module>
+    <module>10_immutability_value_design</module>
+    <module>11_null_safety_optional</module>
     <module>capstones</module>
   </modules>
 

@@ -64,9 +64,17 @@ Java's type system, by itself, cannot help. The language specification makes `nu
 
 Two construction paths carry different contracts: `Optional.of(value)` throws if the value is null (use when null would be a programming error); `Optional.ofNullable(value)` yields empty for null (use to lift a possibly-null legacy value). And the *Effective Java* discipline (Items 54–55): return empty collections or arrays, never null; return `Optional` for a method that genuinely "might not be able to return a result"; never wrap a container in an `Optional`, never use it as a field, parameter, or map value, and never `Optional<Integer>` (use `OptionalInt`).
 
+The lookup done right returns the absence in its type, so the caller cannot dereference a null it never receives:
+
+<!-- include: 11_null_safety_optional/src/main/java/org/acme/storefront/pricing/DiscountService.java#optional-return -->
+
 ### Lever 2 — `Objects.requireNonNull`: fail fast at the boundary
 
 `java.util.Objects` supplies the canonical guard: `requireNonNull(obj)` / `requireNonNull(obj, "message")` throws `NullPointerException` immediately if the argument is null, and returns it otherwise, composing inline: `this.email = Objects.requireNonNull(email, "email")`. The mechanism is *fail-fast*: it converts a null that would otherwise NPE several frames later into a loud failure at the exact entry point, naming the offending parameter. `requireNonNullElse(obj, default)` returns a non-null fallback. It is a runtime check; it makes the failure earlier and clearer, not absent.
+
+The constructor guards every required collaborator the same way, so a missing dependency fails at the boundary rather than on first use:
+
+<!-- include: 11_null_safety_optional/src/main/java/org/acme/storefront/pricing/DiscountService.java#require-nonnull -->
 
 ### Lever 3 — annotations + a checker: prove it at compile time
 
@@ -82,11 +90,32 @@ This is where "might NPE" becomes a build error, and it has two halves that deve
 
 > **CONCEPT** *Declaration vs type-use.* A *declaration* annotation (JSR-305) attaches to a field, parameter, or return — it cannot reach inside a generic. A *type-use* annotation (JSpecify, Checker Framework — enabled by `TYPE_USE`, JSR 308, Java 8) attaches to *any* use of a type, so it can distinguish `List<@Nullable String>` (non-null list of nullable strings) from `@Nullable List<String>` (a nullable list). That precision difference is also the families' dividing line.
 
+In code the two placements are two different contracts, and only a type-use annotation can tell them apart:
+
+<!-- include: 11_null_safety_optional/src/main/java/org/acme/storefront/pricing/TypeUsePrecision.java#type-use-precision -->
+
 JSpecify is the consensus standardization effort: a "tool-neutral, library-neutral" vocabulary (four annotations: `@Nullable`, `@NonNull`, `@NullMarked`, `@NullUnmarked`) that *any* conforming checker reads, with a 1.0.0 compatibility guarantee. The idiom is `@NullMarked` on a `package-info.java` (everything is non-null by default within the scope), then `@Nullable` only where null is genuinely allowed, and `@NullUnmarked` to exempt a not-yet-migrated class for incremental adoption. JSR-305 is *dormant* (the JCP voted it so in May 2012) and never finalized; its `javax.annotation` package also collides with the platform `java.annotation` module on Java 9+ (a split-package the module system rejects). For new code, JSpecify is the starting vocabulary; JSR-305 is a family to migrate *from*.
+
+Marking the package once is the whole gesture: a single annotation flips the default for everything inside the scope to non-null.
+
+<!-- include: 11_null_safety_optional/src/main/java/org/acme/storefront/pricing/package-info.java#nullmarked-package -->
+
+Inside that scope, the few places null is the honest answer have to say so — an explicit `@Nullable` return is the marked exception, not a silent one:
+
+<!-- include: 11_null_safety_optional/src/main/java/org/acme/storefront/pricing/DiscountService.java#nullable-return -->
 
 **The checker is the enforcement.** Two design points:
 
 - **NullAway** runs as an Error Prone plugin *inside* `javac`, so a nullness violation fails the build like a compile error. The developer marks what *can* be null; it treats everything else as non-null and does modular, per-method dataflow to prove no `@Nullable` value is dereferenced unguarded. It is *deliberately unsound* — it optimistically assumes unannotated code is non-null and that callees do not mutate, which is exactly what keeps it fast and low-annotation. Activated with `-Xep:NullAway:ERROR` and scoped with `-XepOpt:NullAway:AnnotatedPackages=...` (or JSpecify's `@NullMarked`).
+
+The dereference such a checker rejects is the one below: a `@Nullable` value used without a guard. It compiles, and at runtime an absent value throws — the JEP 358 message naming the exact null expression:
+
+<!-- include: 11_null_safety_optional/src/main/java/org/acme/storefront/pricing/BrokenCheckout.java#unguarded-deref -->
+
+The fix gives the empty case a value instead of dereferencing it, so there is nothing left to throw:
+
+<!-- include: 11_null_safety_optional/src/main/java/org/acme/storefront/pricing/Checkout.java#guarded-fix -->
+
 - **The Checker Framework Nullness Checker** runs as a `javac` annotation processor and offers a *soundness* guarantee, stated verbatim in its manual: "If the Nullness Checker type-checks your program without errors, then your program will not crash with a NullPointerException that is caused by misuse of null in checked code." It pays for that with annotation effort and build time, and adds sub-checkers a bare `@Nullable` cannot replace — an Initialization Checker (non-null fields set in the constructor) and a Map Key Checker (`@KeyFor`, so `map.get(k)` types non-null when `k` is a known key).
 
 These are two points on one trade-off curve (speed-and-low-annotation versus soundness), and a team picks by context; neither is crowned, and the cross-stack verdict is Chapter 17's.
