@@ -1,7 +1,7 @@
 {
   "_comment": "Machine-readable capstone gate status, read by .claude/scripts/status.py to render the Capstones page/section of the dashboard. Update 'as_of' and the gate values when a capstone's state changes (e.g. after a build or a code-review). Gate values map to bubbles: done=green, self=yellow(wip/self-pass), no=red(not-started), human=blue(awaiting human), na=grey.",
-  "as_of": "2026-06-20",
-  "verified_by": "mvn -B -Pquality verify on 08-companion-code (full reactor) -> BUILD SUCCESS; 0 Checkstyle violations; 0 SpotBugs bugs",
+  "as_of": "2026-06-25",
+  "verified_by": "mvn -B -Pquality -f 08-companion-code/capstones/pom.xml clean verify (18-module reactor, all 4 capstones) -> BUILD SUCCESS; 0 Checkstyle violations; 0 SpotBugs bugs",
   "gate_order": ["build", "tests", "checkstyle", "spotbugs", "code_review", "assemble"],
   "gate_labels": {
     "build": "Build",
@@ -42,6 +42,14 @@
       "domain": "warehouse fulfilment (saga)",
       "services": ["inventory-service", "shipment-service", "fulfilment-orchestrator"],
       "tests": 12,
+      "gates": {"build": "done", "tests": "done", "checkstyle": "done", "spotbugs": "done", "code_review": "human", "assemble": "no"}
+    },
+    {
+      "id": "04-quality-operations",
+      "title": "Quality operations",
+      "domain": "quality event ingest -> metrics -> CI gate decision",
+      "services": ["quality-ingest-service", "quality-metrics-service", "quality-gate-service"],
+      "tests": 21,
       "gates": {"build": "done", "tests": "done", "checkstyle": "done", "spotbugs": "done", "code_review": "human", "assemble": "no"}
     }
   ]

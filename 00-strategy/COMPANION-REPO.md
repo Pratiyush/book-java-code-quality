@@ -99,13 +99,13 @@ aggregator. This is an inference from the book's shape, recorded as such.
 
 A through-line application is **not** part of the per-chapter proposal: the per-chapter `NN_slug/`
 modules stay independent and self-contained, one per `NN_slug`. The "compose several areas into a
-runnable app" need is met instead by the **capstones** — three microservice applications under
+runnable app" need is met instead by the **capstones** — four microservice applications under
 `08-companion-code/capstones/` (`DEMO-CATALOG.md` §4): a shared `shared-platform` library plus
-`01-commerce-checkout`, `02-fintech-ledger`, and `03-logistics-fulfil`, each an aggregator of
-independently-runnable services that talk over HTTP. The capstones are the **only** place cross-module
-wiring is allowed; they are gated on their own track (`mvn -B -Pquality verify` + CODE-REVIEW) and
-assembled in Phase 4. So the old "through-line vs. independent" decision resolves as: per-chapter
-modules are independent; cross-module composition lives in the three capstones, each on its own domain.
+`01-commerce-checkout`, `02-fintech-ledger`, `03-logistics-fulfil`, and `04-quality-operations`, each an
+aggregator of independently-runnable services that talk over HTTP. The capstones are the **only** place
+cross-module wiring is allowed; they are gated on their own track (`mvn -B -Pquality verify` + CODE-REVIEW)
+and assembled in Phase 4. So the old "through-line vs. independent" decision resolves as: per-chapter
+modules are independent; cross-module composition lives in the four capstones, each on its own domain.
 
 ### 2.4 Toolchain pin — one inherited property, committed wrapper
 

@@ -62,10 +62,10 @@ Each row: the chapter's **demo** (what the module does), the **Java code quality
 
 ---
 
-## 4. The capstones (assembly) — THREE microservice applications
+## 4. The capstones (assembly) — FOUR microservice applications
 
-The book ships **three** capstones, not one. Each is a small but real, **microservice-based**
-application over a **distinct** real-world domain, and all three are built on one shared platform
+The book ships **four** capstones, not one. Each is a small but real, **microservice-based**
+application over a **distinct** real-world domain, and all four are built on one shared platform
 library. They live under a single reserved home, `08-companion-code/capstones/` (sorted after every
 dossier-key module so they never collide with a key):
 
@@ -75,6 +75,7 @@ dossier-key module so they never collide with a key):
 | `capstones/01-commerce-checkout/` | e-commerce checkout | catalog · payment · order | authoritative pricing + at-most-once payment (idempotency) |
 | `capstones/02-fintech-ledger/` | money movement | account · ledger · transfer | balanced double-entry + no overdraft + idempotent transfer |
 | `capstones/03-logistics-fulfil/` | warehouse fulfilment | inventory · shipment · orchestrator | no oversell under concurrency + saga compensation + no double-ship |
+| `capstones/04-quality-operations/` | CI quality gating | ingest · metrics · gate | idempotent quality-event ingest + per-project metric aggregation + a deterministic PASS/FAIL gate decision against a policy (the book's own subject, dogfooded) |
 
 Each capstone is a Maven aggregator whose children are **independently-runnable microservices** that
 talk over HTTP (`ServiceClient` / JDK `HttpClient`) and an in-process `EventBus`. Persistence is
@@ -89,7 +90,7 @@ each capstone's `README.md` for the service map, endpoints, and honest limitatio
 **Still gated, just on a different track.** The capstones do **not** ride a chapter's per-chapter Step 4b. Each is gated on its own — green `mvn -B -Pquality verify` (tests + the Chapter-16 Checkstyle + SpotBugs gate clean at the pins in SOURCE-PIN.md) plus the CODE-REVIEW gate (FLOOR C) — and built and assembled in **Phase 4 (ASSEMBLE)** once the chapters they compose are approved. The reactor pins the toolchain once (`08-companion-code/pom.xml` → `capstones/pom.xml`); a re-pin is a one-line edit.
 
 > **Legacy note.** Earlier drafts of this catalog reserved a single capstone at
-> `08-companion-code/99_capstone_<domain>/`. That is superseded by the three-capstone layout above;
+> `08-companion-code/99_capstone_<domain>/`. That is superseded by the four-capstone layout above;
 > there is no `99_capstone_*` module.
 
 ---

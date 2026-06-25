@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Capstone 04 — quality-operations. The book's own subject, modelled as a platform: the pipeline
+    that ingests quality signals from CI, aggregates them per project, and gates a commit on a policy.
+        quality-ingest-service    ingests a quality event {project, commit, tool, metrics} from a CI
+                                  run; idempotent by event id so a re-delivered webhook does not
+                                  double-count, and emits a domain event when a new one lands
+        quality-metrics-service   computes per-project aggregates — latest coverage, total violations
+                                  and bugs, and a composite quality score — by reading the ingested
+                                  events from quality-ingest-service over HTTP
+        quality-gate-service      given a commit and a policy (min coverage, max violations, max
+                                  bugs), reads the metrics and decides PASS / FAIL with the failing
+                                  reasons, recording the decision idempotently by (project, commit)
+    The real problem this models: the same CI webhook can fire twice, so ingestion and the gate
+    decision must both be idempotent; and a release gate must judge a commit against authoritative,
+    aggregated numbers rather than a single tool's one-off report. Each service is independently
+    runnable; the integration test wires all three in one JVM on ephemeral ports.
+  -->
+  <parent>
+    <groupId>org.acme.capstones</groupId>
+    <artifactId>capstones</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>quality-operations</artifactId>
+  <packaging>pom</packaging>
+  <name>Capstone 04 — quality-operations (ingest / metrics / gate)</name>
+
+  <properties>
+    <!-- This capstone nests its services one level below its single shared config dir. -->
+    <checkstyle.config.location>../config/checkstyle/checkstyle.xml</checkstyle.config.location>
+    <spotbugs.exclude.location>../config/spotbugs/spotbugs-exclude.xml</spotbugs.exclude.location>
+  </properties>
+
+  <modules>
+    <module>quality-ingest-service</module>
+    <module>quality-metrics-service</module>
+    <module>quality-gate-service</module>
+  </modules>
+</project>
