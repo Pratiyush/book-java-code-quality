@@ -97,7 +97,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 
 ## Capstones (companion microservice apps)
 
-> 2026-06-20 — mvn -B -Pquality verify on 08-companion-code (full reactor) -> BUILD SUCCESS; 0 Checkstyle violations; 0 SpotBugs bugs
+> 2026-06-25 — mvn -B -Pquality -f 08-companion-code/capstones/pom.xml clean verify (18-module reactor, all 4 capstones) -> BUILD SUCCESS; 0 Checkstyle violations; 0 SpotBugs bugs
 
 | Capstone | Domain | Services | build | tests | checkstyle | spotbugs | code_review | assemble |
 |---|---|---|---|---|---|---|---|---|
@@ -105,6 +105,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | 01-commerce-checkout | e-commerce checkout | 3 (14 tests) | 🟢 | 🟢 | 🟢 | 🟢 | 🔵 | 🔴 |
 | 02-fintech-ledger | double-entry money movement | 3 (12 tests) | 🟢 | 🟢 | 🟢 | 🟢 | 🔵 | 🔴 |
 | 03-logistics-fulfil | warehouse fulfilment (saga) | 3 (12 tests) | 🟢 | 🟢 | 🟢 | 🟢 | 🔵 | 🔴 |
+| 04-quality-operations | quality event ingest -> metrics -> CI gate decision | 3 (21 tests) | 🟢 | 🟢 | 🟢 | 🟢 | 🔵 | 🔴 |
 
 ## Drift
 

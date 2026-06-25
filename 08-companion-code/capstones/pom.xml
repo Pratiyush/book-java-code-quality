@@ -5,13 +5,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <!--
-    Capstones aggregator (DEMO-CATALOG.md §4). The book ships THREE enterprise, microservice-based
-    capstones over three distinct real-world domains, all built on one shared platform library:
+    Capstones aggregator (DEMO-CATALOG.md §4). The book ships FOUR enterprise, microservice-based
+    capstones over four distinct real-world domains, all built on one shared platform library:
         shared-platform        the zero-dependency JDK-only platform (HTTP, JSON, Result, Money,
                                EventBus, service client, RFC-7807 errors, config, metrics)
         01-commerce-checkout   order / payment / catalog services  (e-commerce checkout)
         02-fintech-ledger      account / ledger / transfer services (double-entry money movement)
         03-logistics-fulfil    inventory / shipment / orchestrator  (warehouse fulfilment)
+        04-quality-operations  ingest / metrics / gate services     (CI quality-gate pipeline)
     This is the SINGLE bounded exception (GUIDELINES §8): cross-module wiring + over-cap full-file
     listings are allowed in the capstones and nowhere else. Each service is an independently
     runnable microservice; services talk over HTTP (JDK HttpClient) and an in-process EventBus.
@@ -39,6 +40,7 @@
     <module>01-commerce-checkout</module>
     <module>02-fintech-ledger</module>
     <module>03-logistics-fulfil</module>
+    <module>04-quality-operations</module>
   </modules>
 
   <properties>
