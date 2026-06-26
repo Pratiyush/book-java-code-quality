@@ -56,9 +56,19 @@ The two tools embody different philosophies, and the book crowns neither. **Mave
 
 Dependencies are most of a modern Java application, and an unmanaged dependency tree is both a quality and a security liability: version conflicts, transitive surprises, and the "works on my machine" non-determinism from the hook. **Hygiene** is the discipline that makes the graph deterministic and reviewable, and it has four parts.
 
-- **A single source of version truth.** Declare each version once: in Maven, `<dependencyManagement>` plus imported **BOMs** (bill-of-materials POMs); in Gradle, **version catalogs** (`gradle/libs.versions.toml`) plus platforms. Child modules then omit versions entirely, so one bump updates everywhere consistently and no module can drift to an ad-hoc version.
-- **Convergence.** Transitive dependencies can pull conflicting versions of the same library, and Maven's "nearest-wins" resolution can silently *downgrade* one, a subtle source of runtime bugs. The `maven-enforcer-plugin` rules `dependencyConvergence` and `requireUpperBoundDeps` make a conflict fail the build; `mvn dependency:tree` and `dependency:analyze` expose the conflict for inspection (Gradle has resolution strategies and `dependencyInsight`).
-- **No moving versions.** Ban `LATEST`, `RELEASE`, and open ranges: they make the build non-reproducible, since a rebuild can silently pick up a different version. Pin exact versions, and let an update bot move them *deliberately* (the next section).
+- **A single source of version truth.** Declare each version once: in Maven, `<dependencyManagement>` plus imported **BOMs** (bill-of-materials POMs); in Gradle, **version catalogs** (`gradle/libs.versions.toml`) plus platforms. Child modules then omit versions entirely, so one bump updates everywhere consistently and no module can drift to an ad-hoc version. Importing a BOM looks like this:
+
+<!-- include: 62_build_dependency_hygiene/pom.xml#dep-management-bom -->
+
+- **Convergence.** Transitive dependencies can pull conflicting versions of the same library, and Maven's "nearest-wins" resolution can silently *downgrade* one, a subtle source of runtime bugs. The `maven-enforcer-plugin` rules `dependencyConvergence` and `requireUpperBoundDeps` make a conflict fail the build; `mvn dependency:tree` and `dependency:analyze` expose the conflict for inspection (Gradle has resolution strategies and `dependencyInsight`). The two rules are one line each in the Enforcer:
+
+<!-- include: 62_build_dependency_hygiene/pom.xml#enforcer-convergence -->
+
+<!-- include: 62_build_dependency_hygiene/pom.xml#enforcer-upper-bound -->
+
+- **No moving versions.** Ban `LATEST`, `RELEASE`, and open ranges: they make the build non-reproducible, since a rebuild can silently pick up a different version. Pin exact versions, and let an update bot move them *deliberately* (the next section). The Enforcer's `bannedDependencies` rule turns the ban into a build failure:
+
+<!-- include: 62_build_dependency_hygiene/pom.xml#enforcer-banned -->
 - **A minimal surface.** `dependency:analyze` flags used-but-undeclared and declared-but-unused dependencies; removing the unused ones shrinks the attack surface (next chapter) and speeds the build. Correct scopes (`test`/`provided`/`runtime`) keep test dependencies out of the runtime, and trusted repositories with checksum/signature verification guard the supply chain.
 
 > **CONCEPT** *Hygiene makes the graph honest, not good.* Convergence proves the versions *agree*; it says nothing about whether a dependency is well-maintained, secure, or even necessary. A pinned, converged, minimal tree is deterministic and reviewable (the foundation), but judging dependency *quality* (is it current? does it have a CVE?) is the job of the currency and security chapters. Hygiene is necessary, not sufficient.
@@ -72,6 +82,10 @@ Pinning buys reproducibility and creates a new problem: pinned dependencies *rot
 - **Auto-merge the low-risk:** patch versions of trusted dependencies with green CI, to cut noise.
 - **Require review for the rest:** majors, minors, and especially security updates, which need a human reading the changelog.
 - **Group related updates** (e.g. all test dependencies) to reduce PR volume, and **schedule** (e.g. weekly) to batch them.
+
+Alongside the always-on bot, the build tool offers an on-demand view of what is available; the Maven versions plugin is configured to report updates without ever editing the POM itself:
+
+<!-- include: 62_build_dependency_hygiene/pom.xml#versions-plugin -->
 
 > **CONCEPT** *Currency flows through the same gates.* The power of automated updates is that each update PR runs the *entire* quality program — tests, analyzers, contract tests, and the vulnerability scan of the next chapter. An update that breaks a contract (Chapter 24) or introduces a CVE fails the PR automatically, so currency does not cost stability. This is why the build-as-gate-host of the first section matters here: the gates make it safe to move fast on dependencies.
 
@@ -126,7 +140,7 @@ This chapter made the dependency tree *deterministic*: pinned, converged, minima
 - **Dependency currency** (key 64, ⚠ Renovate/Dependabot) — pinned deps rot → #1 vuln source + big-bang cliff. Dependabot (GitHub-native, `dependabot.yml`) / Renovate (multi-platform, `renovate.json`, grouping/schedules/automerge); both run build/tests per PR. Strategy: auto-merge low-risk patches w/ green CI; review majors/minors + security; group + schedule. Local: `versions:display-dependency-updates` (Maven), `dependencyUpdates` (Gradle). Updates flow through the same gates; security updates prioritized (vs GitHub Advisory/OSV). *(config model verified; config keys + security-alert sources + goal names ⚠ @pin.)*
 - **Routing** — toolchain map → Ch 3 (05); reproducible builds → later (67); build speed + CI gates + local↔CI parity → CI part (79/82/75/76); vuln scanning/SCA → Ch 28 (65); SBOM/SLSA → Ch 28 (66); version migration → later (95); contract tests catch update breaks → Ch 24 (50); suppression discipline → Ch 19 (39). SOURCE-PIN: Maven/Gradle/Enforcer/Renovate/Dependabot rows TO-PIN.
 
-**Companion module (spec — ⚠ EXAMPLE-BUILD = PENDING; toolchain READY):** the flagship aggregator (`08-companion-code/pom.xml`) already demonstrates the hygiene core — a parent POM with **BOM import** (`junit-bom`) and **pinned plugin versions**, child modules omitting versions. Extend it for this chapter: add a `maven-enforcer-plugin` `dependencyConvergence` rule, a deliberately-seeded transitive **convergence failure** that fails `verify`, and the fix (a managed version in `<dependencyManagement>`); a committed wrapper; and a `renovate.json` (and equivalent `dependabot.yml`) showing grouping + patch-auto-merge + weekly schedule. **Failure path:** the seeded convergence conflict fails the build until the version is managed centrally — making "the dependency graph must converge" a hard build event; the honest edge is that convergence proves agreement, not safety (the CVE the next chapter scans for can sit in a perfectly-converged tree).
+**Companion module (`08-companion-code/62_build_dependency_hygiene/` — EXAMPLE-BUILD built green):** a module whose load-bearing artifact is its `pom.xml`. It demonstrates the hygiene core first-hand — a **BOM import** (`junit-bom`) as the single source of version truth, the `maven-enforcer-plugin` rules `dependencyConvergence` + `requireUpperBoundDeps` + `bannedDependencies` running on the resolved graph (and passing, because every version flows from one source of truth), and the versions plugin reporting available updates without editing the POM. A `renovate.json` and equivalent `dependabot.yml` show grouping + weekly schedule + patch-auto-merge. A small `org.acme.hygiene` package gives the Enforcer a real graph to rule on. **Failure path:** a seeded transitive conflict makes `dependencyConvergence` fail `verify` until the version is pinned centrally — "the dependency graph must converge" as a hard build event; the in-code `ConvergenceException` mirrors it. The honest edge: convergence proves agreement, not safety (the CVE the next chapter scans for can sit in a perfectly-converged tree). Snippet tags: `dep-management-bom`, `enforcer-convergence`, `enforcer-upper-bound`, `enforcer-banned`, `versions-plugin`.
 
 ## Next chapter teaser
 

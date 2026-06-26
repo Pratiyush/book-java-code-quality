@@ -1781,3 +1781,91 @@ long monospace identifiers; use the column-card layout only for short labels.
 - **Promoted to:** proposed `EXAMPLES-GUIDE` "JMH-module shape" note (provided-scope JMH at the pin; build-
   not-run as the green bar; Checkstyle scoped to src/ + SpotBugs exclude for `*.jmh_generated`; name the
   processor; externalize run params; never assert a number/default-count) — reuse directly for key 51.
+
+---
+
+## EXAMPLE-BUILD — Chapter 27 / key 62 (build & dependency hygiene) — 2026-06-26
+
+- **What:** Built `08-companion-code/62_build_dependency_hygiene/` — a CONFIG-centric module whose
+  load-bearing artifact is its `pom.xml` (Maven Enforcer rules + BOM import + versions plugin), with a
+  tiny `org.acme.hygiene` package so the Enforcer has a real graph to rule on. Green at the pin (Maven
+  3.9.16 / JDK 21.0.11): 5 Enforcer rules pass, 5 tests pass, 0 Checkstyle, 0 SpotBugs. 5 XML-comment tags
+  bound; check_snippets 5/5.
+- **Learning — XML-comment tag form for config snippets:** `<!-- tag::NAME[] -->` … `<!-- end::NAME[] -->`
+  works with `extract_snippet.sh` identically to the Java `// tag` form, BUT the `[]` suffix is mandatory
+  (awk matches `tag::NAME[]`). A bare `<!-- tag::name -->` silently fails to slice. This is the canonical
+  form for any pom/config snippet (modules 48 + 07 already use it).
+- **Learning — a "config chapter" still needs a real compile/test graph.** Enforcer `dependencyConvergence`
+  over an empty graph proves nothing; a minimal domain package makes the rule meaningful AND doubles as the
+  in-code analogue of the build mechanism (a catalog = single source of truth; a typed `ConvergenceException`
+  = the hard-failure rule).
+- **Learning — prove a fail-the-build path transiently, never commit it.** Seeded a `commons-text` →
+  `commons-lang3` transitive conflict to show `dependencyConvergence` failing `verify`, then restored the
+  POM byte-identical. A committed seeded-failure would break the reactor; transient injection in the gate
+  run keeps the module green while still demonstrating the failure. Reuse for any fail-the-build chapter
+  (enforcer / architecture rules / coverage gates).
+- **Learning — the Enforcer belongs in the DEFAULT build, not `-Pquality`.** For a hygiene chapter, putting
+  convergence/upper-bound/banned behind the opt-in profile would contradict the thesis that hygiene is a
+  hard build event. Static analysis stays opt-in for speed; the Enforcer does not.
+- **Flag filed:** `09-flags/62_enforcer_versions_plugin_versions_unpinned.md` — SOURCE-PIN §4 reads "Maven
+  3.9.16 (+ enforcer, versions plugins)" but does not pin the plugin versions separately (they version
+  independently of Maven core, like the Spotless plugin/project split in flag 34). Used resolvable lines
+  (`maven-enforcer-plugin:3.5.0`, `versions-maven-plugin:2.18.0`) as named properties, flagged not invented.
+  Recommend the next `/pin-source` split the §4 Maven row.
+- **Promoted to:** proposed `EXAMPLES-GUIDE` note — "config-centric module shape": bind snippets to the POM
+  via `<!-- tag::NAME[] -->`; give the build a minimal real graph; put gating rules in the default build;
+  prove fail-the-build transiently; hold unpinned plugin versions as named properties + flag.
+
+## EXAMPLE-BUILD — Chapter 27 (Checkstyle — `27_checkstyle`) — 2026-06-26
+
+Built `08-companion-code/27_checkstyle/` (`checkstyle-house-ruleset`), a storefront slice held to a curated
+house ruleset. `mvn -B -Pquality verify` green at JDK 21.0.11: 6/6 tests, 0 Checkstyle violations, 0
+SpotBugs. Six tag-includes resolve (4 config, 2 Java), all 6 markers PASS in `check_snippets`.
+
+- **Learning — config-centric chapters bind the displayed snippet to the LIVE gating config.** The chapter's
+  snippets are XML-comment tag regions (`<!-- tag::NAME[] -->`) inside the very `checkstyle.xml` that gates
+  the module, so the printed rules ARE the rules that ran — the prose↔code "one artifact" guarantee holds for
+  config, not just Java. Reusable directly for the PMD ruleset (key 28) and the SpotBugs filter (key 29).
+- **Learning (promote to EXAMPLES-GUIDE) — XML forbids `--` inside a comment.** `tag::`/`end::` markers work
+  fine in `<!-- … -->`, but a prose comment must never contain a literal `--` (so never quote `<!-- … -->`
+  inside a comment). This broke the first Checkstyle parse (`The string "--" is not permitted within
+  comments`). One guide sentence saves a build cycle; describe markers in words.
+- **Learning — integrity-check every "reviewed suppression" by removing it.** Stripping the
+  `@SuppressWarnings("checkstyle:ConstantName")` made the gate fail with the exact `ConstantName` message and
+  the default regex `^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$` — proving the suppression is load-bearing AND
+  re-verifying the rule's default straight from engine 10.26.1 (a free live source-verification). Recommend
+  making strip-and-rebuild a standard EXAMPLE-BUILD step for any suppression-carrying module.
+- **Learning — dogfood the "style ≠ correct" floor by ALSO gating with SpotBugs.** A Checkstyle module that
+  passes only Checkstyle could imply style-clean = done. Holding it to the bytecode gate too makes the
+  chapter's central honest limitation executable, not just prose.
+- **Pin note (flagged, non-blocking):** SOURCE-PIN now pins Checkstyle 13.6.0, but the companion-code house
+  engine is 10.26.1 across all 22 peers (two-pin override). This module follows that consistent choice and
+  rebuilds unchanged on an aggregator re-pin (its checks span the 10.x/13.x lines). Raised as a future
+  re-pin item, not a content defect.
+
+## EXAMPLE-BUILD — Chapter 33 / key 75 (CI pipeline & quality gates) — 2026-06-26
+
+- **First CONFIG-centric (YAML) companion module — the tag machinery already supports it.** YAML tag
+  regions written as `# tag::name[]` / `# end::name[]` resolve through the same `extract_snippet.sh` as
+  Java `//` markers (the script's `case` already maps `.yml|.yaml` → ```yaml). No script change was
+  needed. This is the template for the rest of Part IX (CI platforms, branch protection, release). Propose
+  a one-line note in `EXAMPLES-GUIDE` that hash-comment tag regions in YAML/properties are first-class.
+- **Make a config-centric chapter BUILDABLE by modelling the decision the config enforces.** A CI YAML
+  cannot be exercised by `mvn`, so the module's runnable, unit-tested core is the *gate policy* the pipeline
+  wires (clean-as-you-code + block-vs-warn) as plain Java — the "local equivalent of the CI gate" (Ch 27
+  parity). This keeps Floor-C COMPILE genuine for a chapter whose headline artifact is configuration, and
+  reuses the gate-evaluation shape proven by `105_performance_regression_gates`. Two artifacts, one module,
+  kept in lock-step by the tag-includes.
+- **Let the build adjudicate semantics.** A first-draft test asserted a pre-existing high-severity finding
+  would `Warn` under clean-as-you-code; the build returned `Pass` because the finding is filtered out of
+  scope before the decision. The code was the more honest answer — the fix went to the test + Javadoc +
+  README, not the code. Clean-as-you-code *filters before it decides*: that is a sharper teaching than the
+  draft's first phrasing, surfaced only because the test ran.
+- **SaaS CI actions = dated-at-use, never an invented digest.** SOURCE-PIN §5 treats GitHub Actions as
+  rolling. The honest handling: `@v4` major tags (matching the repo's own `ci.yml`) + an inline
+  "dated-at-use 2026-06" comment + a `09-flags/` entry proposing commit-sha digest pinning at public-push,
+  rather than fabricating a sha. Pinned Maven-invoked tools (OWASP DC 12.2.2 / PITest 1.25.3 / JaCoCo
+  0.8.16) appear only as illustrative pipeline steps and trace to their SOURCE-PIN rows.
+- **Register-last + "don't edit root pom" interact cleanly.** Built standalone via `-f <module>/pom.xml`;
+  the root `<modules>` list stays unedited until CODE-REVIEW passes, satisfying both the task constraint and
+  the register-last safety rule.

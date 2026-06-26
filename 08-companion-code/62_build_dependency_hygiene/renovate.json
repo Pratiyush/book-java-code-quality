@@ -1,0 +1,25 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "schedule": ["before 6am on monday"],
+  "packageRules": [
+    {
+      "description": "Auto-merge patch updates of trusted deps once the full gate stack is green.",
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    },
+    {
+      "description": "Group all test dependencies into one PR to cut review volume.",
+      "matchPackageNames": ["org.junit{/,}**", "org.assertj{/,}**", "org.mockito{/,}**"],
+      "groupName": "test dependencies"
+    },
+    {
+      "description": "Majors always need a human reading the changelog — never auto-merge.",
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "labels": ["security"]
+  }
+}
