@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 43 companion (Measure, Don't Guess). Performance done as a quality concern: a workload
+    whose hot path is not where intuition points (so a profiler is the instrument, not a guess), a
+    hot method whose per-call allocation churn is reduced only where measurement says it matters, and
+    a JMH microbenchmark written both the lying way (dead-code elimination / constant folding) and the
+    honest way (warmup, fork, non-final @State input, returned / Blackhole-sunk result). The benchmark
+    COMPILES in this build — JMH's annotation processor generates the harness at build time — but it is
+    not run during `verify`; an honest benchmark needs warmup and forks and belongs in a separate,
+    offline run (java -jar after a dedicated assembly), not the unit-test fast path. The runtime stays
+    JDK-only: JMH is `provided` (compile path only). The signals are machine-checked by the `quality`
+    profile (Checkstyle + SpotBugs, Chapter 16).
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>performance-profiling-memory-benchmarking</artifactId>
+  <name>Chapter 43 — Measure, Don't Guess (performance-profiling-memory-benchmarking)</name>
+
+  <dependencies>
+    <!--
+      JMH (Java Microbenchmark Harness), SOURCE-PIN.md §3: org.openjdk.jmh 1.37. Two artifacts:
+      jmh-core is the harness API the benchmark compiles against (@Benchmark, @State, Blackhole,
+      Mode, @Fork/@Warmup/@Measurement); jmh-generator-annprocess is the build-time annotation
+      processor that GENERATES the synthetic harness classes from the @Benchmark methods (JMH does
+      not measure reflectively — it generates code). Both are `provided`: the benchmark and its
+      generated harness compile, but JMH never enters the module's runtime classpath, so the runtime
+      stays JDK-only like the rest of the companion code. The benchmark is built (compiled), not run,
+      by `verify`; running it honestly (warmup + forks, offline) is a separate step, see the README.
+    -->
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-core</artifactId>
+      <version>1.37</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-generator-annprocess</artifactId>
+      <version>1.37</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!--
+        Name JMH's annotation processor explicitly. Functionally the processor is auto-discovered on
+        the `provided` classpath, but naming it (and its path) makes the build deterministic and
+        removes javac's advisory that a future release may stop running auto-discovered processors.
+        The compiler version, release level and lint args are inherited from the aggregator's
+        pluginManagement; this only adds the processor wiring.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.openjdk.jmh</groupId>
+              <artifactId>jmh-generator-annprocess</artifactId>
+              <version>1.37</version>
+            </path>
+          </annotationProcessorPaths>
+          <annotationProcessors>
+            <annotationProcessor>org.openjdk.jmh.generators.BenchmarkProcessor</annotationProcessor>
+          </annotationProcessors>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!--
+    Static-analysis rule gates (Chapter 16), opt-in via `-Pquality` so the default build stays fast.
+    The maven-checkstyle-plugin ships an OLD bundled engine; we override it to the pinned engine via a
+    plugin-level dependency — the build plugin and the analyzer engine are separate versions (the
+    "two-pin" lesson). This module is a direct child of the companion-code root, which pins no quality
+    profile of its own, so the profile is declared here (the same shape the peer modules use) and reads
+    the config under this module's own config/ dir, keeping the module self-contained.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+              <!--
+                Scope Checkstyle to AUTHORED source only. The JMH annotation processor adds
+                target/generated-sources/annotations to the project's compile-source-roots, which the
+                plugin would otherwise scan — flooding the gate with violations in machine-generated
+                harness code the book did not write. Naming the source directories explicitly keeps the
+                gate on the code we author; the generated harness is excluded by not listing it.
+              -->
+              <sourceDirectories>
+                <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+              </sourceDirectories>
+              <testSourceDirectories>
+                <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
+              </testSourceDirectories>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16), complementary to Checkstyle's source
+            view. The module's own classes carry no exposed mutable representation, so the
+            representation-exposure detectors stay quiet without suppression. The one reviewed
+            suppression in the exclude filter covers JMH's machine-generated harness classes (in the
+            *.jmh_generated package): those are emitted by the annotation processor, not hand-written,
+            so holding generated code to the house ruleset would gate code the book did not author —
+            the filter excludes them by package, with a reason, rather than disabling any detector.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

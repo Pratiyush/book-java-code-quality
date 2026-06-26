@@ -34,9 +34,12 @@
     <module>42_unit_testing_assertions_mocking</module>
     <module>45_integration_property_based_testing</module>
     <module>48_coverage_mutation_effectiveness</module>
+    <module>50_contract_approval_testing</module>
     <module>53_solid_coupling_cohesion_packages</module>
     <module>55_enforcing_architecture_fitness_functions</module>
     <module>69_secure_coding_owasp</module>
+    <module>101_performance_profiling_memory_benchmarking</module>
+    <module>105_performance_regression_gates</module>
     <module>106_observability_logging_metrics_feedback</module>
     <module>capstones</module>
   </modules>

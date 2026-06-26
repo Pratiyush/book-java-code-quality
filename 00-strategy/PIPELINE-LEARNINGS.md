@@ -1700,3 +1700,84 @@ long monospace identifiers; use the column-card layout only for short labels.
   cited-not-built entry over a build that is red/skipped off the happy environment; propose a
   `DEMO-CATALOG` note recording the in-JVM `HttpServer`/`HttpClient` shape as the standalone integration-
   test idiom.
+
+### EXAMPLE-BUILD key 105 (performance-regression gates) — 2026-06-26
+- **Learning — the pinned-but-not-cached / environment-gated authority recurs, and the 106 precedent
+  resolves it.** JMH 1.37 is a pinned SOURCE-PIN row, but running a `@Benchmark` needs a stable perf env
+  and the artifact is not in local `.m2`; vendoring it would break the module's offline-green,
+  zero-dependency build and duplicate Ch 43 (which *measures*; this chapter *protects*). Resolution
+  mirrors 106's telemetry-facade decision: build the technique's real logic on the JDK, name+pin the
+  tool in prose/POM-header, record the live wiring as **REPRO PENDING-RUNTIME**. Worth promoting to
+  `COMPANION-REPO.md` as the standing rule for "pinned authority that is environment-gated to run."
+- **Learning — perf/benchmark chapters need triple-labelled synthetic numbers.** Labelling test inputs
+  as SYNTHETIC at three layers (POM header, `package-info`, every test-method comment) makes it
+  impossible to mistake a fixture for a measured claim — the load-bearing honesty move that keeps the
+  never-invent-a-benchmark-figure floor intact while still shipping a runnable, unit-tested gate. Apply
+  to keys 101/104 when those modules build.
+- **Learning — design the displayed region for the ≤9-line cap up front.** A "natural" method body is
+  often 10–12 lines; two of four tag regions here needed compaction to hit 9 (a folded ternary for the
+  Flag/Fail decision; trailing `//` comments instead of per-variant block comments on a sealed type),
+  both logic-preserving. Cheaper to author for the cap than to trim after.
+- **Promoted to:** propose a `COMPANION-REPO.md` rule (pinned-but-environment-gated authority →
+  JDK-shape + name/pin + REPRO PENDING-RUNTIME) and an `EXAMPLES-GUIDE` note (triple-label synthetic
+  perf numbers; design tag regions for the 9-line cap from the start).
+
+### EXAMPLE-BUILD key 50 (contract & approval testing, CLOSES Part V) — 2026-06-26
+- **Learning — three named tools, all blocked from a green standalone build, one consistent resolution.**
+  Chapter 50 names Pact, REST-assured and ApprovalTests.Java. Pact provider verification and REST-assured
+  both need a running provider (REPRO PENDING-RUNTIME per the draft); ApprovalTests.Java has no SOURCE-PIN
+  row at all. Rather than vendor an unpinned coordinate or fake tool output, the module realizes each
+  tool's *mechanism* in plain JDK + JUnit + AssertJ (a consumer-driven `OrderContract` both sides verify;
+  an in-JVM given/when/then endpoint exercise; a `SnapshotVerifier` that writes received / reads a
+  committed approved file / scrubs a timestamp), names each tool neutrally in the README, and flags the
+  prose-only status. Same shape as key 20 (JCStress) and key 42 (Truth) — this is now a settled pattern.
+- **Learning — a consumer-driven contract reproduces cleanly in-JVM, failure path and all.** A shared
+  contract object that BOTH the consumer test and the provider verification check against gives Pact's
+  central guarantee with zero infrastructure, and the chapter's headline failure path (rename provider
+  `id`→`orderId`: contract verification fails while the provider's own one-sided shape test passes)
+  falls straight out of it. Reusable for any "two sides must agree on a message" chapter.
+- **Learning — keep the displayed region to method-body-only; put the tag AFTER the Javadoc.** Four of
+  eight regions first blew the ≤9-line cap because the opening `// tag::` sat above the Javadoc block.
+  Moving the tag to immediately before the method signature (Javadoc excluded) is the cheap, content-
+  preserving fix; design the region as body-only from the start.
+- **Promoted to:** reinforces the proposed `COMPANION-REPO.md` rule (pinned-but-environment-gated OR
+  unpinned authority → JDK/JUnit mechanism stand-in + name/flag + REPRO PENDING-RUNTIME, never an invented
+  coordinate, never faked tool output) and the `EXAMPLES-GUIDE` note (place tag-include markers after the
+  Javadoc so the displayed region is body-only and within the 9-line cap).
+
+### EXAMPLE-BUILD key 101 (performance: profiling, memory, benchmarking — OPENS Part XIII) — 2026-06-26
+- **Learning — JMH is the FIRST pinned authority whose module needs the real tool, not a JDK stand-in.**
+  Unlike JCStress/Truth/Pact (unpinned → JDK mechanism stand-in), JMH IS a SOURCE-PIN row (§3 = 1.37), so
+  the module uses the real `org.openjdk.jmh` API. The honest green bar is "the benchmark COMPILES": the
+  annotation processor generates the harness at build time (verified by `target/.../jmh_generated/*_jmhTest.java`
+  + `META-INF/BenchmarkList`); the benchmark is not RUN by `verify` (a run needs warmup+forks, offline). No
+  number is ever asserted. This is the settled pattern for any pinned-but-slow/environment-gated tool: build
+  the harness, run it offline, state the environment.
+- **Learning — a JMH module needs two anti-flood guards the other modules do not.** JMH's processor adds
+  `target/generated-sources/annotations` to the compile-source-roots, which floods Checkstyle (783
+  violations in machine-generated code on the first run) and trips SpotBugs. Fix: (1) scope Checkstyle to
+  authored `src/` via `<sourceDirectories>`/`<testSourceDirectories>`; (2) exclude the generated
+  `*.jmh_generated` package in the SpotBugs filter. Both pin-clean and reasoned. This should be the
+  canonical JMH-module shape in `EXAMPLES-GUIDE` so key 51's module reuses it.
+- **Learning — teach the lying benchmark WITH the static-analysis flag, not around it.** `measureWrong()`
+  (discard a pure result) is exactly what SpotBugs `RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT` catches. Letting
+  it fire and then suppressing it NARROWLY with a reason makes the gate part of the lesson — static analysis
+  catches the broken benchmark (the chapter's point, and Chapter 16's "suppress with a reason"). Stronger
+  than hiding the anti-pattern from the analyzer.
+- **Learning — name the JMH annotation processor explicitly to stay warning-clean.**
+  `<annotationProcessorPaths>` + `org.openjdk.jmh.generators.BenchmarkProcessor` removes javac's
+  "annotation processing is enabled implicitly" advisory (which warns a future javac may drop
+  auto-discovery), so the compile is warning-clean and forward-compatible. Worth a note for any
+  annotation-processor module (also applies to key 40 Lombok/custom-processor, key 51 JMH).
+- **Learning — `provided` scope is the right home for JMH in a dogfooding tree.** The benchmark + generated
+  harness compile and the processor runs, but JMH never enters the module's runtime classpath, so the
+  module stays JDK-only at runtime like its peers — "the benchmark compiles" is the green bar without the
+  shade plugin or a `benchmarks.jar` assembly.
+- **Learning — externalize benchmark RUN params, not just app config.** dev/prod properties carrying
+  warmup/measurement/fork counts, read by `BenchmarkProfile.load()` and fed into the JMH `OptionsBuilder`
+  in `main`, satisfy the externalized-config requirement in a way that is native to a benchmark (a quick
+  local run vs a thorough run differ by `-Dbenchmark.profile`, not by editing source) — and never assert a
+  JMH default count (those are ⚠ verify-at-pin).
+- **Promoted to:** proposed `EXAMPLES-GUIDE` "JMH-module shape" note (provided-scope JMH at the pin; build-
+  not-run as the green bar; Checkstyle scoped to src/ + SpotBugs exclude for `*.jmh_generated`; name the
+  processor; externalize run params; never assert a number/default-count) — reuse directly for key 51.
