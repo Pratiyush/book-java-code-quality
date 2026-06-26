@@ -1,0 +1,129 @@
+# Illustrative security-gate pipeline for the book's storefront (Chapter 32 — Making the Security Gate
+# Stick). This is the CI-INTEGRATION view: not the individual tools (SAST and secrets are Chapter 31;
+# SCA is Part VII), but how the security STAGES are ordered across the pipeline and the policy that
+# aggregates their findings into one merge decision.
+#
+# This file is CONFIGURATION, not run by this module's Maven build. It shows the pipeline shape the
+# chapter teaches: the five security testing types ordered fast-to-slow (shift-left) — secrets at
+# pre-commit and CI, the fast SAST + SCA + secrets trio at the pull request (block on high severity), a
+# container/IaC scan where applicable, and the slow dynamic DAST/IAST pair against staging that gates the
+# RELEASE rather than the pull request. The blocking POLICY that ties the stages together — block new
+# high-severity exploitable findings, route the rest to a security reviewer — is the runnable core of this
+# module (org.acme.secgate.SecurityGate), so `mvn -Pquality verify` is the local equivalent of the gate
+# (Chapter 27, local/CI parity): the same SAST-class static-analysis stage runs locally.
+#
+# SaaS / rolling, DATED AT USE (2026-06): the GitHub Actions (actions/checkout, actions/setup-java) and
+# the hosted scanners (Semgrep, CodeQL, gitleaks, Trivy, OWASP ZAP) are continuously released — SOURCE-PIN
+# records GitHub Actions as "docs as of 2026-06 (rolling)" and CodeQL as rolling (pin the bundle at use);
+# gitleaks has no pinned version; Trivy is pinned (§4, 0.71.0); OWASP Dependency-Check is pinned (§4,
+# 12.2.2). Pin each action to a release tag and a commit digest when this is adopted. No tool version is
+# asserted as timeless here. See ci/sast-scan.yml in the peer SAST module (Chapter 31), the general gate
+# in ci/quality-gates.yml (Chapter 33), and 09-flags for the dated-at-use convention.
+name: security-pipeline
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 3 * * *"              # nightly: the deepest, slowest scans where their latency is affordable
+
+permissions:
+  contents: read
+  security-events: write            # the SAST/SCA stages upload findings to the code-scanning surface
+
+jobs:
+  # ---------------------------------------------------------------------------------------------------
+  # Stage 0 (pre-commit + CI): secrets scanning. The ONLY stage that can PREVENT a leak rather than just
+  # report one — it runs first, at pre-commit on the developer's machine and again here as the backstop a
+  # developer cannot bypass with --no-verify. A committed secret is compromised and must be ROTATED, not
+  # just deleted; scanning cannot un-leak it. The tool internals are Chapter 31; here it is one stage.
+  # ---------------------------------------------------------------------------------------------------
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4          # SaaS action, dated-at-use 2026-06 (pin to a digest at adoption)
+        with:
+          fetch-depth: 0                   # full history so an already-committed secret is caught, not just the diff
+      # tag::pre-commit-secrets[]
+      - name: Secrets scan (the leak-prevention stage, runs first and fast)
+        run: gitleaks detect --redact      # gitleaks: no pinned version (dated-at-use 2026-06); also a pre-commit hook
+      # end::pre-commit-secrets[]
+
+  # ---------------------------------------------------------------------------------------------------
+  # Stage 1 (PR): the fast static trio. SAST over the project's own code, SCA over the dependencies, and
+  # the secrets stage above — all cheap enough to run on every pull request, blocking only on HIGH so the
+  # feedback arrives in minutes without flooding the build. This is the shift-left core: the cheap security
+  # feedback is on the PR, the expensive dynamic feedback (Stage 3) is deferred off the PR critical path.
+  # ---------------------------------------------------------------------------------------------------
+  pr-static-trio:
+    needs: secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4        # SaaS action, dated-at-use 2026-06
+        with:
+          distribution: temurin
+          java-version: "21"               # SOURCE-PIN.md anchor LTS (Java 21)
+      # tag::pr-fast-trio[]
+      - name: SAST (the codebase lens, Chapter 31)
+        run: mvn -B -Pquality verify       # static analysis; the local equivalent of this stage
+      - name: SCA — known-CVE dependency scan (Part VII)
+        run: mvn -B org.owasp:dependency-check-maven:check   # OWASP Dependency-Check 12.2.2; fails above CVSS 7.0
+      # end::pr-fast-trio[]
+
+  # ---------------------------------------------------------------------------------------------------
+  # Stage 2 (PR / build): container image and infrastructure-as-code scanning, where applicable. Slots in
+  # for teams shipping containers or IaC; a team that ships neither rationally skips it (when-NOT-to-use).
+  # Still a static stage — it scans an artifact, not a running app — so it stays on the PR side of the line.
+  # ---------------------------------------------------------------------------------------------------
+  container-iac:
+    needs: pr-static-trio
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # tag::container-iac-scan[]
+      - name: Container + IaC scan (Trivy), where the team ships them
+        run: trivy fs --severity HIGH,CRITICAL .   # Trivy 0.71.0 (SOURCE-PIN §4); skip if no containers/IaC
+      # end::container-iac-scan[]
+
+  # ---------------------------------------------------------------------------------------------------
+  # Stage 3 (staging, NOT the PR): the slow dynamic pair. DAST probes the running app black-box from
+  # outside (catching runtime and configuration flaws no static stage can see); IAST instruments the app
+  # while its tests run (adding runtime context). They need a DEPLOYED app and are slow, so they gate the
+  # RELEASE against staging, not the pull request — the expensive feedback never falls on every commit.
+  # This job needs a live staging deployment, recorded as REPRO PENDING-RUNTIME (network/environment-gated).
+  # ---------------------------------------------------------------------------------------------------
+  staging-dynamic:
+    needs: container-iac
+    if: github.event_name != 'pull_request'   # release gate, not the PR — the fast-to-slow ordering
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # tag::staging-dynamic[]
+      - name: DAST against staging (black-box, needs a deployed app)
+        run: zap-baseline.py -t "$STAGING_URL"   # OWASP ZAP; dated-at-use 2026-06; gates the release, not the PR
+      # end::staging-dynamic[]
+
+  # ---------------------------------------------------------------------------------------------------
+  # The blocking gate. This job is wired as a REQUIRED status check in branch protection (Chapter 35): it
+  # cannot be merged around. It AGGREGATES the findings of every stage above and applies the chapter's
+  # policy — block on new, high-severity, exploitable findings; route the rest to a security reviewer;
+  # never block on pre-existing debt — mirroring org.acme.secgate.SecurityGate. Tuning this narrowly is
+  # what keeps the gate from the gate-fatigue death the chapter's hook describes (Chapter 19).
+  # ---------------------------------------------------------------------------------------------------
+  security-gate:
+    needs: [secrets, pr-static-trio, container-iac]   # the PR-blocking stages; staging gates the release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # The displayed gate-policy snippet is the runnable Java (org.acme.secgate.SecurityGate /
+      # SecurityGateDecision), which the book shows instead of this echo — the policy is real code, not a
+      # shell stub. This job is the required-status-check wiring around that policy.
+      - name: Aggregate findings and decide (block / route-to-review / pass)
+        run: |
+          # block: new + HIGH + exploitable -> fail the build
+          # review: severe-but-unproven or sub-blocking -> a security reviewer (not auto-block)
+          # pass: no new exploitable HIGH findings (NOT a clean bill of health — green != secure)
+          echo "policy mirrors org.acme.secgate.SecurityGate (Chapter 19 / Chapter 84)"

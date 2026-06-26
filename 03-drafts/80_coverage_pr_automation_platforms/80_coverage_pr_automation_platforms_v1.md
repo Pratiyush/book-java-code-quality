@@ -52,6 +52,14 @@ Coverage is the most-gated and most-abused quality metric, and the senior questi
 - **Ratcheting.** Require that overall coverage *only goes up, or at least never drops*. A PR that lowers coverage fails. Combined with new-code focus, this bends the curve upward without a big-bang test-writing project: every PR improves the code it touches, and the total cannot regress.
 - **A mutation backstop.** Coverage says a line *ran*; mutation testing (Chapter 23) says the tests would *detect a fault* in it. Where it matters, gate on the *mutation score* of new code, not only line coverage. This closes the assertion-free loophole, because a test that asserts nothing executes the line (full coverage) but kills no mutants (zero mutation score).
 
+The companion makes the first two rules runnable. The gate reads the new code's coverage and the overall change, and only the new-code bar and the ratchet stop a merge:
+
+<!-- include: 80_coverage_pr_automation_platforms/src/main/java/org/acme/coverage/CoverageGate.java#new-code-gate -->
+
+The coverage report this strategy reads is the JaCoCo report the build already produces; it is the same file a PR platform uploads:
+
+<!-- include: 80_coverage_pr_automation_platforms/pom.xml#jacoco-pr-report -->
+
 > **CONCEPT** *Coverage is a floor, not a goal.* A coverage percentage is not test quality (the folklore from Chapter 23): 100% coverage with weak assertions tests nothing, and *gating on the number alone actively incentivizes bad tests* (Goodhart). The strategy uses coverage as a *floor* (find code with no tests at all, its genuine, defensible use) and reaches for mutation testing and review (Chapter 84) for *quality*, never for a higher percentage. Pick branch over line coverage, exclude generated code, and do not chase 100%. The marginal lines cost more than they protect and invite exactly the gaming the gate is meant to prevent.
 
 ### CI platforms: the design ports, the syntax differs
@@ -64,7 +72,9 @@ The pipeline from the last chapter runs on a *platform*, and the book's stance i
 | **GitLab CI** | `.gitlab-ci.yml` | integrated DevSecOps templates (built-in SAST/dependency/secret scanning, Chapter 32); stage/`needs` DAG; hosted + self-hosted |
 | **Jenkins** | `Jenkinsfile` (declarative/scripted) | the long-established self-hosted server; vast plugin ecosystem; maximum flexibility, more operational burden |
 
-What matters for *quality* is the same across all three: the portable concerns are dependency/build **caching** and **parallelism** (last chapter's performance levers), **JDK matrix builds** (testing on Java 21 *and* 25, this book's anchor and forward LTS, in one run), artifact storage, **required status checks** feeding branch protection (next chapter), secrets handling for tokens, and **PR/MR decoration** (next section). The book shows the staple-stack pipeline in GitHub Actions syntax (the most common) with notes on the GitLab and Jenkins equivalents, because the gates themselves are identical.
+What matters for *quality* is the same across all three: the portable concerns are dependency/build **caching** and **parallelism** (last chapter's performance levers), **JDK matrix builds** (testing on Java 21 *and* 25, this book's anchor and forward LTS, in one run), artifact storage, **required status checks** feeding branch protection (next chapter), secrets handling for tokens, and **PR/MR decoration** (next section). The book shows the staple-stack pipeline in GitHub Actions syntax (the most common) with notes on the GitLab and Jenkins equivalents, because the gates themselves are identical. The companion's CI configuration includes the step that uploads the coverage report to the platform and decorates the pull request, with the hosted action marked dated-at-use:
+
+<!-- include: 80_coverage_pr_automation_platforms/ci/coverage-pr.yml#coverage-upload-step -->
 
 > **CONCEPT** *Platform choice is rarely a free pick, and the config is code.* Teams typically run CI where the code lives (GitHub → Actions), so this is not a decision to relitigate; the book crowns none. The real costs are that pipeline config is *platform-specific and non-portable* (moving platforms means rewriting it; lock-in is real), that Jenkins's flexibility carries operational and plugin-security burden while hosted platforms carry usage cost and less control, and, critically, that **the pipeline config is itself code that rots**: it needs ownership, review, and *pinned action/plugin versions*, because a compromised third-party CI action is a supply-chain attack (Part VII) on the build itself.
 
@@ -75,6 +85,18 @@ A gate verdict buried in a CI log gets ignored; the *same* finding shown **inlin
 - **reviewdog** wraps any linter's output and posts comments *only on changed lines*, diff-filtered, which cuts the noise of an incremental PR being told about whole-repo findings it did not cause. Tool- and language-agnostic.
 - **Danger** runs rule scripts per PR for *process* checks — does the PR have a description, is the changelog updated, is it not too large, were tests touched — complementing the code linters with PR-hygiene rules.
 - **SonarQube PR decoration** runs the Sonar quality gate on the PR and annotates the new issues plus the gate status (Chapter 17).
+
+The companion configures one platform (Codecov; the Coveralls and Sonar forms are equivalent) to gate the diff and to comment on it. The threshold applies to the *patch* — the new/changed lines, not the whole repo:
+
+<!-- include: 80_coverage_pr_automation_platforms/.codecov.yml#codecov-patch-threshold -->
+
+The bot-comment policy scopes the comment to the diff and updates one comment in place, rather than spamming the pull request:
+
+<!-- include: 80_coverage_pr_automation_platforms/.codecov.yml#codecov-bot-comment -->
+
+The process check is Danger's: a pull request that changes production code must touch tests (a hygiene rule, not a code linter), with the rule dated-at-use:
+
+<!-- include: 80_coverage_pr_automation_platforms/ci/coverage-pr.yml#danger-tests-touched -->
 
 > **CONCEPT** *Diff-scoping is the discipline that keeps PR automation signal, not noise.* Comment *only on what the PR changed*: the new-code focus from the coverage section, applied to feedback. Whole-repo findings posted as PR comments are noise that developers mute, and a muted bot is a disabled gate. This is also the bot/human division of labor: bots handle the *mechanical* findings (style, lint, coverage delta, PR hygiene) so human reviewers can focus on *design and logic* (whether the change is correct and whether it is the *right* change, Chapter 84). Over-relying on bots degrades review; the point is to free humans for the part only humans can do.
 
@@ -131,6 +153,8 @@ This chapter made the gate's verdict *fair* (scoped to the diff), *portable* (an
 - **Routing** — coverage/mutation tools → Ch 23 (48/47); gate policy/pipeline → Ch 33 (75/76); branch protection/merge-queue/pre-commit → Ch 35 (81/82); release → Ch 36 (83); GitLab DevSecOps → Ch 32 (73); CI-action supply-chain → Ch 28 (66); human review → key 84; AI review → key 98; Goodhart/coverage folklore → Ch 1/23 (04/48); suppression → Ch 19 (39); DORA → Part X (85). SOURCE-PIN: Sonar/JaCoCo/PITest/platform/reviewdog/Danger rows TO-PIN; CI/network-gated → REPRO PENDING-RUNTIME.
 
 **Companion module (spec — ⚠ EXAMPLE-BUILD = PENDING; toolchain READY; CI/network-gated → REPRO PENDING-RUNTIME):** the flagship's pipeline extended with (a) a **JaCoCo + Sonar new-code coverage gate + ratchet** (block on uncovered new code, fail on overall-coverage drop, optional PITest new-code mutation threshold); (b) a **GitHub Actions** workflow running the ordered staple stack on a **JDK 21 + 25 matrix** with `~/.m2` caching, plus a short note mapping to `.gitlab-ci.yml`/`Jenkinsfile`; (c) **reviewdog** piping Checkstyle/SpotBugs output to *diff-scoped* PR annotations + a small **Danger** rule (PR must touch tests). **Failure path:** a PR with uncovered new code or a coverage drop fails the gate; pre-existing untested legacy does not block. **Honest edges (comments):** the gate is new-code-scoped (whole-repo 80% would block every PR and get gamed, Ch 23 folklore); a 100%-covered-but-assertion-free new method passes coverage but fails the mutation backstop; reviewdog comments only on changed lines (whole-repo would be muted noise); the green check ≠ good code (design needs review, Ch 84).
+
+**Snippet tags** (built green via `mvn -B -Pquality verify`, JaCoCo 0.8.15; SaaS platforms/actions dated-at-use 2026-06): `08-companion-code/80_coverage_pr_automation_platforms/` — `CoverageGate.java#new-code-gate` (the diff-scoped new-code + ratchet gate), `pom.xml#jacoco-pr-report` (the JaCoCo report a platform uploads), `ci/coverage-pr.yml#coverage-upload-step` (the platform upload/decoration step) and `#danger-tests-touched` (the Danger process rule), `.codecov.yml#codecov-patch-threshold` (the diff-coverage/new-code threshold) and `#codecov-bot-comment` (the diff-scoped bot-comment policy). The runnable gate is built on the JDK alone; the CI/platform files are illustrative configuration. Build state: BUILT GREEN.
 
 ## Next chapter teaser
 

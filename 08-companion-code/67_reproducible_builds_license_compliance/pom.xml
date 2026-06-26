@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 29 companion (A Build You Can Stand Behind). The chapter's subject is the BUILD itself and the
+    dependency tree it assembles — making the artifact reproducible (bit-for-bit identical from the same
+    source) and the tree's licenses known and within policy. So this module's load-bearing artifact is THIS
+    pom.xml and the config files beside it, not the small Java package. The pom carries both facets as real
+    build configuration:
+
+      * Technical integrity (always on, default build, fully OFFLINE): a fixed
+        <project.build.outputTimestamp> normalises JAR-entry and MANIFEST timestamps, and the
+        reproducible-build plugin strips the remaining build-time variability (file ordering, manifest
+        details) so a rebuild from the same source produces the same bytes.
+      * Legal integrity (-Pquality profile, OFFLINE): the license-maven-plugin reads the resolved
+        dependency tree's declared licenses, gates on an allow-list (fail the build on a license outside
+        policy), and generates a THIRD-PARTY attribution from the same license data.
+
+    A small org.acme.repro package gives the build a real dependency graph to read licenses from and gives
+    both facets an in-code analogue a test can drive, so the configuration is exercised, not merely declared.
+
+    SOURCE-PIN: Java 21 anchor (built with openjdk@21 21.0.11; forward-check 25.0.3); Maven 3.9.16; JUnit
+    6.x BOM; AssertJ 3.27.7; commons-lang3 pinned (3.18.0, Apache-2.0). The reproducible-build-maven-plugin
+    and license-maven-plugin version LITERALS are NOT separately pinned in SOURCE-PIN (the reproducible-
+    builds.org / SPDX / license-tools rows are marked TO-PIN), so they are held as named properties and
+    flagged — see 09-flags/67_repro_license_plugin_versions_unpinned.md (the same plugin/engine two-pin
+    discipline the Checkstyle and Enforcer modules follow). The license content is FACTUAL, NOT LEGAL ADVICE
+    (per LEGAL-IP-RULES): the gate reports DECLARED licenses; interpreting obligations needs legal counsel.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>reproducible-builds-license-compliance</artifactId>
+  <name>Chapter 29 — A Build You Can Stand Behind (reproducible-builds-license-compliance)</name>
+
+  <properties>
+    <!--
+      A fixed build timestamp is the single biggest source of Java non-determinism: without it, every JAR
+      entry and the MANIFEST carry the wall-clock time of the build, so two builds of the same source differ
+      in their bytes. Maven reads <project.build.outputTimestamp> and stamps every archive entry with this
+      fixed value instead (an ISO-8601 instant or a Unix epoch second). Pinned here to a fixed date so a
+      rebuild is byte-identical. This is the precondition that makes a provenance attestation (Chapter 28)
+      describe a stable thing rather than a moving target.
+    -->
+    <!-- tag::repro-timestamp[] -->
+    <project.build.outputTimestamp>2026-06-20T00:00:00Z</project.build.outputTimestamp>
+    <!-- end::repro-timestamp[] -->
+
+    <!--
+      Plugin version literals NOT separately pinned in SOURCE-PIN (the reproducible-builds.org / SPDX /
+      license-tools rows are TO-PIN). Held as named properties so a single edit re-pins each once the
+      SOURCE-PIN row is set, the same two-pin discipline the Checkstyle build-plugin/engine and Enforcer
+      splits already follow. Flagged: 09-flags/67_repro_license_plugin_versions_unpinned.md. The values used
+      resolve cleanly on the pinned toolchain (Maven 3.9.16, JDK 21.0.11).
+    -->
+    <reproducible.build.plugin.version>0.17</reproducible.build.plugin.version>
+    <license.plugin.version>2.7.1</license.plugin.version>
+  </properties>
+
+  <dependencies>
+    <!--
+      A real, named, PINNED dependency so the license gate has a genuine declared license to read and so the
+      generated THIRD-PARTY attribution lists a real component (the chapter's point: license compliance acts
+      on the resolved graph, not an empty one). Apache Commons Lang is a widely-used, JDK-only library under
+      Apache-2.0 — a permissive license that passes the allow-list and requires only attribution. The version
+      is pinned (no range, no LATEST) so the build is reproducible: the deterministic-tree precondition the
+      previous chapters established and this chapter depends on.
+    -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.18.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    The reproducible-build plugin ALWAYS runs in this module (bound to the default build, not opt-in),
+    because the chapter's whole point is that reproducibility is a property of the artifact every build
+    produces, not an optional report. It runs fully OFFLINE: it post-processes the JAR Maven already built,
+    stripping the residual non-determinism that <project.build.outputTimestamp> alone does not cover (archive
+    file ordering, manifest entry order). The honest edge the chapter names holds here: this makes the
+    artifact deterministic and verifiable, it says NOTHING about whether the code is correct (a reproducible
+    build of buggy code is reliably, verifiably buggy — stated in code in ReproducibleArtifact).
+  -->
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.github.zlika</groupId>
+        <artifactId>reproducible-build-maven-plugin</artifactId>
+        <version>${reproducible.build.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>strip-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>strip-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <!-- tag::repro-plugin[] -->
+        <configuration>
+          <!-- the fixed timestamp comes from <project.build.outputTimestamp>; strip-jar strips the rest:
+               normalises archive entry order + default manifest stamps (Built-By, Build-Jdk). -->
+          <manifestAttributes>
+            <manifestAttribute>Build-Timestamp</manifestAttribute>  <!-- strip a custom build-time stamp too -->
+          </manifestAttributes>
+        </configuration>
+        <!-- end::repro-plugin[] -->
+      </plugin>
+    </plugins>
+  </build>
+
+  <!--
+    The license gate and the static-analysis gate are opt-in via -Pquality so the default build stays fast.
+    Both run fully OFFLINE here (the license plugin reads license metadata from the already-resolved POMs).
+    This profile is the green build of record for FLOOR C.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <!--
+            License compliance (the chapter's "know the tree's licenses + stop a banned one shipping +
+            produce attributions" answer). The add-third-party goal reads every resolved component's
+            DECLARED license, checks it against the externalized allow-list (config/license/allowed-licenses
+            .txt, referenced as a file:// URL via <includedLicenses>), FAILS the build on a license outside
+            policy (<failOnBlacklist>true), and writes a THIRD-PARTY attribution to target/generated-sources
+            /license/THIRD-PARTY.txt — the aggregated NOTICE permissive licenses require, automated from the
+            inventory. With only the permissive, Apache-2.0 commons-lang3 on the path, the gate PASSES and
+            the attribution lists it. The FAILURE PATH (a banned license fails the build) is shown in code
+            (LicensePolicy + DisallowedLicenseException) rather than by seeding a real copyleft dependency,
+            which would be non-deterministic and an IP concern. FACTUAL, NOT LEGAL ADVICE.
+          -->
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <version>${license.plugin.version}</version>
+            <!-- tag::license-gate[] -->
+            <configuration>
+              <failOnBlacklist>true</failOnBlacklist>   <!-- a license outside the allow-list FAILS the build -->
+              <includedLicenses>file://${project.basedir}/config/license/allowed-licenses.txt</includedLicenses>
+              <excludedScopes>test</excludedScopes>     <!-- gate what SHIPS: runtime+compile, not test tools -->
+              <thirdPartyFilename>THIRD-PARTY.txt</thirdPartyFilename>   <!-- the auto-generated NOTICE -->
+            </configuration>
+            <!-- end::license-gate[] -->
+            <executions>
+              <execution>
+                <id>license-allow-list-and-notice</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>add-third-party</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!--
+            Static-analysis gate (Chapter 16), same house shape as the other chapter modules: the checkstyle
+            build-plugin and its engine are pinned separately (the two-pin lesson), and configs are
+            externalized under this module's config/ dir.
+          -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
