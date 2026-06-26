@@ -2314,3 +2314,94 @@ SpotBugs. Six tag-includes resolve (4 config, 2 Java), all 6 markers PASS in `ch
   final chapter additive and import-free. First-run green: 12 tests, 0 Checkstyle, 0 SpotBugs,
   warning-clean under `-Xlint:all`. `CULTURE_KNOWLEDGE` as a first-class `Dimension` puts "tools without
   culture fail" in the type system, the same shape key 109 used for "name the alternative, never crown".
+
+## 2026-06-27 — EXAMPLE-BUILD key 01 (Ch 1 "What is code quality?" — N/A, the book's OPENING concept chapter)
+
+- The counter-case to the key-109/110 "re-test N/A, concept chapters are often buildable" lesson. Ch 1
+  is a genuinely PURE-CONCEPT definitional chapter: its body displays ZERO Java (grep: 0 `java` fences,
+  0 `<!-- include: -->` markers, 0 "Snippet tags:" line; the one fenced block at L86-92 is an ASCII
+  cruft-tax sketch that is already the source for rendered Fig 01.2, not code). The decision rule that
+  keeps the displayed-snippet anti-drift contract honest: build a module IFF the chapter BODY DISPLAYS
+  code. No displayed snippet => no module, regardless of any trailing "RUNNABLE EXAMPLE SPEC" — that
+  spec is a *proposal*, and building from it would invent an undisplayed listing (violates "DO NOT
+  invent code the chapter does not show" + "realize the draft, do not extend it").
+- Reconciling with key 109/110: the test is not "is the topic conceptual?" but "does the chapter's
+  MECHANISM compose inputs into a decision *that the prose shows*?" 109/110 showed a synthesis the code
+  could realize AND the chapters leaned on artifacts; Ch 1 names vocabulary and carries its load on
+  three DESIGNED FIGURES (Fig 01.1 ISO 25010 model, 01.2 cruft-tax curve, 01.3 debt quadrant), with no
+  code in the body to bind a tag region to. A foundations/definitional opener legitimately lands N/A.
+- Candidate EXAMPLES-GUIDE note: "No displayed snippet => no module. A deferred/optional/trailing
+  example SPEC does not by itself authorize a build; it authorizes a build only once a draft revision
+  actually displays the code (a `java` fence or include marker). Re-opening the EXAMPLE gate is then an
+  editorial change owned by the drafter, not a speculative code decision by the builder."
+- N/A done correctly = NO empty module dir, NO markers inserted, parent `08-companion-code/pom.xml`
+  left untouched and the chapter NOT in `<modules>`, plus a full `_EXAMPLE.md` recording the reason,
+  the fact-to-pin trace, and the re-open condition. Drift/coverage should read "module N/A by gate
+  report" as satisfied, not as a missing module.
+
+### Ch 06 (key 06, quality culture & ownership) — EXAMPLE-BUILD = N/A (culture/process)
+- Confirmed the N/A pattern on a foundational culture chapter. Draft (lines 5, 101, 191–194) and dossier
+  §6 both state "no companion module / no FLOOR-C compile clause / EXAMPLE-BUILD = n/a"; a draft scan
+  found zero runnable spec, `tag::` markers, include directives, `mvnw`, or a definition-of-done *check*.
+  Wrote only `06_quality_culture_ownership_EXAMPLE.md` (verdict PASS, module N/A); inserted no markers;
+  `08-companion-code/pom.xml` untouched; no module dir created.
+- Decision rule that held up: **"illustrative artifact" ≠ "buildable config artifact."** The chapter's
+  sample CODEOWNERS + team-quality-charter are named only as consistency-verified illustrations, and the
+  *enforceable* CODEOWNERS mechanics are explicitly routed to Ch 37 — already built as peer 84. Building
+  them here would (a) duplicate peer 84, (b) require inventing an enforcement mechanism the prose never
+  claims (never-invent floor), and (c) extend the draft (Hard Constraint 5). So: N/A, not a forced module.
+- The clarifying contrast for future process chapters: a module is warranted only when the chapter has a
+  *load-bearing, compilable mechanism the prose claims* (peer 84 = an executable Checkstyle Javadoc gate +
+  tested failure path; its CODEOWNERS just rides along). Ch 06 has the artifact idea but none of the
+  mechanism — which is exactly why 84 is BUILT and 06 is N/A. Siblings to watch with the same test: bus
+  factor (folded 90), adoption (87), maturity model (110).
+
+## 2026-06-27 — EXAMPLE-BUILD key 97 (The Draft That Looks Like a Deliverable — Part XII opener/umbrella, AI-generated code quality)
+
+- **A "pure-concept umbrella" chapter can still earn a runnable module without inventing facts** by
+  realizing only the *structural* mechanisms (string-concat injection; full-coverage-yet-mutants-survive)
+  on the shared storefront domain and keeping every volatile figure in prose. The chapter's own
+  "every AI statistic is a dated snapshot, never a constant" discipline maps onto a code rule:
+  **embed no statistic in a companion module** — a number baked into code silently goes stale and would
+  become an un-dated, un-attributed claim the moment it ships. Candidate one-liner for EXAMPLES-GUIDE
+  §8.2. (Confirmed: the arXiv AI-code studies, "slopsquatting", and CodeScene guardrails are NOT pinned
+  SOURCE-PIN §7 rows; keeping them prose-only kept the build clean of any TO-PIN atom.)
+- **The tests-from-code trap reuses the Ch 23 weak-vs-strong-test scaffold almost exactly** (correct impl
+  + assertion-light test that leaves CONDITIONALS_BOUNDARY/MATH mutants alive + spec-derived test that
+  kills them; demonstrated with tests+prose, no PITest plugin wired into the build). The AI-era framing is
+  new; the mechanism is the mutation-testing module's. Strong sign that module (key 48) is a reusable
+  scaffold for any "coverage is not detection" chapter.
+- **The load-bearing-suppression proof is now a repeatable sub-procedure** (empty the SpotBugs exclude →
+  confirm BugInstance size 1 on the named pattern → restore → size 0) across the security-flavored modules
+  (keys 19, 69, 97). Worth lifting into a tiny helper so "the suppression is reasoned, not decorative" is
+  mechanically re-checkable each build instead of by hand.
+- **Pre-registration modules build standalone via their child pom**, not via `-pl … -am` against the
+  parent (which errors "not in the reactor") — correct, since a module joins `<modules>` only after green
+  build AND CODE-REVIEW PASS. The `<parent>` link still resolves the inherited pins. Verdict PASS, module
+  NOT yet registered, parent pom untouched.
+
+## 2026-06-27 — EXAMPLE-BUILD key 100 (Only Policy Can Ship It — Part XII closer, governing AI + AI review)
+
+- **A governance/policy chapter IS buildable when it has a DECISION to encode** — it need not be marked
+  N/A just because it is "process". The AI-usage gate maps one-to-one onto the peer-75
+  `QualityGate`/`GatePolicy`/`GateDecision` shape (externalized `%dev`/`%prod` profile + a permit/block
+  verdict) and the peer-84 policy-as-config + health-surface + ADR shape. Reusable recipe for any policy
+  chapter: encode the load-bearing decision as a unit-tested gate, externalize its thresholds as
+  `.properties` profiles, carry the human-facing policy as docs-as-code with tag regions, and add a CI
+  step that mirrors the gate. Candidate EXAMPLES-GUIDE "policy chapter" recipe.
+- **The "embed no statistic in a module" rule (from key 97) generalizes to "and crown no tool".** This
+  chapter added a second never-invent surface: the sanctioned-tool list. Solution mirrors the stats rule —
+  generic placeholders (`vetted-assistant-a`) the team replaces, tool-agnostic gate logic, recorded in an
+  ADR. Keeping BOTH out of the code (figures AND tool names) kept Floor-C source-trace trivially clean and
+  the NEUTRALITY floor satisfied in code, not just prose. Confirmed the §7 canon gaps (Sonatype / arXiv
+  2508.18771 / 2509.20388 / NIST SATE / O'Reilly) are still unpinned; prose-only flag stands, build clean.
+- **SpotBugs `EI_EXPOSE_REP` fires on a record component typed `EnumSet`** even after `EnumSet.copyOf`,
+  because `EnumSet.copyOf` returns a *mutable* set (where `Set.copyOf` returns an immutable one). Fix: wrap
+  in `Collections.unmodifiableSet` in the compact constructor. The chapter dogfooded its own thesis — an
+  AI-written module about governing AI-assisted code caught a real representation-exposure bug on itself
+  via the gate it describes. Worth a one-line entry in the module-authoring checklist.
+- **Tag-region scoping for a long decision chain:** the full "only policy can ship it" precondition chain
+  was 16 lines (> the 9-line cap). Moving the tag to wrap only the chapter-defining trio (disclosure +
+  accountable-human + no-auto-merge) gave a 9-line region that IS the thesis, while the earlier
+  preconditions (sanctioned tool, AI-checks) stay in the compiled file. Reusable move: tag the
+  chapter's *named principle*, not the whole method.

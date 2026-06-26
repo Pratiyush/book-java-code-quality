@@ -57,6 +57,8 @@
     <module>85_metrics_rollout_dashboards</module>
     <module>91_refactoring_legacy_modernization</module>
     <module>96_remediation_playbook_automated_change</module>
+    <module>97_ai_generated_code_quality</module>
+    <module>100_governing_ai_ai_review</module>
     <module>101_performance_profiling_memory_benchmarking</module>
     <module>105_performance_regression_gates</module>
     <module>106_observability_logging_metrics_feedback</module>
