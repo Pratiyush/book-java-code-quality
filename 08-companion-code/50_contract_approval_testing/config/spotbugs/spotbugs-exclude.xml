@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    Reviewed suppressions (Chapter 16: suppress with a reason, never disable a whole detector).
+
+    This module has NONE. The provider holds an immutable map of records and renders fresh strings on
+    each call, the consumer holds only the contract value it expects, and the snapshot helper reads and
+    writes files under the module's own test-resources tree — none of which trips a representation-
+    exposure or resource detector. The filter is kept (empty) so a future, genuinely-reviewed
+    suppression has a home with a written reason, rather than being added inline.
+  -->
+</FindBugsFilter>

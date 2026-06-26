@@ -58,6 +58,22 @@ The mechanism is a four-stage pipeline:
 3. **Provider verification** replays the contract. The provider's test (`@Provider`, sourcing pacts via `@PactFolder` or `@PactBroker`) uses `@TestTemplate` to generate **one test per interaction**, calls `context.verifyInteraction()` to replay each recorded request against the *running provider* and check the real response matches, with `@State` methods seeding preconditions (e.g. "order 42 exists").
 4. **`can-i-deploy`** is the gate. The broker holds a **matrix** of verification results for every consumer-version × provider-version pair — "used by the can-i-deploy tool to determine if an application is safe to deploy." Consumer version selectors (`deployed`, `released`) scope verification to what is actually running in each environment.
 
+The companion module realizes the same guarantee in plain JUnit, since Pact's provider verification needs a running provider. The consumer drives a contract by declaring exactly the fields it reads:
+
+<!-- include: 50_contract_approval_testing/src/test/java/org/acme/contracttesting/OrderContractTest.java#consumer-contract -->
+
+The provider renders that response from one place — the identifier field name is a single value, so the field-rename from the hook is one edit:
+
+<!-- include: 50_contract_approval_testing/src/main/java/org/acme/contracttesting/OrderProvider.java#provider-render -->
+
+Provider verification then replays the contract against that real provider response:
+
+<!-- include: 50_contract_approval_testing/src/test/java/org/acme/contracttesting/OrderContractTest.java#provider-verify -->
+
+The contract's own check is a presence test over the fields the consumer named, so a renamed or dropped field fails it:
+
+<!-- include: 50_contract_approval_testing/src/main/java/org/acme/contracttesting/OrderContract.java#contract-verify -->
+
 > **CONCEPT** *The contract is only honest if both halves run.* The consumer test alone proves nothing real: it runs against a mock the consumer author wrote, which could expect data the provider would never send. The provider verification holds that mock honest by replaying the contract against the real provider. A consumer pact without provider verification is the over-mocking anti-pattern from Chapter 21 wearing a contract's clothes: a green test asserting the consumer's own assumptions. The pipeline only delivers its guarantee when run whole.
 
 ### API testing: does the running endpoint respond correctly?
@@ -72,6 +88,10 @@ given().param("id", 42)
 
 `given()` sets up the request (params, headers, body auto-serialized, auth), `when()` issues the verb, and `then()` asserts on the **live response**: `statusCode`, headers, and `body(path, matcher)` where `path` is a **GPath** expression (Groovy GPath, explicitly *not* Jayway JsonPath, a distinction worth stating once) and `matcher` is a Hamcrest matcher. `RequestSpecBuilder`/`ResponseSpecBuilder` keep large suites DRY, and `matchesJsonSchemaInClasspath` validates a response against a JSON Schema. REST-assured produces no artifact and requires the endpoint to be *running*; in CI, it runs typically against a Testcontainers-backed or framework-test instance (Chapter 22).
 
+The companion module exercises the same request-response-then shape in-JVM, asserting on the status and the body the consumer reads:
+
+<!-- include: 50_contract_approval_testing/src/test/java/org/acme/contracttesting/OrderEndpointTest.java#endpoint-behaviour -->
+
 > **CONCEPT** *Two jobs on one boundary, not rivals.* A contract test verifies *agreement* between a specific consumer and provider, each in isolation, with no network call to a live partner. An API test verifies the *behaviour* of a running endpoint. Each is the wrong tool for the other's question: REST-assured against a service cannot see a downstream consumer break (no consumer is involved), and Pact never calls a live endpoint so it cannot confirm the service actually runs. A mature service uses both (REST-assured to prove its endpoints work, Pact to prove it has not broken a consumer).
 
 | Technique | Pyramid band | Needs a live partner? | Produces an artifact? | Question answered |
@@ -82,6 +102,18 @@ given().param("id", 42)
 ### Approval testing: does the output still match what a human approved?
 
 The third technique inverts the assertion entirely. Most tests state the expected value inline; **approval testing** (also called snapshot or golden-master testing) produces output, compares it to a stored **approved** file, and fails on any difference. A human then reviews the diff and, if it is correct, **approves** it (the new output becomes the baseline). `Approvals.verify(result)` writes a `*.received.*` file, compares it to the committed `*.approved.*`, and on mismatch launches a diff tool for inspection. **Scrubbers** normalize non-deterministic content (timestamps, GUIDs, ordering) so the test does not flake.
+
+The companion module captures that mechanism in a small verifier: it writes the received file, compares it to the committed approved file, and fails on any difference or a missing baseline:
+
+<!-- include: 50_contract_approval_testing/src/main/java/org/acme/contracttesting/SnapshotVerifier.java#snapshot-verify -->
+
+A scrubber is an ordinary string transform applied before the comparison; here it normalizes the report's timestamp:
+
+<!-- include: 50_contract_approval_testing/src/test/java/org/acme/contracttesting/OrderReportApprovalTest.java#scrubber -->
+
+The test itself is then a single `verify` call against the reviewed baseline:
+
+<!-- include: 50_contract_approval_testing/src/test/java/org/acme/contracttesting/OrderReportApprovalTest.java#approval-verify -->
 
 It shines exactly where inline assertions fail: output that is **large or hard to hand-write** (generated reports, serialized DTOs, rendered text) where dozens of brittle field assertions would be unreadable, replaced by one `verify` call. It is also the classic safety net for **characterizing legacy code** before a refactor (the golden-master technique): capture the current behaviour as the approved baseline, change the structure underneath, and trust the baseline to flag any behavioural drift (a later part goes deeper on legacy work).
 
@@ -126,6 +158,10 @@ These compose into one boundary-and-output program: REST-assured proves the endp
 - **Locking legacy behaviour before a refactor:** approval testing as a golden master (a later part goes deeper).
 - **Expressing *why* an output is right:** a few example tests alongside the approval baseline, not the baseline alone.
 - **Proving the system is correct:** none of these alone. Combine with unit/property tests, effectiveness measures, and a thin E2E layer.
+
+The companion module is a small orders boundary that puts all three references into one buildable form: a consumer-driven `OrderContract` both sides verify against, an in-JVM endpoint exercise, and a `SnapshotVerifier` that pins a generated report to a committed `*.approved.txt`. Its centrepiece is the failure path — renaming the provider's `id` field fails the contract verification while the provider's own one-sided shape test still passes. Because Pact's provider verification and REST-assured both need a running service, and ApprovalTests.Java is outside this book's source pin, the module realizes the three mechanisms in plain JDK + JUnit and names each production tool in its README; that prose-only status is recorded in `09-flags/`.
+
+**Snippet tags:** `consumer-contract`, `provider-verify` (`OrderContractTest.java`); `provider-render` (`OrderProvider.java`); `contract-verify` (`OrderContract.java`); `endpoint-behaviour` (`OrderEndpointTest.java`); `snapshot-verify` (`SnapshotVerifier.java`); `scrubber`, `approval-verify` (`OrderReportApprovalTest.java`) — 8 tags, each ≤9 lines, all bound into the prose above via tag-include markers and verified green by `check_snippets.sh`.
 
 ## Hand-off to the next part
 
