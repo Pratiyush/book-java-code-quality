@@ -21,6 +21,12 @@ A pull request arrives: a 40-line class with a private final field, a constructo
 record Point(int x, int y, String label) {}
 ```
 
+The companion module carries both forms side by side — the hand-written value class the pull request describes, and the one-line record that replaces it:
+
+<!-- include: 08_effective_java/src/main/java/org/acme/canon/LegacyPoint.java#handrolled-contract -->
+
+<!-- include: 08_effective_java/src/main/java/org/acme/canon/Point.java#record-value -->
+
 *Effective Java* taught a generation of developers how to write the language well. But it was last revised in 2018, and Java has shipped a new feature train every six months since. This chapter does two things at once: it distills the canon's load-bearing principles, and it reads each through the language as it is now, because citing a 2018 rule uncritically can produce hand-written code the compiler will now generate, correctly, for free.
 
 ## Overview
@@ -79,7 +85,13 @@ The modern features above are the quality story of Java 21/25, and they earn the
 
 - **Records** — collapse a data carrier's boilerplate to its components; a **compact constructor** adds validation where needed. The hook's one-liner is a record.
 - **Sealed types** — declare the complete set of permitted subtypes, so the compiler (and the reader) knows the hierarchy is closed.
+
+  <!-- include: 08_effective_java/src/main/java/org/acme/canon/Shape.java#sealed-types -->
+
 - **Pattern matching for `switch`** — flat, exhaustive handling of a sealed hierarchy, replacing the nested `instanceof`-and-cast ladder; the compiler checks that every case is covered.
+
+  <!-- include: 08_effective_java/src/main/java/org/acme/canon/Areas.java#pattern-switch -->
+
 - **Text blocks** — multi-line strings (SQL, JSON) that read as themselves.
 - **`var`** — local type inference that cuts redundant noise (used judiciously; Chapter 2's caveat).
 
@@ -91,7 +103,9 @@ The modern features above are the quality story of Java 21/25, and they earn the
 
 ### The folklore to avoid: "records make immutability obsolete"
 
-A tempting over-claim has emerged: *records replace Effective Java's immutability item.* They do not. A `record` carries **transparent, immutable data**; its components *are* its API. But the Item-on-minimizing-mutability covers more: types with **invariants** (a temperature that must be ≥ absolute zero), **validation**, or a **hidden representation** still need the hand-written form, or a record with a **compact constructor** that validates. The honest framing, traced to JEP 395 and the EJ item, is *nuance, not replacement*: records serve the common case (a plain immutable data carrier) and shrink the boilerplate; they do not retire the principle.
+A tempting over-claim has emerged: *records replace Effective Java's immutability item.* They do not. A `record` carries **transparent, immutable data**; its components *are* its API. But the Item-on-minimizing-mutability covers more: types with **invariants** (a temperature that must be ≥ absolute zero), **validation**, or a **hidden representation** still need the hand-written form, or a record with a **compact constructor** that validates. The honest framing, traced to JEP 395 and the EJ item, is *nuance, not replacement*: records serve the common case (a plain immutable data carrier) and shrink the boilerplate; they do not retire the principle. The companion module's temperature carrier shows the point — a record whose compact constructor still enforces the invariant the components alone cannot:
+
+<!-- include: 08_effective_java/src/main/java/org/acme/canon/Temperature.java#record-invariant -->
 
 > **WARNING** Reaching for a record reflexively for any small class is its own anti-pattern. A record exposes all components and is for *data*; a class with behaviour, encapsulated state, or validation beyond a compact constructor is not a record candidate. Use the feature where it fits the principle, not as a default.
 
@@ -116,7 +130,10 @@ The same discipline applies to every named-book source in this book (Fowler's *R
 
 - **Reach for a record** for a transparent, immutable data carrier — the common case the immutability principle covers. Add a compact constructor for validation; hand-write the class when invariants, identity, or a hidden representation are required.
 - **Reach for sealed types + pattern matching** when modeling a closed set of alternatives — it makes the hierarchy legible and the handling exhaustive and compiler-checked.
-- **Keep the standing principles** (composition over inheritance, generics over raw types, alternatives to serialization) regardless of version — they are not dated.
+- **Keep the standing principles** (composition over inheritance, generics over raw types, alternatives to serialization) regardless of version — they are not dated. The single-element enum singleton (Item 3) is one such idiom no feature has changed; the companion module carries it unchanged:
+
+  <!-- include: 08_effective_java/src/main/java/org/acme/canon/PricingPolicy.java#enum-singleton -->
+
 - **Avoid** building on preview/exploratory features as if stable, and avoid citing a 2018 idiom without checking what the language now provides.
 
 ## Hand-off
@@ -162,13 +179,14 @@ If the language now states much of the developer's intent, the highest-leverage 
 ---
 
 <!--
-RUNNABLE EXAMPLE SPEC (seeds Step 4b; EXAMPLE-BUILD = PENDING-RUNTIME, no JDK)
-- Module: 08-companion-code/08_effective_java/ (pin per SOURCE-PIN; JDK 21).
-- Demo: the hook's hand-written value class vs the record one-liner (identical behaviour, a test proves it); a record WITH a compact constructor enforcing an invariant (showing records don't retire the principle); a sealed interface + pattern-matching switch replacing an instanceof ladder.
-- File list: pom.xml; src/main/java/.../Point.java (tag-regions: handwritten / record / record-with-invariant); src/main/java/.../Shape.java (sealed + switch); tests.
-- Run command: ./mvnw -B verify
-- Expected output: BUILD SUCCESS; tests green (handwritten ≡ record behaviour; invariant rejected on bad input; switch exhaustive).
-- BUILD STATUS: PENDING-RUNTIME — install JDK 21.
+RUNNABLE EXAMPLE SPEC (seeds Step 4b)
+- Module: 08-companion-code/08_effective_java/ (self-contained, own config/ + `quality` profile; parent org.acme.storefront:companion-code:1.0.0-SNAPSHOT; pin per SOURCE-PIN; JDK 21).
+- Demo: the hook's hand-written value class vs the record one-liner (a test proves they are observably equivalent); a record WITH a compact constructor enforcing an invariant (showing records don't retire the principle); a single-element enum singleton (Item 3, Stands); a sealed interface + exhaustive pattern-matching switch replacing an instanceof ladder.
+- File list: pom.xml; config/{checkstyle,spotbugs}/; src/main/java/org/acme/canon/{LegacyPoint,Point,Temperature,PricingPolicy,Shape,Areas,CanonDemo,package-info}.java; src/test/java/org/acme/canon/CanonIdiomsTest.java; README.md.
+- Snippet tags: `handrolled-contract` (LegacyPoint.java), `record-value` (Point.java), `record-invariant` (Temperature.java), `enum-singleton` (PricingPolicy.java), `sealed-types` (Shape.java), `pattern-switch` (Areas.java) — each ≤9 lines, resolved by check_snippets.sh.
+- Build/verify command: mvn -B -Pquality -f 08-companion-code/08_effective_java/pom.xml verify (standalone) — or via the reactor with -pl 08_effective_java -am.
+- Expected output: BUILD SUCCESS; 7 tests green (handwritten ≡ record behaviour; equals/hashCode contract; invariant rejected on bad input; enum singleton; switch computes each variant); 0 Checkstyle violations; 0 SpotBugs findings.
+- BUILD STATUS: GREEN at JDK 21.0.11 / Maven 3.9.16 (2026-06-26). Not yet registered in 08-companion-code/pom.xml <modules> (joins the reactor after CODE-REVIEW).
 
 FIGURE PLAN (Step 9)
 - Fig 05? (08.1) — the canon-dating table rendered: EJ principle → modern feature → verdict (Stands / Served / Reinforced-and-dated). Trace to EJ + JEPs.
