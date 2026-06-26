@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 38 companion (Knowing Whether It Works). The measurement program made runnable at the
+    smallest size that still teaches it, on the JDK alone: DORA's four keys computed from deployment
+    records (definitional formulas only — no performance band is asserted, since the bands are
+    edition-specific and verified against the pinned State-of-DevOps edition, not compiled in), a
+    counter-metric pairing that refuses to report throughput without stability, a baseline-and-ratchet
+    rollout policy that accepts the legacy past and gates only new regressions, a guard that refuses an
+    individual-ranking request (metrics measure the system, not people), and a "good dashboard" spec
+    that pairs every tile with a counter-metric and forbids a leaderboard. Every surface is built on
+    java.base alone: records, sealed types, and the time/collection APIs. No DORA/SPACE library is a
+    pinned authority row in SOURCE-PIN.md, so the module demonstrates the *shape* — name an outcome
+    metric, pair it with a counter-metric, gate the future not the past — with JDK primitives, and the
+    prose attributes DORA (dora.dev / Accelerate) and SPACE (Forsgren et al.). Zero runtime
+    dependencies, so it dogfoods the book and builds fast and green. The signals are machine-checked by
+    the `quality` profile (Checkstyle + SpotBugs).
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>metrics-rollout-dashboards</artifactId>
+  <name>Chapter 38 — Knowing Whether It Works (metrics-rollout-dashboards)</name>
+
+  <dependencies>
+    <!--
+      JDK-only at runtime: there is no metrics/DORA dependency here on purpose (see the POM header).
+      The test libraries are the only additions, and their versions are inherited from the
+      companion-code aggregator's dependencyManagement — no version literal lives in this module.
+    -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates (Chapter 16), opt-in via `-Pquality` so the default build stays fast.
+    The maven-checkstyle-plugin ships an OLD bundled engine; we override it to the pinned engine via
+    a plugin-level dependency — the build plugin and the analyzer engine are separate versions. This
+    module is a direct child of the companion-code root, which pins no quality profile of its own, so
+    the profile is declared here (the same shape the peer modules use) and reads the config under this
+    module's own config/ dir, keeping the module self-contained.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16), complementary to Checkstyle's source
+            view. This module's metric models are immutable records and its policy engine copies its
+            inputs defensively, so the representation-exposure detectors stay quiet without
+            suppression. The exclude filter is kept (empty) so a future, genuinely-reviewed
+            suppression has a home with a reason.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

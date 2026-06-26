@@ -8,7 +8,7 @@
 
 - **47/47 chapters** drafted (🟢 `draft`).
 - **39** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).
-- **6** need EXAMPLE-BUILD (FLOOR-C compile).
+- **3** need EXAMPLE-BUILD (FLOOR-C compile).
 - **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 42 in lift · 5 need an independent score · 0 approved (in 04-approved/).
 - **DRIFT: ✅ none**.
 
@@ -48,7 +48,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | | | **Part IV — Static Analysis, Linting & Formatting** |  |  |  |  |  |  |  |  |  |  | |
 | 19 | 39 | Living with findings: false positives, basel… | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
-| 20 | 41 | The testing landscape & test quality | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 20 | 41 | The testing landscape & test quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 21 | 42 | Unit testing, assertions & mocking | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 22 | 45 | Integration & property-based testing | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 23 | 48 | Coverage, mutation & test effectiveness | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
@@ -70,7 +70,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | 36 | 83 | Release quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
 | 37 | 84 | Code review, coding standards & documentation | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
-| 38 | 85 | Metrics, dashboards & rolling out quality | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 38 | 85 | Metrics, dashboards & rolling out quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 39 | 91 | Refactoring, legacy code & modernization | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 40 | 96 | Automated change & the remediation playbook | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 41 | 97 | Quality of AI-generated code & AI-assisted d… | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
@@ -81,7 +81,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
 | 45 | 106 | Observability as quality: logging, metrics, … | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 46 | 109 | A reference quality stack & gate design | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
-| 47 | 110 | A code-quality maturity model & adoption roa… | 🟢 | 🟢 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 47 | 110 | A code-quality maturity model & adoption roa… | 🟢 | 🟢 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 
 ## Per-Part rollup
 

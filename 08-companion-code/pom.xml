@@ -36,6 +36,7 @@
     <module>35_sonarqube_ide_layered_stack</module>
     <module>38_custom_rules_codegen_lombok</module>
     <module>39_managing_findings</module>
+    <module>41_testing_landscape_quality</module>
     <module>42_unit_testing_assertions_mocking</module>
     <module>45_integration_property_based_testing</module>
     <module>48_coverage_mutation_effectiveness</module>
@@ -53,12 +54,14 @@
     <module>81_branch_protection_precommit_parity</module>
     <module>83_release_quality</module>
     <module>84_code_review_standards_documentation</module>
+    <module>85_metrics_rollout_dashboards</module>
     <module>91_refactoring_legacy_modernization</module>
     <module>96_remediation_playbook_automated_change</module>
     <module>101_performance_profiling_memory_benchmarking</module>
     <module>105_performance_regression_gates</module>
     <module>106_observability_logging_metrics_feedback</module>
     <module>109_reference_quality_stack_gate</module>
+    <module>110_maturity_model_roadmap</module>
     <module>capstones</module>
   </modules>
 
