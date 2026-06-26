@@ -2243,3 +2243,74 @@ SpotBugs. Six tag-includes resolve (4 config, 2 Java), all 6 markers PASS in `ch
   alternative` field and assert in a test that no layer lacks one. "Recommend, name the alternative, never
   crown" then lives in the type system, not just prose — a reusable shape for any recommend-with-tradeoffs
   surface.
+
+## Ch 85 (metrics, rollout & dashboards) EXAMPLE-BUILD — 2026-06-27
+
+- A "process/spec" chapter (DORA/SPACE, rollout policy, dashboards) still yields a real FLOOR-C module
+  without inventing: build the *definitional* core (DORA four-key formulas, computed from deployment
+  records) and the *algorithmic* core (baseline + ratchet, the no-leaderboard guard), and keep the
+  version-specific DORA *bands* — flagged `⚠ verify-at-pin` in the dossier — entirely out of code. The
+  config models a *chosen alert level*, labelled in three comments as "not a DORA band". Pattern to
+  promote: **when a chapter's headline numbers are `verify-at-pin`, model the mechanism and externalize
+  the threshold as a labelled choice; never bake the figure in.**
+- The chapter's thesis mapped straight onto the tested failure path: "metrics measure the system, not
+  people" → `DashboardSpec.addTile` refusing an individual-scoped tile (and a `DeploymentRecord` with no
+  author field); "a baseline without paydown is amnesty" → `RolloutPolicy.remainingBaselineDebt`. The
+  HONEST-LIMITATIONS-in-code floor was authentic, not bolted on.
+- Snippet-cap reminder: a guard region first measured 11 lines; moving the `// tag::` markers *inside*
+  the method to wrap only the two refusal `if` blocks (and shortening throw messages the tests assert by
+  substring) brought it to 6. The tag region, not the whole method, is what the ≤9-line cap governs.
+- JDK-only again the right call: no DORA/SPACE *library* is a pinned authority row, so records + sealed
+  types + `java.time` carry the shape with zero runtime deps. Mirrors the 106 observability module.
+
+## Ch 41 (testing landscape & quality, Part V opener) EXAMPLE-BUILD — 2026-06-27
+
+- **Umbrella/opener chapters need a "route, don't duplicate" example rule.** Ch 41's draft-foot spec
+  (written before its siblings were built) called for a `DiscountPolicy` + vanity/strong suites + jqwik +
+  Testcontainers + PITest — a demo now wholly owned by the already-built Ch 48 (coverage/mutation) and
+  Ch 45 (integration/property). Rebuilding it would duplicate those modules and contradict the opener's
+  own routing prose. The correct build is the **residual**: the part of the chapter no peer module owns —
+  here the *determinism axis* (test architecture/isolation + the flaky→deterministic matrix + test
+  smells). Propose promoting into EXAMPLES-GUIDE: *for a landscape/umbrella chapter, the module realizes
+  only the chapter's non-routed contribution and must not rebuild a mechanism another chapter's module
+  already owns.*
+- **Reconcile a draft-foot companion spec to the as-built module at build time.** The sketch had drifted
+  from reality; left as-is it would have failed prose↔code fidelity at VERIFY. Updated the front-matter
+  line + the foot spec to as-built and added a "Snippet tags:" line. Worth a one-line `/example` step
+  note: reconcile the companion spec before writing the gate report.
+- **`check_snippets` resolves literal include-token text in prose.** Writing the `<!-- include: … -->`
+  marker syntax as an *example* inside a sentence created a 7th phantom marker the gate tried (and failed)
+  to resolve. Fix was to describe markers without reproducing the exact token. Worth a note in the
+  snippet-machinery docs.
+- **Four matrix rows, zero new GAVs.** `Clock.fixed` (time flake), `Set` + AssertJ
+  `containsExactlyInAnyOrder` (unordered flake), per-method isolation + `MethodOrderer.Random` (order
+  flake), and a poll loop under `assertTimeoutPreemptively` (async-wait flake — the JDK form of
+  Awaitility, which stays routed to its own chapter) realize the chapter's determinism material with only
+  the aggregator-managed JUnit/AssertJ + the JDK. Keeps an opener's module minimal and on-pin while still
+  tactile — the same JDK-only discipline as the 85/106 modules.
+
+## 2026-06-27 — EXAMPLE-BUILD key 110 (Ch 47 maturity model & adoption roadmap — THE FINAL CHAPTER)
+
+- A "concept/roadmap" dossier call of EXAMPLE-BUILD = N/A is worth re-testing at build time. BOTH Part XIV
+  closers (keys 109, 110) were dossier-marked as figure/artifact chapters, yet both have a real, buildable
+  *composition*: key 109 composes a CI run -> a ship/no-ship verdict (`org.acme.refstack`); key 110 composes
+  a team's staged self-assessment -> a maturity level + one next step (`org.acme.maturity`, 7 classes +
+  package-info). Rule of thumb: a synthesis chapter is buildable whenever its mechanism *reduces inputs to
+  a decision* — and building it is the strongest way to get the chapter's honest-limitations into a tested
+  code path. Candidate EXAMPLES-GUIDE note: "before accepting a dossier's N/A, check whether the chapter's
+  mechanism composes inputs into a decision; if so, it is buildable."
+- The §1.1 failure-path requirement carried the whole final-chapter thesis. The vanity-ladder warning IS
+  the point of key 110, and encoding it as a code path — overall level = the LOWEST dimension's stage
+  (never an average that hides a fire), a stalled high stage DISCOUNTED to FOUNDATIONS, and a
+  `NextStep.RestoreOutcomes` recommendation that refuses to climb — turns "maturity is for outcomes, not a
+  badge" from a sentence into something a reader runs under test. "Lowest, not average" is the single most
+  teachable line; the `RoadmapPolicy.requireOutcomes` dev/prod knob makes the Goodhart guard the
+  externalized, profile-selected difference rather than a compiled-in constant.
+- The proven module shape transferred cleanly from the key-109 peer with ZERO new flags: externalized
+  dev/prod policy (selected by `-Dmaturity.profile`), a sealed result type (`NextStep` = Advance /
+  RestoreOutcomes / Sustain), metric + readiness observability, JDK-only runtime, and the shared small
+  house Checkstyle/SpotBugs `quality` profile (engine 10.26.1 / SpotBugs 4.9.3.0, the already-flagged
+  reactor skews — referenced, not re-filed). De-duplicating the domain against `org.acme.refstack` kept the
+  final chapter additive and import-free. First-run green: 12 tests, 0 Checkstyle, 0 SpotBugs,
+  warning-clean under `-Xlint:all`. `CULTURE_KNOWLEDGE` as a first-class `Dimension` puts "tools without
+  culture fail" in the type system, the same shape key 109 used for "name the alternative, never crown".

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 41 companion (How Much vs How Good — the testing-landscape opener). This is the umbrella
+    chapter over Part V, so the deep mechanics of the individual tools are owned by the chapters that
+    follow: the JUnit/AssertJ/Mockito harness by Chapter 42, integration + property-based + containers
+    by Chapter 45, and coverage + mutation (JaCoCo / PITest) by Chapter 48. This module therefore does
+    NOT rebuild those; it makes tactile the one half of the chapter no later module owns — the
+    DETERMINISM axis: test architecture (isolation), and the flaky-to-deterministic fixes the chapter's
+    own root-cause matrix lists. The same small reservation domain is put under tests that each show one
+    fix from that matrix: an injected Clock (a now() flake made deterministic), an order-independent
+    assertion (a HashSet-iteration flake made deterministic), per-method isolation with a randomised
+    method order (order-dependency hunted, not hidden), and poll-until-it-holds instead of sleep-and-
+    hope (an async-wait flake made deterministic, JDK-only — the Awaitility library form of the same
+    idea is routed to its own chapter and is not added here). The failure path is a typed rejection a
+    test drives. Every API used is pinned JUnit Jupiter, AssertJ, or the JDK — no tool routed to a
+    later chapter is reintroduced.
+
+    This is a child module of the companion-code reactor. It sets <parent>, carries no groupId or
+    version literal of its own, and inherits the runtime pin and the JUnit/AssertJ pins from the
+    aggregator. It adds NO dependency of its own: the determinism fixes are shown with the JDK and the
+    aggregator-managed test libraries, so the module's dependency set stays minimal and on-pin. The
+    contracts and analyzers are run by the `quality` profile (Checkstyle + SpotBugs, Chapter 16), self-
+    contained under this module's own config/ dir like the key-09 and key-42 modules.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>testing-landscape-quality</artifactId>
+  <name>Chapter 41 — How Much vs How Good (testing-landscape-quality)</name>
+
+  <dependencies>
+    <!-- JUnit Jupiter — the harness; version managed by the aggregator's junit-bom import. -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!--
+      AssertJ — the order-independent assertion the chapter's flakiness matrix names
+      (containsExactlyInAnyOrder); version managed by the aggregator (SOURCE-PIN.md §3: AssertJ
+      3.27.7). No other test library is needed: the rest of the determinism material is JDK-only.
+    -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The same self-contained shape as the key-09 and key-42 modules: the maven-checkstyle-plugin
+    ships an OLD bundled engine, so the pinned engine is overridden via a plugin-level dependency (the
+    "two-pin" lesson — the build plugin and the analyzer engine are separate versions). The profile
+    reads the config under this module's own config/ dir. Checkstyle includes the test source
+    directory (the tests are first-class code held to the house ruleset — fitting for a chapter about
+    test quality); SpotBugs runs over main bytecode only.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16), complementary to Checkstyle's source
+            view. The production code here is a small, contract-tight reservation service over an
+            immutable value record, so the exclude filter is empty: zero reviewed suppressions are
+            needed. A genuine, reviewed false positive would go in the filter with a reason, never by
+            disabling a detector wholesale.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
