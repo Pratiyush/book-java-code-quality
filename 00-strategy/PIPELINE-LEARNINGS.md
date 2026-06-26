@@ -2177,3 +2177,69 @@ SpotBugs. Six tag-includes resolve (4 config, 2 Java), all 6 markers PASS in `ch
 - The chapter's standing "automation enforces presence, not quality" point is made executable with a
   TRY-IT: a present, well-formed, *false* Javadoc passes the Checkstyle gate while the test catches the lie.
   Reusable pattern for any presence-vs-quality chapter.
+
+## Chapter 3 (key 05) — EXAMPLE-BUILD (the toolchain map module, reference-project seed)
+- A foundational "map" chapter is NOT automatically EXAMPLE N/A: if the draft's RUNNABLE EXAMPLE SPEC and
+  the dossier §6 specify a concrete buildable CONFIG (here, the staple stack assembled into one Maven
+  build), build it. Read the embedded spec first; the build/N-A call is unambiguous from it.
+- The ≤9-line snippet ceiling should drive pom tag-region layout from the start. A two-execution JaCoCo
+  block needs distinct <id>s, which busts the cap if every element is its own line; compacting
+  <id>/<phase>/<goals> onto shared lines (still valid XML, still green) kept `coverage-wire` at 7 lines.
+  Propose an EXAMPLES-GUIDE note: design pom tag regions compactly up front, not after a ceiling failure.
+- Reuse proven-green peer toolchain versions + their existing flags. Matching peers 27/62/75/48 (engine
+  10.26.1, spotbugs 4.9.3.0/4.9.3, jacoco 0.8.15) and pointing at flags 48/62/34 avoided re-litigating
+  the SOURCE-PIN version splits and kept the build offline-green; the new flag 05 only records deltas.
+- This module is the Chapter 46 capstone seed (the `org.acme.toolchain` storefront domain + the layered
+  `quality` profile). Reuse, don't re-invent, when the capstone builds.
+
+## EXAMPLE-BUILD key 91 (refactoring, legacy & modernization; folds 92+93+95) — Ch 39 — 2026-06-27
+- A "bug-as-behaviour" rounding quirk is the cleanest way to make a characterization test land and give
+  the behaviour-preservation test teeth. Here the legacy method applies the surcharge per-kilo and
+  truncates BEFORE the weight multiply, so a 333 g expedited `ZONE_A` parcel charges 191 where naive math
+  says 190; the characterization test pins 191 (what the code DOES), and the modern refactor must
+  reproduce 191 — proving it preserved the quirk, not "fixed" it under the refactor hat. Compute the
+  quirk with an independent probe before pinning so the asserted value is verified arithmetic. Propose an
+  EXAMPLES-GUIDE note for any refactoring/legacy chapter: design a small order-sensitive quirk on purpose.
+- Don't add a counter-example field the tests never drive. A dead `verbosePricing` static pulled a
+  `UUF_UNUSED_FIELD` finding that was noise, not a lesson — the right move is to DELETE it, not suppress
+  it. A reasoned suppression must point at a finding a test actually exercises (verified load-bearing with
+  the filter emptied); suppressing dead code is the padding the guide forbids.
+- spotbugs-maven-plugin 4.9.3.0 ignores a `-Dspotbugs.excludeFilterFile` property override (uses the
+  configured `<excludeFilterFile>` element). To prove a suppression is load-bearing, temporarily replace
+  the configured filter file with an empty one, run `spotbugs:check` (must fail with the expected pattern),
+  then restore. Candidate to script as a generic "suppression-is-live" check.
+- Sealed result + pattern-matching `switch` (record deconstruction, exhaustive without `default`) is a
+  strong in-cap modern-Java snippet (6 lines) that doubles as the chapter's "modern Java supersedes a
+  manual catalog step" point shown rather than asserted — a reusable shape for canon-dating chapters.
+- Scope an unbuildable scale explicitly in the draft rather than faking it. The migration/OpenRewrite
+  scale is network-gated; recording it as REPRO-pending and NOT-built (not stubbing a recipe) keeps
+  FLOOR C honest and avoids asserting an unverified recipe outcome as fact. Same discipline as key 96's
+  opt-in `-Prewrite` profile, applied by omission here since the module doesn't need the recipe to teach.
+- Reused peer 19's exact self-contained shape (own `config/` + own `quality` profile, Checkstyle 10.26.1
+  + SpotBugs 4.9.3.0, plain-class leaker so EI_EXPOSE_REP genuinely fires). Reusing a proven-green peer's
+  toolchain + suppression pattern kept the build offline-green first try after the dead-field fix.
+
+## EXAMPLE-BUILD key 109 (Ch 46 — reference quality stack & gate design; OPENS Part XIV, capstone) — 2026-06-27
+- The capstone's thesis is COMPOSITION, and the assembled stack proved it on fresh code. Wiring Checkstyle
+  + SpotBugs + the JaCoCo branch gate together over a brand-new module immediately caught two real defects
+  a single-tool peer never would: a 123-char Javadoc (LineLength) and a record exposing its mutable
+  `List` (EI_EXPOSE_REP/REP2 on `ShipVerdict.NoShip`). The "layered tools see different things" claim
+  (Ch 3) is best DEMONSTRATED by the build's own findings, not asserted. The fix — `List.copyOf` in a
+  record's compact constructor (Effective Java Item 50) — is a clean teachable idiom; keep it visible.
+- De-duplicate the capstone against its peers as a hard design constraint. Chapter 33 (key 75,
+  `org.acme.cigate`) already makes ONE gate's policy runnable; the capstone added value only by modelling
+  the SYNTHESIS — composing the four-stage ladder + nine-layer stack into one ship/no-ship verdict
+  (`org.acme.refstack`, 9 distinct classes). Re-implementing the single-stage gate would have been padding.
+  Recommend future capstone-expansion add the heavier analyzers (Error Prone, NullAway, ArchUnit, PITest,
+  SCA) as opt-in profiles on THIS module rather than spawning a new one.
+- An assembled-stack module inherits the reactor's already-flagged plugin/engine skews — reference them,
+  don't re-file. Every analyzer/coverage version differing from a SOURCE-PIN top-line (Checkstyle engine
+  10.26.1 vs 13.6.0, SpotBugs 4.9.3.0 vs 4.10.2, JaCoCo 0.8.15 vs unpublished 0.8.16) is already covered
+  by `05_toolchain_plugin_versions.md` / `48_jacoco_pin_0816_unpublished.md`, so FLOOR C stayed clean with
+  zero new flags. Candidate EXAMPLES-GUIDE note. The Spotless format layer stayed a *reference config*
+  (placeholder version, g-j-f 1.35.0) per the key-07 precedent, so the green build asserts no unpinned
+  coordinate (`34_spotless_maven_plugin_version_unresolved.md`).
+- The NEUTRALITY capstone carve-out has a clean code expression: give each `StackLayer` a `named
+  alternative` field and assert in a test that no layer lacks one. "Recommend, name the alternative, never
+  crown" then lives in the type system, not just prose — a reusable shape for any recommend-with-tradeoffs
+  surface.

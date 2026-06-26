@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Reference configuration (NOT wired into this module's live build) for the FORMAT layer of the reference
+  stack: Spotless orchestrating google-java-format, with the new-code-focused ratchetFrom the gate design
+  uses. It is shown here rather than executed because the SOURCE-PIN identifier "Spotless 8.7.0" is the
+  project / Gradle-plugin release line and does not resolve as a Maven-plugin coordinate (the
+  spotless-maven-plugin is versioned on its own line); the Maven-plugin version literal is therefore left
+  as the ${spotless.maven.plugin.version} property to set at pin time, so the build asserts no unpinned
+  coordinate. See 09-flags/34_spotless_maven_plugin_version_unresolved.md.
+
+  google-java-format is pinned to the SOURCE-PIN value (1.35.0, min JDK 21). Pinning the formatter GAV is
+  the chapter's point: a formatter's rendering can shift between its own versions, so it is pinned, not
+  floated. The alternative named in the stack — palantir-java-format — is a different fixed opinion that
+  would slot in as <palantirJavaFormat> in the same place; the choice of formatter matters far less than
+  picking one and automating it, which is why the layer is swappable without disturbing the rest.
+
+  ratchetFrom scopes formatting to files changed since the trunk — the same new-code focus the gate design
+  applies, so the format layer is adoptable on a legacy codebase without rewriting the whole tree at once.
+
+  To activate: set the spotless.maven.plugin.version property to the pinned spotless-maven-plugin version,
+  then `mvn -B spotless:check` (in the gate) and `mvn -B spotless:apply` (rewrite locally / pre-commit).
+-->
+<plugin xmlns="http://maven.apache.org/POM/4.0.0">
+  <!-- tag::spotless-reference[] -->
+  <groupId>com.diffplug.spotless</groupId>
+  <artifactId>spotless-maven-plugin</artifactId>
+  <version>${spotless.maven.plugin.version}</version> <!-- pin at /pin-source -->
+  <configuration>
+    <ratchetFrom>origin/main</ratchetFrom> <!-- format only files changed since trunk -->
+    <java>
+      <googleJavaFormat><version>1.35.0</version></googleJavaFormat>
+    </java>
+  </configuration>
+  <!-- end::spotless-reference[] -->
+</plugin>

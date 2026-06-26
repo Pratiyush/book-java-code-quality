@@ -8,7 +8,7 @@
 
 - **47/47 chapters** drafted (🟢 `draft`).
 - **39** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).
-- **9** need EXAMPLE-BUILD (FLOOR-C compile).
+- **6** need EXAMPLE-BUILD (FLOOR-C compile).
 - **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 42 in lift · 5 need an independent score · 0 approved (in 04-approved/).
 - **DRIFT: ✅ none**.
 
@@ -24,7 +24,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | 1 | 01 | What is code quality? | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 2 | 03 | Readability, maintainability & measuring | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part I — Foundations** |  |  |  |  |  |  |  |  |  |  | |
-| 3 | 05 | The Java quality toolchain map | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 3 | 05 | The Java quality toolchain map | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
 | 4 | 06 | Quality culture, ownership & knowledge | 🟢 | 🔴 | 🟢 | ⚪ | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 5 | 08 | Effective Java & modern Java for quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
@@ -71,7 +71,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
 | 37 | 84 | Code review, coding standards & documentation | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 38 | 85 | Metrics, dashboards & rolling out quality | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
-| 39 | 91 | Refactoring, legacy code & modernization | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 39 | 91 | Refactoring, legacy code & modernization | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 40 | 96 | Automated change & the remediation playbook | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 41 | 97 | Quality of AI-generated code & AI-assisted d… | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 42 | 100 | AI code review & governing AI in the workflow | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
@@ -80,7 +80,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | 44 | 105 | Performance-regression gates | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
 | 45 | 106 | Observability as quality: logging, metrics, … | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
-| 46 | 109 | A reference quality stack & gate design | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 46 | 109 | A reference quality stack & gate design | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 47 | 110 | A code-quality maturity model & adoption roa… | 🟢 | 🟢 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 
 ## Per-Part rollup

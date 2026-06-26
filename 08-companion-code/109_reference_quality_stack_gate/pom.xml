@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 46 companion (So What Do I Actually Set Up?) — Part XIV capstone. This is the one chapter
+    that recommends a concrete stack, framed as ONE defensible setup with each pick's alternative named
+    (the NEUTRALITY capstone carve-out), so the pom assembles the stack rather than teaching one tool.
+    It builds on the proven shape the peer modules already established, de-duplicated against them:
+    Chapter 33 (key 75) makes ONE gate's policy runnable; Chapter 17 (key 35) shows the layered analyzer
+    set; this capstone is the SYNTHESIS — the full build-side stack wired into one module, plus a
+    runnable helper that composes the four-stage gate ladder into a single ship / no-ship verdict.
+
+    The build-side stack assembled here (each row a distinct concern, Chapter 3 layering):
+      * Compiler   — -Xlint:all (inherited from the aggregator), the floor every other tool builds on.
+      * Format     — Spotless + google-java-format, shown as a reference config (config/spotless/) using
+                     a ${spotless.maven.plugin.version} placeholder, because SOURCE-PIN's "Spotless
+                     8.7.0" is the project/Gradle line and the Maven-plugin coordinate is versioned
+                     separately (09-flags/34_spotless_maven_plugin_version_unresolved.md). The placeholder
+                     teaches the config shape truthfully without asserting an unpinned version literal.
+      * Style      — Checkstyle (build-plugin 3.6.0, engine pinned via a plugin-level dependency, the
+                     "two-pin" lesson), curated house ruleset under config/checkstyle/.
+      * Bug-find   — SpotBugs (4.9.3.0) on bytecode, the complementary vantage point to Checkstyle.
+      * Coverage   — JaCoCo: prepare-agent + report run in the DEFAULT build (the observability surface);
+                     the BRANCH gate (check) is part of the assembled `quality` stack.
+
+    Plugin/engine versions match the values the companion-code reactor already builds green offline; each
+    differs from a SOURCE-PIN top-line tool version where Maven Central / the local cache forced it, and
+    each such skew is recorded in 09-flags/ (Checkstyle engine, SpotBugs, JaCoCo 0.8.15-vs-0.8.16). The
+    runnable, unit-tested part of the chapter is the gate composition in org.acme.refstack — `mvn -B
+    -Pquality verify` then runs the same assembled stack locally that the chapter recommends for CI
+    (Chapter 27, local/CI parity).
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>reference-quality-stack-gate</artifactId>
+  <name>Chapter 46 — So What Do I Actually Set Up? (reference-quality-stack-gate)</name>
+
+  <properties>
+    <!--
+      JaCoCo coverage plugin version. SOURCE-PIN.md §3 pins JaCoCo 0.8.16, but that artifact is not
+      published (Maven Central returns 404 for 0.8.16); the reactor builds against 0.8.15, the real
+      latest, which covers the anchor JDK 21 (since 0.8.11) and the forward JDK 25 (since 0.8.14). This
+      matches the key-48 / key-80 modules and is recorded for a deliberate re-pin in
+      09-flags/48_jacoco_pin_0816_unpublished.md.
+    -->
+    <jacoco.version>0.8.15</jacoco.version>
+    <!--
+      Spotless Maven-plugin version is intentionally NOT given a literal here: SOURCE-PIN's "Spotless
+      8.7.0" is the project/Gradle line, and `com.diffplug.spotless:spotless-maven-plugin:8.7.0` does not
+      exist (09-flags/34_spotless_maven_plugin_version_unresolved.md). The format layer is shown as a
+      reference config under config/spotless/ using this placeholder, not wired as a live plugin, so the
+      build asserts no unpinned coordinate. Set the value once the Maven-plugin row is pinned at
+      /pin-source, then promote the reference config to the `quality` profile.
+    -->
+    <spotless.maven.plugin.version>SET-AT-PIN</spotless.maven.plugin.version>
+  </properties>
+
+  <dependencies>
+    <!--
+      JDK-only at runtime: the gate composition is plain Java, and the stack's tools (the analyzers,
+      coverage, security scanners) run in the build/pipeline, not as runtime dependencies of this module.
+      The test libraries are the only additions; their versions are inherited from the companion-code
+      aggregator's dependencyManagement (the junit-bom import and AssertJ), so no version literal lives
+      in this module.
+    -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!--
+        JaCoCo coverage in the DEFAULT build (the observability surface every reference stack carries):
+        prepare-agent binds the agent into the test JVM via the argLine property Surefire consumes, and
+        report writes the HTML/XML coverage report. The agent is injected through argLine, so this module
+        sets no <argLine> of its own (doing so would clobber the agent and silently report 0% coverage,
+        the key-48 trap). The BRANCH-coverage GATE (check) lives in the `quality` profile below, with the
+        rest of the assembled stack, so the fast default build stays fast.
+      -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+        <executions>
+          <execution>
+            <id>jacoco-prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>jacoco-report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <!--
+      The assembled `quality` stack, opt-in via `-Pquality` so the inner-loop build stays fast (the
+      chapter's feedback-latency point: push the heavy checks off the fast path). This profile IS the
+      build-side of the reference stack the chapter recommends — Checkstyle (source), SpotBugs
+      (bytecode), and the JaCoCo BRANCH gate (coverage threshold), each a distinct concern layered on
+      purpose (Chapter 3) and de-duplicated so the signal stays high (Chapter 19). The same shape the
+      peer modules use; this module reads its config from its own config/ dir, keeping it self-contained.
+    -->
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <!--
+            Style layer. The maven-checkstyle-plugin ships an OLD bundled engine, so the pinned engine is
+            overridden via a plugin-level dependency (the "two-pin" lesson: build-plugin version and
+            analyzer-engine version are separate). The ruleset is the small curated house set under this
+            module's config/ dir; the test sources are first-class code and are checked too.
+          -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <!-- tag::checkstyle-two-pin[] -->
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>                         <!-- the build plugin -->
+            <dependencies>
+              <dependency>                                   <!-- override the bundled engine -->
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>                    <!-- the pinned analyzer engine -->
+              </dependency>
+            </dependencies>
+            <!-- end::checkstyle-two-pin[] -->
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            Bug-finding layer. SpotBugs reads bytecode, a different vantage point from Checkstyle's
+            source view, so the two see different things (Chapter 3). This module's model is immutable
+            records and sealed verdicts and exposes no mutable state, so the representation-exposure
+            detectors stay quiet without suppression; the exclude filter is kept (empty) so a future,
+            genuinely-reviewed suppression has a home with a reason rather than being added inline.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            Coverage gate. The JaCoCo agent/report run in the default build; the THRESHOLD is part of the
+            assembled stack, so it lives here. The gate reads BRANCH, not only LINE: a method can reach
+            100% line coverage with a whole branch untested (a line counts as covered when one
+            instruction on it runs). The element/counter/value/minimum fields trace to JaCoCo's
+            check-mojo. The threshold here is illustrative — the gate POLICY (what number, whole-repo vs
+            new-code) is the chapter's gate-design point, modelled in org.acme.refstack, not a universal.
+          -->
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.version}</version>
+            <executions>
+              <execution>
+                <id>jacoco-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <rule>
+                      <element>BUNDLE</element>
+                      <limits>
+                        <!-- tag::jacoco-gate[] -->
+                        <limit>                          <!-- gate on BRANCH, not only LINE -->
+                          <counter>BRANCH</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.80</minimum>
+                        </limit>
+                        <!-- end::jacoco-gate[] -->
+                      </limits>
+                    </rule>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

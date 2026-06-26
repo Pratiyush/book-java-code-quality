@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    No reviewed suppressions are needed here. The module's types are written to keep SpotBugs quiet on
+    their own merits: money is held as integer cents (no floating-point currency), LineItem is an
+    immutable validating record, and Cart takes a defensive copy of its lines, so the representation-
+    exposure detectors stay quiet without a filter entry. The file is kept (empty) so a future, genuinely
+    reviewed false positive has a home — named narrowly by class, method, and pattern, with a reason —
+    rather than being suppressed inline or by disabling a detector wholesale (Chapter 16 / Chapter 19).
+  -->
+</FindBugsFilter>
