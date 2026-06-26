@@ -1,0 +1,37 @@
+# Illustrative branch-protection settings for `main`, as documented, version-controlled configuration.
+#
+# This file is CONFIGURATION, not run by this module's Maven build. It records the SET of protections
+# the chapter teaches — the protections that turn the quality gate from a suggestion into a wall (give
+# it TEETH). GitHub's branch protection / rulesets are a hosted/SaaS surface that SOURCE-PIN.md §5
+# records as "docs as of 2026-06 (rolling SaaS)", so the setting names below are DATED-AT-USE (2026-06),
+# not timeless API facts; re-confirm them against the platform docs at adoption (see 09-flags/). The
+# teaching is the set of protections, not a specific API payload.
+#
+# The required check names here MUST match the CI job names the parity check asserts
+# (org.acme.parity.GateParity) — that lock-step is the local<->CI parity the chapter argues for.
+branch: main
+
+# tag::required-checks[]
+required_status_checks:
+  strict: true                  # up-to-date with base before merge — re-check against the latest main
+  checks:                       # the quality gate (Ch 33) wired as a REQUIRED check: a PR cannot merge red
+    - build-and-lint            # the same gate set CI runs and the pre-commit hooks mirror (parity)
+    - test-and-coverage
+    - static-and-security
+    - quality-gate
+# end::required-checks[]
+
+# tag::linear-history-and-review[]
+required_linear_history: true   # a clean, bisectable history; pairs with a merge queue at high merge rate
+required_pull_request_reviews:
+  required_approving_review_count: 1   # human review (Ch 84) — the OTHER required check
+  dismiss_stale_reviews: true          # a new push dismisses a stale approval
+allow_force_pushes: false       # close the bypass: history cannot be rewritten past the gate
+allow_deletions: false          # the protected branch cannot be deleted out from under the gate
+# end::linear-history-and-review[]
+
+# Honest edge (Chapter 35): over-strict protection — too many required reviewers or checks — slows
+# delivery and breeds bypass requests, the opposite of the goal. Tune to what genuinely must block.
+# A merge queue (re-validating each PR against the latest base plus preceding queued PRs) is enabled
+# separately for a high-merge-rate trunk; it is overkill for a low-merge-rate repo. Branching strategy
+# is context-dependent and the book crowns no model — release-train/regulated/OSS may use more branching.

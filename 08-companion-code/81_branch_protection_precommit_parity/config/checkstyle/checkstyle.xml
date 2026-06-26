@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<!--
+  The same small, curated house ruleset the peer modules use (Chapter 16: curate a ruleset, don't
+  enable everything and flood the build). This is the load-bearing file for this chapter's parity
+  point: it is the SAME ruleset run at the keyboard (the fast Checkstyle hook in .pre-commit-config.yaml)
+  and at the wall (this module's -Pquality build), so the local hook and the CI gate cannot disagree
+  about what "Checkstyle-clean" means. High-signal checks only: naming, import hygiene, braces, and a
+  few coding/structure rules; the finicky, high-noise checks are omitted so the gate stays credible.
+  The column limit (120) is this team's cited choice, not a universal truth (Chapter 6, style-value
+  neutrality).
+-->
+<module name="Checker">
+  <property name="severity" value="error"/>
+  <property name="charset" value="UTF-8"/>
+  <property name="fileExtensions" value="java"/>
+
+  <!-- File-level (no AST needed) -->
+  <module name="LineLength">
+    <property name="max" value="120"/>
+    <property name="ignorePattern" value="^(package|import) .*"/>
+  </module>
+
+  <module name="TreeWalker">
+    <!-- Naming conventions (Chapter 6) -->
+    <module name="PackageName"/>
+    <module name="TypeName"/>
+    <module name="MethodName"/>
+    <module name="MemberName"/>
+    <module name="ParameterName"/>
+    <module name="LocalVariableName"/>
+    <module name="ConstantName"/>
+    <module name="StaticVariableName"/>
+    <module name="LambdaParameterName"/>
+    <module name="PatternVariableName"/>
+    <module name="RecordComponentName"/>
+    <module name="CatchParameterName"/>
+
+    <!-- Import hygiene -->
+    <module name="AvoidStarImport"/>
+    <module name="RedundantImport"/>
+    <module name="UnusedImports"/>
+
+    <!-- Blocks and braces -->
+    <module name="NeedBraces"/>
+    <module name="LeftCurly"/>
+    <module name="RightCurly"/>
+    <module name="EmptyBlock">
+      <property name="option" value="text"/>
+    </module>
+
+    <!-- Modifiers -->
+    <module name="ModifierOrder"/>
+    <module name="RedundantModifier"/>
+
+    <!-- Coding / structure -->
+    <module name="OneTopLevelClass"/>
+    <module name="EqualsHashCode"/>
+    <module name="SimplifyBooleanExpression"/>
+    <module name="EmptyStatement"/>
+    <module name="UpperEll"/>
+    <module name="ArrayTypeStyle"/>
+    <module name="OuterTypeFilename"/>
+  </module>
+</module>

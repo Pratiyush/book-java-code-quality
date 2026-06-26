@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 35 companion (Teeth and Speed — branch protection, merge queues, trunk-based development,
+    and pre-commit hooks with local/CI parity). This is the CONFIG-centric peer shape of Chapter 33
+    (75) and Chapter 27 (27): the artifacts a team adopts are configuration, and the runnable,
+    unit-tested part is the one load-bearing decision the chapter argues for.
+
+    The configuration the chapter teaches lives beside the build, NOT run by it:
+      - config/branch-protection/ruleset.json — a branch-protection ruleset (required status checks,
+        required review, linear history, restricted force-push/deletion) that gives the gate TEETH.
+      - .pre-commit-config.yaml — fast hooks at commit time (format-check, a fast Checkstyle subset,
+        a secrets scan) that give the gate SPEED at the keyboard.
+    Both name hosted/SaaS surfaces (GitHub rulesets, the pre-commit framework + its hook repos), which
+    SOURCE-PIN.md §5 records as rolling/SaaS — so their identifiers are DATED-AT-USE (2026-06), not
+    timeless, and are flagged for pinning at adoption (09-flags/).
+
+    What is runnable and machine-checked here is the chapter's central claim made executable:
+    local <-> CI PARITY, in org.acme.parity.GateParity — the assertion that the gate set a developer
+    runs locally (the pre-commit hooks) is consistent with the gate set CI enforces (the required
+    status checks). That makes "green locally" predict "green in CI" a property a test pins, not a hope.
+    The honest backstop is in the code's comments and its failure path: hooks are FEEDBACK (bypassable,
+    install-dependent), CI + branch protection are the ENFORCEMENT.
+
+    JDK-only at runtime (the parity logic is plain Java); the only added GAVs are the test libraries,
+    whose versions are inherited from the companion-code aggregator. The module is held to its own
+    `quality` gate (Checkstyle + SpotBugs) so it dogfoods the book and the same local check it ships.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>branch-protection-precommit-parity</artifactId>
+  <name>Chapter 35 — Teeth and Speed (branch-protection-precommit-parity)</name>
+
+  <dependencies>
+    <!--
+      JDK-only at runtime: the parity check is plain Java, and the surfaces the chapter names (the
+      git platform's branch protection, the pre-commit framework) run outside this build, not as
+      runtime dependencies here. The test libraries are the only additions, and their versions come
+      from the companion-code aggregator's dependencyManagement — no version literal lives here.
+    -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    The static-analysis gate (Chapter 16), opt-in via `-Pquality` so the default build stays fast. This
+    profile IS one half of the parity the chapter teaches: it runs the SAME Checkstyle the
+    .pre-commit-config.yaml runs at the keyboard, so the local hook and the build agree. The
+    maven-checkstyle-plugin ships an OLD bundled engine; it is overridden to the pinned engine via a
+    plugin-level dependency (the build plugin and the analyzer engine are separate versions). The module
+    is a direct child of the companion-code root, which pins no quality profile of its own, so the
+    profile is declared here (the same shape the peer modules use) and reads the config under this
+    module's own config/ dir — keeping the module self-contained.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16), complementary to Checkstyle's source
+            view. This module's model types are immutable records and an unmodifiable set, and the
+            parity check exposes no mutable state, so the representation-exposure detectors stay quiet
+            without suppression. The exclude filter is kept (empty) so a future, genuinely-reviewed
+            suppression has a home with a reason, rather than being added inline.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

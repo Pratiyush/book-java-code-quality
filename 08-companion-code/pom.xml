@@ -33,6 +33,7 @@
     <module>27_checkstyle</module>
     <module>35_sonarqube_ide_layered_stack</module>
     <module>38_custom_rules_codegen_lombok</module>
+    <module>39_managing_findings</module>
     <module>42_unit_testing_assertions_mocking</module>
     <module>45_integration_property_based_testing</module>
     <module>48_coverage_mutation_effectiveness</module>
@@ -47,6 +48,8 @@
     <module>73_security_in_ci</module>
     <module>75_ci_pipeline_quality_gates</module>
     <module>80_coverage_pr_automation_platforms</module>
+    <module>81_branch_protection_precommit_parity</module>
+    <module>83_release_quality</module>
     <module>101_performance_profiling_memory_benchmarking</module>
     <module>105_performance_regression_gates</module>
     <module>106_observability_logging_metrics_feedback</module>

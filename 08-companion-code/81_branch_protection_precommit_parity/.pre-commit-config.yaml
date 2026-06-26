@@ -1,0 +1,38 @@
+# Pre-commit hooks that run the SAME fast checks CI runs, at `git commit` time — the SPEED half of the
+# chapter: the first time a developer meets the gate is at the keyboard, in seconds, not after a ten-minute
+# CI round-trip. The discipline is FAST CHECKS ONLY: format, a quick lint subset, a secrets scan. The slow
+# checks (full SpotBugs, the test suite, a deep scan) stay in CI (Chapter 33), not this hook — a hook that
+# runs the full suite makes committing painful and gets removed.
+#
+# This file is CONFIGURATION, managed by the pre-commit framework (SOURCE-PIN.md §5: pre-commit, latest
+# 2026-04 release). It is NOT run by this module's Maven build. The framework and its hook repos are
+# hosted/SaaS surfaces pinned by a moving `rev:` tag; SOURCE-PIN.md §5 records these as rolling, so each
+# `rev:` below is a DATED-AT-USE placeholder (2026-06), not an asserted version — set it to the release
+# confirmed at adoption (see 09-flags/).
+#
+# HONEST BACKSTOP (the chapter's central distinction): these hooks are FEEDBACK, not enforcement.
+# `git commit --no-verify` skips them, and they run only on machines that installed them — so they can
+# never be the gate. CI + branch protection (config/branch-protection/ruleset.yml) remain the ENFORCEMENT
+# that re-runs everything regardless. The hooks make the gate a formality; they do not replace it.
+#
+# PARITY: each hook below mirrors a check in the CI fast stage, so "green locally" predicts "green in CI".
+# The Checkstyle config is THE SAME file this module's `-Pquality` build uses (config/checkstyle), and the
+# format and secrets checks mirror the format (Chapter 6) and secrets (Chapter 31) stages CI runs.
+repos:
+  - repo: local
+    hooks:
+      # tag::precommit-fast-hooks[]
+      - id: spotless-format-check         # format (Chapter 6) — the same formatter CI enforces
+        name: spotless format check
+        entry: ./mvnw -B spotless:check    # the WRAPPER (Chapter 27): identical command local and in CI
+        language: system
+        pass_filenames: false
+      - id: checkstyle-fast               # a FAST Checkstyle subset — the same ruleset the build runs
+        entry: ./mvnw -B -Pquality checkstyle:check
+        language: system
+        pass_filenames: false                # name defaults to the id when omitted
+      # end::precommit-fast-hooks[]
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: VERSION_PINNED_AT_ADOPTION        # dated-at-use 2026-06; set to the confirmed gitleaks release
+    hooks:
+      - id: gitleaks                        # secrets scan (Chapter 31) — blocks a commit that adds a secret

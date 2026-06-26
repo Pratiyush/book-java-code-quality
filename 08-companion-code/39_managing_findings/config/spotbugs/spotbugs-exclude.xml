@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    The baseline (Chapter 39, lever 3: freeze the findings that exist TODAY so the gate reacts only to
+    CHANGE). A SpotBugs excludeFilterFile excludes any finding matched by a <Match> from the report, so a
+    <Match> scoped to the legacy class freezes the legacy finding without freezing anything else. This is
+    the precondition for turning a gate on over a noisy codebase at all: the build goes green not because
+    the debt is gone, but because the past is frozen and only new findings can fail it.
+
+    The honest edge the chapter names: a baseline that freezes a finding also freezes any real bug hiding
+    behind the same match, and the team stops seeing it. The match is therefore kept as narrow as the bug
+    pattern allows (one class, the named patterns), and it is version-controlled here so it shows up in
+    PRs and can be reviewed and periodically retired — debt about debt, not a place to hide findings.
+
+    Note the division of labour with the source-level control: the one reviewed FALSE POSITIVE is NOT
+    listed here. It is suppressed at its exact site with @SuppressFBWarnings(value, justification) in
+    PriceFormatter, so the reason travels with the code. This file holds only the legacy baseline, so the
+    two kinds of silencing (a frozen past vs. a judged false positive) stay visibly distinct.
+  -->
+
+  <!--
+    Legacy baseline. LegacyPriceTable predates the gate and exposes its internal mutable array directly
+    from rawTiers(), so at this module's threshold (Low/Max) SpotBugs raises EI_EXPOSE_REP (and the
+    store-side EI_EXPOSE_REP2 for the array taken in via the constructor). The finding is real debt, not a
+    false positive — the right long-term fix is the defensive copy the clean PricingCatalog already makes
+    (Arrays.copyOf / List.copyOf), and this baseline DEFERS that fix rather than pretending it is done.
+    Verified load-bearing: with this <Match> removed the SpotBugs gate goes red on LegacyPriceTable.
+    EI_EXPOSE_REP is a real pattern in the pinned engine (category MALICIOUS_CODE). The clean class is
+    untouched here, so a NEW EI_EXPOSE_REP added to PricingCatalog is reported and fails the build — the
+    ratchet the chapter describes.
+  -->
+  <Match>
+    <Class name="org.acme.findings.LegacyPriceTable"/>
+    <!-- tag::baseline-match[] -->
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    <!-- end::baseline-match[] -->
+  </Match>
+</FindBugsFilter>

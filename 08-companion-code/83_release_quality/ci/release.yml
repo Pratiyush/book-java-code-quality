@@ -1,0 +1,80 @@
+# Illustrative release workflow for the book's quality stack (Chapter 36 — When Quality Meets Reality).
+#
+# This file is CONFIGURATION, not run by this module's Maven build. It shows the release-stage shape the
+# chapter teaches: the final release GATES on the artifact (every CI gate green on the release commit, a
+# release version honouring semver, a changelog entry, sign + SBOM, a smoke test on the staged build),
+# then the tag, then a progressive rollout (canary / feature flag) and the post-release feedback loop.
+# The gate step runs the SAME decision a developer runs locally — `mvn -Pquality verify` exercises the
+# release-readiness logic (org.acme.release.ReleaseReadiness) this workflow's gate mirrors, and
+# release/release-gate.sh is the shell form of the same checks (Chapter 27, local/CI parity).
+#
+# Action and tool versions are pinned where SOURCE-PIN.md pins them (Java 21 anchor; the analyzers in the
+# pom). The GitHub Actions used here (actions/checkout, actions/setup-java) are hosted/SaaS — SOURCE-PIN
+# §5 records them as "docs as of 2026-06 (rolling)", so they are DATED AT USE (2026-06), not timeless;
+# pin each to a release tag and a digest when this is adopted. The Maven release/versions plugins a real
+# tag-and-deploy step would invoke are NOT separately pinned by SOURCE-PIN — see
+# 09-flags/83_release_versioning_plugin_versions_unpinned.md.
+name: release
+
+on:
+  push:
+    tags: ["v*"]                  # a release runs when a version tag is pushed
+  workflow_dispatch:              # or on demand, for a manually-cut release
+
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------------------------------------------
+  # The release gate: the last check before the artifact ships. It builds green, then asserts the
+  # chapter's release preconditions. Any failed required check is a hard stop (Chapter 36) — the release
+  # does not go out until it is fixed, mirroring org.acme.release.ReleaseReadiness.
+  # ---------------------------------------------------------------------------------------------------
+  release-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4          # SaaS action, dated-at-use 2026-06 (pin to a digest at adoption)
+      - uses: actions/setup-java@v4        # SaaS action, dated-at-use 2026-06
+        with:
+          distribution: temurin
+          java-version: "21"               # SOURCE-PIN.md anchor LTS (Java 21)
+      - name: Build green on the release commit
+        run: mvn -B -Pquality verify       # every CI gate green — the local equivalent of the release gate
+      # tag::release-gate-step[]
+      - name: Release-readiness gate (assert the preconditions before tagging)
+        env:
+          RELEASE_VERSION: ${{ github.ref_name }}   # the version being released, from the tag
+          CI_GREEN: "true"                          # the build above is green
+          SIGNED_WITH_SBOM: "true"                  # set by the sign + SBOM step (Part VII, key 66)
+          SMOKE_TESTED: "true"                      # set by the staged-build smoke test
+        run: ./release/release-gate.sh              # hard stop if any required check fails
+      # end::release-gate-step[]
+
+  # ---------------------------------------------------------------------------------------------------
+  # After the gate: sign + generate the SBOM, then roll out progressively. Canary releases to a small
+  # percentage of traffic and promotes or rolls back on observability signals (Part XIII); a feature flag
+  # decouples deploy from release. A bad change is then a flag flip or traffic switch away from contained
+  # — a small, fast-rolled-back incident, not an outage — which drives the DORA stability metrics (key 85).
+  # ---------------------------------------------------------------------------------------------------
+  sign-and-roll-out:
+    needs: release-gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sign + generate SBOM
+        run: echo "cosign sign + CycloneDX SBOM (Part VII, key 66) — verifiable, incident-ready artifact"
+      - name: Canary / feature-flag rollout
+        run: echo "release to a small % of traffic; watch metrics; promote or roll back (org.acme.release.FeatureFlag)"
+
+  # ---------------------------------------------------------------------------------------------------
+  # The post-release feedback loop (shift-right closing the loop with shift-left). Error tracking and SLOs
+  # surface a regression; the response is a fix + a test (Chapter 20) + sometimes a new gate (Chapter 26),
+  # and the shipped artifact's dependencies are re-scanned for newly-disclosed CVEs (Part VII, key 65).
+  # ---------------------------------------------------------------------------------------------------
+  post-release-monitor:
+    needs: sign-and-roll-out
+    if: always()                  # the loop runs whether the rollout promoted or rolled back
+    runs-on: ubuntu-latest
+    steps:
+      - name: Monitor + feed regressions back into a test/gate
+        run: echo "error tracking + SLOs (Part XIII); a regression becomes a fix + a test + a new gate"
