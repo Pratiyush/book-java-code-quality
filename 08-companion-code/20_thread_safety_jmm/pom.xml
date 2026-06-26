@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 13 companion (The Bug That Passes Every Test). The race that cannot be tested for, made
+    buildable: a deliberately data-racy shared counter (no happens-before edge), then the corrected
+    forms via (a) synchronized, (b) AtomicLong, (c) final-field safe publication, and the
+    initialization-on-demand holder idiom; plus a @GuardedBy("lock")-documented field whose locking
+    Error Prone can machine-check. Zero runtime dependencies — JDK only — so it dogfoods the book and
+    builds fast and green. The detectors are exercised by the `quality` profile (Checkstyle + SpotBugs,
+    Chapter 16): the racy counter is the one reviewed SpotBugs suppression, named and pointed at the
+    test that proves the lost-update the prose describes.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>thread-safety-jmm</artifactId>
+  <name>Chapter 13 — The Bug That Passes Every Test (thread-safety-jmm)</name>
+
+  <dependencies>
+    <!--
+      Error Prone annotations (SOURCE-PIN.md §2: com.google.errorprone, the "latest 2.x" line, exact
+      patch confirmed at companion-build = 2.36.0, the build SOURCE-PIN already cites in the NullAway
+      row). The single version literal here is the one pinned GAV the @GuardedBy("lock") field needs —
+      not a BOM or version-set. This artifact carries com.google.errorprone.annotations.concurrent
+      .GuardedBy, the @GuardedBy annotation the chapter recommends; Error Prone's GuardedBy check (and
+      SpotBugs's inconsistent-synchronization detector) read it to confirm the locking discipline, so
+      the annotation that documents the lock is the same one a tool verifies — the chapter's point made
+      concrete. The annotation is CLASS-retained, so `provided` scope keeps it on the compile path only
+      and the module's runtime stays JDK-only like the rest of the companion code.
+    -->
+    <dependency>
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>error_prone_annotations</artifactId>
+      <version>2.36.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The maven-checkstyle-plugin ships an OLD bundled engine (Checkstyle 9.3); we override it to
+    the pinned engine via a plugin-level dependency — the "two-pin" lesson (the build plugin and the
+    analyzer engine are separate versions). This module is a direct child of the companion-code root,
+    which pins no quality profile of its own, so the profile is declared here (the same shape the
+    sibling chapter modules use) and reads the config under this module's own config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16) — complementary to Checkstyle's source
+            view, and the half that carries the Multithreaded-correctness (MT_CORRECTNESS) detectors
+            this chapter turns on. Every correctly-synchronized type in the module stays quiet; only
+            the named racy counter-example carries a finding, suppressed narrowly with a reason in the
+            exclude filter and pointed at the test that demonstrates why it matters.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

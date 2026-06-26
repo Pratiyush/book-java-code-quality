@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    Reviewed suppressions (Chapter 16: suppress with a reason, never disable a whole detector).
+
+    This module ships ONE deliberate counter-example, InconsistentlySyncedCounter, whose
+    inconsistent-synchronization finding is the chapter's teaching point: SpotBugs reports the unguarded
+    read of a field that every write holds a lock for as IS2_INCONSISTENT_SYNC (the MT_CORRECTNESS
+    category), and Error Prone's @GuardedBy check rejects the same access at compile time. The class
+    exists precisely so the build SEES that shape, so the finding is expected, not a defect to fix in
+    place — the narrowly-scoped suppression below keeps the `quality` build green while leaving the
+    detector fully on for every other class. The fix the chapter recommends (guard every access, or make
+    the field an AtomicLong) lives in GuardedCounter, which carries no suppression because it has no
+    finding. A genuine, unreviewed finding anywhere else still fails the build.
+  -->
+  <Match>
+    <Class name="org.acme.vthreads.InconsistentlySyncedCounter"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+</FindBugsFilter>

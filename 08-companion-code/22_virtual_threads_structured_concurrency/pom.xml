@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 22 companion (Cheap Threads, Same Rules). Puts the chapter's virtual-thread surfaces into
+    one buildable module on the Java 21 anchor: a newVirtualThreadPerTaskExecutor() I/O fan-out (the GA,
+    stable surface from JEP 444); the pinning trap (a synchronized region around a blocking call, which
+    pins the carrier on Java 21) beside its ReentrantLock fix (which does not pin); a deliberately
+    inconsistently-synchronized counter (the shape SpotBugs reports as IS2_INCONSISTENT_SYNC and Error
+    Prone @GuardedBy rejects) whose unguarded access races even on virtual threads; a deterministic
+    latch-driven concurrency harness that exposes that race repeatably; and the structured-concurrency
+    CONCEPT expressed in stable APIs, with the preview StructuredTaskScope flagged but never compiled.
+    Zero runtime dependencies — JDK only — so it dogfoods the book and builds fast and green on the
+    pinned JDK 21.0.11. The contracts are machine-checked by the `quality` profile (Checkstyle +
+    SpotBugs, Chapter 16).
+
+    Version discipline (SOURCE-PIN.md): virtual threads are GA at the anchor (JEP 444, Java 21), with no
+    preview flag needed. Structured concurrency is preview through Java 25 (JEP 453 to JEP 505), and its
+    API shape changed across previews (Java 21 constructors with ShutdownOnFailure/ShutdownOnSuccess to
+    Java 25 StructuredTaskScope.open(Joiner...) static factories), so no companion code depends on it.
+    JEP 491 (Java 24) removed synchronized pinning; on this Java 21 anchor synchronized still pins.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>virtual-threads-structured-concurrency</artifactId>
+  <name>Chapter 22 — Cheap Threads, Same Rules (virtual-threads-structured-concurrency)</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays fast.
+    The maven-checkstyle-plugin ships an OLD bundled engine (Checkstyle 9.3); we override it to the
+    pinned engine via a plugin-level dependency — the "two-pin" lesson (the build plugin and the analyzer
+    engine are separate versions). This module is a direct child of the companion-code root, which pins
+    no quality profile of its own, so the profile is declared here (the same shape the Chapter 09 and
+    Chapter 19 modules use) and reads the config under this module's config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16) — complementary to Checkstyle's source
+            view, and the detector that carries this chapter's concurrency catch. Where the Chapter 09
+            module's filter is empty, this module ships a DELIBERATE counter-example
+            (InconsistentlySyncedCounter) whose multithreaded-correctness finding (IS2_INCONSISTENT_SYNC)
+            is the teaching point, so the exclude filter carries one narrowly-scoped, reasoned
+            suppression for exactly that class and bug. That is the chapter's own "suppress with a
+            documented reason, never disable a detector" discipline (Chapter 16) made concrete — not a
+            way to hide a real defect. Every other class defends its state and carries no suppression.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <!--
+                Threshold is Low here, where the sibling modules use Medium. This chapter's subject is
+                catching concurrency defects, and SpotBugs grades its multithreaded-correctness findings
+                as low-confidence: IS2_INCONSISTENT_SYNC is reported at Low priority and is filtered out
+                at Medium. Lowering the threshold is what makes the detector SEE the deliberate
+                inconsistently-synchronized counter — itself the chapter's point that the MT detector is
+                heuristic ("various sources of inaccuracy", SpotBugs docs), so its findings sit at a
+                confidence tier a default gate may skip. The one expected finding is suppressed by class
+                in config/spotbugs/spotbugs-exclude.xml with a reason; everything else must stay clean.
+              -->
+              <threshold>Low</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
