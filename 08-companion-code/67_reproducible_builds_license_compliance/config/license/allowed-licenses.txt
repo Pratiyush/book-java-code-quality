@@ -1,0 +1,27 @@
+# Allowed-license policy (the chapter's allow/deny gate, externalized as reviewable config).
+#
+# Consumed by the license-maven-plugin add-third-party goal via <includedLicenses> (a file:// URL) in the
+# -Pquality profile. With <failOnBlacklist>true</failOnBlacklist>, a dependency whose DECLARED license is
+# not on this list FAILS the build — a fitness function (Chapter 26) for legal risk, run in the same build
+# as every other gate. Each non-comment line is an EXACT license name (the plugin compares the detected
+# license string for equality, not as a regex; lines starting with '#' are comments and are ignored). The
+# names below are the SPDX identifiers (Chapter's "normalize to SPDX") plus the common longer-form names the
+# plugin reads from a POM's <licenses> block, so a dependency that declares either form is recognised.
+#
+# This list is tuned to THIS product's distribution mode (the chapter's honest limit): a permissive-only
+# allow-list suits a redistributed binary; an internal-only tool might also allow weak copyleft. The set is
+# a distribution-mode decision, not a universal truth — and the gate reports DECLARED licenses, it does not
+# interpret obligations. It is FACTUAL, NOT LEGAL ADVICE: license strategy is a question for legal counsel.
+#
+# Permissive licenses (attribution only) — the allow-list for a redistributed binary. Strong/weak copyleft
+# (GPL/AGPL/LGPL/EPL/MPL) is NOT listed, so any such declaration fails the gate here.
+# tag::license-allow-list-file[]
+Apache-2.0
+Apache License, Version 2.0
+The Apache Software License, Version 2.0
+MIT
+MIT License
+BSD-2-Clause
+BSD-3-Clause
+ISC
+# end::license-allow-list-file[]

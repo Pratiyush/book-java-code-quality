@@ -41,9 +41,12 @@
     <module>55_enforcing_architecture_fitness_functions</module>
     <module>62_build_dependency_hygiene</module>
     <module>65_dependency_scanning_sbom_supply_chain</module>
+    <module>67_reproducible_builds_license_compliance</module>
     <module>69_secure_coding_owasp</module>
     <module>70_sast_secrets_detection</module>
+    <module>73_security_in_ci</module>
     <module>75_ci_pipeline_quality_gates</module>
+    <module>80_coverage_pr_automation_platforms</module>
     <module>101_performance_profiling_memory_benchmarking</module>
     <module>105_performance_regression_gates</module>
     <module>106_observability_logging_metrics_feedback</module>

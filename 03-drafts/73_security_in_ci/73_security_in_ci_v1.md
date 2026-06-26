@@ -62,6 +62,22 @@ The ordering principle is the same cheap-first, fail-fast logic from the analyze
 
 > **CONCEPT** *Run the cheap, common-failure checks earliest.* **Secrets scanning** goes at pre-commit (the only stage that *prevents* a leak) and again in CI. **SAST and SCA** run at the **pull request**, fast enough for every change, blocking on high severity. **DAST and IAST** run in a **later pipeline stage against staging**, because they need a deployed app and are slow; they gate the release, not the PR. Container and infrastructure-as-code scanning slot in where applicable. The cheap security feedback arrives in minutes on the PR; the expensive dynamic feedback gates the release. The slow scan's cost never falls on every commit.
 
+Wired into a pipeline, secrets scanning is the first stage, running before any other so a leak is caught before it spreads:
+
+<!-- include: 73_security_in_ci/ci/security-pipeline.yml#pre-commit-secrets -->
+
+The fast static trio then runs on the pull request, where blocking only on high severity keeps the feedback in minutes:
+
+<!-- include: 73_security_in_ci/ci/security-pipeline.yml#pr-fast-trio -->
+
+Container and infrastructure-as-code scanning slot in for the teams that ship them, and skip cleanly for the teams that do not:
+
+<!-- include: 73_security_in_ci/ci/security-pipeline.yml#container-iac-scan -->
+
+The dynamic pair runs last, against staging, gating the release rather than the pull request because it needs a deployed app:
+
+<!-- include: 73_security_in_ci/ci/security-pipeline.yml#staging-dynamic -->
+
 This is the **DevSecOps** frame: security is not a separate team's late-stage audit but everyone's responsibility, shifted left (Chapter 1) and automated as gates in the same pipeline as every other quality check, with the SBOM and provenance layer (Part VII) covering the supply side. The security gate is, in the language of Chapter 26, a *portfolio of security fitness functions* — each testing type an automated, continuous assessment of one security characteristic.
 
 ### The policy that makes it stick: block vs warn
@@ -69,6 +85,18 @@ This is the **DevSecOps** frame: security is not a separate team's late-stage au
 Whether the gate survives is a *policy* decision, not a tool decision. Turn every finding into a hard block and the result is the hook's eight-hundred-finding dead gate. The discipline is to **block narrowly and warn broadly**:
 
 > **CONCEPT** *Block high-severity new findings; triage the rest.* The gate should **fail the build only on high-severity findings in new or changed code**, applying the clean-as-you-code scoping from Chapter 19 to security: a pull request does not get blocked on a thousand pre-existing low-severity findings it did not introduce. Everything else **warns** and is **triaged**, routed to a backlog or to a security reviewer who decides. Security findings in particular often go to a human reviewer rather than pure auto-block, because exploitability is a judgment (an unreachable sink, a non-security `MD5`) that a severity number alone does not capture. The trusted gate fails *only* when something genuinely new and serious is wrong; that precision is what keeps it from being disabled.
+
+That policy is externalized per profile rather than compiled in, so the feature-branch gate and the release gate can differ:
+
+<!-- include: 73_security_in_ci/src/main/java/org/acme/secgate/SecurityGatePolicy.java#gate-policy -->
+
+The verdict it returns is three-way, not two, and the middle path is what routes a finding to a reviewer instead of auto-blocking:
+
+<!-- include: 73_security_in_ci/src/main/java/org/acme/secgate/SecurityGateDecision.java#block-vs-warn -->
+
+The gate aggregates the findings every stage produced, scopes them to new code, then blocks only on the new, high-severity, exploitable ones:
+
+<!-- include: 73_security_in_ci/src/main/java/org/acme/secgate/SecurityGate.java#aggregate-and-gate -->
 
 The false-positive discipline from Chapter 19 multiplies here: false positives compound *across* the stack (SAST noise plus SCA noise plus secrets-entropy noise), so without ownership, triage, and justified suppression, the combined security gate becomes pure noise faster than any single tool would. A gate with a credible, narrow blocking policy and a triaged warning stream is one the team keeps green honestly; a gate that blocks on everything is one the team blinds.
 
@@ -121,6 +149,10 @@ This chapter built the *security* gate and in doing so kept describing something
 - **Routing** — SAST → Ch 31 (70); SCA → Ch 28 (65); secrets → Ch 31 (71); SBOM/supply chain → Ch 28 (66); secure-coding/threat-modeling → Ch 30 (69) + review key 84; **general quality gate (pipeline/policy/performance) → Part IX Ch 33 (75/76/79)**; clean-as-you-code/new-code → Part IX (80); suppression/triage → Ch 19 (39); fitness functions → Ch 26 (56); release/staging → key 83; shift-left → Ch 1 (06). SOURCE-PIN: OWASP DevSecOps/ASVS, ZAP, tool rows TO-PIN.
 
 **Companion module (spec — ⚠ EXAMPLE-BUILD = PENDING; toolchain READY; tools + CI network-gated → REPRO PENDING-RUNTIME):** a CI workflow (GitHub Actions or generic) running **secrets** (gitleaks, Ch 31) + **SAST** (FindSecBugs/Semgrep, Ch 31) + **SCA** (OWASP Dependency-Check, Ch 28) over the flagship, with a **severity-threshold block on NEW findings only** and a warn/triage stream for the rest. **Failure path:** a seeded high-severity new finding (an injection sink or a planted key) fails the gate; pre-existing low-severity findings only warn. **Honest edges (comments):** the gate is scoped to high-severity-new to avoid fatigue (blocking-all would be disabled — Ch 19); a deliberately-included broken-access-control flaw is NOT caught by any tool (needs review, Ch 84); the green gate means "no detected known issue", not "secure". DAST is described (needs a deployed app) but the runnable example is the static trio; this is the security instance of the Part IX general gate.
+
+**Companion module (BUILT — `08-companion-code/73_security_in_ci/`, `mvn -B -Pquality verify` green: 14 tests, 0 Checkstyle, 0 SpotBugs).** Two artifacts in lock-step: an illustrative CI pipeline (`ci/security-pipeline.yml`) wiring the five security stages fast-to-slow with their fail thresholds, and a runnable, unit-tested gate **policy** (`org.acme.secgate.SecurityGate`) — the local equivalent — that aggregates the stages' findings into a three-way decision (block / route-to-review / pass), scoped to new code. The failure path is the sealed `SecurityGateDecision`: a new exploitable HIGH finding blocks; a severe-but-unproven or sub-blocking finding routes to a security reviewer; pre-existing debt passes. The green-gate-is-not-secure edge is a test: a broken-access-control flaw that no stage produces lets the gate pass. The SaaS/unpinned tools in the YAML (GitHub Actions, gitleaks, CodeQL, OWASP ZAP) are dated-at-use 2026-06 and flagged (`09-flags/73_security_pipeline_saas_dated_at_use.md`); DAST against staging is REPRO PENDING-RUNTIME (needs a live deployment).
+
+**Snippet tags:** `pre-commit-secrets`, `pr-fast-trio`, `container-iac-scan`, `staging-dynamic` (security stages, `ci/security-pipeline.yml`); `gate-policy` (`SecurityGatePolicy.java`), `block-vs-warn` (`SecurityGateDecision.java`), `aggregate-and-gate` (`SecurityGate.java`) — the gate policy. Seven tag-regions, each ≤9 lines, displayed via `<!-- include: -->` markers; the printed listing and the buildable file are one artifact.
 
 ## Next chapter teaser
 

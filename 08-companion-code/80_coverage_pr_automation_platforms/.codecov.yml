@@ -1,0 +1,37 @@
+# Illustrative PR coverage-platform configuration (Chapter 34 — Making the Gate Real for the Developer).
+#
+# This file is CONFIGURATION, not run by this module's Maven build. It shows how a PR coverage platform is
+# configured to gate NEW code and to comment on the diff — the chapter's two disciplines (new-code focus,
+# diff-scoping) expressed as platform config. Codecov's schema is shown; Coveralls and SonarQube PR
+# analysis express the same two ideas (a diff/patch threshold + a PR comment) in their own schemas.
+#
+# DATED-AT-USE 2026-06: Codecov is a hosted service with no SOURCE-PIN.md version row; its config schema is
+# continuously released. The keys below use Codecov's documented schema as of 2026-06 and are NOT asserted
+# as timeless. No platform version is pinned here. See 09-flags for the dated-at-use convention.
+
+coverage:
+  status:
+    # project = the WHOLE-repo number. Kept informational so it does NOT block: a whole-repo percentage
+    # that blocks gets gamed with assertion-free tests (Goodhart). It is a dashboard signal, the ratchet's
+    # job; the runnable gate (org.acme.coverage.CoverageGate) treats overall as warn/ratchet, never a hard bar.
+    project:
+      default:
+        informational: true        # report the trend; do not fail the build on the whole-repo number
+
+    # tag::codecov-patch-threshold[]
+    patch:                          # patch = the diff = NEW/changed code only (clean-as-you-code)
+      default:
+        target: 80%                 # new/changed lines must clear 80% — the diff-coverage gate, not whole-repo
+        threshold: 0%               # no slack: a PR under the new-code bar fails its status check
+    # end::codecov-patch-threshold[]
+
+# tag::codecov-bot-comment[]
+comment:
+  layout: "condensed_header, diff, files"   # show the DIFF coverage first — comment scoped to what changed
+  behavior: once                            # update one comment in place; do not spam the PR on every push
+  require_changes: true                     # post only when coverage actually changed — silence = no noise
+# end::codecov-bot-comment[]
+
+# Diff-scoping note: both blocks above scope the gate and the comment to the PR's changed lines. A
+# whole-repo coverage status would block every PR on inherited debt; whole-repo findings posted as PR
+# comments are noise developers mute, and a muted bot is a disabled gate (Chapter 34).

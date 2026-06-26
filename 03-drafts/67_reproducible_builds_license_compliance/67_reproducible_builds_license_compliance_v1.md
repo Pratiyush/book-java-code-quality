@@ -61,7 +61,19 @@ The obstacle is that a naive Java build embeds non-determinism in several specif
 | Locale / timezone / encoding differences | fix `LANG`/`TZ`/encoding in the build environment |
 | Absolute paths, embedded build dates in generated code | avoid embedding build-time/environment data |
 
+The first two fixes are a fixed build timestamp and a plugin that strips the rest. In the companion module's `pom.xml`, the timestamp is one inherited property:
+
+<!-- include: 67_reproducible_builds_license_compliance/pom.xml#repro-timestamp -->
+
+and the reproducible-build plugin removes the residual variability (archive entry order, volatile manifest stamps) that the timestamp alone does not cover:
+
+<!-- include: 67_reproducible_builds_license_compliance/pom.xml#repro-plugin -->
+
 > **CONCEPT** *Verify by rebuilding.* Reproducibility is not assumed — it is *checked*: build the artifact twice, on a different machine or at a different time, and `diff` the outputs (Maven's `artifact:compare` automates the comparison). Publishing checksums and signatures then lets others perform the same verification, which is the link to Chapter 28's provenance: a reproducible build is what lets a third party confirm a signed artifact genuinely came from the claimed source.
+
+That check — build twice, compare the bytes — is a digest comparison, modelled in the companion module's `ReproducibleArtifact`:
+
+<!-- include: 67_reproducible_builds_license_compliance/src/main/java/org/acme/repro/ReproducibleArtifact.java#repro-verify -->
 
 The strong form is **hermeticity**: a build that depends *only* on declared, pinned inputs, with no network fetch of moving dependencies at build time. Hermeticity is the basis for the higher SLSA levels. The honest limits are real. Achieving truly bit-identical output can require chasing obscure non-determinism (a plugin that embeds a timestamp undetected), with diminishing returns for a purely internal app that no one will independently verify. Different JDK builds and vendors can still produce different bytes, so full reproducibility may mean pinning the JDK itself. Reproducibility proves *integrity and determinism*, not *correctness*: a reproducible build of buggy code is still buggy. And it is ongoing discipline: one unpinned plugin or a new timestamp-embedding tool silently breaks it, which is why reproducibility needs its own verify step in CI to *stay* reproducible.
 
@@ -74,9 +86,21 @@ The same dependency tree carries a second kind of integrity concern, and it read
 - **Gate on policy.** Define an allow/deny policy (e.g. ban GPL in a proprietary shipped product), and a tool — `license-maven-plugin`, FOSSA, ScanCode — checks every dependency's license against it and **fails the build** on a violation. This is a fitness function (Chapter 26) for legal risk, run in the same build as every other gate.
 - **Produce attributions.** Permissive licenses require attribution; the `THIRD-PARTY`/`NOTICE` file (aggregated from the same license data) is automatable from the inventory.
 
+In the companion module's `pom.xml`, the `license-maven-plugin` does the gate-and-attribute step in one execution — fail on a license outside the allow-list, and write the `THIRD-PARTY` file:
+
+<!-- include: 67_reproducible_builds_license_compliance/pom.xml#license-gate -->
+
+The allow-list itself is externalized, reviewable config — a list of permitted SPDX identifiers tuned to the product's distribution mode:
+
+<!-- include: 67_reproducible_builds_license_compliance/config/license/allowed-licenses.txt#license-allow-list-file -->
+
 > **CONCEPT** *Obligation depends on how the product is distributed — and this is not legal advice.* The *same* license can be fine in one context and a problem in another: GPL in an internal tool that is never distributed is low-risk; GPL in a proprietary SDK that ships is a serious obligation; AGPL reaches even a SaaS deployment. A blanket deny-list therefore blocks harmless dependencies, and the policy must be tuned to *how the product is distributed*. Critically, license tools detect *declared* licenses; they do **not** interpret specific legal obligations. The book states the categories factually; license *strategy* is a question for legal counsel, not a build plugin.
 
 The limits compound the "not legal advice" caution. Detection is imperfect: missing, ambiguous, multi-licensed, relicensed, and dual-licensed components confuse scanners, and a POM-declared license is sometimes not the actual one, so high-risk findings need human verification. The dangerous case is the **transitive surprise**: a permissive *direct* dependency pulling a copyleft *transitive* one. That is why the policy must scan the full graph (Chapter 27), not just direct dependencies. License is also orthogonal to security: a permissively-licensed dependency can still be vulnerable (Chapter 28) or unmaintained; a clean license report is not a clean dependency.
+
+The decision the gate makes on each component is a single check against that tuned set, modelled in the companion module's `LicensePolicy`:
+
+<!-- include: 67_reproducible_builds_license_compliance/src/main/java/org/acme/repro/LicensePolicy.java#license-allow-list -->
 
 ## Deep dive: two facets of one integrity, both read off the pinned tree
 
@@ -127,7 +151,7 @@ Part VII secured the *build and the tree it assembles* — pinned, current, scan
 - **License compliance** (key 68; `spdx.org/licenses`; `license-maven-plugin`/FOSSA/ScanCode; SBOM license data Ch 28) — ⚠ **NOT LEGAL ADVICE** (factual only; per the book's legal-IP rules): every dep has a license = a quality of the graph, read off the SBOM. Identify → SPDX identifiers (`Apache-2.0`/`MIT`/`GPL-3.0-only`/`LGPL-2.1`). Obligation spectrum: permissive (Apache/MIT/BSD — attribution) / weak copyleft (LGPL/MPL/EPL — file/library share-alike) / strong copyleft (GPL/AGPL — derivative-work; AGPL reaches network/SaaS). Risk depends on distribution mode (internal/SaaS/shipped). Policy gate: allow/deny via `license-maven-plugin`/FOSSA/ScanCode, fail-build = fitness function (Ch 26). Attributions: `THIRD-PARTY`/`NOTICE` auto-generated. *(categories factual; SPDX identifiers + plugin GAV/config + obligation summaries ⚠ verify vs license texts/SPDX @pin; detection-imperfect + transitive-surprise + license≠security limits.)*
 - **Routing** — build host + pinning → Ch 27 (62/63); SLSA/provenance/SBOM/SCA → Ch 28 (66/65); fitness-function gate → Ch 26 (56); release/publish → later (83); the book's own IP rules → the legal-IP-rules file. SOURCE-PIN: reproducible-builds.org / Maven repro guide / SPDX / license tools rows TO-PIN.
 
-**Companion module (spec — ⚠ EXAMPLE-BUILD = PENDING; toolchain READY):** the flagship aggregator already pins plugin versions (the reproducibility precondition). Extend for this chapter: set `<project.build.outputTimestamp>` to a fixed date, build the artifact **twice** and `diff` (or `mvn artifact:compare`) to show **bit-identical** output; then `license-maven-plugin` enforcing an **allow-list** (fail the build on a deliberately-banned license, e.g. a seeded GPL transitive in a profile) and **generating a `THIRD-PARTY` NOTICE** file from the SBOM's license data. **Failure path:** the banned-license dependency fails the build until removed/approved; the honest edge is that the build being bit-identical proves integrity not correctness (a comment notes the artifact is reproducibly buggy if the code is buggy), and the license gate is **factual, not legal advice** (stated prominently). Reuses the Ch 28 SBOM for the license field.
+**Companion module (`08-companion-code/67_reproducible_builds_license_compliance/` — EXAMPLE-BUILD built green; reproducibility demonstrated live):** a module whose load-bearing artifact is its `pom.xml` and the config files beside it. It sets `<project.build.outputTimestamp>` to a fixed date and runs the `reproducible-build-maven-plugin` on every build, then **builds the artifact twice and compares the SHA-256** — the two jars are **bit-identical**, demonstrated offline (not merely configured). The `-Pquality` build adds the `license-maven-plugin` enforcing an externalized **allow-list** of permitted SPDX identifiers (`failOnBlacklist` fails the build on a license outside policy) and **generating a `THIRD-PARTY` NOTICE** from the resolved tree's declared licenses; with the permissive, Apache-2.0 `commons-lang3` on the path the gate passes and the attribution lists it. A small `org.acme.repro` package gives both facets an in-code analogue a test drives. **Failure path:** the license gate is a hard event, modelled in code by `LicensePolicy.evaluate` throwing `DisallowedLicenseException` (the in-code analogue of `failOnBlacklist`) — shown in code rather than by seeding a real copyleft dependency, which would be non-deterministic and an IP concern. **Honest edge:** reproducibility proves integrity, not correctness — stated in code (`ReproducibleArtifact.isIntegrityNotCorrectness`), a reproducible build of buggy code is reliably, verifiably buggy; and the license material is **factual, not legal advice** (in the config, the code, and the README). Snippet tags: `repro-timestamp`, `repro-plugin`, `repro-verify`, `license-gate`, `license-allow-list-file`, `license-allow-list`.
 
 ## Next chapter teaser
 

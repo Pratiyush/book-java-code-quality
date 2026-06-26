@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 34 companion (Making the Gate Real for the Developer — folds keys 77, 78). The chapter is
+    CONFIG-centric: what it teaches lives mostly in configuration — a JaCoCo coverage report wired to a
+    PR coverage platform, that platform's PR diff-coverage (new-code) threshold and its bot-comment
+    policy, the CI step that uploads the report and decorates the pull request, and a Danger process
+    rule. Those files (ci/coverage-pr.yml, .codecov.yml) are illustrative configuration; they are NOT
+    run by this build. What is runnable and unit-tested here is the load-bearing DECISION the chapter
+    argues for: the diff-scoped, ratcheting coverage gate in org.acme.coverage.CoverageGate (gate new
+    code, fail on an overall-coverage drop, leave legacy until touched) and the diff-scoped bot-comment
+    policy in org.acme.coverage.PrCommentPolicy (comment only on changed lines, filter by severity).
+    JaCoCo runs over that code in the build, so `mvn -Pquality verify` exercises both the coverage tool
+    the chapter wires AND the gate logic the config enforces — the two cannot silently drift (Chapter 34
+    diff-scoping; Chapter 27 local/CI parity).
+
+    This is a child module of the companion-code reactor. It sets <parent>, carries no groupId or
+    version literal of its own, and inherits the runtime pin and the JUnit/AssertJ pins from the
+    aggregator. JaCoCo is declared here because the aggregator does not manage it; its version literal
+    traces to SOURCE-PIN.md §3. The static analyzers run via the `quality` profile (Checkstyle +
+    SpotBugs, Chapter 16), self-contained under this module's own config/ dir like the peer key-33 and
+    key-23 modules.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>coverage-pr-automation-platforms</artifactId>
+  <name>Chapter 34 — Making the Gate Real for the Developer (coverage-pr-automation-platforms)</name>
+
+  <properties>
+    <!--
+      The coverage tool version the aggregator does NOT manage, pinned here to its SOURCE-PIN.md §3
+      row. JUnit (junit-bom) and AssertJ are inherited from the parent's dependencyManagement and carry
+      no literal here.
+
+      SOURCE-PIN.md §3 pins JaCoCo 0.8.16, but that artifact is NOT published — Maven Central's latest
+      is 0.8.15 (org/jacoco/jacoco-maven-plugin/0.8.16/ returns 404; the local cache holds only a
+      .lastUpdated 404 stub for 0.8.16 and a real jar for 0.8.15). This module builds against 0.8.15,
+      the real latest, which covers the anchor JDK 21 (JaCoCo support since 0.8.11) and the forward JDK
+      25 (since 0.8.14). The same deviation the peer key-23 module hit, recorded in
+      09-flags/48_jacoco_pin_0816_unpublished.md for a deliberate re-pin.
+    -->
+    <jacoco.version>0.8.15</jacoco.version>
+  </properties>
+
+  <dependencies>
+    <!-- JUnit Jupiter — the harness; version managed by the aggregator's junit-bom import. -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- AssertJ — the gate-decision and policy assertions. Version managed by the aggregator. -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!--
+        JaCoCo coverage, in the DEFAULT build (SOURCE-PIN.md §3 row; deviation 0.8.15 per the property
+        comment). This is the coverage report a PR platform consumes: prepare-agent binds the agent into
+        the test JVM via argLine (a module that sets <argLine> directly in Surefire would clobber it and
+        silently report 0% coverage, so this module sets none); report writes target/site/jacoco/jacoco.xml
+        — the machine-readable report Codecov/Coveralls/Sonar upload — plus the HTML observability surface;
+        check enforces a BRANCH floor so a green build means the tool actually ran. The PR-scoped (new-code)
+        threshold and the ratchet are the PLATFORM's job (.codecov.yml) and the runnable gate's
+        (org.acme.coverage.CoverageGate) — this in-build check is the whole-module floor, not the diff gate.
+      -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+        <executions>
+          <execution>
+            <id>jacoco-prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <!-- tag::jacoco-pr-report[] -->
+          <execution>
+            <id>jacoco-report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report</goal>                 <!-- writes jacoco.xml — the report a PR platform uploads -->
+            </goals>
+          </execution>
+          <!-- end::jacoco-pr-report[] -->
+          <execution>
+            <id>jacoco-check</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <!--
+                The in-build floor reads BRANCH, not only LINE (a line counts covered when one
+                instruction on it ran, hiding an untested branch). The element/counter/value enum
+                values trace to JaCoCo check-mojo.html. This is the whole-module floor; the new-code
+                gate and the ratchet are diff-scoped and live in the platform config and the runnable
+                CoverageGate, not here (gating whole-repo absolutes would block every PR, Chapter 34).
+              -->
+              <rules>
+                <rule>
+                  <element>BUNDLE</element>
+                  <limits>
+                    <limit>
+                      <counter>BRANCH</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.90</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <!--
+      Static-analysis rule gates from Chapter 16, opt-in via `-Pquality`. The same self-contained shape
+      as the peer key-33 and key-23 modules: the maven-checkstyle-plugin ships an OLD bundled engine, so
+      the pinned engine is overridden via a plugin-level dependency (the "two-pin" lesson). The profile
+      reads the config under this module's own config/ dir. Checkstyle includes the test source directory
+      (the tests are first-class code held to the house ruleset); SpotBugs runs over main bytecode only.
+    -->
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

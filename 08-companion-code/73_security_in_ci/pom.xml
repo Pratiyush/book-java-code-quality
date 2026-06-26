@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 32 companion (Making the Security Gate Stick — Part VIII closer). The security gate, at the
+    smallest size that still teaches it. This chapter is the CI-integration view: not the individual
+    tools (SAST and secrets are Chapter 31; SCA is Part VII), but how the security STAGES are ordered
+    across the pipeline and the policy that aggregates their findings into one merge/block decision. The
+    chapter is CONFIG-centric: the pipeline itself is illustrative CI configuration in
+    ci/security-pipeline.yml (secrets at pre-commit, the SAST+SCA+secrets trio at the PR, container/IaC
+    scanning, the dynamic DAST/IAST pair against staging) — that file is NOT run by this build. What is
+    runnable and unit-tested here is the load-bearing decision the chapter argues for: the gate POLICY,
+    in org.acme.secgate.SecurityGate — aggregate the findings every security stage produced, block on new
+    high-severity findings, route the rest to a reviewer, and pass otherwise. That makes
+    `mvn -Pquality verify` the local equivalent of the security gate (Chapter 27, local/CI parity): the
+    same static-analysis stage the YAML names runs here, and the aggregation logic the YAML wires is
+    tested here. The module is built on the JDK alone (zero runtime dependencies), so it dogfoods the
+    book and builds fast and green; its own signals are machine-checked by the `quality` profile
+    (Checkstyle + SpotBugs).
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>security-in-ci</artifactId>
+  <name>Chapter 32 — Making the Security Gate Stick (security-in-ci)</name>
+
+  <dependencies>
+    <!--
+      JDK-only at runtime: the gate policy is plain Java, and the security tools the chapter names (the
+      SAST/SCA/secrets scanners, the DAST/IAST tools) run in the pipeline, not as runtime dependencies
+      here. The test libraries are the only additions, and their versions are inherited from the
+      companion-code aggregator's dependencyManagement — no version literal lives in this module.
+    -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates (Chapter 16), opt-in via `-Pquality` so the default build stays fast.
+    The maven-checkstyle-plugin ships an OLD bundled engine; we override it to the pinned engine via a
+    plugin-level dependency — the build plugin and the analyzer engine are separate versions. This
+    module is a direct child of the companion-code root, which pins no quality profile of its own, so
+    the profile is declared here (the same shape the peer modules use) and reads the config under this
+    module's own config/ dir, keeping the module self-contained. This profile IS the local equivalent
+    of the SAST stage in ci/security-pipeline.yml.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16), complementary to Checkstyle's source
+            view. This module's model types are immutable records and a sealed verdict, and the gate
+            exposes no mutable state, so the representation-exposure detectors stay quiet without
+            suppression. The exclude filter is kept (empty) so a future, genuinely-reviewed suppression
+            has a home with a reason, rather than being added inline.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

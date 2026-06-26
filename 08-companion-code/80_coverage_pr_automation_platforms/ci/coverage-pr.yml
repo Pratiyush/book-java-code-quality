@@ -1,0 +1,89 @@
+# Illustrative coverage + PR-decoration pipeline for the book's stack (Chapter 34 — Making the Gate Real
+# for the Developer).
+#
+# This file is CONFIGURATION, not run by this module's Maven build. It shows the pipeline shape the chapter
+# teaches: run the tests with JaCoCo to produce the coverage report, upload that report to a PR coverage
+# platform that decorates the pull request with a diff-coverage (new-code) verdict and a bot comment, and
+# run a Danger process check. The local equivalent of the coverage stage is `mvn -Pquality verify` against
+# this module, whose runnable gate (org.acme.coverage.CoverageGate) mirrors the new-code + ratchet decision
+# the platform enforces (Chapter 27, local/CI parity).
+#
+# SaaS / rolling, DATED AT USE (2026-06): the GitHub Actions (actions/checkout, actions/setup-java) and the
+# coverage PLATFORMS (Codecov shown here; Coveralls and SonarQube PR analysis are equivalent forms) are
+# hosted services, continuously released. SOURCE-PIN.md §5 records GitHub Actions as "docs as of 2026-06
+# (rolling)" and has NO row for Codecov/Coveralls/Sonar-PR-analysis as versioned artifacts — they are
+# presented as dated-at-use, not pinned, and their marketplace actions must be pinned to a commit digest at
+# adoption. JaCoCo (0.8.16 row; built here at 0.8.15, the published latest) is the one pinned coordinate.
+# No tool/action/platform version is asserted as timeless here. See 09-flags for the dated-at-use convention.
+name: coverage-pr
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write          # the coverage platform / Danger post a comment on the PR
+
+jobs:
+  # ---------------------------------------------------------------------------------------------------
+  # Tests + coverage report + upload. JaCoCo writes target/site/jacoco/jacoco.xml; the platform uploads
+  # it, computes diff coverage against the base, and decorates the PR. The diff-coverage (new-code)
+  # threshold and the bot-comment policy are the platform's job and live in .codecov.yml.
+  # ---------------------------------------------------------------------------------------------------
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4          # SaaS action, dated-at-use 2026-06 (pin to a digest at adoption)
+        with:
+          fetch-depth: 0                   # full history so the platform can compute the diff against the base
+      - uses: actions/setup-java@v4        # SaaS action, dated-at-use 2026-06
+        with:
+          distribution: temurin
+          java-version: "21"               # SOURCE-PIN.md anchor LTS (Java 21)
+      - name: Tests + coverage report (JaCoCo)
+        run: mvn -B -Pquality verify       # JaCoCo report goal writes jacoco.xml; the local gate equivalent
+      # tag::coverage-upload-step[]
+      - name: Upload coverage to the PR platform (decorates the PR with diff coverage + a bot comment)
+        uses: codecov/codecov-action@v5    # SaaS platform action, DATED-AT-USE 2026-06 — pin to a digest at adoption
+        with:
+          files: target/site/jacoco/jacoco.xml   # the JaCoCo report; Coveralls / Sonar PR analysis are equivalent forms
+          fail_ci_if_error: true                  # a failed upload must not silently pass the coverage gate
+      # end::coverage-upload-step[]
+
+  # ---------------------------------------------------------------------------------------------------
+  # PR-hygiene (process) checks via Danger — complementary to the code linters: it checks the PR itself,
+  # not the code. The rule here is the chapter's failure path for the companion: a PR that changes
+  # production code must touch tests. Danger comments the result on the PR (diff-scoped feedback).
+  # ---------------------------------------------------------------------------------------------------
+  pr-hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4          # SaaS action, dated-at-use 2026-06
+      # tag::danger-tests-touched[]
+      - name: PR-hygiene rules (Danger)
+        run: npx danger ci                 # Danger (danger.systems) — DATED-AT-USE 2026-06, no pinned version
+        # dangerfile rule (process check, not a code linter): require a test change when src/main changes
+        #   const touchedSrc  = danger.git.modified_files.some(f => f.includes("src/main"));
+        #   const touchedTest = danger.git.modified_files.some(f => f.includes("src/test"));
+        #   if (touchedSrc && !touchedTest) { fail("This PR changes production code but touches no tests."); }
+      # end::danger-tests-touched[]
+
+  # ---------------------------------------------------------------------------------------------------
+  # The blocking gate: wired as the REQUIRED status check in branch protection (Chapter 35). The coverage
+  # platform reports its diff-coverage verdict as a status; this job depends on the coverage + hygiene
+  # jobs so a PR with under-covered new code or a missing test cannot be merged around.
+  # ---------------------------------------------------------------------------------------------------
+  pr-gate:
+    needs: [coverage, pr-hygiene]          # required status check (Chapter 35)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Diff-scoped coverage gate
+        run: echo "new-code coverage + ratchet enforced by the platform; mirrored by org.acme.coverage.CoverageGate"
+
+# Platform note (DATED-AT-USE 2026-06): GitHub Actions is shown. On GitLab CI the equivalent is a
+# coverage keyword + a coverage-report artifact in .gitlab-ci.yml with MR widget decoration; on Jenkins,
+# a JaCoCo/coverage publisher plugin in the Jenkinsfile. The gate DESIGN (new-code focus, ratchet,
+# diff-scoped comment) is identical across all three; only the syntax differs (the book crowns none).

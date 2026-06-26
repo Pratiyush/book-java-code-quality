@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    Reviewed suppressions (Chapter 16: suppress with a reason, never disable a whole detector).
+
+    This module has NONE. The value types (License, the LicenseCategory enum) are immutable, the policy
+    and the artifact return their own fields or immutable copies, and the typed exception copies its list
+    via List.copyOf — so the representation-exposure detectors (EI_EXPOSE_REP / EI_EXPOSE_REP2) stay quiet
+    without any suppression. The filter is kept (empty) so a future, genuinely-reviewed suppression has a
+    home with a reason, rather than being added inline. (Distinct from the license allow-list under
+    config/license/ — that governs third-party licenses; this one would suppress SpotBugs findings in
+    first-party code. Both follow the same reviewed-with-a-reason discipline.)
+  -->
+</FindBugsFilter>

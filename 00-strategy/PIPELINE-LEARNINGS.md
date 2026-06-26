@@ -1977,3 +1977,75 @@ SpotBugs. Six tag-includes resolve (4 config, 2 Java), all 6 markers PASS in `ch
   package-info/README prose+comments rather than adding a separate vulnerable class, keeping the module
   focused on the chapter's headline pair (injection sink + secrets). The HONEST-LIMITATIONS floor still shows
   in code via the fail-closed failure path and the four edges in `package-info.java`.
+
+## EXAMPLE-BUILD — key 73 (security in CI; Part VIII closer) — 2026-06-26
+
+- **A synthesis chapter that is the CI-INTEGRATION view of its peers must carve a DISTINCT model, not re-skin
+  one.** Key 73 sits between key 70 (SAST/secrets tool internals) and key 75 (the general quality gate). The
+  buildable split that kept it non-duplicative: the YAML carries the *five security stages* fast-to-slow (the
+  orchestration the chapter owns — secrets → SAST+SCA → container/IaC → DAST/IAST), and the runnable Java is a
+  security-specific gate (`org.acme.secgate.SecurityGate`) that AGGREGATES multi-stage findings into a
+  three-way decision. The model is genuinely different from key 75: a `SecurityStage` dimension on each
+  finding and a `Review` verdict (not `Warn`). Same "local equivalent of the CI gate" pattern, different
+  teaching — no overlap.
+- **The security-reviewer route earns a distinct third verdict, and makes the dev/prod profiles load-bearing.**
+  `Pass`/`Review`/`Block` (vs the general gate's `Pass`/`Warn`/`Block`): exploitability is a judgment, so a
+  severe-but-unproven finding routes to a human. Modelling this as a profile knob (`requireExploitableToBlock`)
+  that DIFFERS between `dev` (route to review) and `prod` (fail closed) made the externalized-config
+  requirement real — the profiles change behaviour, asserted by a test — rather than two near-identical files.
+- **"Green gate ≠ secure" is best shown as a passing test, not a comment.** A test where a broken-access-control
+  flaw that NO stage produces lets the gate `Pass` (`greenGateIsNotSecure`) puts the chapter's honest center
+  into a code path that runs. Strongest realization of the dossier's "honest edges (comments)" + the
+  EXAMPLES-GUIDE failure-path intent for a security chapter.
+- **Unpinned security tools (gitleaks, OWASP ZAP) are dated-at-use, flagged, never invented.** Neither has a
+  SOURCE-PIN row; name them as stages with a dated-at-use 2026-06 comment + a `09-flags/` entry. Pinned tools
+  that appear (Trivy 0.71.0, Dependency-Check 12.2.2) trace to §4 and appear only as illustrative steps. DAST
+  against staging is REPRO PENDING-RUNTIME (needs a deployed app) — described, not executed.
+- **The quality build caught three over-length Javadoc lines and failed — the gate doing exactly what the
+  chapter argues.** Fixed by reflowing comments, not by loosening the rule. Worth re-stating: let the build
+  adjudicate; fix the code, never the pin.
+
+## EXAMPLE-BUILD key 80 (Ch 34 — coverage + PR-automation platforms) — 2026-06-26
+
+- **A new-code/diff coverage gate is made runnable by injecting the platform's OUTPUT, not the diff.** True
+  new-vs-old line attribution needs a git diff a hermetic unit build does not have. Modelling the diff as a
+  `CoverageDelta` (overall before/after + new-code ratio) plus a `ChangedLines` value (the file→changed-lines
+  map a PR platform already computes) keeps the DECISION runnable and unit-tested — new-code focus, ratchet,
+  warn-only overall target — without the build needing VCS history. Reusable pattern for any diff-scoped-gate
+  chapter; worth a note in EXAMPLES-GUIDE.
+- **Diff-scoping shows twice, in two surfaces, from one discipline.** The same "comment/gate only on what the
+  PR changed" idea is realized in BOTH the coverage gate (gate new code, not legacy) and the bot-comment policy
+  (`PrCommentPolicy`: keep a finding only if its line is in the diff AND at/above a severity floor). Putting
+  the chapter's unifying idea into two runnable surfaces makes the prose's "one discipline" claim something the
+  build demonstrates.
+- **JaCoCo's branch floor catches under-tested defensive guards — fix the tests, never the floor.** First build
+  failed at 0.84 branch coverage purely on fail-fast constructor guards; a dedicated value-guard test
+  (`ValueObjectsTest`, both sides of every range/blank/null check) is the right fix and tests the advertised
+  failure path. Config-centric modules with rich value objects should plan that test from the start.
+- **JaCoCo 0.8.16 unpublished-pin is now a CROSS-CHAPTER recurrence (key 23, then key 80).** Both modules
+  independently hit the 404 and built at 0.8.15. This should stop being a per-build flag and become an actual
+  SOURCE-PIN re-pin (0.8.16 → 0.8.15) at the next /pin-source, so coverage chapters stop re-discovering it.
+- **PR coverage platforms (Codecov/Coveralls/Sonar PR analysis) have no SOURCE-PIN row — dated-at-use, same as
+  the CI-actions convention (keys 70/75).** Shown via the documented config schema (`.codecov.yml` patch +
+  comment), marketplace action marked dated-at-use 2026-06, flagged for digest-pinning at adoption. Multi-tool
+  survey crowning none; the GitLab/Jenkins equivalents are a note, asserting no versioned fact.
+- **EXAMPLE-BUILD key 67 (reproducible builds + license compliance): `license-maven-plugin` `includedLicenses`
+  is EXACT-MATCH, not regex.** A regex allow-list (`.*Apache.*2.*`) silently fails — every license reads as
+  "forbidden" with no parse error, only a `BUILD FAILURE` on a license you meant to allow. Verified by
+  decompiling `AbstractAddThirdPartyMojo.isDependencyWhitelisted` (uses `List.contains`). Fix: list exact SPDX
+  ids + the common long-form POM names. Worth a one-line note in EXAMPLES-GUIDE for any license-gate module.
+- **Scope the license gate to the SHIPPED graph (`<excludedScopes>test</excludedScopes>`).** Default
+  `add-third-party` pulls test-only deps (JUnit = EPL-2.0, byte-buddy) into the check, which fails a permissive
+  allow-list for tooling that never ships and muddies the chapter's distribution-mode point. Gating
+  runtime+compile is both correct and pedagogically cleaner.
+- **Reproducibility is cheaply DEMONSTRABLE offline — build twice, diff the SHA-256.** `outputTimestamp` +
+  `reproducible-build-maven-plugin:0.17 strip-jar` made the jar bit-identical (entries normalised to
+  2000-01-01) with zero network. A build-twice-and-diff is far stronger evidence than tagging config alone;
+  recommend it become the standard FLOOR-C evidence for any "reproducible build" topic, with the SHA recorded
+  in the gate report. (The dossier's REPRO PENDING-RUNTIME caveat did NOT apply — it cleared offline.)
+- **The peers-62/65 "tagged real config + in-code analogue" pattern generalises to a TWO-facet chapter.** One
+  config-tagged mechanism per facet (`repro-*`, `license-gate`/`license-allow-list-file`) + one in-code
+  analogue per facet (`repro-verify`, `license-allow-list`) gave 6 clean ≤9-line tags across pom + config +
+  Java without strain. `reproducible-build-maven-plugin` + `license-maven-plugin` versions are not in SOURCE-PIN
+  (repro/SPDX/license rows = TO-PIN) → flagged `09-flags/67_repro_license_plugin_versions_unpinned.md`, the
+  same two-pin discipline as keys 62/65. License content kept factual-not-legal-advice in config, code, README.
