@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 84 companion (the human side of quality — code review, coding standards, documentation).
+    The chapter is process-, config-, and documentation-centric, so the displayed snippets are tag
+    regions inside the artifacts that DO the work, not narration of them: a PR template section
+    (.github/pull_request_template.md), a CODEOWNERS rule, a review-checklist item (docs/), the exemplar
+    Javadoc-as-contract on a public method, and the Checkstyle rule that enforces Javadoc PRESENCE on the
+    public API. The printed artifact and the running/checked artifact are one file.
+
+    A small storefront slice (org.acme.review) carries the documentation standard the chapter argues for:
+    one well-documented public class whose Javadoc states the contract (params, return, @throws,
+    pre/postconditions, nullability), an explicit failure path (a defined empty result plus fail-fast
+    construction guards), and an observability surface (a review-throughput health signal). The module is
+    green BECAUSE the public API is documented to the standard the `quality` profile's Checkstyle Javadoc
+    rules require — and the chapter's honest edge is made executable: those rules confirm a Javadoc is
+    PRESENT and well-formed, never that it says anything true (a present-but-useless Javadoc would pass).
+
+    Runtime dependencies are JDK-only. The one extra GAV is the SpotBugs annotations artifact, on the
+    compile path only (provided scope), exactly as the Chapter 27 and 39 modules do.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>code-review-standards-documentation</artifactId>
+  <name>Chapter 84 — The Part the Machine Can't Do (code-review-standards-documentation)</name>
+
+  <dependencies>
+    <!--
+      SpotBugs annotations (SOURCE-PIN.md: SpotBugs 4.10.2 line; this module builds against the locally
+      cached 4.9.3 engine the companion code is pinned to, so the annotations track that engine). The
+      annotation is CLASS-retained (SpotBugs reads bytecode), so `provided` scope keeps it on the compile
+      path only and the module's runtime stays JDK-only like the rest of the companion code.
+    -->
+    <dependency>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
+      <version>4.9.3</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    The static-analysis gate this chapter operates is documentation enforcement: Checkstyle's Javadoc
+    rules, opt-in via `-Pquality` so the default build stays fast. The chapter's point — "automation
+    enforces PRESENCE, not quality" — is the literal job of these rules (MissingJavadocType /
+    MissingJavadocMethod / JavadocMethod / SummaryJavadoc), so the printed Javadoc rule and the rule that
+    actually checks this module are one artifact.
+
+    The maven-checkstyle-plugin (3.6.0) ships an OLD bundled engine (Checkstyle 9.3); the pinned house
+    engine (com.puppycrawl.tools:checkstyle:10.26.1) is pulled in as a plugin-level dependency (the
+    "two-pin" lesson — the build plugin and the analyzer engine are versioned separately). This module is
+    a direct child of the companion-code root, which pins no quality profile of its own, so the profile is
+    declared here (the same shape the Chapter 27 and 39 modules use) and reads the config under this
+    module's own config/ dir.
+
+    includeTestSourceDirectory is left at its default (false): the Javadoc-presence rules govern the
+    public API, not test classes, so test sources are not Javadoc-checked.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <!--
+                failOnViolation defaults to true; stated here because it is exactly the policy the chapter
+                discusses (the documentation gate that goes red when a public API ships without its
+                contract documented).
+              -->
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point, wired the same minimal way as the Chapter 27 module so
+            the exemplar slice is held to a correctness gate as well as a documentation one. The chapter's
+            standing point — a documented, well-formed Javadoc is necessary, never sufficient for a correct
+            program — is shown by holding the same green module to both gates.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Low</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

@@ -1,0 +1,31 @@
+#
+# Chapter 40 companion — the automation engine (OpenRewrite, key 94).
+#
+# A declarative composite recipe for the playbook's bulk-paydown step. OpenRewrite parses the code into a
+# Lossless Semantic Tree (every node carries full type info), so the transformations below find every
+# genuine reference without the false positives a text search produces, and preserve formatting so the diff
+# is the change and nothing else. This recipe is the "before" half of the before/after pair in this module:
+# it modernizes the legacy idiom in org.acme.remediation.legacy toward the form in
+# org.acme.remediation.Modernized.
+#
+# RUN (opt-in; network-gated — REPRO PENDING-RUNTIME, see the chapter's _EXAMPLE.md):
+#   mvn -Prewrite rewrite:dryRun   # preview the diff, write nothing
+#   mvn -Prewrite rewrite:run      # apply — produces a diff to review as a normal PR
+#
+# Automation proposes; the tests and the review dispose. The recipe's output is a pull request to verify,
+# never a blind apply — and large auto-diffs are reviewed per-recipe, incrementally.
+#
+# SOURCE-PIN.md §6: OpenRewrite 8.81.0; rewrite-maven-plugin 6.38.0. The composed recipe ID
+# (org.openrewrite.java.migrate.UpgradeToJava21) and the rewrite-migrate-java module are verify-at-pin
+# against docs.openrewrite.org at the pinned line — flagged in 09-flags/.
+#
+# tag::rewrite-recipe[]
+type: specs.openrewrite.org/v1beta/recipe
+name: org.acme.remediation.ModernizeForJava21
+displayName: Modernize the inherited module toward Java 21
+description: >
+  Composes the type-aware Java 21 migration over the legacy idioms in this module — the bulk-paydown
+  step of the remediation playbook, applied as a reviewable diff rather than by hand.
+recipeList:
+  - org.openrewrite.java.migrate.UpgradeToJava21
+# end::rewrite-recipe[]

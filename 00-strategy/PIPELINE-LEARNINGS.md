@@ -2120,3 +2120,60 @@ SpotBugs. Six tag-includes resolve (4 config, 2 Java), all 6 markers PASS in `ch
   (the awk matches the `tag::name[]` substring) and stay invisible in rendered Markdown — the route for
   tagging a region in a documentation/config `.md` artifact. (Complements the Ch 35 "JSON can't be tagged,
   use YAML" note.)
+- **(Ch 2 / key 03) A "conceptual" foundation chapter can still carry a strong runnable demo — check the
+  dossier's worked-example spec before defaulting to N/A.** Chapter 2 reads as a measurement-discipline
+  essay, but its load-bearing idea (cognitive vs cyclomatic complexity) is most convincingly shown by three
+  behaviour-identical forms of one method (deeply nested / over-fragmented / balanced) whose only
+  difference is shape. The behaviour-preservation test proving the cognitive score and the result are
+  independent axes IS the "the number lies" thesis in code. Candidate note for `CHAPTER-TEMPLATE.md`:
+  contested/measurement chapters often have a stronger demo than their prose suggests.
+- **(Ch 2 / key 03) An empty SpotBugs suppression file with a documented reason is a valid, expected
+  state — the inverse of peer 19.** Where a module's deliberate "before" smells are metric/AST shapes
+  (deep nesting, over-fragmentation) rather than bytecode bugs, the house SpotBugs gate flags none of them,
+  so the exclude filter is empty *by design* and needs NO suppression. Documenting why it is empty (rather
+  than deleting the file) keeps the "suppress with a reason, never disable a detector" discipline legible
+  and shows the detection boundary from both sides. Candidate one-line note for EXAMPLES-GUIDE §8.2.
+- **(Ch 2 / key 03) Watch for unreachable validation guards when a value type already enforces the
+  invariant.** A `cap-negative` guard was dead code because the `Money` record forbids negative minor
+  units; the reachable failure path is `cap-below-floor`. A code reviewer flags dead guards — author the
+  failure path against an invariant the value type does NOT already enforce.
+- **(Ch 2 / key 03) For deliberately-long "before" code, place the ≤9-line tag around the single
+  representative slice (deepest nest / delegating head) from the start.** Two regions needed post-hoc
+  repositioning when first tagged around the whole method. Reconfirms the snippet-budgeting note above.
+
+## EXAMPLE-BUILD key 96 (remediation playbook & automated change) — 2026-06-27
+- Network-gated tooling (OpenRewrite recipe RUN) belongs in its own opt-in Maven profile (`-Prewrite`),
+  kept off the default and `quality` paths. The chapter ships a real, pinned OpenRewrite wiring
+  (engine 8.81.0 / rewrite-maven-plugin 6.38.0, SOURCE-PIN §6) AND a green offline build at once: the
+  recipe RUN is REPRO PENDING-RUNTIME while the recipe CONFIG + before/after pair verify offline. This is
+  the standard shape for satisfying FLOOR C COMPILE when a topic's engine needs the network — propose for
+  EXAMPLES-GUIDE.
+- A pinned ENGINE version is not a pinned RECIPE-ID / recipe-module GAV. OpenRewrite versions its engine and
+  its recipe modules (`rewrite-recipe-bom`) separately — the same two-pin lesson as Checkstyle plugin-vs-
+  engine. Recipe ID (`org.openrewrite.java.migrate.UpgradeToJava21`) and recipe-module GAV
+  (`rewrite-migrate-java:3.16.0`) flagged verify-at-pin (09-flags/94_…). Suggest a one-line SOURCE-PIN §6
+  note that recipe-module GAVs are a separate pin.
+- For a non-HTTP synthesis chapter, the §1.1 failure path is best a domain-invariant constructor that throws
+  (RemediationPlan rejecting a baseline-without-paydown = formalized ignoring), driven by a test — not a
+  bolted-on fault-tolerance annotation the topic never calls.
+
+## EXAMPLE-BUILD key 84 (code-review standards & documentation; folds 86+89) — 2026-06-27
+- A doc/process-centric chapter still yields a real buildable module. The displayed snippets are tag
+  regions in the very artifacts that do the work (PR template, CODEOWNERS, review-checklist doc, the
+  Checkstyle Javadoc rule) plus a small library slice for the Javadoc-as-contract exemplar. The "one
+  runnable module per chapter" floor holds for people-and-process chapters: the config/doc IS the runnable
+  artifact, gated by `-Pquality`. Markdown/CODEOWNERS comment markers (`<!-- tag::name[] -->`, `# tag::`)
+  resolve through the same `extract_snippet.sh` awk as Java/XML.
+- Checkstyle 10.x Javadoc property-key trap: `JavadocMethod` takes `accessModifiers` (the `scope` property
+  was removed from it), while `MissingJavadocMethod`/`MissingJavadocType` still take `scope`. Verify each
+  check's property names against the cached engine's bundled meta XML
+  (`meta/checks/javadoc/*.xml`) before writing the ruleset — avoids an invented-key failure. Suggest an
+  EXAMPLES-GUIDE one-liner: "for Checkstyle Javadoc rules, confirm property keys per-check against the
+  pinned engine; they differ across checks."
+- Tag a Javadoc-only snippet by including its method signature line, never by placing the `// tag::`/
+  `// end::` pair BETWEEN the Javadoc block and its method — an intervening comment line breaks the
+  `MissingJavadocMethod` Javadoc-to-method association. Javadoc + signature = 8 lines, under the 9-cap.
+  Worth a note in the snippet-machinery docs.
+- The chapter's standing "automation enforces presence, not quality" point is made executable with a
+  TRY-IT: a present, well-formed, *false* Javadoc passes the Checkstyle gate while the test catches the lie.
+  Reusable pattern for any presence-vs-quality chapter.

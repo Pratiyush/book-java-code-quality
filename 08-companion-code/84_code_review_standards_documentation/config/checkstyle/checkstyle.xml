@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<!--
+  The Checkstyle side of Chapter 84: the mechanical floor under the documentation standard. The chapter's
+  argument is that documentation should be docs-as-code (in-repo, reviewed, versioned), and that the
+  MECHANICAL part of that — "is a Javadoc present and well-formed on the public API?" — is the part a tool
+  can enforce so the human reviewer never spends attention on it. These rules enforce exactly that, and
+  no more. They confirm a Javadoc is PRESENT, summarised, and well-formed; they cannot confirm it says
+  anything true, which is the chapter's standing honest limitation made executable (a present-but-useless
+  Javadoc passes this gate). The displayed snippet is the tag region below — the real rule block that
+  gates this module's exemplar class — so the printed rule and the running rule are one artifact.
+
+  The ruleset is deliberately small and high-signal (the Javadoc rules the chapter is about, plus the
+  same naming/import/brace hygiene the Chapter 27 and 39 modules carry) rather than "everything on": a
+  credible gate a team agrees once and stops re-litigating. The Javadoc rules are scoped to the PUBLIC
+  API only (scope=public / accessModifiers=public), because the chapter's documentation principle is to
+  document public contracts and decisions, not to narrate every private member — exhaustively documenting
+  internals has diminishing returns. The column limit (120) is this team's cited choice, not a universal
+  truth (LineLength's own default is 80; Google's bundled config sets 100 — Chapter 6 style neutrality).
+-->
+<module name="Checker">
+  <property name="severity" value="error"/>
+  <property name="charset" value="UTF-8"/>
+  <property name="fileExtensions" value="java"/>
+
+  <module name="LineLength">
+    <property name="max" value="120"/>
+    <property name="ignorePattern" value="^(package|import) .*"/>
+  </module>
+
+  <module name="TreeWalker">
+    <!--
+      The documentation standard, enforced. Each rule names a Checkstyle Javadoc check at its pinned
+      property keys (Checkstyle 10.26.1): MissingJavadocType / MissingJavadocMethod require a Javadoc on
+      public types and methods; JavadocMethod (accessModifiers=public, validateThrows=true) requires the
+      @param / @return / @throws tags to match the signature; SummaryJavadoc requires a real summary
+      sentence so the comment is not blank boilerplate. Together they enforce PRESENCE and well-formedness
+      on the public API — never that the prose is true, which is the human reviewer's job.
+    -->
+    <!-- tag::javadoc-presence-rule[] -->
+    <module name="MissingJavadocType">       <!-- public types must be documented -->
+      <property name="scope" value="public"/>
+    </module>
+    <module name="MissingJavadocMethod">     <!-- public methods must be documented -->
+      <property name="scope" value="public"/>
+    </module>
+    <module name="SummaryJavadoc"/>          <!-- the comment must carry a real summary, not blank -->
+    <!-- end::javadoc-presence-rule[] -->
+
+    <!--
+      Well-formedness, beyond mere presence: JavadocMethod (accessModifiers=public, validateThrows=true)
+      requires the @param / @return / @throws tags to match the public signature; AtclauseOrder and
+      NonEmptyAtclauseDescription keep the tags ordered and non-empty. All still PRESENCE/form, never that
+      the prose is true.
+    -->
+    <module name="JavadocMethod">
+      <property name="accessModifiers" value="public"/>
+      <property name="validateThrows" value="true"/>
+    </module>
+    <module name="AtclauseOrder"/>
+    <module name="NonEmptyAtclauseDescription"/>
+
+    <!-- Naming conventions, each on its documented default format. -->
+    <module name="ConstantName"/>
+    <module name="TypeName"/>
+    <module name="MethodName"/>
+    <module name="MemberName"/>
+    <module name="LocalVariableName"/>
+    <module name="RecordComponentName"/>
+    <module name="ParameterName"/>
+
+    <!-- Import hygiene, each on its documented default. -->
+    <module name="AvoidStarImport"/>
+    <module name="RedundantImport"/>
+    <module name="UnusedImports"/>
+
+    <!-- Blocks and braces. EmptyBlock tolerates a commented block (option=text). -->
+    <module name="NeedBraces"/>
+    <module name="LeftCurly"/>
+    <module name="RightCurly"/>
+    <module name="EmptyBlock">
+      <property name="option" value="text"/>
+    </module>
+
+    <!-- Modifiers and a few coding/structure rules. -->
+    <module name="ModifierOrder"/>
+    <module name="RedundantModifier"/>
+    <module name="OneTopLevelClass"/>
+    <module name="EqualsHashCode"/>
+    <module name="SimplifyBooleanExpression"/>
+    <module name="EmptyStatement"/>
+    <module name="UpperEll"/>
+    <module name="ArrayTypeStyle"/>
+    <module name="OuterTypeFilename"/>
+  </module>
+</module>

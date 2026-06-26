@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+<!--
+  Checkstyle's de-facto file baseline (Chapter 40), read by the SuppressionFilter wired in checkstyle.xml.
+  Each <suppress> row freezes a named check over a file path, so the legacy package is tolerated without
+  weakening the rule for the whole module.
+
+  This file is intentionally empty of rows: the legacy "before" form in this module is held clean for
+  Checkstyle and the modernization story is told through SpotBugs and the before/after pair, so the
+  mechanism is wired and inert here — the exact place a real legacy file would be frozen. A frozen row
+  would read, for example:
+
+    <suppress checks="LineLength" files="LegacyReleaseNotes\.java"/>
+
+  and, like every baseline, would be reviewed in the PR and periodically retired rather than left to
+  accumulate — debt about debt, not a permanent exemption.
+-->
+<suppressions>
+</suppressions>

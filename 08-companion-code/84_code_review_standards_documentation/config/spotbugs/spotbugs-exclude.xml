@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SpotBugs exclude filter for the Chapter 84 exemplar slice. The slice is written to be clean at
+  threshold=Low / effort=Max, so this filter is wired and intentionally empty of <Match> rows — the place
+  a reviewed false positive or a baselined legacy finding would live (the Chapter 39 discipline), kept
+  inert here because this module carries no such finding. The exemplar copies its inputs in and out, so it
+  has no exposed-representation finding to baseline.
+-->
+<FindBugsFilter>
+</FindBugsFilter>

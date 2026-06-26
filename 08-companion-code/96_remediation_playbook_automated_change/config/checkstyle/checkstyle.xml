@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<!--
+  The Checkstyle side of this module's own gate (Chapter 40). The playbook says: stand the tools up, then
+  baseline the past so the gate reacts only to change. This config does exactly that for this module — a
+  small, high-signal ruleset (naming, import hygiene, a size limit, braces) the team agrees once, plus the
+  two suppression surfaces the playbook relies on:
+
+    - SuppressWarningsFilter (with its SuppressWarningsHolder feeder on the TreeWalker) honours
+      @SuppressWarnings("checkstyle:CheckName") at the exact site — the per-finding control with the reason
+      beside the code.
+    - SuppressionFilter reads an external suppressions.xml — the de-facto file BASELINE, the way the legacy
+      package is frozen without weakening the rule for the whole module.
+
+  The column limit (120) is this team's cited choice (LineLength's own default is 80; Google's bundled
+  config sets 100), not a universal truth. The displayed snippets are the tag regions below — real modules
+  in the ruleset that gates this code, so the printed config and the running config are one artifact.
+-->
+<module name="Checker">
+  <property name="severity" value="error"/>
+  <property name="charset" value="UTF-8"/>
+  <property name="fileExtensions" value="java"/>
+
+  <module name="SuppressWarningsFilter"/>
+
+  <module name="SuppressionFilter">
+    <property name="file" value="config/checkstyle/checkstyle-suppressions.xml"/>
+    <property name="optional" value="true"/>
+  </module>
+
+  <module name="LineLength">
+    <property name="max" value="120"/>
+    <property name="ignorePattern" value="^(package|import) .*"/>
+  </module>
+
+  <module name="TreeWalker">
+    <!-- Naming conventions, each on its documented default format. -->
+    <module name="ConstantName"/>
+    <module name="TypeName"/>
+    <module name="MethodName"/>
+    <module name="MemberName"/>
+    <module name="LocalVariableName"/>
+    <module name="RecordComponentName"/>
+    <module name="PatternVariableName"/>
+    <module name="PackageName"/>
+    <module name="ParameterName"/>
+    <module name="StaticVariableName"/>
+    <module name="LambdaParameterName"/>
+    <module name="CatchParameterName"/>
+
+    <!-- Import hygiene, each on its documented default. -->
+    <module name="AvoidStarImport"/>
+    <module name="RedundantImport"/>
+    <module name="UnusedImports"/>
+
+    <!-- Blocks and braces. EmptyBlock tolerates a commented block (option=text). -->
+    <module name="NeedBraces"/>
+    <module name="LeftCurly"/>
+    <module name="RightCurly"/>
+    <module name="EmptyBlock">
+      <property name="option" value="text"/>
+    </module>
+
+    <!-- Modifiers -->
+    <module name="ModifierOrder"/>
+    <module name="RedundantModifier"/>
+
+    <!-- Coding / structure -->
+    <module name="OneTopLevelClass"/>
+    <module name="EqualsHashCode"/>
+    <module name="SimplifyBooleanExpression"/>
+    <module name="EmptyStatement"/>
+    <module name="UpperEll"/>
+    <module name="ArrayTypeStyle"/>
+    <module name="OuterTypeFilename"/>
+
+    <!-- Feeds @SuppressWarnings("checkstyle:...") to the SuppressWarningsFilter on the Checker above. -->
+    <module name="SuppressWarningsHolder"/>
+  </module>
+</module>

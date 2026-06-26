@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 2 companion (The Number That Lies). Puts the chapter's load-bearing measurement idea —
+    cyclomatic ("how many tests?") vs cognitive ("how hard to read?") complexity — into one buildable
+    module: one pricing rule written THREE ways, all returning the identical result for every input.
+    DiscountRulesNested packs the branches into one deeply-nested body (the shape Sonar java:S3776
+    scores high, because cognitive complexity increments more for nesting); DiscountRulesFragmented
+    splits the same logic into many one-line methods (the over-decomposition the chapter's second
+    school warns of, where following one idea means jumping between fragments); DiscountRules is the
+    balanced form (guard clauses + a tier carrying its own data). A behaviour-preservation test proves
+    all three return the same Money for every tier and threshold — the chapter's point that cognitive
+    score and behaviour are independent axes: the number can change while the result does not. Zero
+    runtime dependencies — JDK only — so it dogfoods the book and builds fast and green. The contracts
+    are machine-checked by the `quality` profile (Checkstyle + SpotBugs, Chapter 16).
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>readability-maintainability</artifactId>
+  <name>Chapter 2 — The Number That Lies (readability-maintainability)</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The maven-checkstyle-plugin ships an OLD bundled engine (Checkstyle 9.3); we override it to
+    the pinned engine via a plugin-level dependency — the "two-pin" lesson (the build plugin and the
+    analyzer engine are separate versions). This module is a direct child of the companion-code root,
+    which pins no quality profile of its own, so the profile is declared here (the same shape the
+    Chapter 9 and Chapter 19 modules use) and reads the config under this module's config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16) — complementary to Checkstyle's source
+            view. The DELIBERATE counter-examples here are metric/AST smells, not bytecode bugs: a
+            deeply-nested method and an over-fragmented one are shapes Sonar java:S3776 and PMD measure,
+            which SpotBugs (a bytecode bug-finder) does not flag. So this module's exclude filter is
+            empty — every class stays clean under SpotBugs at this threshold — and the cognitive cost of
+            the nested form is shown by its score and by the test, not by a SpotBugs finding. That is the
+            chapter's own honesty: different tools see different smells.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
