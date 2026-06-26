@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    Reviewed suppressions (Chapter 16: suppress with a reason, never disable a whole detector).
+
+    This module has none. Its types are immutable records and small value/port classes, so the
+    representation-exposure detectors (EI_EXPOSE_REP / EI_EXPOSE_REP2) stay quiet on their own. The
+    structure demonstrations carry no mutable shared state to defend by copying. The filter is kept
+    (empty) so a future, genuinely reviewed suppression has a home with a stated reason rather than
+    being added inline.
+  -->
+</FindBugsFilter>

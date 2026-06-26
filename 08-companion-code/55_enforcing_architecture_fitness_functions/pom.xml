@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 55 companion (Giving the Diagram Teeth). A small layered storefront — web -> service ->
+    persistence over a domain core — whose architecture is made executable with ArchUnit (SOURCE-PIN.md
+    §2: com.tngtech.archunit 1.4.2). The fitness functions in ArchitectureFitnessTest assert the layer
+    direction, cycle-freedom, and the no-standard-streams coding rule over this module's own packages;
+    a seeded breach in a ..governance.. package is reported by a rule (not left to fail a passing one),
+    and FreezingArchRule shows the legacy-adoption ratchet. The module is JDK-only at runtime — ArchUnit
+    is a test dependency — so it builds fast and green, gated by the `quality` profile (Checkstyle +
+    SpotBugs, Chapter 16).
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>enforcing-architecture-fitness-functions</artifactId>
+  <name>Chapter 55 — Giving the Diagram Teeth (enforcing-architecture-fitness-functions)</name>
+
+  <dependencies>
+    <!--
+      ArchUnit core (SOURCE-PIN.md §2: com.tngtech.archunit:archunit 1.4.2), test scope. The single
+      version literal here is the one pinned GAV the architecture rules need. The rules are driven
+      through ClassFileImporter + rule.check(...) from plain JUnit tests, so the engine-agnostic core
+      artifact is used rather than archunit-junit5; that keeps the module on the parent's one JUnit
+      platform version. ArchUnit reads bytecode only, so it stays a build-time dependency and the
+      module's runtime is JDK-only like the rest of the companion code.
+    -->
+    <dependency>
+      <groupId>com.tngtech.archunit</groupId>
+      <artifactId>archunit</artifactId>
+      <version>1.4.2</version>
+      <scope>test</scope>
+    </dependency>
+    <!--
+      ArchUnit logs through SLF4J; with no provider on the test classpath it prints a "no providers
+      found" warning. Binding the no-op provider keeps the test run quiet. The version is the exact
+      slf4j-api version ArchUnit 1.4.2 declares transitively (2.0.17), so this matches the resolved
+      graph rather than introducing a new line. Test scope only — the module's runtime stays JDK-only.
+    -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-nop</artifactId>
+      <version>2.0.17</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The maven-checkstyle-plugin ships an OLD bundled engine; we override it to the pinned engine
+    via a plugin-level dependency — the "two-pin" lesson (the build plugin and the analyzer engine are
+    separate versions). This module is a direct child of the companion-code root, which pins no quality
+    profile of its own, so the profile is declared here (the same shape the other modules use) and
+    reads the config under this module's config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16) — complementary to Checkstyle's source
+            view. The exclude filter is empty: this module needs zero reviewed suppressions. A genuine,
+            reviewed false positive would go in the filter with a reason, never by disabling a detector
+            wholesale.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

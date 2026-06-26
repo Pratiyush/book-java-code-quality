@@ -1,0 +1,101 @@
+package org.acme.storefront;
+
+import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
+import static com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS;
+import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.tngtech.archunit.core.domain.JavaClasses;
+import com.tngtech.archunit.core.importer.ClassFileImporter;
+import com.tngtech.archunit.core.importer.ImportOption.DoNotIncludeTests;
+import com.tngtech.archunit.lang.ArchRule;
+import com.tngtech.archunit.library.freeze.FreezingArchRule;
+import org.junit.jupiter.api.Test;
+
+/**
+ * The chapter's fitness functions: architecture rules over this module's own packages, run as
+ * ordinary JUnit tests so a forbidden dependency fails the build like any failed assertion.
+ *
+ * <p>The rules are driven through {@link ClassFileImporter} and {@code rule.check(...)} rather than
+ * the {@code @AnalyzeClasses}/{@code @ArchTest} engine, which keeps the module on one JUnit platform
+ * version and lets a single imported {@link JavaClasses} model back every rule. The import reads
+ * compiled bytecode, which is also the honest limit the chapter states: a dependency expressed only by
+ * reflection or string-based wiring is not an edge these rules can see.
+ */
+class ArchitectureFitnessTest {
+
+    /** Imported once, reused by every rule below — the import is the expensive step. */
+    private static final JavaClasses LAYERS = new ClassFileImporter()
+        .withImportOption(new DoNotIncludeTests())
+        .importPackages("org.acme.storefront");
+
+    /** The clean layers only — used by the rules that must pass over a conforming design. */
+    private static final JavaClasses CLEAN_LAYERS = new ClassFileImporter()
+        .withImportOption(new DoNotIncludeTests())
+        .importPackages(
+            "org.acme.storefront.web",
+            "org.acme.storefront.service",
+            "org.acme.storefront.domain",
+            "org.acme.storefront.persistence");
+
+    @Test
+    void layersAreRespectedTopToBottom() {
+        // tag::layered-rule[]
+        ArchRule layered = layeredArchitecture().consideringOnlyDependenciesInLayers()
+            .layer("Web").definedBy("..web..")
+            .layer("Service").definedBy("..service..")
+            .layer("Persistence").definedBy("..persistence..")
+            .layer("Domain").definedBy("..domain..")
+            .whereLayer("Web").mayNotBeAccessedByAnyLayer()
+            .whereLayer("Service").mayOnlyBeAccessedByLayers("Web")
+            .whereLayer("Persistence").mayOnlyBeAccessedByLayers("Service")
+            .whereLayer("Domain").mayOnlyBeAccessedByLayers("Web", "Service", "Persistence");
+        // end::layered-rule[]
+        layered.check(CLEAN_LAYERS);
+    }
+
+    @Test
+    void featureSlicesAreFreeOfCycles() {
+        // tag::no-cycles-rule[]
+        ArchRule noCycles = slices().matching("org.acme.storefront.(*)..")
+            .should().beFreeOfCycles();
+        // end::no-cycles-rule[]
+        noCycles.check(CLEAN_LAYERS);
+    }
+
+    @Test
+    void noClassReachesForStandardStreams() {
+        // tag::coding-rule[]
+        ArchRule noConsole = NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS;
+        // end::coding-rule[]
+        noConsole.check(CLEAN_LAYERS);
+    }
+
+    @Test
+    void seededBreachIsDetectedButDoesNotFailTheBuild() {
+        // The seeded ..governance.. class writes to System.out and holds a ..web.. field. Over the
+        // full import (which includes ..governance..) the coding rule reports it. The build stays
+        // green because the breach is asserted as detected here, not left to fail a passing rule.
+        ArchRule noConsole = NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS;
+        assertThatThrownBy(() -> noConsole.check(LAYERS))
+            .isInstanceOf(AssertionError.class)
+            .hasMessageContaining("LegacyReportWriter");
+    }
+
+    @Test
+    void freezingReportsOnlyNewViolationsOverALegacyBaseline() {
+        // tag::freezing-ratchet[]
+        ArchRule noConsole = NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS;
+        ArchRule ratcheted = FreezingArchRule.freeze(noConsole);
+        // end::freezing-ratchet[]
+        assertThat(ratcheted).isNotNull();
+        // First check over the breaching import records the seeded violations as the baseline (the
+        // store is created under target/ per archunit.properties), so it passes despite the breach;
+        // a second check finds no NEW violations and passes too. That is the ratchet: turn a rule on
+        // over a codebase with existing breaches without an impossible day-one cleanup, then drive the
+        // baseline down. The same caveat applies — a frozen baseline can mask debt if never reduced.
+        FreezingArchRule.freeze(noConsole).check(LAYERS);
+        FreezingArchRule.freeze(noConsole).check(LAYERS);
+    }
+}

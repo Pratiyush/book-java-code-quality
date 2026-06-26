@@ -20,6 +20,7 @@
   <modules>
     <module>storefront-checkout</module>
     <module>07_naming_structure_formatting</module>
+    <module>08_effective_java</module>
     <module>09_api_method_contracts</module>
     <module>10_immutability_value_design</module>
     <module>11_null_safety_optional</module>
@@ -29,6 +30,8 @@
     <module>20_thread_safety_jmm</module>
     <module>22_virtual_threads_structured_concurrency</module>
     <module>26_how_static_analysis_works</module>
+    <module>53_solid_coupling_cohesion_packages</module>
+    <module>55_enforcing_architecture_fitness_functions</module>
     <module>capstones</module>
   </modules>
 

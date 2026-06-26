@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 25 companion (Principles, Measures, and Where the Lines Fall). One small order domain
+    shown in contrasting shapes so the cost of each design choice is concrete rather than asserted:
+    an over-abstracted variant beside a balanced one; a package cycle beside the DIP inversion that
+    breaks it; the same mini-app sliced by-layer and by-feature. Zero runtime dependencies — JDK only
+    — so the module dogfoods the book and builds fast and green. The structure is machine-checked by
+    the `quality` profile (Checkstyle + SpotBugs, Chapter 16); enforcing the cycle/direction rules
+    themselves (ArchUnit, JPMS) is the next chapter's subject, not this module's.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>solid-coupling-cohesion-packages</artifactId>
+  <name>Chapter 25 — Principles, Measures, and Where the Lines Fall (solid-coupling-cohesion-packages)</name>
+
+  <dependencies>
+    <!--
+      Test libraries only; their versions are inherited from the companion-code aggregator
+      (SOURCE-PIN.md: JUnit 6 line, AssertJ 3.27.7). The module declares no runtime dependency and
+      no version literal of its own — the production code is plain JDK.
+    -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The maven-checkstyle-plugin ships an OLD bundled engine; we override it to the pinned engine
+    via a plugin-level dependency — the "two-pin" lesson (the build plugin and the analyzer engine are
+    separate versions). This module is a direct child of the companion-code root, which pins no quality
+    profile of its own, so the profile is declared here (the same shape the other chapter modules use)
+    and reads the config under this module's config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16) — complementary to Checkstyle's source
+            view. The module's types carry no exposed mutable state, so the exclude filter is empty:
+            zero reviewed suppressions are needed. A genuine, reviewed false positive would go in the
+            filter with a reason, never by disabling a detector wholesale.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

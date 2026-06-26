@@ -62,6 +62,14 @@ SOLID is five object-oriented design principles popularized by Robert C. Martin,
 
 The deeper honesty: SOLID is principles, not metrics. Gating "SOLID-ness" as a score is the vanity trap. SRP's "one reason to change" is genuinely subjective; reasonable engineers draw responsibility boundaries differently. The parts of this domain that *can* be measured and enforced are coupling, cohesion, and cycles, the subject of the next two sections.
 
+The companion module makes the cost concrete with the same pricing outcome written two ways. The over-abstracted variant satisfies OCP and DIP on paper — an interface and a factory for one implementation — so the wiring threads through three types to reach one calculation:
+
+<!-- include: 53_solid_coupling_cohesion_packages/src/main/java/org/acme/design/overengineered/OrderPricingService.java#over-abstracted -->
+
+The balanced variant reaches the identical result with a record for the data and a single interface kept only because a second real discount policy exists, no factory in between:
+
+<!-- include: 53_solid_coupling_cohesion_packages/src/main/java/org/acme/design/balanced/OrderPricer.java#balanced -->
+
 ### Coupling and cohesion: the structure the principles aim at
 
 Beneath the principles lie the two oldest, most durable structural concepts in software, named by Constantine and Yourdon decades ago: **coupling** (how much a unit depends on others) and **cohesion** (how focused a unit is). The whole of maintainability reduces, in practice, to one rule: **low coupling plus high cohesion equals cheap, safe change.** A change to a highly cohesive, loosely coupled unit stays local; a change to a low-cohesion, tightly coupled one ripples.
@@ -73,6 +81,14 @@ Beneath the principles lie the two oldest, most durable structural concepts in s
 
 And the cardinal sin: **cycles.** A dependency cycle couples an entire cluster of classes or packages into one indivisible blob: no member can be understood, tested, or changed in isolation, because all depend on each other. Cycles are detectable and gateable (ArchUnit's `slices().should().beFreeOfCycles()`, or JDepend), which is what makes "no cycles" one of the few structural rules worth enforcing as a hard gate (next chapter). The honest limits: these metrics are *proxies*: a class with low CBO and terrible names is still unreadable, so do not optimize the number. And *some* coupling is necessary, because zero coupling means nothing talks to anything. The goal is appropriate, directed coupling, not minimum coupling.
 
+The companion module holds a two-package cycle to make the blob concrete: an `orders` package depends on `notify` to announce a placed order, and `notify` reaches back into `orders` to read the order's summary, so neither can be built apart from the other:
+
+<!-- include: 53_solid_coupling_cohesion_packages/src/main/java/org/acme/design/cycle/notify/OrderNotifier.java#cycle -->
+
+The DIP inversion breaks the loop by giving the stable `orders` side a small abstraction it owns; `notify` then implements that interface, so the dependency runs one way and both packages stand alone again:
+
+<!-- include: 53_solid_coupling_cohesion_packages/src/main/java/org/acme/design/inverted/orders/OrderEvents.java#dip-inversion -->
+
 ### Package structure: where the lines fall
 
 Principles and metrics operate on a structure, and that structure is a design decision: **how a codebase is sliced into packages decides which dependencies are even possible.** Good structure makes the right thing easy and the wrong dependency awkward; bad structure — everything in one `com.acme.service` package — lets coupling metastasize because anything can reach anything. Two dominant strategies, each a trade-off:
@@ -81,6 +97,14 @@ Principles and metrics operate on a structure, and that structure is a design de
 |---|---|---|---|
 | **By-layer** (`controller`, `service`, `repository`) | technical role | familiar; maps to layered architecture | a feature's code scatters across packages; layer packages become low-cohesion buckets |
 | **By-feature** (`orders`, `billing`) | domain capability | high cohesion per feature; change stays local | cross-feature sharing needs deliberate API packages |
+
+The companion module slices the same small orders app both ways. Under by-layer, the controller imports from the service and repository packages, so the one orders feature is spread across three packages and a change to it touches all three:
+
+<!-- include: 53_solid_coupling_cohesion_packages/src/main/java/org/acme/design/bylayer/controller/OrderController.java#by-layer -->
+
+Under by-feature, the data type, service, and storage sit together in one `orders` package, so the same change stays local — at the cost that another feature reaches it only through a published type:
+
+<!-- include: 53_solid_coupling_cohesion_packages/src/main/java/org/acme/design/byfeature/orders/OrderService.java#by-feature -->
 
 Neither is crowned — by-feature is increasingly favoured for modular monoliths and microservices, but by-layer remains reasonable for small apps, and the right answer depends on team size, domain, and whether the project is an app or a library. What *is* general is the set of healthy-graph principles: keep the graph **acyclic**, depend in the direction of **stability**, give each module a **clear public API** (Java's package-private default is an under-used encapsulation tool, and using it keeps internals internal), and group classes that change and release together.
 
@@ -139,7 +163,9 @@ This chapter drew the line between what is *judgment* (most of SOLID, cohesion, 
 - **Package structure** (key 57) — by-layer vs by-feature (crown neither; context-dependent). Healthy graph: acyclic, stable-direction, clear public API, package-private by default, reuse/release equivalence. Module-strength ladder: convention → package-private → ArchUnit slices → JPMS `module-info` (JEP 261, compiler-enforced; ⚠ exports semantics @pin) → build modules. Keep honest via ArchUnit + JDepend in CI (fitness function). Limits: no-universal-structure, restructuring-invasive, structure≠design, over-modularization.
 - **Routing** — metric definitions (CBO/RFC/LCOM/Ca/Ce/I/A/D formulas, REP/CCP/CRP, ADP/SDP/SAP names) → metrics chapter (key 04); enforcement (ArchUnit slices/cycles/layering, JPMS, fitness functions) → Ch 26 (keys 55/33/56); maintainability → Ch 1/2 (01); smells → Ch 12 (19); readability/over-decomposition → Ch 2 (03); DI mechanics + build modules → later (62); safe restructuring → later (91). SOURCE-PIN §7 canon gaps: Martin, North CUPID, Constantine/Yourdon, Liskov/Wing not pinned rows.
 
-**Companion module (spec — ⚠ EXAMPLE-BUILD = PENDING; toolchain READY; largely illustrative/concept):** `08-companion-code/53_solid_coupling_cohesion_packages/` — one `org.acme.orders` service shown two ways: an **over-abstracted** variant (interface + factory per class, DI five layers deep to add a field) beside a **balanced** variant (records, one interface where a real variation exists), to make the over-engineering cost concrete. Plus a **dependency-direction** demo: a small multi-package module with a **cycle** (JDepend/ArchUnit reports it), then the **DIP inversion** (introduce an interface so the stable side owns the abstraction) that breaks the cycle. And the **by-layer vs by-feature** contrast: the same mini-app organized both ways with its dependency graph beside each (no winner). **Honest edge:** the metrics improve on the balanced/by-feature variants but the chapter states the numbers are proxies — the real test is whether a change stays local. (Enforcement of the cycle/direction rules is Ch 26's; this module *shows* the structure, the next *gates* it.)
+**Companion module (BUILT — `mvn -B -Pquality verify` green; 13 tests, 0 Checkstyle, 0 SpotBugs; largely illustrative/concept):** `08-companion-code/53_solid_coupling_cohesion_packages/` — one `org.acme.design` order domain shown in contrasting shapes: an **over-abstracted** variant (interface + factory per class, the wiring threaded through several types to reach one calculation) beside a **balanced** variant (a record for the data, one interface kept only where a second real variation exists), to make the over-engineering cost concrete. Plus a **dependency-direction** demo: a two-package **cycle** (`orders` and `notify` depending on each other), then the **DIP inversion** (the stable side owns a small abstraction the other implements) that breaks it. And the **by-layer vs by-feature** contrast: the same mini-app organized both ways (no winner). A `direction` package adds the chapter's instability measure (`I = Ce/(Ca+Ce)`) plus the module's observability surface (a rejected-dependency counter, a readiness probe) and an explicit failure path (a wrong-direction dependency rejected under the strict `%prod` profile, reported under `%dev`). **Honest edge:** the structure improves on the balanced/by-feature variants but the chapter states the numbers are proxies — the real test is whether a change stays local. (Detecting and enforcing the cycle/direction rules with JDepend/ArchUnit is Ch 26's; this module *shows* the structure, the next *gates* it.)
+
+**Snippet tags:** `over-abstracted` (overengineered/OrderPricingService.java), `balanced` (balanced/OrderPricer.java), `cycle` (cycle/notify/OrderNotifier.java), `dip-inversion` (inverted/orders/OrderEvents.java), `by-layer` (bylayer/controller/OrderController.java), `by-feature` (byfeature/orders/OrderService.java) — six regions, each ≤9 lines, displayed in *How it works*.
 
 ## Next chapter teaser
 
