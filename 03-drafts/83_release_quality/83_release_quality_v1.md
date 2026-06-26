@@ -2,7 +2,7 @@
 Dossier key: 83 (single key) — per 01-index/FINAL_INDEX.md Ch 36 (CLOSES Part IX; Ch 37 opens Part X — Process, People & Metrics)
 Slug: 83_release_quality
 Part / arc position: Part IX — CI/CD & Quality Gates, Chapter 36 of 33-36 (CLOSER)
-Companion module: 08-companion-code/ (release checklist artifact + a feature-flag snippet; mostly process/infra — config not a buildable module) — ⚠ EXAMPLE-BUILD = PENDING (toolchain READY: JDK 21.0.11+25.0.3; release/infra = artifacts). Spec at foot.
+Companion module: 08-companion-code/83_release_quality/ — CONFIG-centric, self-contained (own config/ + own `quality` profile; child of the companion-code aggregator). Runnable core: org.acme.release.ReleaseReadiness (release-readiness gate asserting the chapter's preconditions — release version not -SNAPSHOT, changelog entry, CI green, signed+SBOM, smoke-tested) + FeatureFlag (decouple deploy from release). Release config: SEMVER-POLICY.md, CHANGELOG.md (Keep a Changelog), ci/release.yml, release/release-gate.sh. ✅ EXAMPLE-BUILD GREEN (JDK 21.0.11, `mvn -B -Pquality verify`: 17 tests, 0 Checkstyle, 0 SpotBugs). 6 snippet tags bound. Spec at foot.
 Verified against SOURCE-PIN: 2026-06-20. Sources (single concise dossier; release = shift-RIGHT closing the loop with shift-left):
 - Release quality (83): quality doesn't stop at merge — RELEASE is where it meets reality. Release-stage quality: final gates before shipping; progressive delivery (canary/blue-green/flags) to limit blast radius; post-release feedback loop (error tracking → fix) closing the quality cycle. Connects build-time gates (Ch 33-35 keys 75-82) to runtime quality (Part XIII key 108) + DORA stability (Part X key 85). Frame: high-quality release process makes shipping SAFE + FREQUENT (no speed/stability trade-off — DORA, key 02). Release gates (final checks): all CI gates green on the release commit; SBOM generated + artifact SIGNED/attested (SLSA/cosign Ch 28-29 key 66); release notes/changelog; version bump honoring semver (key 60); smoke tests vs a staged build. Progressive delivery (limit blast radius): CANARY (release to small % traffic, watch error/latency metrics, promote or roll back); BLUE-GREEN (switch traffic between two envs; instant rollback); FEATURE FLAGS (decouple DEPLOY from RELEASE; turn features on gradually — trunk-based companion Ch 35 key 81; kill-switch on trouble). Post-release feedback (close the loop): error tracking (Sentry-class), metrics/alerts (Part XIII key 107), SLOs; a production regression becomes a FIX + a TEST (Ch 20 key 49) + sometimes a NEW GATE (fitness function Ch 26 key 56). This is "shift-RIGHT" complementing shift-left (Ch 1 key 06). DORA stability: change-failure-rate + failed-deployment recovery time (key 85) measure release quality; canary/flags/rollback drive them down. Continuous monitoring of the release for new CVEs in shipped deps (Dependency-Track Ch 28 keys 65/66). LIMITS: progressive delivery needs INFRA + GOOD METRICS (canary analysis only as good as the signals it watches; without solid observability Part XIII it's blind; real setup cost — when-NOT small internal app); feature flags = DEBT if not cleaned up (stale flags → complexity + test-matrix explosion → removal discipline, key 59); rollback isn't always clean (DB migrations/stateful changes can't just roll back → backward-compatible migrations); post-release feedback only helps if ACTED ON (error-tracking noise nobody triages = theatre, key 04 vanity parallel); safe-release-process ≠ good-code (limits damage from defects; doesn't prevent them — that's the rest of the book).
 ⚠ verify-at-pin: DORA stability-metric definitions/bands (key 85, pinned State-of-DevOps edition); canary/blue-green/flag tooling specifics (keep general unless named tool); signing/SBOM-at-release specifics (Ch 28 key 66); semver (key 60). REPRO: release/infra = artifacts, not a buildable module.
@@ -48,6 +48,28 @@ The assumption does not hold, and this closing chapter of Part IX is the layer t
 
 The release is the last place to verify, and the release gates are the final, artifact-level checks before shipping. They build on everything prior: **all CI gates green on the release commit** (the pipeline of Chapters 33–35), the artifact **signed and attested** with its **SBOM** generated (SLSA/cosign, Part VII, so the shipped thing is verifiable and incident-ready), a **version bump honoring semver** (so consumers know what changed), release notes or a changelog, and **smoke tests against a staged build** (a final sanity check that the packaged artifact actually starts and serves). These gates do not re-litigate code quality; the pipeline did that. They verify the *release artifact* is the green, traceable thing the pipeline produced.
 
+Made runnable, the gate is a loop over the preconditions the release profile requires, collecting every one the candidate fails:
+
+<!-- include: 83_release_quality/src/main/java/org/acme/release/ReleaseReadiness.java#release-readiness -->
+
+The verdict is a sealed type, so a release either passes every required check or is blocked with the exact list of what failed — an actionable refusal, not a bare red mark:
+
+<!-- include: 83_release_quality/src/main/java/org/acme/release/ReleaseDecision.java#release-decision -->
+
+Two of those preconditions are the version and the changelog. A release carries a release version, never a development `-SNAPSHOT` (the semver contract of Chapter 26):
+
+<!-- include: 83_release_quality/src/main/java/org/acme/release/SemanticVersion.java#semver-release -->
+
+…and the changelog, kept in the [Keep a Changelog](https://keepachangelog.com) convention, must carry an entry for the version being shipped, so the change is written down for the people who consume it:
+
+<!-- include: 83_release_quality/release/CHANGELOG.md#changelog-entry -->
+
+Which checks are *required* is externalized per profile, not compiled in — a production release demands the full set, while an internal pre-release can require fewer (the same `dev` / `prod` config split a framework provides):
+
+<!-- include: 83_release_quality/src/main/resources/release-prod.properties#release-policy -->
+
+Snippet tags: `release-readiness`, `release-decision`, `semver-release`, `changelog-entry`, `release-policy` (companion module `08-companion-code/83_release_quality/`, built green via `mvn -B -Pquality verify`).
+
 ### Progressive delivery: limit the blast radius
 
 The core insight of release quality is that *some defect will slip the gates*, so the release mechanism itself should limit how much damage one can do. **Progressive delivery** is the set of techniques that do this:
@@ -57,6 +79,12 @@ The core insight of release quality is that *some defect will slip the gates*, s
 - **Feature flags** — decouple *deploy* from *release*: the code ships dark, and a flag turns the feature on gradually, with a kill-switch if it misbehaves. This is the trunk-based companion from Chapter 35 (incomplete work merges to `main` behind a flag), extended to the release itself.
 
 > **CONCEPT** *Decouple deploy from release.* The deepest idea here is that *deploying* code (putting the binary in production) and *releasing* a feature (turning it on for users) are separate acts, and separating them is what makes shipping both safe and frequent. Code can deploy continuously, dark behind flags; features release gradually via canary or flag rollout; and a problem is a flag flip or a traffic switch away from contained — not a panicked redeploy. This is the release-time resolution of the speed-versus-stability tension that has run through the book: progressive delivery makes a bad release a *small, fast-rolled-back incident* instead of an outage, which is exactly what lets a team release *often* without fear.
+
+A feature flag is the mechanism: code reads it on the request path, and the kill-switch turns the feature off instantly, with no redeploy:
+
+<!-- include: 83_release_quality/src/main/java/org/acme/release/FeatureFlag.java#feature-flag -->
+
+Snippet tags: `feature-flag` (companion module `08-companion-code/83_release_quality/`; the flag must be *removed* after rollout or it becomes debt — the honest edge carried in the module's comments).
 
 ### The post-release feedback loop: shift-right closes the loop
 

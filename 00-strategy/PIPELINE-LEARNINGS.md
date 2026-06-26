@@ -2049,3 +2049,74 @@ SpotBugs. Six tag-includes resolve (4 config, 2 Java), all 6 markers PASS in `ch
   Java without strain. `reproducible-build-maven-plugin` + `license-maven-plugin` versions are not in SOURCE-PIN
   (repro/SPDX/license rows = TO-PIN) → flagged `09-flags/67_repro_license_plugin_versions_unpinned.md`, the
   same two-pin discipline as keys 62/65. License content kept factual-not-legal-advice in config, code, README.
+- **EXAMPLE-BUILD key 39 (managing analyzer findings): a config-and-policy chapter still wants a runnable
+  policy shell.** The four levers are tool config, but the *decision* (triage) and the *ratchet* are
+  algorithms; modelling them as small total functions (`FindingTriage#triage`, `FindingRatchet#newFindings`)
+  let the tests prove the chapter's rules directly AND gave the ≤9-line Java snippets a natural home beside
+  the config snippets (SpotBugs `<Match>`, Checkstyle `SuppressWarningsFilter`/`SuppressionFilter`). 7 clean
+  tags across spotbugs-exclude.xml + checkstyle.xml + four Java files. Reuse signal for keys 76/80/87.
+- **Record the load-bearing proof (red-build evidence) in the gate report, not only the README.** For any
+  suppression/baseline module, removing each control and capturing the exact `BugInstance size N` + the
+  finding line is the cheapest way to show the control is real, not decorative — and it IS the chapter's
+  thesis as an executable event. Suggest a standard EXAMPLE-gate row: "silencing controls verified
+  load-bearing (with the red-build evidence)." Here: baseline removed → size 2 (EI_EXPOSE_REP +
+  EI_EXPOSE_REP2); site `@SuppressFBWarnings` removed → size 1; new finding on the clean class → red.
+- **A FLOOR-C build is a second, independent confirmation path for a tool-fact atom.** The dossier flagged
+  `EI_EXPOSE_REP` example-pattern code `⚠ verify at pin`; the build verified it verbatim in the pinned engine
+  jar (`spotbugs-4.9.3.jar` `findbugs.xml`: `type="EI_EXPOSE_REP" category="MALICIOUS_CODE"`). The
+  example-builder can retire a pre-pin "verify at pin" atom, not just the source-verifier — worth noting when
+  triaging `09-flags/` at build time.
+- **"Make the bad state unrepresentable" doubles as the explicit-failure-path requirement.** `Finding`'s
+  compact constructor rejects a false-positive with no justification, so the chapter's "a suppression is a
+  claim that needs evidence" cannot be constructed in code. One move satisfies both the HONEST-LIMITATIONS
+  floor and the EXAMPLE-gate failure-path requirement — clean pattern for discipline-as-code chapters.
+- **The observability surface can be the chapter's own subject, not a bolted-on health check.** For
+  "managing findings," `GateHealth#report` surfaces the silenced-debt count as a READY/DEGRADED signal
+  (degrades past an agreed budget, never changes the verdict) — the chapter's "keep debt about debt visible"
+  made executable. Where a chapter's topic is itself about visibility/feedback, the health surface should
+  report on the topic rather than a generic `/health`.
+
+## Ch 35 (key 81, folds 82) — EXAMPLE-BUILD (2026-06-27)
+
+- **JSON config cannot carry tag-include markers.** A config-centric chapter whose displayed artifact is
+  naturally JSON (e.g. a GitHub branch-protection ruleset payload) hits a wall: `// tag::name[]` breaks
+  JSON validity and `#` is not a JSON comment, so the anti-drift `extract_snippet`/`check_snippets`
+  machinery (which needs `# tag::`/`// tag::` lines that stay valid in-file) cannot tag a JSON region.
+  Fix: author the artifact as documented **YAML** (same settings, valid for tagging). Suggest a one-line
+  note in EXAMPLES-GUIDE §5. (Ch 35 ruleset is `ruleset.yml`, not `.json`, for exactly this reason.)
+- **`-Xlint:all` (inherited from the companion aggregator) flags non-serializable fields on exceptions.**
+  An exception holding a `List` field warns ("non-transient instance field of a serializable class…");
+  warning-clean is required by the build contract. Clean idiom: keep auxiliary data in the message and on
+  the typed result value, not on a field — the exception stays a plain serializable signal with one data
+  home. Candidate idiom note for EXAMPLES-GUIDE §6.1.
+- **The local↔CI parity assertion is a strong natural fit for the failure-path requirement (§1.1).** It
+  turns the chapter's central abstract claim ("green locally predicts green in CI") into a tested code
+  path with a real exception (`ParityBrokenException` naming the missing required checks), instead of
+  bolting an unrelated fault-tolerance annotation onto a workflow topic. Reinforces that the failure-path
+  requirement should be satisfied by the topic's own mechanism.
+
+## Ch 36 (key 83) — EXAMPLE-BUILD (2026-06-27)
+
+- **The peer-75 "tested-policy-core + illustrative-config" shape generalizes cleanly to a release chapter.**
+  Reusing it verbatim (parent pom, `quality` profile reading local `config/`, externalized `dev`/`prod`
+  properties, sealed verdict of records, JDK-only runtime, empty-with-reason SpotBugs filter) made the
+  release-readiness gate green first-try on logic; the only break was a style nit. Recommend EXAMPLES-GUIDE
+  name this the canonical shape for any "a gate/policy made runnable" chapter — 62/67/75/83 now all share it.
+- **Record compact constructors trip Checkstyle `LeftCurly` when written on one line** (`public X { … }`).
+  Empty record bodies (`{ }`) pass, but a non-empty single-line block fails. When a tagged region must stay
+  ≤ 9 lines, budget the extra two lines for a properly-braced compact constructor up front rather than
+  discovering it at the checkstyle phase. Candidate one-line note for EXAMPLES-GUIDE snippet-budgeting.
+- **A runnable shell artifact (`release-gate.sh`) is worth including even when un-displayed.** Exercising
+  both its ready (exit 0) and blocked (exit 1, naming every failed precondition) paths is cheap, proves the
+  config is real (not just the Java core), and gives the chapter's "hard stop" claim a second,
+  language-agnostic demonstration. Consider encouraging a runnable shell companion for process/CI chapters.
+- **Plugin-version-not-separately-pinned is now a recurring flag class (34, 62, 83).** A standing SOURCE-PIN
+  gap, not a per-chapter surprise: §4 pins "Apache Maven (+ enforcer, versions plugins) 3.9.16" as one row,
+  but each plugin versions on its own line. Recommend `/pin-source` split the §4 Maven row into explicit
+  per-plugin lines once, retiring the recurring flag. For 83 the plugins are only *named in illustrative
+  config* (never invoked by the build), so the green build asserts no unpinned GAV.
+- **Markdown tag regions work via HTML-comment-wrapped AsciiDoc markers.** `<!-- tag::name[] -->` /
+  `<!-- end::name[] -->` in a `.md` file (e.g. a CHANGELOG) resolve correctly through `extract_snippet`
+  (the awk matches the `tag::name[]` substring) and stay invisible in rendered Markdown — the route for
+  tagging a region in a documentation/config `.md` artifact. (Complements the Ch 35 "JSON can't be tagged,
+  use YAML" note.)

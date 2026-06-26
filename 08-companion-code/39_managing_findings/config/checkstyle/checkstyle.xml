@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<!--
+  The Checkstyle side of Chapter 39: the same four-lever discipline expressed in Checkstyle's own
+  suppression surface. Two controls are wired, and both are the chapter's subject:
+
+    - SuppressWarningsFilter (with its prerequisite SuppressWarningsHolder on the TreeWalker) honours
+      Java's own @SuppressWarnings("checkstyle:CheckName") at the exact site — the per-finding control,
+      lever 1, the "suppress with a reason at the site" form.
+    - SuppressionFilter reads an external suppressions.xml (one <suppress> row per frozen finding) — the
+      de-facto file BASELINE, lever 3, the way a noisy legacy file is frozen without weakening the rule
+      for the whole project.
+
+  The ruleset itself is deliberately small and high-signal (naming, import hygiene, a size limit, braces)
+  rather than "everything on", so the gate is one the team agrees once and stops re-litigating. The
+  column limit is this team's cited choice (LineLength's own default is 80; Google's bundled config sets
+  100), not a universal truth. The displayed snippets are the tag regions below — real modules in the
+  ruleset that actually gates this code, so the printed config and the running config are one artifact.
+-->
+<module name="Checker">
+  <property name="severity" value="error"/>
+  <property name="charset" value="UTF-8"/>
+  <property name="fileExtensions" value="java"/>
+
+  <!--
+    SuppressWarningsFilter honours @SuppressWarnings("checkstyle:CheckName") at the site (its
+    SuppressWarningsHolder feeder is wired on the TreeWalker below). This is the per-finding "suppress
+    with a reason" control: the reason lives in a comment beside the annotation, in the code, where a PR
+    reviewer sees it.
+  -->
+  <!-- tag::checkstyle-suppression-filter[] -->
+  <module name="SuppressWarningsFilter"/>
+  <!-- end::checkstyle-suppression-filter[] -->
+
+  <!--
+    SuppressionFilter reads an external suppressions.xml — Checkstyle's de-facto file baseline. Each
+    <suppress> row freezes a named check over a file path. optional="true" keeps the build working when
+    the file is absent, so the baseline is opt-in rather than a hard prerequisite. This module's baseline
+    file is empty of rows on purpose (the legacy code here is held clean for Checkstyle and only carries a
+    SpotBugs finding), so the mechanism is wired and inert — the place a real legacy file would be frozen.
+  -->
+  <!-- tag::checkstyle-baseline[] -->
+  <module name="SuppressionFilter">
+    <property name="file" value="config/checkstyle/checkstyle-suppressions.xml"/>
+    <property name="optional" value="true"/>
+  </module>
+  <!-- end::checkstyle-baseline[] -->
+
+  <module name="LineLength">
+    <property name="max" value="120"/>
+    <property name="ignorePattern" value="^(package|import) .*"/>
+  </module>
+
+  <module name="TreeWalker">
+    <!-- Naming conventions, each on its documented default format. -->
+    <module name="ConstantName"/>
+    <module name="TypeName"/>
+    <module name="MethodName"/>
+    <module name="MemberName"/>
+    <module name="LocalVariableName"/>
+    <module name="RecordComponentName"/>
+    <module name="PatternVariableName"/>
+    <module name="PackageName"/>
+    <module name="ParameterName"/>
+    <module name="StaticVariableName"/>
+    <module name="LambdaParameterName"/>
+    <module name="CatchParameterName"/>
+
+    <!-- Import hygiene, each on its documented default. -->
+    <module name="AvoidStarImport"/>
+    <module name="RedundantImport"/>
+    <module name="UnusedImports"/>
+
+    <!-- Blocks and braces. EmptyBlock tolerates a commented block (option=text). -->
+    <module name="NeedBraces"/>
+    <module name="LeftCurly"/>
+    <module name="RightCurly"/>
+    <module name="EmptyBlock">
+      <property name="option" value="text"/>
+    </module>
+
+    <!-- Modifiers -->
+    <module name="ModifierOrder"/>
+    <module name="RedundantModifier"/>
+
+    <!-- Coding / structure -->
+    <module name="OneTopLevelClass"/>
+    <module name="EqualsHashCode"/>
+    <module name="SimplifyBooleanExpression"/>
+    <module name="EmptyStatement"/>
+    <module name="UpperEll"/>
+    <module name="ArrayTypeStyle"/>
+    <module name="OuterTypeFilename"/>
+
+    <!-- Feeds @SuppressWarnings("checkstyle:...") to the SuppressWarningsFilter on the Checker above. -->
+    <module name="SuppressWarningsHolder"/>
+  </module>
+</module>

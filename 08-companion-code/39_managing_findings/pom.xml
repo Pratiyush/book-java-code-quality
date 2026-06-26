@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 39 companion (keeping a static-analysis gate honest — false positives, suppression with a
+    reason, baselines, and the ratchet). A small PricingService slice carrying the three kinds of code
+    every real codebase has: a legacy class with a pre-existing finding, one genuine false positive, and
+    a clean new class. The chapter is config-and-policy-centric, so the displayed snippets are tag-regions
+    inside the very artifacts that do the managing: the SpotBugs FindBugsFilter that baselines the legacy
+    finding (config/spotbugs/spotbugs-exclude.xml), the Checkstyle SuppressWarningsFilter +
+    suppressions.xml baseline (config/checkstyle/), the one reviewed @SuppressFBWarnings at its site, and
+    a runnable finding-triage policy in Java (the triage decision and the ratchet as code the tests
+    exercise). Printed config and running config are one artifact.
+
+    The module is held to its own gates and stays green BECAUSE the baseline freezes the legacy finding
+    and the one false positive is suppressed narrowly with a justification — not because the code is empty
+    of findings. Remove either control and a gate fails, which is the chapter's whole point made
+    executable. Runtime dependencies are JDK-only; the one extra GAV is the SpotBugs annotations artifact,
+    on the compile path only, exactly as the Chapter 27 module does.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>managing-findings</artifactId>
+  <name>Chapter 39 — Keeping the Gate Honest (managing-findings)</name>
+
+  <dependencies>
+    <!--
+      SpotBugs annotations (SOURCE-PIN.md: SpotBugs 4.10.2 line; this module builds against the locally
+      cached 4.9.3 engine the companion code is pinned to, so the annotations track that engine). This is
+      the GAV that carries @SuppressFBWarnings(value, justification) from edu.umd.cs.findbugs.annotations
+      — the per-site suppression-with-a-reason control. The annotation is CLASS-retained (SpotBugs reads
+      bytecode), so `provided` scope keeps it on the compile path only and the module's runtime stays
+      JDK-only like the rest of the companion code.
+    -->
+    <dependency>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
+      <version>4.9.3</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    The static-analysis gates this chapter operates, opt-in via `-Pquality` so the default build stays
+    fast. Two analyzers run, by design, so the chapter's two suppression surfaces are both real in the
+    build: Checkstyle (the source view) honouring @SuppressWarnings("checkstyle:...") via a
+    SuppressWarningsFilter, plus an external suppressions.xml as the de-facto file baseline; and SpotBugs
+    (the bytecode view) with an excludeFilterFile that baselines the legacy finding and is the home for
+    the one reviewed false positive.
+
+    The maven-checkstyle-plugin ships an OLD bundled engine (Checkstyle 9.3); the pinned house engine is
+    pulled in as a plugin-level dependency (the "two-pin" lesson — the build plugin and the analyzer
+    engine are versioned separately). This module is a direct child of the companion-code root, which pins
+    no quality profile of its own, so the profile is declared here (the same shape the Chapter 27 module
+    uses) and reads the config under this module's own config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <!--
+                failOnViolation defaults to true; stated here because it is exactly the policy the chapter
+                discusses (the gate that goes red on a finding the team has not yet handled). The external
+                suppressions.xml wired inside checkstyle.xml is what keeps this green over the legacy line.
+              -->
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point. Threshold Low + effort Max so the legacy class's finding
+            actually fires at this configuration — which makes the baseline <Match> load-bearing rather
+            than decorative (with the filter removed the build goes red). The excludeFilterFile names two
+            things, both with reasons: the baselined legacy finding, and the one reviewed false positive's
+            site is instead annotated at the source with @SuppressFBWarnings, so the filter stays minimal.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Low</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

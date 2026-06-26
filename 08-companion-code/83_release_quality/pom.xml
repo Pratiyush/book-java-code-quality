@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 36 companion (When Quality Meets Reality — Part IX closer). Release quality at the smallest
+    size that still teaches it. The chapter is CONFIG-centric: the release process itself is illustrative
+    configuration — a semantic-versioning policy (release/SEMVER-POLICY.md), a Keep a Changelog file
+    (release/CHANGELOG.md), a release workflow in ci/release.yml, and a release-gate shell in
+    release/release-gate.sh — and none of those files is run by this build. What is runnable and
+    unit-tested here is the load-bearing decision the chapter argues for: the release-READINESS gate, in
+    org.acme.release.ReleaseReadiness, which asserts the chapter's release preconditions before a tag is
+    cut — the version is a release and not a -SNAPSHOT (semver, key 60), the changelog carries an entry
+    for it, every CI gate is green on the release commit, the artifact is signed/attested with an SBOM
+    (Part VII, key 66), and the staged build passed its smoke test. That makes `mvn -Pquality verify` the
+    local equivalent of the release gate the workflow wires: the same preconditions the YAML checks are
+    decided here and unit-tested. The module is built on the JDK alone (zero runtime dependencies), so it
+    dogfoods the book and builds fast and green; its own signals are machine-checked by the `quality`
+    profile (Checkstyle + SpotBugs).
+
+    SOURCE-PIN: Java 21 anchor (build openjdk@21 21.0.11; forward-check 25.0.3); JUnit 6.x BOM + AssertJ
+    3.27.7 inherited from the aggregator. Semver is the contract from semver.org (MAJOR.MINOR.PATCH;
+    MAJOR=breaking, MINOR=additive, PATCH=fix — key 60). The release-plugin / versions-plugin version
+    literals named in the workflow and policy are NOT separately pinned by SOURCE-PIN (§4 pins one Maven
+    row, "Apache Maven (+ enforcer, versions plugins) 3.9.16") — see
+    09-flags/83_release_versioning_plugin_versions_unpinned.md. The GitHub Actions in ci/release.yml are
+    hosted/SaaS, dated-at-use 2026-06 (SOURCE-PIN §5), flagged for digest pinning at adoption.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>release-quality</artifactId>
+  <name>Chapter 36 — When Quality Meets Reality (release-quality)</name>
+
+  <dependencies>
+    <!--
+      JDK-only at runtime: the release-readiness gate is plain Java, and the release tools the chapter
+      names (the signing/SBOM step, the changelog tooling, the canary controller) run in the release
+      pipeline, not as runtime dependencies here. The test libraries are the only additions, and their
+      versions are inherited from the companion-code aggregator's dependencyManagement — no version
+      literal lives in this module.
+    -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates (Chapter 16), opt-in via `-Pquality` so the default build stays fast. The
+    maven-checkstyle-plugin ships an OLD bundled engine; we override it to the pinned engine via a
+    plugin-level dependency — the build plugin and the analyzer engine are separate versions. This module
+    is a direct child of the companion-code root, which pins no quality profile of its own, so the profile
+    is declared here (the same shape the peer modules 62/67/75 use) and reads the config under this
+    module's own config/ dir, keeping the module self-contained. This profile IS the local equivalent of
+    the static-and-security stage in ci/release.yml.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16), complementary to Checkstyle's source view.
+            This module's model types are immutable records and a sealed verdict, and the gate exposes no
+            mutable state, so the representation-exposure detectors stay quiet without suppression. The
+            exclude filter is kept (empty) so a future, genuinely-reviewed suppression has a home with a
+            reason, rather than being added inline.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

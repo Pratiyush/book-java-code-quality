@@ -2,7 +2,7 @@
 Dossier key: 39 — per 01-index/FINAL_INDEX.md Ch 19 (CLOSES Part IV; Ch 20 opens Part V — Testing)
 Slug: 39_managing_findings
 Part / arc position: Part IV — Static Analysis, Linting & Formatting, Chapter 19 of 15-19 (CLOSER)
-Companion module: 08-companion-code/ (a baseline that ratchets + one justified suppression) — ⚠ EXAMPLE-BUILD = PENDING (toolchain READY: JDK 21.0.11+25.0.3). Spec at foot.
+Companion module: 08-companion-code/39_managing_findings/ (a baseline that ratchets + one justified, load-bearing suppression) — ✅ EXAMPLE-BUILD GREEN (JDK 21.0.11, mvn -B -Pquality verify SUCCESS; 0 Checkstyle, 0 SpotBugs reported, 15 tests). Spec + Snippet tags at foot.
 Verified against SOURCE-PIN: 2026-06-20. Sources (each tool cited to its OWN docs; no tool crowned):
 - The four levers (narrow→broad): (1) per-finding suppression, (2) rule/ruleset tuning, (3) baseline, (4) ratchet ("clean as you code").
 - Checkstyle: SuppressWarningsFilter (+ required child SuppressWarningsHolder on TreeWalker) honours @SuppressWarnings("checkname") (case-insensitive, dotted prefix/Check suffix removed); SuppressionCommentFilter (// CHECKSTYLE:OFF .. :ON) / SuppressWithNearbyCommentFilter; SuppressionXpathSingleFilter (inline, same config); SuppressionFilter (external suppressions.xml = de-facto baseline). maven-checkstyle-plugin checkstyle:check; failOnViolation (default true); maxAllowedViolations (count-cap ratchet); violationSeverity.
@@ -62,6 +62,10 @@ The recurring hazard is conflating the false-positive case with the accepted cas
 
 > **CONCEPT** *Every narrow form has a broad form, and the broad form silences the future.* The discipline is always reaching for the narrowest lever that solves the actual problem: one finding means suppress one finding; one rule that is systematically wrong means tune that one rule; a legacy mountain means baseline, not scattered suppressions. Breadth is convenient and almost always a smell.
 
+Written as code, the decision is a small total function — each finding takes exactly one branch:
+
+<!-- include: 39_managing_findings/src/main/java/org/acme/findings/FindingTriage.java#triage-decision -->
+
 ### The four levers, narrow to broad
 
 **Lever 1 — per-finding suppression.** Silence one finding at one site. Every tool ships this, and the shape that matters is whether it carries a *reason*:
@@ -70,6 +74,14 @@ The recurring hazard is conflating the false-positive case with the accepted cas
 - **PMD**: `@SuppressWarnings("PMD.RuleName")` for one rule, or the `// NOPMD` comment **on the same line as the violation**. Any text after the marker lands in the report, a built-in justification slot.
 - **Checkstyle**: `@SuppressWarnings("checkname")`, but only when the config wires `SuppressWarningsFilter` *and* its prerequisite `SuppressWarningsHolder` on the `TreeWalker`; plus comment filters (`// CHECKSTYLE:OFF` … `:ON`) and the inline `SuppressionXpathSingleFilter`.
 - **Error Prone**: `@SuppressWarnings("CheckName")` with the canonical check name.
+
+The SpotBugs form in the companion module — narrow to one pattern on one method, carrying its reason:
+
+<!-- include: 39_managing_findings/src/main/java/org/acme/findings/PriceFormatter.java#reviewed-suppression -->
+
+And the Checkstyle wiring that makes `@SuppressWarnings("checkstyle:...")` honoured at the site:
+
+<!-- include: 39_managing_findings/config/checkstyle/checkstyle.xml#checkstyle-suppression-filter -->
 - **NullAway**: beyond `@SuppressWarnings("NullAway")`, a `castToNonNull(x)` helper expresses "I know this one is non-null" as a *call* at the exact site, narrower than a blanket annotation.
 - **Sonar**: end-of-line `//NOSONAR`. It is **rule-blind**: it drops *every* issue on that line. The reviewed server-side path is the **False Positive** or **Accepted** issue transition, both excluded from ratings and reports.
 
@@ -77,7 +89,19 @@ The recurring hazard is conflating the false-positive case with the accepted cas
 
 **Lever 3 — baseline.** Freeze the findings that exist *today* so the gate reacts only to *change*. That is the precondition for turning a gate on over a noisy codebase at all. SpotBugs has a true baseline: `baselineFiles` ("bugs found in the baseline files won't be reported"). Checkstyle's external `suppressions.xml` (one `<suppress>` row per frozen finding) is the de-facto baseline, and `maxAllowedViolations` caps by count. Sonar's baseline is implicit: anything outside the **New Code** window is tracked but excluded from the default gate.
 
+In the companion module, a SpotBugs `FindBugsFilter` freezes the legacy class's finding by bug pattern, narrowed to that one class:
+
+<!-- include: 39_managing_findings/config/spotbugs/spotbugs-exclude.xml#baseline-match -->
+
+Checkstyle's file-based form is a `SuppressionFilter` over an external `suppressions.xml` — the de-facto baseline:
+
+<!-- include: 39_managing_findings/config/checkstyle/checkstyle.xml#checkstyle-baseline -->
+
 **Lever 4 — ratchet ("clean as you code").** Let existing findings persist but **block new ones**, so debt only goes down. Sonar is the reference articulation: the **New Code Definition** marks what is "new," and the default gate applies its conditions *only to new code*. Legacy does not block the build, but new code must be clean, and debt decays as files are touched. Without a new-code engine, a count cap (`maxAllowedViolations` set to today's number, then lowered over time) blocks any *increase*; regenerating a SpotBugs baseline plays the same role at the finding-set level.
+
+At the finding-set level the rule is one filter: keep what the baseline froze, fail on whatever is left.
+
+<!-- include: 39_managing_findings/src/main/java/org/acme/findings/FindingRatchet.java#ratchet -->
 
 > **CONCEPT** *Baseline freezes the past; the ratchet governs the future.* Together they let a team adopt a gate on a million-line legacy codebase *today*, with no flag-day cleanup, while guaranteeing the codebase gets no worse. That combination, not the analyzer itself, is what makes static analysis adoptable in the real world.
 
@@ -86,6 +110,10 @@ The recurring hazard is conflating the false-positive case with the accepted cas
 The through-line of all four levers: the tools can *record* "false positive," but they cannot *decide* it. That judgment is human, and a wrong one (suppressing a finding that was actually real) is **invisible afterward**. The squiggle is gone; the bug is absent from the report. This is why the `justification` field exists, why `// NOPMD` captures trailing text into the report, and why a reviewed PR is the right home for a suppression: an unjustified suppression is, on its face, indistinguishable from hiding a real defect.
 
 Suppressions and baselines are therefore a peculiar kind of artifact: **debt about debt.** They are claims the team made at one moment, and they rot. The code under a suppression changes and the original reason no longer holds, but the suppression stays. A baselined finding gets refactored and a real bug slips in under the stale match. The suppression set itself needs review (it is version-controlled and shows up in PRs precisely so it *can* be reviewed) and periodic decay. Delete the suppressions periodically and see what comes back. A gate full of stale, unexamined suppressions is the same theatre as a skipped gate, only better disguised.
+
+One way to keep that debt visible is to report on it: surface the silenced count as a health signal that degrades when it grows past an agreed budget, without ever changing the build's verdict.
+
+<!-- include: 39_managing_findings/src/main/java/org/acme/findings/GateHealth.java#gate-health -->
 
 ## Deep dive: a baseline that ratchets, and one suppression that earns its keep
 
@@ -143,7 +171,7 @@ Part IV has built and operated a static-analysis gate end to end: how the tools 
 - **Status/discipline**: FindBugs is dead → **SpotBugs** (annotation package `edu.umd.cs.findbugs.annotations`); `@Generated`-style precision applies to suppression annotation *packages* too. All tool/plugin versions, GAVs, defaults (`failOnViolation`, `violationSeverity`, `baselineFiles`), the Sonar "Won't Fix"→"Accepted" rename, `//NOSONAR` scoping, PMD `--suppress-marker` spelling, and the `EI_EXPOSE_REP` example code carried **⚠ verify at pin**.
 - **Routing** — why FPs exist (undecidability) → Ch 15 (key 26); which analyzers to layer → Ch 17 (key 37); new-code coverage gate + build-breaking policy → the CI part (keys 80/76); legacy-remediation playbook → a later chapter (key 87).
 
-**Companion module (spec — ⚠ EXAMPLE-BUILD = PENDING; toolchain READY):** `08-companion-code/39_managing_findings/` — a `PricingService` module wired with Checkstyle (`failOnViolation=true`, `maxAllowedViolations` ratchet) and SpotBugs (`excludeFilterFile`/`baselineFiles`), containing (i) a legacy class with baselined findings, (ii) one narrow `@SuppressFBWarnings(value=…, justification="…")`, (iii) a clean new class. **TRY-IT / failure path:** add a new SpotBugs finding (`EI_EXPOSE_REP`, returning a mutable field) to the clean class → `./mvnw -B verify` **fails** (the baseline froze only old findings); fix it or add a *narrow justified* suppression → green. Externalized config: `checkstyle.xml` (`SuppressWarningsFilter`+`SuppressWarningsHolder`), `checkstyle-suppressions.xml`, `spotbugs-exclude.xml` (`FindBugsFilter`), `maxAllowedViolations`. **Honest edge:** a broad `@SuppressFBWarnings("EI_EXPOSE_REP")` on the class would also hide the new finding — narrow-with-a-reason is the discipline.
+**Companion module (built — EXAMPLE-BUILD green at JDK 21.0.11, `mvn -B -Pquality verify` SUCCESS; 0 Checkstyle violations, 0 SpotBugs findings reported, 15 tests pass):** `08-companion-code/39_managing_findings/` — a `PricingService` slice wired with Checkstyle (`failOnViolation=true`, `SuppressWarningsFilter` + `SuppressionFilter`) and SpotBugs (`excludeFilterFile`), carrying the three kinds of code: (i) `LegacyPriceTable`, whose `EI_EXPOSE_REP`/`EI_EXPOSE_REP2` finding is frozen by a narrow `FindBugsFilter` `<Match>`, (ii) `PriceFormatter`, whose one reviewed false positive is suppressed at the site by a **load-bearing** `@SuppressFBWarnings(value="EI_EXPOSE_REP", justification=…)` (removing it raises `EI_EXPOSE_REP` on `denominationsCents()` and fails the build — the live engine confirming the dossier's example pattern), and (iii) `PricingCatalog`, clean new code. The chapter's triage decision and ratchet are runnable Java (`FindingTriage`, `FindingRatchet`, `GateHealth`) the tests exercise. The displayed snippets are tag regions inside the config and policy that actually run, so the printed and running artifacts are one. **TRY-IT / failure path:** in `PricingCatalog#priceTiers` return the internal array directly → a *new* `EI_EXPOSE_REP` appears on the clean class and `mvn -Pquality verify` **fails** (the baseline froze only the old finding); restore the `Arrays.copyOf` → green. Externalized config: `config/checkstyle/checkstyle.xml` (`SuppressWarningsFilter` + `SuppressWarningsHolder` + `SuppressionFilter`), `config/checkstyle/checkstyle-suppressions.xml`, `config/spotbugs/spotbugs-exclude.xml` (`FindBugsFilter`). **Honest edge:** a broad `@SuppressFBWarnings("EI_EXPOSE_REP")` on the class would also hide the new finding — narrow-with-a-reason is the discipline. Both the baseline `<Match>` and the site suppression are verified load-bearing (removing either turns the build red). Snippet tags: `triage-decision`, `reviewed-suppression`, `checkstyle-suppression-filter`, `baseline-match`, `checkstyle-baseline`, `ratchet`, `gate-health`.
 
 ## Next chapter teaser
 
