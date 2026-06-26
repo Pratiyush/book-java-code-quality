@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    Reviewed suppressions (Chapter 16: suppress with a reason, never disable a whole detector).
+
+    This module's subject is what each analysis technique detects, so it ships deliberate
+    analyzer-target shapes, written to keep the module's own gate green while still showing the smell.
+    Two of those targets are findings SpotBugs genuinely raises at this module's threshold — the bytecode
+    data-flow leak (Move 3) and the type-misuse call (Move 2, which SpotBugs reaches by its own type
+    resolution, the same conclusion Error Prone's CollectionIncompatibleType draws). Both findings ARE
+    the teaching point, so the detectors stay fully enabled and each counter-example is named here,
+    narrowly (by class, method, and pattern), with a reason and a pointer to the test that proves it. The
+    remaining targets sit below the gate's chosen point and need no suppression (the empty catch carries a
+    comment the house EmptyBlock check tolerates; the taint flow runs into an in-module sink base SpotBugs
+    does not model as a JDBC injection).
+
+    Note on the chapter's two suppression mechanisms: this FILTER FILE is the central, location-based
+    control. The per-site @SuppressFBWarnings(value, justification) annotation is shown separately in
+    SuppressionDemo (on a load-bearing EI_EXPOSE_REP finding) so the chapter's `justified-suppression`
+    snippet displays the in-code form too.
+  -->
+
+  <!--
+    Move 3 — data-flow leak. ResourceLeakDemo.readFirstLine opens a reader over a classpath resource and
+    returns reader.readLine() without closing it on any path. SpotBugs finds it by data-flow over the
+    compiled bytecode and raises OS_OPEN_STREAM ("may fail to close stream"); verified load-bearing (it
+    fires when the detector reaches this method). The finding IS the Move-3 lesson, so it is named as an
+    intentional teaching counter-example. Proven by
+    StaticAnalysisDemoTest#leakDemoIsTheUnclosedResourceShapeAndTheFixReadsTheSameValue. The fix is the
+    try-with-resources form in ResourceReader.readFirstLine, never this suppression.
+  -->
+  <Match>
+    <Class name="org.acme.staticanalysis.ResourceLeakDemo"/>
+    <Method name="readFirstLine"/>
+    <Bug pattern="OS_OPEN_STREAM"/>
+  </Match>
+
+  <!--
+    Move 2 — type misuse. TypeMisuseDemo.catalogueHas calls List<Long>.contains(int): the int boxes to
+    Integer, which can never equal a Long element, so the call is always false. SpotBugs reaches this by
+    type resolution and raises GC_UNRELATED_TYPES (verified High here, so the suppression is load-bearing,
+    not decorative) — the same type-aware mistake the chapter attributes to Error Prone's
+    CollectionIncompatibleType inside javac. The finding IS the Move-2 lesson, so it is named as an
+    intentional teaching counter-example. Proven by
+    StaticAnalysisDemoTest#typeMisuseQueryCanNeverMatchWhileTheTypedQueryDoes. The fix is the
+    type-correct containsQuantity(List<Long>, long), never this suppression.
+  -->
+  <Match>
+    <Class name="org.acme.staticanalysis.TypeMisuseDemo"/>
+    <Method name="catalogueHas"/>
+    <Bug pattern="GC_UNRELATED_TYPES"/>
+  </Match>
+</FindBugsFilter>

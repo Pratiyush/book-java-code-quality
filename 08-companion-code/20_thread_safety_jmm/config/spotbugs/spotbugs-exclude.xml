@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    Reviewed suppressions (Chapter 16: suppress with a reason, never disable a whole detector).
+
+    This module ships ONE deliberate counter-example whose data race IS the lesson, so a test can
+    prove the lost update the prose describes rather than merely assert it. The Multithreaded-
+    correctness detectors are left fully ENABLED for the rest of the module (the atomic, synchronized,
+    final-publication, holder, and coordinator types all stay clean); only the named racy counter
+    carries a finding, suppressed narrowly, with a reason, and pointed at the test that demonstrates
+    why it matters. Fixing the class — which AtomicCounter and SynchronizedCounter already do — is the
+    real advice; the suppression exists only so the teaching counter-example can ship green.
+  -->
+
+  <!--
+    RacyCounter.increment() runs count++ on a volatile field, a read-modify-write that is not atomic,
+    so concurrent callers can lose increments — the hook's bug. At this module's threshold the pinned
+    SpotBugs (4.9.x) raises TWO Multithreaded-correctness findings on the increment() body, both
+    verified against the build:
+      - VO_VOLATILE_INCREMENT ("Increment of volatile field ... is not atomic"), the named pattern the
+        chapter prose calls out for volatile++; and
+      - AT_NONATOMIC_OPERATIONS_ON_SHARED_VARIABLE ("Operation on shared variable is not atomic"), the
+        broader atomicity-violation pattern that also fires once the field is read by count().
+    SpotBugs surfaces one at a time by priority, so both are matched here; either alone leaves the
+    other to fail the build (verified by suppressing each in turn). The suppressions are load-bearing,
+    not decorative. Proven by ThreadSafetyContractTest#racyCounterCanLoseUpdatesUnderContention. The
+    fix is an atomic (AtomicCounter) or a lock (SynchronizedCounter), never this suppression.
+  -->
+  <Match>
+    <Class name="org.acme.concurrency.RacyCounter"/>
+    <Bug pattern="VO_VOLATILE_INCREMENT,AT_NONATOMIC_OPERATIONS_ON_SHARED_VARIABLE"/>
+  </Match>
+</FindBugsFilter>

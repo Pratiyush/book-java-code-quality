@@ -26,6 +26,9 @@
     <module>12_error_handling_exceptions</module>
     <module>14_generics_type_safety</module>
     <module>19_code_smells_antipatterns</module>
+    <module>20_thread_safety_jmm</module>
+    <module>22_virtual_threads_structured_concurrency</module>
+    <module>26_how_static_analysis_works</module>
     <module>capstones</module>
   </modules>
 

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 26 companion (Wrong in Both Directions — how static analysis works). Puts each rung of the
+    chapter's technique ladder into one buildable module as an analyzer-TARGET, so the prose can show
+    the exact shape each technique reasons about: an AST/pattern smell (an empty catch), a type-misuse
+    call that compiles but is a logic error (the kind Error Prone flags inside javac), a data-flow
+    leak (an unclosed resource SpotBugs finds on the bytecode), and a taint flow (an untrusted value
+    reaching a sink) beside its sanitized counterpart. A reviewed @SuppressFBWarnings shows the chapter's
+    "suppress with a reason" control in code. The module dogfoods the book: every shape is held to the
+    same `quality` gate it describes, written to stay green (Checkstyle 0 / SpotBugs 0) while still
+    showing the smell — the one genuine data-flow finding carries a single reviewed suppression. Runtime
+    dependencies are JDK-only; the one extra GAV is the SpotBugs annotations artifact, on the compile
+    path only.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>how-static-analysis-works</artifactId>
+  <name>Chapter 26 — Wrong in Both Directions (how-static-analysis-works)</name>
+
+  <dependencies>
+    <!--
+      SpotBugs annotations (SOURCE-PIN.md: SpotBugs 4.10.2 line; this module builds against the locally
+      cached 4.9.3 engine the companion code is pinned to, so the annotations track that engine). The
+      single version literal here is the one pinned GAV the chapter's `@SuppressFBWarnings(value,
+      justification)` snippet needs — not a BOM or version-set. The annotations are CLASS-retained, so
+      `provided` scope keeps them on the compile path only and the module's runtime stays JDK-only like
+      the rest of the companion code.
+    -->
+    <dependency>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
+      <version>4.9.3</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The maven-checkstyle-plugin ships an OLD bundled engine (Checkstyle 9.3); we override it to
+    the pinned engine via a plugin-level dependency — the "two-pin" lesson (the build plugin and the
+    analyzer engine are separate versions). This module is a direct child of the companion-code root,
+    which pins no quality profile of its own, so the profile is declared here (the same shape the
+    Chapter 09 and Chapter 19 modules use) and reads the config under this module's config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16, and Move 3 of this chapter) —
+            complementary to Checkstyle's source view. This module's whole point is to show what each
+            technique detects, so it ships ONE deliberate data-flow finding (the unclosed resource in
+            ResourceLeakDemo). The exclude filter carries a single narrowly-scoped, reasoned suppression
+            for it — the chapter's "suppress with a documented reason, never disable a detector"
+            discipline made concrete, not a way to hide a real defect. Every other shape is written to
+            stay below the detector's threshold so the gate is green without suppression.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

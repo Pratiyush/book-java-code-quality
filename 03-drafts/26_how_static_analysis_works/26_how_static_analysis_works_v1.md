@@ -2,7 +2,7 @@
 Dossier key: 26 (owner, single key) — per 01-index/FINAL_INDEX.md Ch 15 (OPENS Part IV)
 Slug: 26_how_static_analysis_works
 Part / arc position: Part IV — Static Analysis, Linting & Formatting, Chapter 15 (opens Part IV; Part III = Ch 13-14)
-Companion module: 08-companion-code/26_how_static_analysis_works/ — ⚠ EXAMPLE-BUILD = PENDING-RUNTIME (no JDK). Spec at foot.
+Companion module: 08-companion-code/26_how_static_analysis_works/ — EXAMPLE-BUILD green (JDK 21.0.11, `mvn -B -Pquality verify` SUCCESS). Spec at foot.
 Verified against SOURCE-PIN: 2026-06-20. Sources (each technique illustrated by a tool's OWN docs, cited; verdict routed to Ch 17): PMD how-PMD-works (root AST node / SymbolFacade / TypeResolution / "DFA visitor … control flow graphs and data flow nodes" / traverse AST → RuleViolations / analyzes source — verbatim); Error Prone homepage ("hooks into your standard build" / "augment the compiler's type analysis" — verbatim; runs in javac); SpotBugs OpcodeStackDetector/BytecodeScanningDetector (bytecode + operand stack; FindBugs→SpotBugs); CodeQL about-data-flow-analysis (data-flow graph "models the way data flows through the program at runtime" / local vs global / taint "extends data flow analysis by including steps in which the data values are not necessarily preserved, but the potentially insecure object is still propagated" / y=x+1 "derived from x" — verbatim); Semgrep dataflow-overview (AST→IL / constant-prop + taint / intraprocedural / "No path sensitivity"/"No pointer or shape analysis"/"No soundness guarantees" — verbatim); Checker Framework manual ("values soundness over limiting false positives" / "unsound in a few places where a conservative analysis would issue too many false positive warnings" / suppression voids guarantee — verbatim); FP controls: SpotBugs filter file (Match) + @SuppressFBWarnings(value, justification), SonarQube "False positive"/"Won't fix" (may be "Accept"); Rice's theorem / halting problem (undecidability — ⚠ needs PRIMARY text citation, flagged UNVERIFIED).
 ⚠ verify-at-pin: tool versions/GAVs/API paths; verbatim quotes re-confirm; SonarQube resolution labels (Won't fix→Accept?); Semgrep OSS-vs-Pro interprocedural boundary; undecidability primary-text citation (UNVERIFIED). No AHEAD-OF-PIN items. Routes: per-tool depth → Ch 16/17; cross-tool verdict → Ch 17 (key 37); FP-policy/baselines → Ch 19 (key 39); custom rules → Ch 18.
 DRAFT v1 — gates manual; technique-ladder + soundness-quadrant + illustrate-here-verdict-there shapes; EXAMPLE-BUILD pending JDK.
@@ -50,11 +50,15 @@ A parser reads the program and produces an **Abstract Syntax Tree**: a tree whos
 
 Error Prone takes the same tree from inside the compiler. Its own description: it "hooks into your standard build, so all developers run it without thinking" and is used "to augment the compiler's type analysis" to "catch more mistakes before they cost you time." Running *inside* `javac` over the compiler's own AST means it has full type information and can fail compilation. Checkstyle works the same structural way on source tokens.
 
-**AST/pattern matching is cheap, fast, and local**, ideal for style, naming, and syntactic anti-patterns (an empty `catch`, a missing `break`). It sees *shape*, not *behavior*. It cannot tell whether a value is null at a point, only whether the code *looks* a certain way.
+**AST/pattern matching is cheap, fast, and local**, ideal for style, naming, and syntactic anti-patterns (an empty `catch`, a missing `break`). It sees *shape*, not *behavior*. It cannot tell whether a value is null at a point, only whether the code *looks* a certain way. The companion module makes the shape concrete: an empty catch is the canonical tree pattern a rule matches, regardless of what the surrounding code does.
+
+<!-- include: 26_how_static_analysis_works/src/main/java/org/acme/staticanalysis/AstSmellDemo.java#ast-smell -->
 
 ### Move 2 — Resolve symbols and types
 
-A bare AST cannot tell two identically-spelled identifiers apart. **Symbol resolution** binds each name to its declaration through scopes; **type resolution** attaches Java types. This is the difference between a rule guessing from a token spelled `Date` and a rule *knowing* it is `java.util.Date`. PMD runs symbol resolution always and type resolution when a rule needs it; Error Prone gets both for free by living in the compiler. With types, a rule can say "this is `LinkedList.get(int)` called inside a loop" (an O(n) trap), a semantically-aware check rather than a syntactic guess. This is the foundation the behavioral moves build on.
+A bare AST cannot tell two identically-spelled identifiers apart. **Symbol resolution** binds each name to its declaration through scopes; **type resolution** attaches Java types. This is the difference between a rule guessing from a token spelled `Date` and a rule *knowing* it is `java.util.Date`. PMD runs symbol resolution always and type resolution when a rule needs it; Error Prone gets both for free by living in the compiler. With types, a rule can say "this is `LinkedList.get(int)` called inside a loop" (an O(n) trap), a semantically-aware check rather than a syntactic guess. This is the foundation the behavioral moves build on. The module's worked case is a call that compiles but can never do what it looks like: searching a `List<Long>` for an `int` that boxes to `Integer` and so equals no element.
+
+<!-- include: 26_how_static_analysis_works/src/main/java/org/acme/staticanalysis/TypeMisuseDemo.java#type-misuse -->
 
 ### Move 3 — Control- and data-flow analysis (reasoning about behavior)
 
@@ -67,11 +71,23 @@ Where the flow runs matters:
 
 > **CONCEPT** *Intraprocedural vs interprocedural — the power/cost axis.* Reasoning *within* a method is fast and precise; reasoning *across* methods (global flow) is far more powerful and far more expensive, and must approximate aliasing, reflection, and dynamic dispatch. Most behavioral findings that emerge day-to-day are intraprocedural; whole-program leaks and injection need global flow, which is why those analyses run in CI or nightly, not on every keystroke.
 
+The module plants the resource question this move answers — a reader opened and read but never closed on any path, the leak SpotBugs reports from the bytecode (`OS_OPEN_STREAM`).
+
+<!-- include: 26_how_static_analysis_works/src/main/java/org/acme/staticanalysis/ResourceLeakDemo.java#dataflow-leak -->
+
 ### Move 4 — Taint tracking (data-flow for security)
 
 **Taint analysis** is data-flow where the propagated fact is "this value is attacker-controlled." It models four roles: a **source** (where untrusted data enters, such as an HTTP parameter), a **sink** (a dangerous operation such as a SQL query or a shell command), a **sanitizer/barrier** (a step that makes the value safe, such as a parameterized query or an encoder), and the **flow steps** that spread taint. The defining extension over plain data-flow, in CodeQL's words: taint tracking "extends data flow analysis by including steps in which the data values are not necessarily preserved, but the potentially insecure object is still propagated." In `y = x + 1`, plain data-flow tracks only `x`, but taint marks `y` because it is "derived from `x`."
 
 Semgrep illustrates the same technique and is candid about its bounds: it builds an AST "translated into an analysis-friendly intermediate language," offers constant propagation and taint tracking, and states plainly that its engine is intraprocedural with "No path sensitivity," "No pointer or shape analysis," and "No soundness guarantees." Taint tracking is the technique behind modern SAST (the security part), which is why the field separates SAST-grade flow tools from lint-grade pattern tools.
+
+The module carries the four roles as a before/after. The tainted form takes an untrusted parameter (the source) and concatenates it straight into the command (a flow step) that reaches the query (the sink).
+
+<!-- include: 26_how_static_analysis_works/src/main/java/org/acme/staticanalysis/TaintFlowDemo.java#taint-flow -->
+
+The sanitized counterpart binds the same value as a parameter, so it stays data rather than command text — the barrier that breaks the source-to-sink path and clears the finding.
+
+<!-- include: 26_how_static_analysis_works/src/main/java/org/acme/staticanalysis/TaintFlowDemo.java#taint-fixed -->
 
 ### The ladder in one view
 
@@ -113,6 +129,10 @@ Because false positives are inevitable, the worst outcome is a *noisy gate*: dev
 - **Filter files.** SpotBugs filter XML (`Match` elements) excludes patterns or locations centrally, for findings that do not fit a per-site annotation.
 - **Triage states.** SonarQube lets a reviewer resolve an issue as "False positive" or "Won't fix" (relabeled "Accept" in newer versions; verify at the installed version) rather than deleting the rule, keeping the rule live for future code.
 - **Baselines.** The standard way to adopt a tool on a large legacy codebase: accept the existing backlog and gate only *new* code (Sonar's "new code" period, SpotBugs baseline filters), so a first run does not produce a flood that gets ignored. The *policy* (what breaks the build, baseline versus full-gate) is Chapter 19's.
+
+The companion module shows the per-site form on a finding that is genuinely safe in context — the annotation names the pattern and records *why*, next to the code, instead of silencing the rule.
+
+<!-- include: 26_how_static_analysis_works/src/main/java/org/acme/staticanalysis/SuppressionDemo.java#justified-suppression -->
 
 Static analysis is *necessary but not sufficient*. It reasons over all paths but only an *approximation* of behavior; dynamic analysis (tests, Part V) runs the program and sees real values but only on executed paths. They are complementary, never substitutes, and neither makes the undecidability go away.
 
@@ -160,7 +180,7 @@ The map of Part IV is now in hand: the four-move ladder every analyzer climbs, a
 - **Theory** — Rice's theorem / halting problem: deciding a non-trivial semantic property is undecidable ⇒ no analyzer both sound and complete. *(⚠ UNVERIFIED — must cite a primary PL/compilers text at draft, not a blog.)*
 - **Routing** — per-tool depth → Ch 16/17; cross-tool "which to choose" verdict → Ch 17 (key 37); false-positive policy/baselines/ratcheting → Ch 19 (key 39); custom-rule authoring → Ch 18; lifecycle placement → Ch 3 (the toolchain map).
 
-**Companion module (spec — ⚠ EXAMPLE-BUILD = PENDING-RUNTIME, no JDK):** `08-companion-code/26_how_static_analysis_works/` — one small `OrderService` carrying four planted defects, one per technique: an AST/style smell (empty `catch`) caught by PMD/Checkstyle; a type-incompatible call caught by Error Prone at compile; an unclosed-resource/null-deref caught by SpotBugs bytecode data-flow; an HTTP-param (source) → SQL/log (sink) taint flow caught by a Semgrep/CodeQL-style rule (run out-of-band). A fifth element: a flagged-but-safe construct suppressed with a justified `@SuppressFBWarnings(justification=…)`. **TRY-IT:** run `verify` and watch which tool catches which defect; move the null-deref behind a method call and watch the intraprocedural rule stop catching it (the method-boundary limit); add a sanitizer on the taint path and watch the finding clear. **Failure path:** the planted defects fail the build; the false-positive element + justified suppression demonstrate the "no tool is exact" thesis in code. Snippet tags: `ast-smell`, `type-misuse`, `dataflow-leak`, `taint-flow`, `taint-fixed`, `justified-suppression`.
+**Companion module (built — EXAMPLE-BUILD green at JDK 21.0.11, `mvn -B -Pquality verify` SUCCESS):** `08-companion-code/26_how_static_analysis_works/` — one analyzer-target per technique, each a small runnable shape beside the form that resolves it: an AST/style smell (empty `catch`, `AstSmellDemo`) the kind PMD `EmptyCatchBlock` / Checkstyle `EmptyBlock` match on the tree; a type-incompatible call (`List<Long>.contains(int)`, `TypeMisuseDemo`) the kind Error Prone flags inside `javac` as `CollectionIncompatibleType` and SpotBugs reports as `GC_UNRELATED_TYPES`; an unclosed-resource leak (`ResourceLeakDemo`) SpotBugs finds on the bytecode as `OS_OPEN_STREAM`; and an untrusted-param (source) → query (sink) taint flow (`TaintFlowDemo`) beside its parameter-bound, sanitized counterpart. A fifth element: a flagged-but-safe construct carrying a justified `@SuppressFBWarnings(value, justification)` (`SuppressionDemo`, a load-bearing `EI_EXPOSE_REP`). The module dogfoods the chapter's gate (Checkstyle + SpotBugs) and stays green: the two findings the gate raises (`GC_UNRELATED_TYPES`, `OS_OPEN_STREAM`) carry narrow reviewed suppressions with reasons, the rest sit below the gate's chosen point — the false-negative half shown in code. **TRY-IT:** run `mvn -Pquality verify` and watch which technique catches which target; remove a `Match` from `config/spotbugs/spotbugs-exclude.xml` and watch the corresponding finding break the build; bind the taint value (the `taint-fixed` form) and watch the source-to-sink path clear. **Failure path:** the taint sink degrades to an empty result for an unknown category rather than throwing, and the resource leak is the defect the data-flow analysis names — fixed by the try-with-resources form. Snippet tags: `ast-smell`, `type-misuse`, `dataflow-leak`, `taint-flow`, `taint-fixed`, `justified-suppression`.
 
 ## Next chapter teaser
 
