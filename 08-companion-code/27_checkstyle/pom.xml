@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 27 companion (Checkstyle — encoding a written standard as a gate). A small storefront slice
+    held to a curated, documented house ruleset, so the chapter's config snippets are tag-regions inside
+    the very ruleset that gates this module. The config is the subject, so the displayed snippets live in
+    config/checkstyle/checkstyle.xml (XML-comment tag markers) beside the Java the rules govern. The
+    module is written to pass its own gate: zero Checkstyle violations, plus one per-site
+    @SuppressWarnings("checkstyle:...") that records a reason rather than disabling the check — the
+    chapter's "suppress with a reason" discipline in code. Held to the same SpotBugs gate as its peers so
+    "Checkstyle-clean is not correct" is true in the build, not just in prose. Runtime dependencies are
+    JDK-only; the one extra GAV is the SpotBugs annotations artifact, on the compile path only.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>checkstyle-house-ruleset</artifactId>
+  <name>Chapter 27 — Encoding a Written Standard (checkstyle-house-ruleset)</name>
+
+  <dependencies>
+    <!--
+      SpotBugs annotations (SOURCE-PIN.md: SpotBugs 4.10.2 line; this module builds against the locally
+      cached 4.9.3 engine the companion code is pinned to, so the annotations track that engine). The
+      single version literal here is the one pinned GAV this module needs for the bytecode gate it shares
+      with its peers — not a BOM or version-set. The annotations are CLASS-retained, so `provided` scope
+      keeps them on the compile path only and the module's runtime stays JDK-only like the rest of the
+      companion code.
+    -->
+    <dependency>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
+      <version>4.9.3</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays fast.
+    The maven-checkstyle-plugin ships an OLD bundled engine (Checkstyle 9.3); we override it to the pinned
+    house engine via a plugin-level dependency — the "two-pin" lesson this chapter names (the build plugin
+    and the analyzer engine are separate versions, pinned separately). This module is a direct child of the
+    companion-code root, which pins no quality profile of its own, so the profile is declared here (the
+    same shape the Chapter 09 and Chapter 26 modules use) and reads the config under this module's config/
+    dir — the ruleset whose rule blocks are the chapter's displayed snippets.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16) — complementary to Checkstyle's source view,
+            and the demonstration in the build that a Checkstyle-clean module is not thereby a correct one.
+            This module defends its representation rather than suppressing findings, so the exclude filter
+            is empty: zero reviewed suppressions are needed. A genuine, reviewed false positive would go in
+            the filter with a reason, never by disabling a detector wholesale.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

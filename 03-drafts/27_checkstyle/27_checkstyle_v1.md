@@ -65,7 +65,31 @@ Checkstyle is, in its own words, "a development tool to help programmers write J
 
 The configuration is a fixed hierarchy: a root `Checker` module holds project-wide properties and a `TreeWalker` that builds the AST and dispatches to `Check` submodules (`LineLength`, `ConstantName`, `JavadocMethod`, …). Every violation carries a **severity** (`error` by default, `warning`, `info`, or `ignore`) that decides whether it breaks the build. Checkstyle ships ready-made configs (`google_checks.xml`, `sun_checks.xml`, `openjdk_checks.xml`, `doc_comments_checks.xml`), and its naming family already covers modern Java (`RecordComponentName`, `PatternVariableName`).
 
+The companion module builds to a small, curated house ruleset; its naming block, including those modern-Java surfaces, is one `TreeWalker` submodule list:
+
+<!-- include: 27_checkstyle/config/checkstyle/checkstyle.xml#naming-rules -->
+
+Import hygiene is a second high-signal group — three checks that keep the import block honest:
+
+<!-- include: 27_checkstyle/config/checkstyle/checkstyle.xml#import-hygiene -->
+
+A size limit is the canonical *cited choice*: the house value here is 120, where the rule's own default is 80 and the bundled Google config sets 100.
+
+<!-- include: 27_checkstyle/config/checkstyle/checkstyle.xml#line-length -->
+
+The filter layer is what keeps the gate credible — `SuppressWarningsFilter` lets a reviewed `@SuppressWarnings("checkstyle:…")` suppress one finding at its exact site rather than disabling the check for everyone:
+
+<!-- include: 27_checkstyle/config/checkstyle/checkstyle.xml#suppression-filter -->
+
 Its hard limit is stated in its own docs: "You have access to the content of one file only … You cannot determine the type of an expression … You cannot determine the full inheritance hierarchy of type." Checkstyle reasons about *style and local structure*, never types or whole-program facts, which is exactly why a style number like `LineLength`'s default `max=80` (the Google config sets 100) is a *cited choice*, never a universal truth. A Checkstyle-clean file is consistently formatted; it is not correct.
+
+What `ConstantName` governs is a name, never a value: its default regex `^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$` accepts the `UPPER_SNAKE` shape, so the module's constants pass it.
+
+<!-- include: 27_checkstyle/src/main/java/org/acme/checkstyle/PricingRules.java#constant-naming -->
+
+Where one site needs a reviewed exception, the discipline is to record it at the site rather than relax the rule — the module suppresses a single `ConstantName` finding with a written reason, and removing the annotation makes the gate fail:
+
+<!-- include: 27_checkstyle/src/main/java/org/acme/checkstyle/PriceFormatter.java#reviewed-suppression -->
 
 ### PMD (+ CPD) — a rule catalogue and a duplicate finder
 
@@ -149,6 +173,8 @@ The four workhorse analyzers are now placed by where each reads the program and 
 - **Routing** — cross-tool verdict + layered stack → Chapter 17 (key 37); custom-rule authoring → Chapter 18 (key 38); false-positive policy/baselines/ratcheting → Chapter 19 (key 39); SAST/FindSecBugs depth → the security part; concurrency MT slice → Chapters 13–14; the technique foundation → Chapter 15.
 
 **Companion modules (spec — ⚠ EXAMPLE-BUILD = PENDING; toolchain READY, modules not yet authored/built):** four small modules under `08-companion-code/27..30/`, one per tool, over the shared `org.acme.storefront` domain, each with a deliberately-defective class its tool catches and a fixed sibling that passes: Checkstyle (`ConstantName`/`AvoidStarImport`/`LineLength` break + a reviewed `@SuppressWarnings("checkstyle:…")`); PMD+CPD (`EmptyCatchBlock` + `CyclomaticComplexity` + two renamed-but-duplicate methods CPD flags, with a `CPD-START/END` reviewed region); SpotBugs (`EC_UNRELATED_TYPES`/`SE_NO_SERIALVERSIONID`/`EI_EXPOSE_REP2` + a FindSecBugs `SQL_INJECTION_JDBC`/`WEAK_MESSAGE_DIGEST_MD5`, with a `<Rank>` threshold filter); Error Prone (`DeadException`/`CollectionIncompatibleType`/`ReturnValueIgnored` build-fail + patch-mode fix + a Refaster string-emptiness rule). Each demonstrates the **two-pin** engine override and a reviewed suppression. Build green at `--release 21` (forward-check 25). The **failure path** in each is the defective class failing the gate; the honest edge is that a suppression makes the gate pass without fixing the code.
+
+**Checkstyle module (built — EXAMPLE-BUILD green at JDK 21.0.11, `mvn -B -Pquality verify` SUCCESS; 0 Checkstyle violations, 0 SpotBugs, 6 tests pass):** `08-companion-code/27_checkstyle/` — a storefront slice held to a curated house ruleset whose rule blocks are this chapter's displayed config snippets (`config/checkstyle/checkstyle.xml`, XML-comment tag regions): the naming family including modern-Java `RecordComponentName`/`PatternVariableName`, import hygiene, the `LineLength` size limit (house 120 vs the rule's default 80 vs Google's 100 — a cited choice), and the `SuppressWarningsFilter` that honours a per-site `@SuppressWarnings("checkstyle:…")`. `PricingRules` holds the `UPPER_SNAKE` constants the `ConstantName` rule governs; `PriceFormatter` carries the one reviewed, **load-bearing** suppression (removing it raises `ConstantName: Name 'centsFormat' must match pattern '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'` and fails the build — the live engine confirming the dossier's regex). The module dogfoods the chapter by passing its own style gate while *also* being held to a SpotBugs gate, so "Checkstyle-clean is not correct" is true in the build, not only in prose. The **two-pin** override swaps the plugin's bundled engine for `com.puppycrawl.tools:checkstyle:10.26.1`. **Failure path:** `Catalog.findBySku` returns an empty `Optional` for a missing SKU rather than throwing; construction-time guards reject invalid input fast. Snippet tags: `naming-rules`, `import-hygiene`, `line-length`, `suppression-filter`, `constant-naming`, `reviewed-suppression`.
 
 ## Next chapter teaser
 

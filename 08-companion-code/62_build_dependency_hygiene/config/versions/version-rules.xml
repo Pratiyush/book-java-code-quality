@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Version-update rules for the versions-maven-plugin (the local half of the currency story). This file
+  filters out NON-stable candidates so `display-dependency-updates` proposes only releases a team would
+  actually adopt — never an alpha, beta, RC, milestone, or snapshot. It changes nothing; it shapes what
+  the report suggests for a later, deliberate, reviewed bump. The always-on equivalent is the
+  Renovate/Dependabot grouping + scheduling config (shown in the README), not this file.
+-->
+<ruleset xmlns="https://www.mojohaus.org/VERSIONS/RULE/2.1.0"
+         comparisonMethod="maven">
+  <ignoreVersions>
+    <ignoreVersion type="regex">.*[-.](?i)(alpha|beta|rc|cr|m|milestone|snapshot|preview).*</ignoreVersion>
+  </ignoreVersions>
+</ruleset>

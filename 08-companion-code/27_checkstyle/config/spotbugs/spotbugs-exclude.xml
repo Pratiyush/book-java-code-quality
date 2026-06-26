@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    No reviewed suppressions are needed here. This module's whole subject is the source-level style/
+    convention gate (Checkstyle), and it is held to the bytecode gate (SpotBugs) only to demonstrate the
+    chapter's point that a Checkstyle-clean module is not thereby correct — the two analyzers read the
+    program at different points (Chapter 16). The Java is written to keep SpotBugs quiet on its own merits
+    (prices held as integer cents, defensive copies, no exposed internal arrays), so the filter is empty.
+
+    A genuine, reviewed false positive would be named here narrowly — by class, method, and pattern — with
+    a reason, exactly as the Chapter 26 module does. It would never be handled by disabling a detector
+    wholesale. The Checkstyle side shows the complementary per-site control: the
+    @SuppressWarnings("checkstyle:ConstantName") on PriceFormatter records one reviewed exception in code.
+  -->
+</FindBugsFilter>

@@ -8,7 +8,7 @@
 
 - **47/47 chapters** drafted (🟢 `draft`).
 - **39** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).
-- **24** need EXAMPLE-BUILD (FLOOR-C compile).
+- **21** need EXAMPLE-BUILD (FLOOR-C compile).
 - **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 42 in lift · 5 need an independent score · 0 approved (in 04-approved/).
 - **DRIFT: ✅ none**.
 
@@ -42,7 +42,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | | | **Part IV — Static Analysis, Linting & Formatting** |  |  |  |  |  |  |  |  |  |  | |
 | 15 | 26 | How static analysis works | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
-| 16 | 27 | Checkstyle, PMD, SpotBugs, Error Prone | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 16 | 27 | Checkstyle, PMD, SpotBugs, Error Prone | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 17 | 35 | SonarQube, IDE inspections & the layered sta… | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 18 | 38 | Writing custom rules; annotation processors … | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part IV — Static Analysis, Linting & Formatting** |  |  |  |  |  |  |  |  |  |  | |
@@ -55,7 +55,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | 24 | 50 | Contract & approval testing | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 25 | 53 | SOLID, coupling, cohesion & package structure | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 26 | 55 | Enforcing architecture: ArchUnit & fitness f… | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
-| 27 | 62 | The build & dependency hygiene | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 27 | 62 | The build & dependency hygiene | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 28 | 65 | Dependency scanning, SBOM & supply-chain sec… | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 29 | 67 | Reproducible builds & license compliance | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 30 | 69 | Secure coding & OWASP for Java | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
@@ -63,7 +63,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | | | **Part VIII — Security & SAST** |  |  |  |  |  |  |  |  |  |  | |
 | 32 | 73 | Security in CI — the security gate | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
-| 33 | 75 | Designing the CI pipeline & quality gates | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 33 | 75 | Designing the CI pipeline & quality gates | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 34 | 80 | Coverage strategy, PR automation & CI platfo… | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 35 | 81 | Branch protection, trunk-based dev & pre-com… | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part IX — CI/CD & Quality Gates** |  |  |  |  |  |  |  |  |  |  | |

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 27 companion (The Foundation Under Every Gate). The chapter's subject is the BUILD and the
+    dependency graph it assembles, so this module's load-bearing artifact is THIS pom.xml, not the small
+    Java package beside it. The pom demonstrates dependency hygiene first-hand: the Maven Enforcer rules
+    (dependencyConvergence, requireUpperBoundDeps, bannedDependencies) make a divergent or non-reproducible
+    dependency a hard build event; a single source of version truth (<dependencyManagement> + an imported
+    BOM) means one bump moves the whole graph; the versions plugin surfaces available updates (the local
+    half of the currency story). The tiny org.acme.hygiene package exists so the Enforcer has a real
+    compile/test graph to resolve and rule on — the config is exercised, not merely declared.
+
+    SOURCE-PIN: Maven 3.9.16 (+ enforcer, versions plugins); JUnit 6.x BOM; AssertJ 3.27.7; JSpecify 1.0.0.
+    The exact maven-enforcer-plugin / versions-maven-plugin version literals are flagged — see
+    09-flags/62_enforcer_versions_plugin_versions_unpinned.md (SOURCE-PIN pins these to the Maven row but
+    not as separate plugin versions). The values used here resolve cleanly on the pinned toolchain.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>build-dependency-hygiene</artifactId>
+  <name>Chapter 27 — The Foundation Under Every Gate (build-dependency-hygiene)</name>
+
+  <properties>
+    <!--
+      Plugin version literals NOT separately pinned in SOURCE-PIN (only "Maven 3.9.16 (+ enforcer,
+      versions plugins)"). Kept as named properties so a single edit re-pins them once the SOURCE-PIN row
+      is split (the same two-pin discipline the Checkstyle build-plugin/engine split already follows).
+      Flagged: 09-flags/62_enforcer_versions_plugin_versions_unpinned.md.
+    -->
+    <enforcer.plugin.version>3.5.0</enforcer.plugin.version>
+    <versions.plugin.version>2.18.0</versions.plugin.version>
+  </properties>
+
+  <!--
+    A single source of version truth (the chapter's first hygiene rule). Each version is declared once
+    here; the <dependencies> block below references coordinates without a <version>, so one bump in this
+    section moves the whole module consistently and no dependency can drift to an ad-hoc version. The
+    JUnit version arrives via the junit-bom import (a bill-of-materials POM) rather than a literal — the
+    BOM route to the same single-source goal. AssertJ and JSpecify are managed as plain pinned entries.
+    The aggregator already manages junit-bom + assertj-core; this section re-states the BOM import locally
+    to make the chapter's mechanism legible in one file and adds the JSpecify management entry.
+  -->
+  <dependencyManagement>
+    <dependencies>
+      <!-- tag::dep-management-bom[] -->
+      <dependency>
+        <groupId>org.junit</groupId>          <!-- one source of version truth for ALL JUnit artifacts -->
+        <artifactId>junit-bom</artifactId>
+        <version>${junit.version}</version>    <!-- inherited property; child deps omit versions -->
+        <type>pom</type>
+        <scope>import</scope>                  <!-- import a bill-of-materials, not a single jar -->
+      </dependency>
+      <!-- end::dep-management-bom[] -->
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${assertj.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jspecify</groupId>
+        <artifactId>jspecify</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!--
+      Child dependencies carry NO <version>: every version is inherited from <dependencyManagement> above
+      (or the aggregator). JSpecify is CLASS-retained, so provided scope keeps it off the runtime path and
+      the module's runtime stays JDK-only, like the rest of the companion code.
+    -->
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    The Enforcer ALWAYS runs in this module (bound to the default build, not opt-in), because the chapter's
+    whole point is that hygiene is a hard build event, not an optional report. The convergence and
+    upper-bound rules run against the resolved compile/test graph; because every version flows from a
+    single source of truth above, the graph converges and the rules PASS. The honest edge the chapter names
+    holds here too: these rules prove the versions AGREE — they say nothing about whether a dependency is
+    maintained or safe (that is the next chapter's scan).
+  -->
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${enforcer.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>enforce-dependency-hygiene</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <!-- tag::enforcer-convergence[] -->
+                <dependencyConvergence/>   <!-- two transitive paths to one g:a must agree on version -->
+                <!-- end::enforcer-convergence[] -->
+                <!-- tag::enforcer-upper-bound[] -->
+                <requireUpperBoundDeps/>   <!-- fail if a transitive pulls a LOWER version than declared -->
+                <!-- end::enforcer-upper-bound[] -->
+                <!-- tag::enforcer-banned[] -->
+                <bannedDependencies>
+                  <excludes>
+                    <exclude>*:*:*:*:*:LATEST</exclude>   <!-- no moving versions: not reproducible -->
+                    <exclude>*:*:*:*:*:RELEASE</exclude>
+                    <exclude>commons-logging:commons-logging</exclude>  <!-- example house-banned dep -->
+                  </excludes>
+                </bannedDependencies>
+                <!-- end::enforcer-banned[] -->
+                <requireMavenVersion>
+                  <version>[3.9.16,)</version>   <!-- the pinned build-tool floor (SOURCE-PIN) -->
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>[21,)</version>       <!-- the anchor LTS floor (SOURCE-PIN) -->
+                </requireJavaVersion>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!--
+        The versions plugin: the LOCAL, on-demand half of the currency story (the always-on bot is the
+        Renovate/Dependabot config). `mvn versions:display-dependency-updates` lists newer versions of the
+        managed coordinates without changing anything; it is wired here with a report goal so the available
+        updates also surface during `verify`, never auto-applying a bump. Deliberate movement of a pin is a
+        reviewed PR, not a build side effect — the chapter's pin-vs-rot resolution.
+      -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>${versions.plugin.version}</version>
+        <!-- tag::versions-plugin[] -->
+        <configuration>
+          <!-- never auto-edit the pom; surface available updates for a reviewed, deliberate bump -->
+          <generateBackupPoms>false</generateBackupPoms>
+          <rulesUri>file://${project.basedir}/config/versions/version-rules.xml</rulesUri>
+        </configuration>
+        <!-- end::versions-plugin[] -->
+        <executions>
+          <execution>
+            <id>display-dependency-updates</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>display-dependency-updates</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!--
+    Static-analysis gate (Chapter 16), opt-in via -Pquality so the default build stays fast. Same house
+    shape as the other chapter modules: the checkstyle build-plugin and its engine are pinned separately
+    (the two-pin lesson), and configs are externalized under this module's config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

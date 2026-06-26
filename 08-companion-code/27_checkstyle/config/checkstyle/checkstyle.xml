@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<!--
+  The curated house ruleset this chapter (Chapter 16) builds to. A Checkstyle configuration is an XML
+  document of `module` elements: the root `Checker` holds project-wide properties and a `TreeWalker`
+  that builds the AST and dispatches to `Check` submodules. Every violation carries a `severity` —
+  `error` (the tool default), `warning`, `info`, or `ignore` — and the build gates on `error`.
+
+  This file is deliberately small and high-signal (naming, import hygiene, a size limit, braces, a few
+  coding rules) rather than "everything on": a credible gate the team agrees once and stops re-litigating.
+  It omits the finicky, high-noise checks (Indentation, MagicNumber, mandatory Javadoc on every member)
+  on purpose. The column limit is this team's CITED choice, not a universal truth — Checkstyle's own
+  `LineLength` default is 80 and Google's bundled config sets 100 (Chapter 6, style-value neutrality).
+
+  The chapter's displayed snippets are the AsciiDoc-style tag regions below (the `tag::` / `end::`
+  comment pairs). They are real rule blocks in the ruleset that actually gates this module, so the printed
+  config and the running config are one artifact.
+-->
+<module name="Checker">
+  <property name="severity" value="error"/>
+  <property name="charset" value="UTF-8"/>
+  <property name="fileExtensions" value="java"/>
+
+  <!--
+    File-level size limit (no AST needed). `LineLength`'s own default is max=80; this house value of 120
+    is a cited team choice, not a correct number (Chapter 6). The package/import ignore pattern is
+    `LineLength`'s documented default.
+  -->
+  <!-- tag::line-length[] -->
+  <module name="LineLength">
+    <property name="max" value="120"/>
+    <property name="ignorePattern" value="^(package|import) .*"/>
+  </module>
+  <!-- end::line-length[] -->
+
+  <!--
+    `SuppressWarningsFilter` (with the `SuppressWarningsHolder` AST check that feeds it) lets Java's own
+    `@SuppressWarnings("checkstyle:CheckName")` suppress a finding at the exact site — the chapter's
+    "suppress with a reason, never disable the check" control. `SuppressionFilter` is the project-level,
+    file-based form; this module uses the per-site annotation form, so only the holder + filter are wired.
+  -->
+  <!-- tag::suppression-filter[] -->
+  <module name="SuppressWarningsFilter"/>
+  <!-- end::suppression-filter[] -->
+
+  <module name="TreeWalker">
+    <!--
+      Naming conventions. `ConstantName` checks `static final` field names against its default regex
+      `^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$` (UPPER_SNAKE); the family also covers modern Java surfaces
+      (`RecordComponentName`, `PatternVariableName`). All use each check's documented default format.
+    -->
+    <!-- tag::naming-rules[] -->
+    <module name="ConstantName"/>
+    <module name="TypeName"/>
+    <module name="MethodName"/>
+    <module name="MemberName"/>
+    <module name="LocalVariableName"/>
+    <module name="RecordComponentName"/>
+    <module name="PatternVariableName"/>
+    <!-- end::naming-rules[] -->
+    <module name="PackageName"/>
+    <module name="ParameterName"/>
+    <module name="StaticVariableName"/>
+    <module name="LambdaParameterName"/>
+    <module name="CatchParameterName"/>
+
+    <!--
+      Import hygiene. `AvoidStarImport` forbids on-demand (`*`) imports; `UnusedImports` and
+      `RedundantImport` keep the import block honest. Each uses its documented default configuration.
+    -->
+    <!-- tag::import-hygiene[] -->
+    <module name="AvoidStarImport"/>
+    <module name="RedundantImport"/>
+    <module name="UnusedImports"/>
+    <!-- end::import-hygiene[] -->
+
+    <!-- Blocks and braces. EmptyBlock is set to tolerate a commented block (option=text). -->
+    <module name="NeedBraces"/>
+    <module name="LeftCurly"/>
+    <module name="RightCurly"/>
+    <module name="EmptyBlock">
+      <property name="option" value="text"/>
+    </module>
+
+    <!-- Modifiers -->
+    <module name="ModifierOrder"/>
+    <module name="RedundantModifier"/>
+
+    <!-- Coding / structure -->
+    <module name="OneTopLevelClass"/>
+    <module name="EqualsHashCode"/>
+    <module name="SimplifyBooleanExpression"/>
+    <module name="EmptyStatement"/>
+    <module name="UpperEll"/>
+    <module name="ArrayTypeStyle"/>
+    <module name="OuterTypeFilename"/>
+
+    <!-- Honor @SuppressWarnings("checkstyle:...") via the filter wired on the Checker above. -->
+    <module name="SuppressWarningsHolder"/>
+  </module>
+</module>

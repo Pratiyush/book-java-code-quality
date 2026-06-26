@@ -1,0 +1,21 @@
+# The GitHub-native equivalent of the renovate.json beside it (the chapter crowns neither). Same
+# strategy expressed in Dependabot's schema: a weekly schedule to batch PRs, related updates grouped
+# to cut volume, and a deliberate split between low-risk and reviewed updates. Auto-merge itself is a
+# repository/branch-protection setting in Dependabot (not a key here); the policy intent is the same as
+# the Renovate config — patch of trusted deps merges on green CI, majors wait for a human.
+version: 2
+updates:
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      test-dependencies:
+        patterns:
+          - "org.junit*"
+          - "org.assertj*"
+          - "org.mockito*"
+    labels:
+      - "dependencies"
