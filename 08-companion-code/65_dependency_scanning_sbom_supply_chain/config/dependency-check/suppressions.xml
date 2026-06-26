@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  OWASP Dependency-Check suppression file (the chapter's false-positive / "vulnerable != exploitable"
+  discipline, Chapter 19's reviewed-suppression rule applied to SCA). A suppression here removes a finding
+  from the gate; the rule is that every entry records WHY, reviewed, with a date — never a silent or
+  blanket suppression. CPE-based matching is fuzzy and will flag CVEs that do not apply; the answer is a
+  reviewed suppression with a justification, not turning the gate off.
+
+  This file is consumed by the -Pscan profile (dependency-check-maven 12.2.2, SOURCE-PIN §4). The schema
+  is the published OWASP DC suppression schema (dependency-suppression.1.3.xsd). The single entry below
+  shows the SHAPE of a reviewed suppression; it is scoped narrowly to one coordinate AND to one named
+  finding, so it is inert unless a scan produces exactly that finding and cannot mask anything else.
+
+  The finding identifier below is a documented PLACEHOLDER (vulnerabilityName "ILLUSTRATIVE-FP-PLACEHOLDER"),
+  not a real CVE. A real suppression names the actual reviewed CVE here; we do not invent a CVE number,
+  because a CVE id is a fact that must trace to NVD (SOURCE-PIN never-invent). Using a clearly-labelled
+  vulnerabilityName keeps the discipline visible without asserting a vulnerability that does not exist.
+-->
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+  <!-- tag::depcheck-suppression[] -->
+  <suppress>
+    <notes><![CDATA[
+      Reviewed false positive (2026-06-26, on-call + security review). Fuzzy CPE matching flagged a
+      finding whose affected code path is not present in this artifact, so it is not exploitable here.
+      Scoped to one coordinate AND one named finding, not a blanket rule. Re-review on the next bump.
+    ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.apache\.commons/commons-lang3@.*$</packageUrl>
+    <vulnerabilityName>ILLUSTRATIVE-FP-PLACEHOLDER</vulnerabilityName>
+  </suppress>
+  <!-- end::depcheck-suppression[] -->
+</suppressions>

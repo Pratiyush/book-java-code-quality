@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 31 companion (Catching What You Forgot — Part VIII). SAST and secrets detection, at the
+    smallest size that still teaches them. The chapter is CONFIG-centric: the SAST and secrets tools
+    (FindSecBugs/Semgrep/CodeQL; gitleaks/TruffleHog) run in the pipeline, not as runtime dependencies,
+    so their configuration is illustrative — a Semgrep rule (config/semgrep/java-injection.yml), a SAST
+    CI workflow (ci/sast-scan.yml), a gitleaks config (.gitleaks.toml), and a pre-commit hook
+    (.pre-commit-config.yaml). Those files are NOT run by this build. What is runnable and unit-tested
+    here is the load-bearing decision the chapter argues for: parameterize the injection sink (the
+    OrderLookup fix vs the VulnerableOrderLookup counter-example) and keep credentials out of source
+    (SecretsResolver, fail-closed when a secret is absent). FindSecBugs is the SpotBugs security plugin
+    (Chapter 16); this build's engine is core SpotBugs, which raises the SQL sink the chapter's Semgrep
+    rule targets, so `mvn -Pquality verify` exercises the same finding locally. The module is built on
+    the JDK alone (zero runtime dependencies), so it dogfoods the book and builds fast and green; its own
+    signals are machine-checked by the `quality` profile (Checkstyle + SpotBugs).
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>sast-secrets-detection</artifactId>
+  <name>Chapter 31 — Catching What You Forgot (sast-secrets-detection)</name>
+
+  <dependencies>
+    <!--
+      JDK-only at runtime: the lookup uses the java.sql API shape directly (driver-free, database-free),
+      and the secrets resolver reads externalized configuration through plain java.util.Properties. The
+      SAST analyzers and secret scanners the chapter names run in the pipeline, not as runtime
+      dependencies here. The test libraries are the only additions, and their versions are inherited from
+      the companion-code aggregator's dependencyManagement — no version literal lives in this module.
+    -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates (Chapter 16), opt-in via `-Pquality` so the default build stays fast.
+    The maven-checkstyle-plugin ships an OLD bundled engine; we override it to the pinned engine via a
+    plugin-level dependency — the build plugin and the analyzer engine are separate versions. This
+    module is a direct child of the companion-code root, which pins no quality profile of its own, so
+    the profile is declared here (the same shape the peer modules use) and reads the config under this
+    module's own config/ dir, keeping the module self-contained. SpotBugs is the bytecode security
+    vantage point the chapter discusses (FindSecBugs builds on it); core SpotBugs flags the injection
+    sink in the counter-example, so this profile demonstrates a true SAST finding locally.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs at this module's threshold raises one finding: the string-concatenated SQL in
+            VulnerableOrderLookup (SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE) — the injection sink the
+            chapter's SAST rule also targets. That finding IS the lesson, so it is suppressed narrowly,
+            with a reason and a test pointer, in config/spotbugs/spotbugs-exclude.xml (Chapter 16:
+            suppress with a reason, never disable a detector). Every other class stays clean, with the
+            detectors fully enabled.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

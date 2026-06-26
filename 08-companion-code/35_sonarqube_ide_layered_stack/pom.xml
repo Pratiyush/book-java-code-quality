@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 17 companion (Composition, Not Accumulation — Part IV). This is a CONFIG-centric chapter:
+    the headline artifacts are configuration — the Sonar analysis config (sonar-project.properties), the
+    Sonar step in CI (ci/sonar-analysis.yml), and the shared author-time first line (.editorconfig) —
+    none of which is run by this module's Maven build. What is runnable and unit-tested here is the
+    load-bearing decision the chapter argues for: composing a stack with ONE owner per concern, each tool
+    at its cheapest moment (org.acme.layered.LayeredStack). And the `quality` profile makes `mvn -Pquality
+    verify` the LOCAL layered gate the chapter describes (the cheap-first source pass then the bytecode
+    pass): Checkstyle (source view) ordered before SpotBugs (bytecode view), the same one-owner-per-concern
+    ordering the Sonar/CI layers extend. The module is built on the JDK alone (zero runtime dependencies),
+    so it dogfoods the book and builds fast and green; its own signals are machine-checked by the `quality`
+    profile.
+
+    Sonar is a hosted/continuously-released platform: SOURCE-PIN.md §2 pins the Sonar row at SonarQube
+    Server 2026.1 LTA (patch 2026.1.3), and treats the line as version-sensitive. The Sonar scanner GAV
+    version, rule default severities, and edition gating are `⚠ verify at pin` (09-flags/35_*). So every
+    Sonar version/coordinate in the config files is DATED-AT-USE (2026-06), never asserted as timeless, and
+    no Sonar scanner is wired into this build — the scanner runs in CI, not as a build dependency here.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>sonarqube-ide-layered-stack</artifactId>
+  <name>Chapter 17 — Composition, Not Accumulation (sonarqube-ide-layered-stack)</name>
+
+  <dependencies>
+    <!--
+      JDK-only at runtime: the composition logic is plain Java, and the tools the chapter names (Sonar,
+      the IDE inspections, the bare analyzers) run in the IDE / build / CI, not as runtime dependencies
+      here. The test libraries are the only additions, and their versions are inherited from the
+      companion-code aggregator's dependencyManagement — no version literal lives in this module.
+    -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    The LOCAL layered gate (Chapter 16/17), opt-in via `-Pquality` so the default build stays fast. The
+    chapter's composition rule is one owner per concern, each at its cheapest moment, ordered cheap-first:
+    here the source-text/AST pass (Checkstyle) runs before the bytecode pass (SpotBugs), the same ordering
+    the Sonar and CI layers above extend. The maven-checkstyle-plugin ships an OLD bundled engine; we
+    override it to the pinned engine via a plugin-level dependency — the build plugin and the analyzer
+    engine are separate versions. This module is a direct child of the companion-code root, which pins no
+    quality profile of its own, so the profile is declared here (the same shape the peer modules use, e.g.
+    Chapters 27 and 33) and reads the config under this module's own config/ dir, keeping the module
+    self-contained.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <!-- tag::layered-gate[] -->
+            <groupId>org.apache.maven.plugins</groupId>     <!-- source pass: Checkstyle, the source-text/AST layer -->
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>                                  <!-- engine pinned separately from the plugin -->
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+                <!-- end::layered-gate[] -->
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16), the next layer after the source pass and
+            complementary to Checkstyle's source view — it sees what only compiled bytecode reveals, a
+            cell Checkstyle structurally cannot reach. This module's model types are immutable records and
+            a sealed verdict exposing no mutable state, so the representation-exposure detectors stay quiet
+            without suppression. The exclude filter is kept (empty) so a future, genuinely-reviewed
+            suppression has a home with a reason, rather than being added inline (Chapter 19).
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

@@ -1869,3 +1869,111 @@ SpotBugs. Six tag-includes resolve (4 config, 2 Java), all 6 markers PASS in `ch
 - **Register-last + "don't edit root pom" interact cleanly.** Built standalone via `-f <module>/pom.xml`;
   the root `<modules>` list stays unedited until CODE-REVIEW passes, satisfying both the task constraint and
   the register-last safety rule.
+
+## EXAMPLE-BUILD — Chapter 17 / key 35 (SonarQube + IDE + the layered analyzer stack) — 2026-06-26
+- **CONFIG-centric pattern now proven a third time (after 75, 105) — promote to the default for tool/config chapters.**
+  A chapter whose subject IS configuration (here the Sonar analysis config + the IDE author-time first line +
+  the CI Sonar step) is made FLOOR-C-buildable by (a) shipping the headline configuration as real, validated
+  config files carrying the displayed tag regions, and (b) modelling the load-bearing *decision* the
+  configuration enacts as plain unit-tested Java. For 35 the decision is the **one-owner-per-concern
+  composition** (`org.acme.layered.LayeredStack`); the local `-Pquality` profile is the layered gate the
+  config describes (Checkstyle source-pass ordered before SpotBugs bytecode-pass). Six tags spanned all four
+  requested config categories (sonar keys, quality-gate condition, connected-mode, CI step) + the local gate
+  + the composition code.
+- **SaaS/rolling SUBJECT discipline (extends the SaaS-actions rule from 75 to a SaaS platform).** Sonar is
+  hosted/continuously released. The honest module: asserts **no** Sonar scanner GAV version (invokes by goal
+  `sonar:sonar`), asserts **no** rule default severity / "Sonar way" membership (the live-server seeded-issue
+  scan stays runtime-gated — no live SonarQube Server/Testcontainers in the build), dates every Sonar/Actions
+  reference at use (2026-06), and records the unpinned atoms in `09-flags/35_sonar_versions_and_defaults_*`.
+  FLOOR C COMPILE stays real without inventing one version-sensitive Sonar fact. Reuse for any SaaS platform
+  chapter (Codacy key 88, hosted scanners).
+- **Tag the load-bearing core, not the whole declaration (candidate EXAMPLES-GUIDE §5 note).** Two regions
+  overran the 9-line cap (`layered-gate` 11, `one-owner` 10); both dropped to 8/6 by moving the markers onto
+  the teaching core (the two-pin Checkstyle-engine override inside the plugin; the one-owner enforcement
+  inside the method), leaving the enterprise scaffolding in the file but outside the snippet. A tag region
+  should wrap the decision the prose shows, not the surrounding boilerplate — respects the cap and sharpens
+  the listing.
+- **Config-centric chapters meet the failure-path floor without a runtime/HTTP surface.** `LayeredStack`
+  carries two real, test-driven failure paths — refuse a second owner for a concern (the redundancy the
+  composition rule removes), and fail loudly on an unowned concern ("a coverage gap") — so HONEST-LIMITATIONS
+  shows up in a code path that runs under test, even though the chapter has no application runtime for a
+  graceful-shutdown / error-response failure path. The §1.2 `%dev`/`%prod` requirement was honestly
+  scoped-out (no deployment runtime knob), with the externalization met by the chapter's own headline config.
+- **Register-last + "don't edit root pom" again interact cleanly.** Built standalone via `-f <module>/pom.xml`,
+  green (`mvn -B -Pquality verify`: 7 tests, 0 Checkstyle, 0 SpotBugs, warning-clean); root `<modules>` left
+  unedited until CODE-REVIEW passes.
+
+## Chapter 28 (key 65) — dependency scanning / SBOM / supply chain — EXAMPLE-BUILD (2026-06-26)
+
+- **Split offline-deterministic mechanisms from network-gated ones across profiles.** A supply-chain
+  chapter has two mechanism kinds: ones reading the already-resolved graph (CycloneDX SBOM generation —
+  fully offline, deterministic, belongs in the gating build) and ones reaching an external DB (OWASP
+  Dependency-Check's CVE scan — network-bound, REPRO PENDING-RUNTIME). Wiring the SBOM into `verify` and
+  the scan into an opt-in `-Pscan` profile lets the module build green AND produce a real `bom.json`
+  artifact, while keeping the honest "the scan needs the NVD" caveat intact. The same split fits any
+  external-data-feed tool (license/image scanners). Module 65 builds green at the default build and
+  `-Pquality` (9 tests, 0 Checkstyle, 0 SpotBugs, CycloneDX 1.6 SBOM written); `-Pscan` resolves OWASP DC
+  12.2.2 (`dependency-check:12.2.2:check` reached) but completes only with network.
+- **Pin the spec, flag the plugin (CycloneDX).** SOURCE-PIN pins the CycloneDX *spec* (1.6) but not the
+  maven-*plugin* version — the same plugin/engine split as Checkstyle and the Enforcer. Binding
+  `<schemaVersion>1.6>` makes the pinned fact (the spec) the one the artifact asserts and verifies
+  (`bom.json` carries `specVersion: 1.6`); the plugin version is a flagged property
+  (`09-flags/65_cyclonedx_depcheck_plugin_versions_unpinned.md`). The reader's portable fact is the spec
+  version, not the plugin release. OWASP Dependency-Check 12.2.2 IS pinned, so it is a property only for
+  one-edit re-pin, not flagged.
+- **Don't invent a CVE to demonstrate a suppression (never-invent reaches security config).** A
+  suppression file wants a CVE id, but a CVE must trace to NVD. Using OWASP DC's `vulnerabilityName` with
+  a documented placeholder (`ILLUSTRATIVE-FP-PLACEHOLDER`) keeps the false-positive discipline visible and
+  the file schema-valid without asserting a vulnerability that does not exist. Candidate one-line note for
+  EXAMPLES-GUIDE §8.2 / LEGAL-IP never-invent: illustrative security config uses documented placeholders,
+  not fabricated identifiers. (Real CVEs used only as test fixtures, e.g. CVE-2021-44228/Log4Shell.)
+- **Model the failure path in code when the live tool is network-gated.** Because the live scan can't run
+  offline, the chapter's "fail the build on a high-severity finding" claim would be un-demonstrated at
+  build time. An in-code `VulnerabilityGate` + typed `UnsuppressedHighSeverityFindingException` make it a
+  runnable, tested path offline, carrying the two honest limits (vulnerable≠exploitable via a `reachable`
+  field; reviewed suppression) as real branches the tests drive — the same role peer 62's
+  `ConvergenceException` plays for its build-event claim.
+- **Third-party plugin chatter is a NOTE, not a build warning.** The CycloneDX plugin's bundled JSON-schema
+  validator prints two `[WARNING] Unknown keyword …` lines while self-validating its BOM against the 1.6
+  schema; these are the plugin's own informational output (the BOM still validates+writes), not a
+  compiler/Checkstyle/SpotBugs warning about the module. Recorded as a NOTE so "warning-clean" stays
+  meaningful (it refers to the build's own analysis warnings, not embedded third-party library output).
+
+---
+
+## EXAMPLE-BUILD — Chapter 31 / key 70 (SAST & secrets detection) — 2026-06-26
+
+- **The CONFIG-centric module template (peer 75) generalizes to a second tooling domain (security
+  scanning).** Key 70's headline artifacts are tool configs (a Semgrep injection rule, a SAST CI workflow,
+  a gitleaks `.toml`, a pre-commit hook), none run by Maven. It is made Floor-C-buildable the same way 75
+  was: model the *decision* the config enforces as plain unit-tested Java — the string-concat SQL sink vs the
+  PreparedStatement fix, and the externalized fail-closed secrets resolver. Config files carry the displayed
+  tags; the Java carries the runnable proof. This is now the confirmed shape across 69 (counter-examples),
+  75 (CI gate policy), and 70 (SAST/secrets) — worth promoting in EXAMPLES-GUIDE as the standard tooling-chapter
+  pattern, and a note that hash-comment (`# tag::`) and `.toml`-comment tag regions are first-class to
+  `extract_snippet.sh` (the `.toml` extension renders as a plain fenced block, which is acceptable).
+- **Prove the deliberate-bad finding is load-bearing by emptying the suppression filter.** Confirming the
+  build fails on exactly `SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE` (then 0 with the narrow class+method+bug
+  filter restored) is the difference between teaching SAST and faking it — the suppression must hide a *true*
+  finding. This should be a standard step for any module shipping a reasoned suppression (it was done for 69
+  and 70). Core SpotBugs raises this SQL sink; deeper taint/crypto/secrets detectors are
+  Semgrep/CodeQL/FindSecBugs territory, shown by config + tests, the division the comments state honestly.
+- **A planted "fake key" must be a documented non-functional key, test-only, allow-listed.** AWS's published
+  EXAMPLE key id (`AKIAIOSFODNN7EXAMPLE`) under `src/test`, allow-listed in the gitleaks config, teaches the
+  pattern a scan flags without shipping anything resembling a live credential — and it makes the chapter's
+  sharpest point in code (a real leaked key is compromised the instant it pushes; the fixture is safe
+  precisely because the key is not). Never plant a realistic-random or real credential. Detection is not
+  remediation: rotate, do not delete.
+- **"Unpinned" is stricter than "rolling" — flag a SOURCE-PIN gap, do not invent.** gitleaks and TruffleHog
+  have NO SOURCE-PIN row (Semgrep is pinned-but-rolling; CodeQL/GitHub Actions are rolling). The honest
+  handling is the peer-75 dated-at-use pattern plus, for the truly-unpinned tools, a literal `rev`
+  placeholder (`VERSION_PINNED_AT_ADOPTION`) rather than an invented tag, and a `09-flags/` note proposing
+  SOURCE-PIN rows for gitleaks/TruffleHog at the next `/pin-source`. The multi-authority
+  `ensure_source_pin.sh` cannot heal a single clone (placeholder repo/SHA), so verification reads the banked
+  verified dossier + the pinned SOURCE-PIN rows; the SaaS/unpinned tool config schemas are exactly the
+  dossier's own `⚠ verify-at-pin` atoms and are flagged, not asserted.
+- **Realize the draft's intent without padding the module.** The dossier spec mentioned a broken-access-control
+  counter-example as a code-level honest edge; the built module demonstrates *SAST-misses-design* in the
+  package-info/README prose+comments rather than adding a separate vulnerable class, keeping the module
+  focused on the chapter's headline pair (injection sink + secrets). The HONEST-LIMITATIONS floor still shows
+  in code via the fail-closed failure path and the four edges in `package-info.java`.

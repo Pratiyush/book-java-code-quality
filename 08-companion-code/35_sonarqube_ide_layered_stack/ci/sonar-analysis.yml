@@ -1,0 +1,49 @@
+# Illustrative CI Sonar step for the layered stack (Chapter 17 — Composition, Not Accumulation).
+#
+# This file is CONFIGURATION, NOT run by this module's Maven build. It shows the CI layer of the stack: the
+# bare analyzers run cheap-first as the local layered gate (the `-Pquality` profile — Checkstyle then
+# SpotBugs), and THEN the Sonar platform layer runs above them, scanning the same compiled module and
+# applying the team's quality gate on NEW code. The same `mvn` commands a developer runs locally run here
+# (Chapter 27, local/CI parity); the IDE first line (.editorconfig + connected mode) is the author-time
+# layer this CI step closes.
+#
+# Sonar is hosted / continuously released. SOURCE-PIN.md §2 pins the Sonar row at SonarQube Server 2026.1
+# LTA (patch 2026.1.3); the scanner GAV version is version-sensitive and recorded `⚠ verify at pin`
+# (09-flags/35_sonar_versions_and_defaults_unverified.md), so the scanner is invoked by its goal
+# (`sonar:sonar`), not a literal version, and the version comment is DATED AT USE (2026-06). The GitHub
+# Actions used here (actions/checkout, actions/setup-java) are hosted/SaaS — SOURCE-PIN.md §5 records them
+# as "docs as of 2026-06 (rolling)", so they are DATED AT USE (2026-06); pin each to a release digest at
+# adoption (see 09-flags/). SONAR_TOKEN / SONAR_HOST_URL are CI secrets, never committed.
+name: sonar-analysis
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  layered-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4          # SaaS action, dated-at-use 2026-06 (pin to a digest at adoption)
+        with:
+          fetch-depth: 0                   # full history so Sonar can scope the gate to NEW code (Clean as You Code)
+      - uses: actions/setup-java@v4        # SaaS action, dated-at-use 2026-06
+        with:
+          distribution: temurin
+          java-version: "21"               # SOURCE-PIN.md anchor LTS (Java 21)
+      - name: Local layered gate (cheap-first — source then bytecode)
+        run: mvn -B -Pquality verify       # the bare analyzers as the local gate (Checkstyle, then SpotBugs)
+      # tag::ci-sonar-step[]
+      - name: Sonar platform layer (scan + quality gate on new code)
+        env:                                            # secrets, never committed
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: >                                          # SonarScanner for Maven, goal sonar:sonar (version @pin)
+          mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+          -Dsonar.qualitygate.wait=true                 # block the pipeline when the gate fails on new code
+      # end::ci-sonar-step[]

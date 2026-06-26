@@ -1,0 +1,22 @@
+# A custom Semgrep rule catching the injection sink the chapter teaches: untrusted input concatenated
+# into a SQL string that reaches a Statement.executeQuery / execute call. This is the same source-to-sink
+# flow the module's VulnerableOrderLookup.findOrdersByEmail shows and that OrderLookup designs out with a
+# bound parameter. Semgrep's strength here is custom rules a team encodes for its own patterns (Chapter 18,
+# custom static-analysis rules); the deeper taint-tracing variant is Semgrep's dataflow mode and CodeQL's
+# territory.
+#
+# CONFIGURATION, not run by this Maven build. Semgrep is pinned in SOURCE-PIN (§2, Semgrep 1.163.0), but
+# rule packs and the engine are continuously released; this rule is DATED AT USE (2026-06) and uses the
+# documented rule schema (id / languages / message / severity / patterns). See 09-flags for the
+# verify-at-pin note on tool versions and rule-IDs (the dossier marks these for re-confirmation at /pin-source).
+rules:
+  # tag::semgrep-rule[]
+  - id: java-sql-string-concat
+    languages: [java]
+    severity: ERROR
+    message: >
+      SQL built by string concatenation: untrusted input can reach the query as SQL, not data
+      (OWASP A03 / CWE-89). Use a bound parameter (PreparedStatement '?') instead.
+    patterns:
+      - pattern: $STMT.executeQuery("..." + ...)
+  # end::semgrep-rule[]
