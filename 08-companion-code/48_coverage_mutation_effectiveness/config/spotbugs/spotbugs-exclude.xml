@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    Reviewed suppressions (Chapter 16: suppress with a reason, never disable a whole detector).
+
+    This module has NONE. The production code is a stateless discount calculator over an immutable
+    Money record plus an AtomicLong counter, so SpotBugs's representation-exposure and mutability
+    detectors stay quiet without any suppression. The filter is kept (empty) so a future,
+    genuinely-reviewed false positive has a home with a reason, rather than being added inline or
+    silenced by switching a detector off.
+  -->
+</FindBugsFilter>

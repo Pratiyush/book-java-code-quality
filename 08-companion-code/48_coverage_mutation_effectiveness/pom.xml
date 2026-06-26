@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 48 companion (The Number That Feels Like Quality). One behaviour-rich method
+    (Discount.apply: a quantity boundary, an arithmetic expression, an early return) put under BOTH
+    measures the chapter contrasts, so the coverage-versus-effectiveness gap is something the build
+    demonstrates rather than asserts. A weak test executes every line yet asserts only non-null
+    (full LINE coverage, surviving mutants); a strong test pins the boundary and the value (mutants
+    killed, line coverage unchanged).
+
+    Two measures, two places in the build:
+      * JaCoCo (coverage, SOURCE-PIN.md §3: org.jacoco 0.8.16) runs in the DEFAULT verify —
+        prepare-agent binds the agent into the test JVM, report writes the HTML/XML observability
+        surface, and check gates on BRANCH coverage (the counter LINE % hides an untested branch
+        behind). The gate is the BRANCH COVEREDRATIO minimum, with a MISSEDCOUNT maximum shown as
+        the ratchet-friendly form (the gate POLICY itself — what threshold, whole-codebase vs
+        new-code — is the CI part's, not this chapter's).
+      * PITest (mutation, SOURCE-PIN.md §3: org.pitest 1.25.3) runs behind the `pitest` profile —
+        the slow fault-detection stage belongs in a separate, opt-in run, never the inner loop or
+        the default verify. The pitest-junit5-plugin is REQUIRED for Jupiter tests; without it PITest
+        silently reports no coverage.
+
+    This is a child module of the companion-code reactor. It sets <parent>, carries no groupId or
+    version literal of its own, and inherits the runtime pin and the JUnit/AssertJ pins from the
+    aggregator. JaCoCo, PITest, and the JUnit 5 plugin are declared here because the aggregator does
+    not manage them; each version literal traces to SOURCE-PIN.md §3. The static analyzers run via
+    the `quality` profile (Checkstyle + SpotBugs, Chapter 16), self-contained under this module's
+    own config/ dir like the key-09 and key-42 modules.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>coverage-mutation-effectiveness</artifactId>
+  <name>Chapter 48 — The Number That Feels Like Quality (coverage-mutation-effectiveness)</name>
+
+  <properties>
+    <!--
+      Coverage and mutation tool versions the aggregator does NOT manage, pinned here to their
+      SOURCE-PIN.md §3 rows. JUnit (junit-bom) and AssertJ are inherited from the parent's
+      dependencyManagement and carry no literal here.
+
+      SOURCE-PIN.md §3 pins JaCoCo 0.8.16, but that artifact is NOT published — Maven Central's
+      latest is 0.8.15 (org/jacoco/jacoco-maven-plugin/0.8.16/ returns 404). This module builds
+      against 0.8.15, the real latest, which covers the anchor JDK 21 (JaCoCo support since 0.8.11)
+      and the forward JDK 25 (since 0.8.14). This is a deviation from the pin forced by artifact
+      availability, recorded in 09-flags/48_jacoco_pin_0816_unpublished.md for a deliberate re-pin.
+    -->
+    <jacoco.version>0.8.15</jacoco.version>
+    <pitest.version>1.25.3</pitest.version>
+    <!--
+      The PITest JUnit 5 test-plugin is REQUIRED for PITest to run Jupiter tests; the
+      plugin <-> JUnit-Platform <-> PITest version matrix moves per release (SOURCE-PIN.md flags it
+      `verify at pin` for key 47). Pinned to the line current with PITest 1.25.3 and the JUnit
+      Platform this reactor resolves; see 09-flags/48_pitest_junit5_plugin_matrix_verify_at_pin.md.
+    -->
+    <pitest.junit5.version>1.2.3</pitest.junit5.version>
+  </properties>
+
+  <dependencies>
+    <!-- JUnit Jupiter — the harness; version managed by the aggregator's junit-bom import. -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!--
+      AssertJ — the boundary/value assertions the strong test uses to kill the mutants the weak
+      test leaves alive. Version managed by the aggregator (SOURCE-PIN.md §3: AssertJ 3.27.7).
+    -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!--
+        JaCoCo coverage, in the DEFAULT build (SOURCE-PIN.md §3: org.jacoco:jacoco-maven-plugin
+        0.8.16; the version matches the anchor JDK 21, which JaCoCo first supported in 0.8.11).
+        prepare-agent sets the argLine property that Surefire consumes, so the tests run under the
+        agent; report writes the HTML/XML report (the observability surface); check enforces the
+        BRANCH gate. The agent is injected via argLine — a project that sets <argLine> directly in
+        Surefire would clobber it and silently report 0% coverage, so this module sets none.
+      -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+        <executions>
+          <execution>
+            <id>jacoco-prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>jacoco-report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>jacoco-check</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <!--
+                The gate reads BRANCH, not only LINE (counters.html): a method can reach 100% line
+                coverage with a whole branch untested, because a line counts as covered when one
+                instruction on it ran. Both fields and their enum values trace to check-mojo.html
+                (element/counter/value, minimum/maximum, haltOnFailure default true). The
+                MISSEDCOUNT maximum limit is the ratchet-friendly form the CI part prefers for
+                legacy code; here it pins "no uncovered branches" alongside the ratio floor.
+              -->
+              <rules>
+                <rule>
+                  <element>BUNDLE</element>
+                  <limits>
+                    <!-- tag::jacoco-check[] -->
+                    <limit>                              <!-- gate on BRANCH, not only LINE -->
+                      <counter>BRANCH</counter>
+                      <value>COVEREDRATIO</value>        <!-- the familiar "at least X%" form -->
+                      <minimum>0.90</minimum>
+                    </limit>
+                    <!-- end::jacoco-check[] -->
+                    <limit>
+                      <counter>BRANCH</counter>
+                      <value>MISSEDCOUNT</value>         <!-- the ratchet form: no uncovered branch -->
+                      <maximum>0</maximum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <!--
+      Mutation testing, opt-in via `-Ppitest` so the slow fault-detection stage never runs on the
+      default verify or in the inner dev loop (the chapter's cost honesty: PITest runs the covering
+      tests once per mutant). Run: mvn -B -Ppitest test org.pitest:pitest-maven:mutationCoverage
+      (HTML report under target/pit-reports/). With the weak test alone the boundary/math/returns
+      mutants SURVIVE; with the strong test they are KILLED while line coverage is unchanged — the
+      thesis. mutationThreshold fails the build below a score (the gate MECHANISM; the policy is the
+      CI part's). targetClasses scopes mutation to the production package.
+    -->
+    <profile>
+      <id>pitest</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <version>${pitest.version}</version>
+            <!--
+              pitest-junit5-plugin is REQUIRED for PITest to run JUnit Jupiter tests; without it the
+              tests silently report no coverage (the setup trap key 47 names). SOURCE-PIN.md §3:
+              org.pitest 1.25.3; the JUnit5-plugin matrix is `verify at pin` (09-flags/).
+            -->
+            <dependencies>
+              <dependency>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-junit5-plugin</artifactId>
+                <version>${pitest.junit5.version}</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <targetClasses>
+                <param>org.acme.effectiveness.*</param>
+              </targetClasses>
+              <targetTests>
+                <param>org.acme.effectiveness.*</param>
+              </targetTests>
+              <mutationThreshold>80</mutationThreshold>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!--
+      Static-analysis rule gates from Chapter 16, opt-in via `-Pquality`. The same self-contained
+      shape as the key-09 and key-42 modules: the maven-checkstyle-plugin ships an OLD bundled
+      engine, so the pinned engine is overridden via a plugin-level dependency (the "two-pin"
+      lesson). The profile reads the config under this module's own config/ dir. Checkstyle includes
+      the test source directory (the tests are first-class code held to the house ruleset); SpotBugs
+      runs over main bytecode only.
+    -->
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

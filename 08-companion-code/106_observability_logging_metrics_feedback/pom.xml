@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 45 companion (Understanding a Running System). Observability done as a code-quality
+    concern, at the smallest size that still teaches it: structured + correlated + leveled logging
+    that never leaks a secret, an in-process metrics registry (counter + timer), and a feedback
+    signal — a health gauge over the error rate that closes the loop back to a test. Every surface
+    is built on the JDK alone: java.lang.System.Logger for logging, AtomicLong / LongAdder for
+    metrics, a thread-bound correlation context standing in for SLF4J's MDC. The chapter names the
+    real-world facades (SLF4J, Micrometer, OpenTelemetry); those libraries are not pinned authority
+    rows in SOURCE-PIN.md, so the module demonstrates the *shape* — name a signal, record it, scrape
+    it; populate a correlation id, carry it onto every log line — with JDK primitives, and the prose
+    attributes the named facades. Zero runtime dependencies, so it dogfoods the book and builds fast
+    and green. The signals are machine-checked by the `quality` profile (Checkstyle + SpotBugs).
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>observability-logging-metrics-feedback</artifactId>
+  <name>Chapter 45 — Understanding a Running System (observability-logging-metrics-feedback)</name>
+
+  <dependencies>
+    <!--
+      JDK-only at runtime: there is no production telemetry dependency here on purpose (see the POM
+      header). The test libraries are the only additions, and their versions are inherited from the
+      companion-code aggregator's dependencyManagement — no version literal lives in this module.
+    -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates (Chapter 16), opt-in via `-Pquality` so the default build stays fast.
+    The maven-checkstyle-plugin ships an OLD bundled engine; we override it to the pinned engine via
+    a plugin-level dependency — the build plugin and the analyzer engine are separate versions. This
+    module is a direct child of the companion-code root, which pins no quality profile of its own, so
+    the profile is declared here (the same shape the peer modules use) and reads the config under this
+    module's own config/ dir, keeping the module self-contained.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16), complementary to Checkstyle's source
+            view. This module's signals are recorded through thread-safe primitives (AtomicLong,
+            LongAdder, ConcurrentHashMap) and its records are immutable, so the
+            representation-exposure detectors stay quiet without suppression. The exclude filter is
+            kept (empty) so a future, genuinely-reviewed suppression has a home with a reason.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

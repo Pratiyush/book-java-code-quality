@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 45 companion (The Database That Does Not Exist in Production). A small storefront-catalog
+    domain plus a JUnit Jupiter harness that puts the chapter's two blind-spot-closing techniques into
+    one buildable module:
+
+      (a) INTEGRATION testing against a real collaborator. A CatalogClient makes real outbound HTTP to
+          a real CatalogApi server booted on an ephemeral port (the JDK's own HttpServer, no web
+          framework, no runtime dependency). The integration test exercises the interaction with the
+          real dependency — the wire encoding, the real status-code mapping, the real parse — which is
+          the behaviour a mocked client cannot reach. This is the in-JVM realization of the pyramid's
+          middle layer, matching the capstones' *IntegrationTest pattern.
+
+      (b) PROPERTY-BASED testing. A Sku value object carries a parse(format(x)) == x round-trip
+          invariant. A seeded generator (java.util.random.RandomGenerator, JDK) produces many inputs,
+          and a hand-rolled shrinker reduces any failing input to a minimal counterexample — the two
+          ideas (generated inputs + shrinking) the chapter teaches, realized with the pinned test
+          stack only.
+
+    Tool-pin note (SOURCE-PIN.md §3): Testcontainers (2.0.5) and jqwik (1.10.1, maintenance mode) are
+    pinned as authorities and are the tools the chapter's PROSE cites. They are NOT added to this
+    build: Testcontainers requires a Docker runtime (the chapter's own DOCKER-GATING caveat → REPRO
+    PENDING-RUNTIME where Docker is absent), and jqwik is not managed by the aggregator BOM and is in
+    maintenance mode. The module therefore realizes "integration" in-JVM on an ephemeral port and
+    "property-based" with a seeded generator + shrinker, so the build is green with the already-pinned
+    stack and adds no infrastructure dependency. Both prose-only tools are recorded in 09-flags/. See
+    README "What is realized in code vs. cited in prose".
+
+    This is a child module of the companion-code reactor. It sets <parent>, carries no groupId or
+    version literal of its own, and inherits the runtime pin and the JUnit/AssertJ pins from the
+    aggregator. The contracts and analyzers are run by the `quality` profile (Checkstyle + SpotBugs,
+    Chapter 16), self-contained under this module's config/ dir like the key-09 and key-42 modules.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>integration-property-based-testing</artifactId>
+  <name>Chapter 45 — The Database That Does Not Exist in Production (integration-property-based-testing)</name>
+
+  <dependencies>
+    <!-- JUnit Jupiter — the harness; version managed by the aggregator's junit-bom import. -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!--
+      AssertJ — fluent assertions for the test sources. Version managed by the aggregator
+      (SOURCE-PIN.md §3: AssertJ 3.27.7).
+    -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The same self-contained shape as the key-09 and key-42 modules: the maven-checkstyle-plugin
+    ships an OLD bundled engine, so the pinned engine is overridden via a plugin-level dependency (the
+    "two-pin" lesson — the build plugin and the analyzer engine are separate versions). The profile
+    reads the config under this module's own config/ dir. Checkstyle includes the test source
+    directory (the tests are first-class code held to the house ruleset); SpotBugs runs over main
+    bytecode only.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16), complementary to Checkstyle's source
+            view. The production code here is a small catalog service over the JDK HttpServer/HttpClient,
+            so the exclude filter is empty: zero reviewed suppressions are needed. A genuine, reviewed
+            false positive would go in the filter with a reason, never by disabling a detector wholesale.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
