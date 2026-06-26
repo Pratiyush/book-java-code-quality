@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 28 companion (Knowing What You Ship). The chapter's subject is the supply chain around the
+    dependency tree — scanning it for known vulnerabilities (SCA), inventorying what ships (SBOM), and
+    attesting how it was built (provenance). So this module's load-bearing artifact is THIS pom.xml and
+    the config files beside it, not the small Java package. The pom carries two of the chapter's three
+    questions as real build configuration: an SBOM generator (CycloneDX, the chapter's "do I know what's
+    in it?" answer) and a dependency vulnerability gate (OWASP Dependency-Check, the "is anything
+    known-vulnerable?" answer). A small org.acme.supplychain package gives the build a real graph to
+    inventory and gives the chain its in-code analogue (an inventory and a finding-triage), so the
+    configuration is exercised rather than merely declared.
+
+    SOURCE-PIN: Maven 3.9.16; CycloneDX 1.6 SBOM spec; OWASP Dependency-Check 12.2.2; JUnit 6.x BOM;
+    AssertJ 3.27.7. The CycloneDX SBOM SPEC version (1.6) is pinned and is set via <schemaVersion> below;
+    the CycloneDX maven-PLUGIN version literal is NOT separately pinned in SOURCE-PIN (only the spec is),
+    so it is held as a named property and flagged — see
+    09-flags/65_cyclonedx_depcheck_plugin_versions_unpinned.md (the same plugin-vs-engine two-pin lesson
+    the Checkstyle and Enforcer modules already follow). OWASP Dependency-Check 12.2.2 IS pinned (SOURCE-PIN
+    §4), but its scan downloads the NVD database over the network at runtime, so it is configured here as a
+    tagged, opt-in profile (-Pscan), never bound to the default or -Pquality build — the dossier's REPRO
+    PENDING-RUNTIME caveat. The default and -Pquality builds resolve and run fully offline.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>dependency-scanning-sbom-supply-chain</artifactId>
+  <name>Chapter 28 — Knowing What You Ship (dependency-scanning-sbom-supply-chain)</name>
+
+  <properties>
+    <!--
+      Plugin version literals NOT separately pinned in SOURCE-PIN. SOURCE-PIN §4 pins the CycloneDX SBOM
+      SPEC (1.6) and OWASP Dependency-Check (12.2.2), but not the CycloneDX maven-plugin's own version.
+      The plugin is held as a named property so a single edit re-pins it once the SOURCE-PIN row is split
+      (the same two-pin discipline the Checkstyle build-plugin/engine and Enforcer splits already follow).
+      Flagged: 09-flags/65_cyclonedx_depcheck_plugin_versions_unpinned.md. The value used resolves cleanly
+      on the pinned toolchain and emits the pinned 1.6 spec via <schemaVersion>.
+    -->
+    <cyclonedx.plugin.version>2.9.2</cyclonedx.plugin.version>
+    <!-- OWASP Dependency-Check IS pinned in SOURCE-PIN §4 (12.2.2); kept as a property for one-edit re-pin. -->
+    <dependency.check.version>12.2.2</dependency.check.version>
+  </properties>
+
+  <dependencies>
+    <!--
+      A real, named dependency so the SBOM has a non-trivial component to inventory and the scanner has a
+      real coordinate to match (the chapter's point: SCA and the SBOM act on the resolved graph, not an
+      empty one). Apache Commons Lang is a widely-used, pinned, JDK-only library; it is on the runtime
+      path so it appears in the generated SBOM's component list. The version is pinned (no range, no
+      LATEST) so the inventory and any scan are reproducible — the deterministic-tree precondition the
+      previous chapter established and this chapter depends on.
+    -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.18.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!--
+        SBOM generation (the chapter's "do I know what's in it?" answer). The CycloneDX maven plugin reads
+        the resolved dependency graph and writes a complete component inventory — transitive dependencies
+        included — to target/ on `verify`. This runs offline: it inventories the graph Maven already
+        resolved and needs no vulnerability database. The honest edge the chapter names is set as a real
+        property of the artifact: the SBOM is an INVENTORY, not a defense — it makes a team fast, it fixes
+        nothing (see the README and the in-code analogue). The SPEC version is pinned to 1.6 (SOURCE-PIN);
+        the plugin version is the flagged property above.
+      -->
+      <plugin>
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-maven-plugin</artifactId>
+        <version>${cyclonedx.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>generate-sbom</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>makeAggregateBom</goal>
+            </goals>
+          </execution>
+        </executions>
+        <!-- tag::cyclonedx-sbom[] -->
+        <configuration>
+          <schemaVersion>1.6</schemaVersion>          <!-- CycloneDX 1.6 spec (SOURCE-PIN §4) -->
+          <projectType>application</projectType>
+          <outputFormat>json</outputFormat>           <!-- machine-readable inventory for SCA tooling -->
+          <outputName>bom</outputName>                 <!-- target/bom.json: the Log4Shell-answer inventory -->
+          <includeBomSerialNumber>true</includeBomSerialNumber>
+        </configuration>
+        <!-- end::cyclonedx-sbom[] -->
+      </plugin>
+    </plugins>
+  </build>
+
+  <!--
+    Two opt-in profiles keep the default and gating builds fast and fully offline, while making the
+    chapter's network-dependent and static-analysis mechanisms real config that runs when asked.
+  -->
+  <profiles>
+    <!--
+      The dependency vulnerability GATE (the chapter's "is anything known-vulnerable?" answer). OWASP
+      Dependency-Check matches every resolved component against the NVD and fails the build above a CVSS
+      threshold. It is opt-in via -Pscan and NOT part of the default or -Pquality build BECAUSE the scan
+      downloads the NVD database over the network on first run (the dossier's REPRO PENDING-RUNTIME edge):
+      a deterministic, offline `mvn -Pquality verify` must not depend on a network fetch. The config is the
+      chapter's displayed snippet; running it requires network + the NVD download (see the README and the
+      gate report). The reviewed suppression file (config/dependency-check/suppressions.xml) carries the
+      "vulnerable != exploitable" / false-positive discipline with a recorded justification.
+    -->
+    <profile>
+      <id>scan</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>${dependency.check.version}</version>
+            <!-- tag::depcheck-gate[] -->
+            <configuration>
+              <failBuildOnCVSS>7.0</failBuildOnCVSS>   <!-- fail on HIGH+ (CVSS >= 7.0); a reviewed threshold -->
+              <suppressionFiles>
+                <suppressionFile>config/dependency-check/suppressions.xml</suppressionFile>
+              </suppressionFiles>                       <!-- reviewed suppressions, with a justification each -->
+            </configuration>
+            <!-- end::depcheck-gate[] -->
+            <executions>
+              <execution>
+                <id>depcheck-analyze</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!--
+      Static-analysis gate (Chapter 16), opt-in via -Pquality so the default build stays fast. Same house
+      shape as the other chapter modules: the checkstyle build-plugin and its engine are pinned separately
+      (the two-pin lesson), and configs are externalized under this module's config/ dir. This profile is
+      fully offline and is the green build of record for FLOOR C here.
+    -->
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

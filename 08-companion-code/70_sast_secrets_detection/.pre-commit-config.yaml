@@ -1,0 +1,17 @@
+# A pre-commit hook that runs gitleaks before a commit is created — the cheapest catch on the
+# defense-in-depth ladder and the only stage that PREVENTS a secret from being committed at all. The hook
+# is bypassable (`git commit --no-verify`), which is exactly why it is not the only line: the CI gate and
+# platform push protection (the later stages of the ladder) backstop a developer who skips it. pre-commit
+# is pinned in SOURCE-PIN (§5, latest 2026-04 release).
+#
+# CONFIGURATION, not run by this Maven build. The gitleaks hook's `rev` pins the scanner version; gitleaks
+# itself has no pinned version in SOURCE-PIN (the dossier marks tool versions for re-confirmation at
+# /pin-source), so the `rev` below is a DATED-AT-USE placeholder (2026-06), not an asserted version — set
+# it to the gitleaks release confirmed at adoption. See 09-flags for the verify-at-pin note.
+repos:
+  # tag::precommit-hook[]
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: VERSION_PINNED_AT_ADOPTION        # dated-at-use 2026-06; set to the confirmed gitleaks release
+    hooks:
+      - id: gitleaks                        # blocks the commit if a secret pattern is found
+  # end::precommit-hook[]

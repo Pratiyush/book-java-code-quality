@@ -1,0 +1,24 @@
+# gitleaks configuration for the storefront module: a rule that catches an AWS access key id, plus an
+# allowlist so the module's own deliberate test fixture and the documented example key do not false-flag.
+# gitleaks is fast and config-driven, running at pre-commit, in CI, and as a history scan (the
+# defense-in-depth ladder). The pre-commit stage is the only one that PREVENTS the leak; it is bypassable
+# with `git commit --no-verify`, so the CI scan and platform push protection are the backstops.
+#
+# CONFIGURATION, not run by this Maven build. gitleaks has no pinned version in SOURCE-PIN (the dossier
+# marks tool versions / rule-IDs for re-confirmation at /pin-source); this config is DATED AT USE
+# (2026-06) and uses the documented [[rules]] / [allowlist] schema. No version is asserted here. See
+# 09-flags for the verify-at-pin note.
+
+title = "storefront secrets-scan config"
+
+# tag::gitleaks-config[]
+[[rules]]
+id = "aws-access-key-id"
+description = "AWS Access Key ID"
+regex = '''(A3T[A-Z0-9]|AKIA|ASIA)[A-Z0-9]{16}'''
+
+[allowlist]
+description = "test fixtures and AWS's own documentation example key are not real credentials"
+paths = ['''src/test/.*''']                     # planted-fixture key lives only in a test, never in source
+regexes = ['''AKIAIOSFODNN7EXAMPLE''']          # AWS's published non-functional EXAMPLE key id
+# end::gitleaks-config[]

@@ -1,0 +1,58 @@
+# Illustrative CI supply-chain stage for the book's chapter on knowing what you ship (Chapter 28).
+#
+# This file is CONFIGURATION, not run by this module's Maven build. It shows the pipeline shape the
+# chapter teaches: the supply-chain chain as automated steps — generate the SBOM on every build, scan
+# the resolved dependencies for known vulnerabilities (the build gate), and publish the SBOM with the
+# release so "are we affected by CVE-X?" is a query later, not an archaeology project. Each step runs the
+# SAME build a developer runs locally (Chapter 27, local/CI parity): the SBOM via `mvn -Pquality verify`
+# (CycloneDX writes target/bom.json), the scan via `mvn -Pscan verify` (OWASP Dependency-Check).
+#
+# Tool versions are pinned where SOURCE-PIN.md pins them: Java 21 anchor; OWASP Dependency-Check 12.2.2
+# and the CycloneDX 1.6 spec are pinned in the module's pom. The GitHub Actions used here
+# (actions/checkout, actions/setup-java, actions/upload-artifact) are hosted/SaaS — SOURCE-PIN.md §5
+# records them as "docs as of 2026-06 (rolling)", so they are DATED AT USE (2026-06), not timeless; pin
+# each to a release tag and a digest when this is adopted (see the chapter's gate report and 09-flags/).
+# The scan downloads the NVD database on first run (REPRO PENDING-RUNTIME), so the scan step needs network
+# and a cached data directory in CI.
+name: supply-chain
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------------------------------------------
+  # Generate the SBOM (the inventory) and scan it for known-vulnerable components (the gate). Ordered so
+  # the inventory exists first: a scanner can only check components it can see. Both steps mirror a local
+  # command, so a developer reproduces the gate without CI.
+  # ---------------------------------------------------------------------------------------------------
+  sbom-and-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4          # SaaS action, dated-at-use 2026-06 (pin to a digest at adoption)
+      - uses: actions/setup-java@v4        # SaaS action, dated-at-use 2026-06
+        with:
+          distribution: temurin
+          java-version: "21"               # SOURCE-PIN.md anchor LTS (Java 21)
+      # tag::ci-scan-step[]
+      - name: Generate SBOM (CycloneDX 1.6)
+        run: mvn -B -Pquality verify       # CycloneDX writes the component inventory to target/bom.json
+      - name: Scan dependencies for known CVEs (OWASP Dependency-Check)
+        run: mvn -B -Pscan verify          # fails the build above CVSS 7.0; downloads the NVD DB on first run
+      - uses: actions/upload-artifact@v4   # publish the SBOM with the build — the Log4Shell-answer inventory
+        with:
+          name: sbom
+          path: target/bom.json
+      # end::ci-scan-step[]
+
+  # ---------------------------------------------------------------------------------------------------
+  # Provenance and SLSA (the chapter's third question) are intentionally NOT wired here as runnable steps.
+  # They require signing-key/identity infrastructure (cosign, CI OIDC) and an attestation store that this
+  # illustrative module does not stand up; the chapter presents them as a maturity ladder a team climbs as
+  # the stakes warrant, not a copy-paste step. The pipeline above is the build-gate + inventory half of the
+  # chain; the provenance half is described in the chapter and the README, not faked in config here.

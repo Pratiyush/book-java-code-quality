@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    Reviewed suppressions (Chapter 16: suppress with a reason, never disable a whole detector).
+
+    This module ships one deliberate counter-example whose defect IS the lesson, so a test can prove
+    the injection sink the chapter's SAST rule targets rather than merely assert it. The detectors are
+    left fully ENABLED for the rest of the module (the PreparedStatement fix in OrderLookup, the
+    externalized-config SecretsResolver, and the SastSecretsGate running path all stay clean); only the
+    one named counter-example that core SpotBugs raises at this module's threshold carries a finding,
+    suppressed narrowly, with a reason, and pointed at the test that demonstrates it. The finding was
+    verified load-bearing (BugInstance size is 1 with this filter empty, 0 with it as below, deterministic
+    across runs). Fixing the class — which OrderLookup already does — is the real advice; the suppression
+    exists only so the teaching counter-example ships green.
+
+    Note: core SpotBugs (this build's engine) catches the SQL injection sink below. The deeper
+    taint-tracing and the crypto/secrets-specific detectors the chapter discusses are FindSecBugs and the
+    standalone SAST tools' territory (Semgrep/CodeQL), which are not part of this build's engine; those
+    techniques are demonstrated by the illustrative tool configuration (config/semgrep, ci/sast-scan.yml)
+    and by tests/prose here. See the module README.
+  -->
+
+  <!--
+    Injection (OWASP Top 10:2025 A03 / CWE-89). VulnerableOrderLookup.findOrdersByEmail builds its query
+    by string concatenation and passes the nonconstant String to Statement.executeQuery, so SpotBugs
+    raises SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE (verified High here, so the suppression is
+    load-bearing, not decorative). This is the same source-to-sink flow the chapter's Semgrep rule
+    (config/semgrep/java-injection.yml) targets and that SAST taint analysis traces. The finding IS the
+    injection lesson, so it is named as an intentional teaching counter-example. Proven by
+    SastSecretsTest.Injection#stringConcatenationFoldsTheInputIntoTheQueryText. The fix is the bound '?'
+    parameter in OrderLookup.findOrdersByEmail, never this suppression.
+  -->
+  <Match>
+    <Class name="org.acme.sast.VulnerableOrderLookup"/>
+    <Method name="findOrdersByEmail"/>
+    <Bug pattern="SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE"/>
+  </Match>
+</FindBugsFilter>

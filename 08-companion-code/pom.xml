@@ -31,6 +31,7 @@
     <module>22_virtual_threads_structured_concurrency</module>
     <module>26_how_static_analysis_works</module>
     <module>27_checkstyle</module>
+    <module>35_sonarqube_ide_layered_stack</module>
     <module>38_custom_rules_codegen_lombok</module>
     <module>42_unit_testing_assertions_mocking</module>
     <module>45_integration_property_based_testing</module>
@@ -39,7 +40,9 @@
     <module>53_solid_coupling_cohesion_packages</module>
     <module>55_enforcing_architecture_fitness_functions</module>
     <module>62_build_dependency_hygiene</module>
+    <module>65_dependency_scanning_sbom_supply_chain</module>
     <module>69_secure_coding_owasp</module>
+    <module>70_sast_secrets_detection</module>
     <module>75_ci_pipeline_quality_gates</module>
     <module>101_performance_profiling_memory_benchmarking</module>
     <module>105_performance_regression_gates</module>

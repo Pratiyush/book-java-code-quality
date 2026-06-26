@@ -1,0 +1,32 @@
+# Shared author-time first line for the layered stack (Chapter 17 — Composition, Not Accumulation).
+#
+# The IDE is the leftmost moment in the toolchain (the keystroke), but it is a FIRST LINE, not a gate: it
+# runs on the author's machine with the author's settings. The fix that makes it trustworthy is SHARING
+# it. This committed .editorconfig pins one formatting style so every developer's IDE — and the build's
+# canonical formatter (Chapter 6) — produce the same output, so reformat-on-save does not rewrite untouched
+# lines and start diff fights. Both mainstream Java IDEs read EditorConfig.
+#
+# Connected-mode note (SonarQube for IDE): bind the IDE plugin to the team's SonarQube Server / Cloud
+# project so it pulls the SAME quality profile and quality gate the CI scanner enforces — then an
+# author-time finding matches the gate, and "clean in my IDE" stops drifting from "passes the gate." This
+# is the author-time half of the stack the CI step (ci/sonar-analysis.yml) closes. Sonar is hosted /
+# continuously released; the connected-mode behaviour is dated at use (2026-06) per SOURCE-PIN.md §2.
+
+root = true
+
+# tag::connected-mode[]
+[*.java]
+charset = utf-8                 # one shared style so every IDE and the build's formatter agree
+indent_style = space
+indent_size = 4
+max_line_length = 120          # this team's cited choice (Chapter 6), not a universal truth
+insert_final_newline = true
+trim_trailing_whitespace = true
+# end::connected-mode[]
+
+[*.{xml,yml,yaml,properties}]
+charset = utf-8
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true

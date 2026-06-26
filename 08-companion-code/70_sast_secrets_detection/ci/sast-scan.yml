@@ -1,0 +1,77 @@
+# Illustrative security-scan pipeline for the book's storefront module (Chapter 31 — Catching What You
+# Forgot). SAST and secrets detection wired into CI, as the chapter's defense-in-depth ladder.
+#
+# This file is CONFIGURATION, not run by this module's Maven build. It shows the pipeline shape the chapter
+# teaches: a SAST scan over the project's own code (the codebase lens), a secrets scan over the diff and
+# history (the leaked-credential lens), and a dependency scan (the SCA lens, Part VII) — three lenses,
+# layered, none a substitute for another. Security findings are triaged, often by a human reviewer, not
+# auto-blocked wholesale, so the SAST and secrets jobs run on pull requests for feedback while the policy
+# for what fails the build versus what warns is the next chapter's security gate (Chapter 32).
+#
+# SaaS / rolling, DATED AT USE (2026-06): the GitHub Actions (actions/checkout, github/codeql-action) and
+# the hosted scanners (Semgrep, CodeQL, gitleaks, TruffleHog) are continuously released — SOURCE-PIN
+# records GitHub Actions as "docs as of 2026-06 (rolling)" and CodeQL as rolling (pin the bundle at use);
+# gitleaks/TruffleHog have no pinned version. Pin each to a release tag and a commit digest when this is
+# adopted. No tool version is asserted as timeless here. See ci/quality-gates.yml in the peer CI module
+# and 09-flags for the dated-at-use convention.
+name: sast-scan
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 3 * * *"            # nightly: the deeper, slower scans where their latency is affordable
+
+permissions:
+  contents: read
+  security-events: write           # SAST tools upload findings to the code-scanning surface
+
+jobs:
+  # ---------------------------------------------------------------------------------------------------
+  # SAST: analyze the project's OWN source for the injection / crypto-misuse classes (Chapter 30).
+  # Pattern-matching plus dataflow/taint; findings map to CWE/OWASP. Crowns no tool — Semgrep (custom
+  # rules) and CodeQL (deep taint) take different approaches; a program may run more than one.
+  # ---------------------------------------------------------------------------------------------------
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4          # SaaS action, dated-at-use 2026-06 (pin to a digest at adoption)
+      # tag::sast-ci-step[]
+      - name: SAST scan (custom Semgrep rule over the codebase)
+        run: semgrep --config config/semgrep/java-injection.yml --error .  # taint source -> SQL sink (CWE-89)
+      - name: SAST scan (CodeQL deep dataflow)
+        uses: github/codeql-action/analyze@v3      # CodeQL bundle is rolling — pin the bundle tag at use
+        with:
+          languages: java
+      # end::sast-ci-step[]
+
+  # ---------------------------------------------------------------------------------------------------
+  # Secrets detection: scan the diff and history for credentials (pattern + entropy). A committed secret
+  # is compromised — this stage backstops the pre-commit hook, which a developer can bypass with
+  # --no-verify. A found secret must be ROTATED, not just deleted; scanning cannot un-leak it.
+  # ---------------------------------------------------------------------------------------------------
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0                   # full history so an already-committed secret is caught, not just the diff
+      - name: Secrets scan (gitleaks, config-driven)
+        run: gitleaks detect --config .gitleaks.toml --redact   # gitleaks: no pinned version (dated-at-use 2026-06)
+
+  # ---------------------------------------------------------------------------------------------------
+  # SCA: the third lens — scan the dependencies, not the code (Part VII). Layered with SAST and secrets;
+  # each sees a blind spot the others cannot. The fail/warn policy that ties them together is Chapter 32.
+  # ---------------------------------------------------------------------------------------------------
+  dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"               # SOURCE-PIN anchor LTS (Java 21)
+      - name: Dependency vulnerability scan
+        run: mvn -B org.owasp:dependency-check-maven:check   # OWASP Dependency-Check 12.2.2 (SOURCE-PIN §4)
