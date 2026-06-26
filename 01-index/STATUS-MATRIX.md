@@ -8,7 +8,7 @@
 
 - **47/47 chapters** drafted (🟢 `draft`).
 - **39** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).
-- **12** need EXAMPLE-BUILD (FLOOR-C compile).
+- **9** need EXAMPLE-BUILD (FLOOR-C compile).
 - **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 42 in lift · 5 need an independent score · 0 approved (in 04-approved/).
 - **DRIFT: ✅ none**.
 
@@ -22,7 +22,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
 | 1 | 01 | What is code quality? | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
-| 2 | 03 | Readability, maintainability & measuring | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 2 | 03 | Readability, maintainability & measuring | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part I — Foundations** |  |  |  |  |  |  |  |  |  |  | |
 | 3 | 05 | The Java quality toolchain map | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
@@ -69,10 +69,10 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | | | **Part IX — CI/CD & Quality Gates** |  |  |  |  |  |  |  |  |  |  | |
 | 36 | 83 | Release quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
-| 37 | 84 | Code review, coding standards & documentation | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 37 | 84 | Code review, coding standards & documentation | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 38 | 85 | Metrics, dashboards & rolling out quality | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 39 | 91 | Refactoring, legacy code & modernization | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
-| 40 | 96 | Automated change & the remediation playbook | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 40 | 96 | Automated change & the remediation playbook | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 41 | 97 | Quality of AI-generated code & AI-assisted d… | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 42 | 100 | AI code review & governing AI in the workflow | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 43 | 101 | Performance as quality: profiling, memory & … | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |

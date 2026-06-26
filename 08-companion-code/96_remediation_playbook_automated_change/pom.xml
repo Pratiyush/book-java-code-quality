@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 40 companion (taming an inherited disaster — the ordered remediation playbook, and the
+    type-aware automation engine that scales the craft). The chapter is a synthesis, so the module makes
+    the two load-bearing claims runnable rather than asserted: (a) the ORDERED PLAYBOOK as data the test
+    walks (assess/baseline -> gate new -> safety net -> hotspot paydown -> strangle -> sustain), with the
+    prioritization rule (remediate by churn x pain; debt in frozen code accrues no interest) as a
+    runnable ranker the tests exercise; and (b) the AUTOMATION ENGINE — an OpenRewrite recipe
+    (config/rewrite/rewrite.yml) plus the before/after Java pair the recipe would transform, both
+    compiling green now. The printed config and the running config are one artifact.
+
+    The OpenRewrite recipe RUN is network-gated (the rewrite-maven-plugin and the recipe modules resolve
+    from the network, not the local cache), so it lives in an opt-in `rewrite` profile and is REPRO
+    PENDING-RUNTIME — the chapter's "automation proposes, tests dispose" point, honestly scoped. The
+    default build and the `quality` build need none of that: the prioritization logic, the playbook
+    model, and the before/after Java compile and test green offline.
+
+    The module is held to its own gates (the `quality` profile) and stays green BECAUSE the legacy
+    before-form is isolated in a `legacy` package the gate baselines, not because the code is empty of
+    debt — the chapter's whole point made executable. Runtime dependencies are JDK-only; the one extra
+    compile-path GAV is the SpotBugs annotations artifact, exactly as the Chapter 39 module does.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>remediation-playbook-automated-change</artifactId>
+  <name>Chapter 40 — Taming the Inherited Disaster (remediation-playbook-automated-change)</name>
+
+  <dependencies>
+    <!--
+      SpotBugs annotations (SOURCE-PIN.md: SpotBugs 4.10.2 line; this module builds against the locally
+      cached 4.9.3 engine the companion code is pinned to, so the annotations track that engine). Carries
+      @SuppressFBWarnings(value, justification) from edu.umd.cs.findbugs.annotations for the one reviewed
+      false positive at its site. CLASS-retained (SpotBugs reads bytecode), so `provided` keeps it on the
+      compile path only and the module's runtime stays JDK-only like the rest of the companion code.
+    -->
+    <dependency>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
+      <version>4.9.3</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <!--
+      The static-analysis gates, opt-in via `-Pquality` so the default build stays fast. Same shape as the
+      Chapter 39 module: Checkstyle (the source view) and SpotBugs (the bytecode view), each reading config
+      under this module's own config/ dir (self-contained). The maven-checkstyle-plugin ships an OLD bundled
+      engine (Checkstyle 9.3); the pinned house engine is pulled in as a plugin-level dependency (the
+      "two-pin" lesson — the build plugin and the analyzer engine are versioned separately).
+    -->
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Low</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!--
+      The automation engine, opt-in via `-Prewrite`. This wires the OpenRewrite Maven plugin at the pinned
+      version (SOURCE-PIN.md §6: OpenRewrite 8.81.0; rewrite-maven-plugin 6.38.0) and points it at the
+      declarative recipe under config/rewrite/rewrite.yml. It is DELIBERATELY NOT part of the default or
+      `quality` build: the plugin and the recipe modules resolve from the network, so a clean offline build
+      cannot run it. This is the chapter's honesty made structural — the recipe RUN is REPRO PENDING-RUNTIME,
+      while the recipe config, the before/after pair, and the prioritization logic are all verified offline.
+
+        Apply the recipe (writes the diff to review as a PR):  mvn -Prewrite rewrite:run
+        Preview without writing (dry run):                     mvn -Prewrite rewrite:dryRun
+
+      The recipe module GAV (rewrite-migrate-java) and the recipe IDs named in rewrite.yml are
+      verify-at-pin against docs.openrewrite.org at the pinned line — see the chapter's _EXAMPLE.md and the
+      09-flags/ note. Automation proposes; the tests and the review still dispose.
+    -->
+    <profile>
+      <id>rewrite</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.openrewrite.maven</groupId>
+            <artifactId>rewrite-maven-plugin</artifactId>
+            <version>6.38.0</version>
+            <configuration>
+              <configLocation>${project.basedir}/config/rewrite/rewrite.yml</configLocation>
+              <activeRecipes>
+                <recipe>org.acme.remediation.ModernizeForJava21</recipe>
+              </activeRecipes>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.openrewrite.recipe</groupId>
+                <artifactId>rewrite-migrate-java</artifactId>
+                <version>3.16.0</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

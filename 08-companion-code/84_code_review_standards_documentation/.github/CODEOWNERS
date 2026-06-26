@@ -1,0 +1,24 @@
+# CODEOWNERS for the Chapter 84 companion (the human side of quality).
+#
+# GitHub reads this file to decide who is automatically requested for review on a pull request, by path.
+# It is the mechanical half of "who reviews what": the routing is automated so the right reviewer is
+# pulled in without a human remembering to add them. It does NOT decide whether the review is any good --
+# that is the substantive human act the rest of this chapter is about. A CODEOWNERS entry guarantees a
+# reviewer is REQUESTED, never that they read the change.
+#
+# Syntax: a path pattern, then one or more owners (@user or @org/team). The LAST matching pattern wins,
+# so order is specific-last. These are illustrative owner handles for the book, not real accounts.
+
+# Default: everything is owned by the platform team unless a more specific rule below claims it.
+*                                   @acme/platform-team
+
+# tag::codeowners-rule[]
+# The contract surface (public API) and the decision log get a stricter owner: changes here need a
+# reviewer who owns the contract callers depend on and the rationale future teams will read.
+/src/main/java/org/acme/review/     @acme/api-stewards
+/docs/adr/                          @acme/architecture-council
+# end::codeowners-rule[]
+
+# The standard itself (the formatter config, the Checkstyle ruleset) is owned by the team that maintains
+# the gate, so a change to the shared standard is reviewed deliberately rather than slipped in.
+/config/                            @acme/platform-team

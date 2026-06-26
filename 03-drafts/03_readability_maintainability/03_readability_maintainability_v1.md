@@ -2,9 +2,9 @@
 Dossier key: 03 (owner) + folds 04, 58 — per 01-index/FINAL_INDEX.md Ch 2
 Slug: 03_readability_maintainability
 Part / arc position: Part I — Foundations, Chapter 2
-Companion module: 08-companion-code/03_readability_maintainability/ — ⚠ EXAMPLE-BUILD = PENDING-RUNTIME (no JDK). Spec at foot.
+Companion module: 08-companion-code/03_readability_maintainability/ — EXAMPLE-BUILD = GREEN (mvn -B -Pquality verify; JDK 21.0.11 / Maven 3.9.16). Spec at foot.
 Verified against SOURCE-PIN: 2026-06-20 (Clean Code; A Philosophy of Software Design; SonarSource Cognitive Complexity; McCabe 1976; CK metrics; Goodhart; DORA/SPACE; java:S3776). ⚠ contested-practice chapter — NEUTRALITY balance.
-DRAFT v1 — gates manual (cheaper mode); EXAMPLE-BUILD pending JDK.
+DRAFT v1 — gates manual (cheaper mode); EXAMPLE-BUILD green (3 tag-includes wired).
 -->
 
 # The Number That Lies
@@ -116,6 +116,20 @@ Complexity is the most directly *gate-able* readability proxy, so it is where di
 - Pick the metric that matches the question: cyclomatic for "how many tests," cognitive for "how readable." Gating the wrong one misleads.
 
 > **WARNING** Splitting a method purely to dodge a complexity threshold can *raise* coupling and *lower* readability. That is Goodhart in miniature. Low cognitive complexity with terrible names is still unreadable.
+
+The companion module makes the gap concrete: one discount rule written three ways, all returning the identical result. The deeply-nested form scores high on cognitive complexity, because the metric increments more for nesting — though its branch count, and so its cyclomatic score, matches the others:
+
+<!-- include: 03_readability_maintainability/src/main/java/org/acme/readability/DiscountRulesNested.java#smell-nested -->
+
+Splitting the same logic into many one-line methods lowers the per-method number, but following one idea now means hopping between fragments — the cost the second school names:
+
+<!-- include: 03_readability_maintainability/src/main/java/org/acme/readability/DiscountRulesFragmented.java#smell-fragmented -->
+
+The balanced form flattens the nesting into guard clauses and keeps the logic in one readable body, the tier carrying its own discount:
+
+<!-- include: 03_readability_maintainability/src/main/java/org/acme/readability/DiscountRules.java#refactor-balanced -->
+
+A behaviour-preservation test drives all three across every tier and the floor and cap boundaries and asserts they agree — the cognitive score changed, the result did not. The house Checkstyle/SpotBugs gate measures neither method length nor complexity, so it flags none of the three: different tools measure different things. Snippet tags: `smell-nested`, `smell-fragmented`, `refactor-balanced`.
 
 ### The contested zone — two reputable schools
 

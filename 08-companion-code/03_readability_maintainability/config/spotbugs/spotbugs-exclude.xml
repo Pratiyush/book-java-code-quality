@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    No suppressions (Chapter 16: suppress with a reason, never disable a whole detector).
+
+    This module's deliberate counter-examples are METRIC smells, not bytecode bugs: a deeply-nested
+    method (DiscountRulesNested) and an over-fragmented one (DiscountRulesFragmented) are shapes Sonar
+    java:S3776 (cognitive complexity) and PMD measure, while SpotBugs is a bytecode bug-finder that does
+    not score complexity. All three forms compute the same correct result, so every class stays clean
+    under SpotBugs at this module's threshold and the filter is empty by design. The detectors are left
+    fully enabled; the cognitive cost of the nested form is shown by its score and the behaviour-
+    preservation test, not held quiet by a suppression. Different tools see different smells — the
+    chapter's point, shown rather than asserted (the same boundary the Chapter 19 module draws from the
+    other side, where a real bytecode bug IS flagged).
+  -->
+</FindBugsFilter>

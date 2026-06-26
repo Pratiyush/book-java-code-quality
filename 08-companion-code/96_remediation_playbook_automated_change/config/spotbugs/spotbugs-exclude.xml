@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    The SpotBugs baseline (Chapter 40, the playbook's "freeze the past" step). A SpotBugs excludeFilterFile
+    excludes any finding matched by a <Match> from the report, so a <Match> scoped to the legacy package
+    freezes a pre-existing finding without freezing anything else. This is the precondition for turning a
+    gate on over an inherited codebase at all: the build goes green not because the debt is gone, but
+    because the past is frozen and only NEW findings can fail it — the ratchet.
+
+    The honest edge the chapter names: a baseline that freezes a finding also freezes any real bug hiding
+    behind the same match, and the team stops seeing it. A real match is therefore kept as narrow as the
+    bug pattern allows and version-controlled here so it shows up in PRs and can be reviewed and
+    periodically retired — debt about debt, not a place to hide findings.
+
+    This module's before/after pair is written so the modernization is the visible debt rather than a
+    SpotBugs finding, so the filter carries no <Match> rows: the mechanism is wired and inert, the exact
+    place the legacy package would be frozen. A frozen row would read, for example:
+
+      <Match>
+        <Package name="org.acme.remediation.legacy"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+      </Match>
+  -->
+</FindBugsFilter>
