@@ -63,6 +63,22 @@ The organizing principle (from Chapter 3) is **layering**: each tool covers a *d
 
 The whole core can be stood up **all-OSS, no commercial spend** (SonarQube Community plus the OSS analyzers), with paid options noted where they add value. Budget is a real constraint, and quality should not be gated behind a purchase order.
 
+In the reference project, the layers are an ordered list of distinct concerns, each carrying the alternative that swaps in for it:
+
+<!-- include: 109_reference_quality_stack_gate/src/main/java/org/acme/refstack/ReferenceStack.java#reference-stack -->
+
+The style layer wires the build plugin and the pinned analyzer engine as two separate versions — the small "two-pin" detail that keeps the engine version under the team's control rather than the plugin's:
+
+<!-- include: 109_reference_quality_stack_gate/pom.xml#checkstyle-two-pin -->
+
+The format layer is the same shape, scoped to changed files so it is adoptable on a legacy tree without rewriting it all at once:
+
+<!-- include: 109_reference_quality_stack_gate/config/spotless/spotless-reference.xml#spotless-reference -->
+
+The coverage layer gates on branch coverage rather than line coverage, because a line counts as covered when a single instruction on it runs:
+
+<!-- include: 109_reference_quality_stack_gate/pom.xml#jacoco-gate -->
+
 ### The gate design: a feedback-latency ladder
 
 The stack is *what* runs; the gate is *when and where* it runs, and the design principle is the feedback-latency ladder (Chapter 35): push each check to the earliest, fastest stage that can run it, so feedback is fast and the slow checks do not block every push.
@@ -71,9 +87,21 @@ The stack is *what* runs; the gate is *when and where* it runs, and the design p
 
 The two design choices that make this *adoptable* are the gate ordering (fast feedback keeps developers from waiting, Chapter 33) and the **new-code focus** (clean-as-you-code, Chapter 34): the gate blocks on the quality of what the team *touches*, so the stack can be turned on a legacy codebase without a wall of forty thousand findings (the adoption playbook, Chapters 38, 40). That single choice is what turns this from a greenfield ideal into something a real team with real legacy can adopt next week.
 
+Those choices are not compiled in; they are an externalized ladder a team tailors per profile — which stage to enforce from, whether to scope to new code, and the severity that blocks:
+
+<!-- include: 109_reference_quality_stack_gate/src/main/java/org/acme/refstack/GateLadder.java#gate-ladder -->
+
 ### The capstone module: the stack, realized
 
 > **CONCEPT** *The reference project — the stack wired end-to-end, built green.* This chapter's companion is the book's one full reference project: a real multi-module Java application with the *entire* stack wired in and the CI gate configured — the single place the book shows full-file listings and cross-module wiring rather than isolated snippets, because the value here is precisely how the pieces *compose*. It builds green with `./mvnw -B verify` and passes CI on the pinned JDK (21, with the 25 matrix), and it passes the same code-review bar as every other example in the book. The runnable checkout/payment module developed earlier in the book is its seed; the capstone is that seed grown to carry the whole stack. The recommendation is concrete: read the actual `pom.xml`, the actual gate config, the actual ArchUnit rules, and see how format, analysis, tests, security, and the platform gate fit together in one coherent build — then fork it as a starting point.
+
+Where the layers and the ladder meet is one composed verdict the merge check reads — ship, or not:
+
+<!-- include: 109_reference_quality_stack_gate/src/main/java/org/acme/refstack/ShipVerdict.java#ship-verdict -->
+
+The gate reaches that verdict by applying the ladder's three axes in order — enforced stage, new-code scope, block severity — across every stage's outcome:
+
+<!-- include: 109_reference_quality_stack_gate/src/main/java/org/acme/refstack/ReferenceGate.java#compose-verdict -->
 
 ## Deep dive: the one recommendation, and why it is still neutral
 
@@ -123,6 +151,8 @@ This chapter answered "what do I set up?" with a concrete stack and a runnable r
 - **Routing** — layering → Ch 3 (37); build/pin → Ch 27/29 (62/67); format → Ch 6 (34/86); Checkstyle/PMD → Ch 16 (27/28); Error Prone → Ch 18 (30); SpotBugs → Ch 16 (29); null-safety → Ch 9 (31/32); ArchUnit → Ch 16/25 (33/55); tests/coverage/mutation → Part V; SCA/SBOM/secrets/SAST → Ch 28/30/31 (65/66/70/71); Sonar/clean-as-you-code → Ch 17/33/34 (35/76/80); gate/feedback-ladder → Ch 33/35 (75/76/79/81/82); FP tuning → Ch 19 (39); incremental adoption → Ch 38/40 (87); review/culture → Ch 37/Ch 1 (84/06); maturity/roadmap → Ch 47 (110). SOURCE-PIN: all Part IV-IX tool rows + companion reference project; every atom re-traced at /pin-source.
 
 **Companion module (THE CAPSTONE — rule-4 exception: full-file listings + cross-module wiring; ⚠ EXAMPLE-BUILD = PARTIAL — storefront-checkout Stage 1-3 green this session (Checkstyle 0 + SpotBugs 0), full-stack assembly PENDING):** the book's one full reference project — a real multi-module Java application (the storefront-checkout module is the realized seed) with the *entire* stack wired end-to-end + the CI gate. Shows full `pom.xml` (aggregator + module: pinned runtime once, BOM import, pinned plugins), the gate config across all four stages, the Checkstyle/SpotBugs/Error Prone/NullAway/ArchUnit/JaCoCo/PITest/SCA/secrets/Sonar wiring, and cross-module structure. Builds green `./mvnw -B verify` + CI on JDK 21 (matrix 25); passes CODE-REVIEW like any module. **Honest edges (comments):** this is *one defensible setup*, not *the* setup (every pick has a named alternative); it's all-OSS-capable; it's adopted incrementally (the gate is new-code-focused for legacy); the stack is code to own (build time, FP tuning, maintenance); and — stamped — a green build proves the stack composes, not that the design is good (tools are scaffolding; Ch 37/Ch 1 decide quality). Demonstrates the-layered-de-duplicated-stack + the-gate-as-a-feedback-latency-ladder + recommend-as-worked-example-not-verdict.
+
+**Snippet tags:** `reference-stack` (`src/main/java/org/acme/refstack/ReferenceStack.java`); `checkstyle-two-pin`, `jacoco-gate` (`pom.xml`); `spotless-reference` (`config/spotless/spotless-reference.xml`); `gate-ladder` (`src/main/java/org/acme/refstack/GateLadder.java`); `ship-verdict` (`src/main/java/org/acme/refstack/ShipVerdict.java`); `compose-verdict` (`src/main/java/org/acme/refstack/ReferenceGate.java`) — 7 tags, each ≤9 displayed lines (3/9/5/9/5/7/9), all bound into the prose above via tag-include markers and verified green by `check_snippets.sh`. Module `08-companion-code/109_reference_quality_stack_gate/` builds green via `mvn -B -Pquality verify` on JDK 21 (the build-side core stack — compiler + Checkstyle + SpotBugs + JaCoCo branch gate — plus the runnable gate-composition that ties the four stages into one ship/no-ship verdict; the format layer is a reference config pending the Spotless Maven-plugin re-pin, and the wider full-stack wiring — Error Prone, NullAway, ArchUnit, PITest, SCA, secrets, Sonar — stays a future capstone expansion).
 
 ## Next chapter teaser
 

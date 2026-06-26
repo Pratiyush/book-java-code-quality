@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 39 companion (Changing Code Without Breaking It). Puts the chapter's one invariant —
+    preserve behaviour, verify with tests, move in small steps — into one buildable module at two of
+    the four scales it teaches. A LegacyShippingCalculator news up its own rate source and clock, so it
+    cannot be tested as written (Feathers: legacy code is code without tests). An EXTRACT INTERFACE
+    seam (RateTable) lets a test double slot in without editing the call site, and a characterization
+    test pins the legacy method's CURRENT behaviour — including a faithfully-preserved rounding quirk —
+    before anything changes. ShippingCalculator is then the modernized refactor: the same behaviour
+    expressed with a record, a sealed Quote hierarchy + pattern-matching switch, Optional, and streams
+    (the modern-Java idioms that supersede some 2018-era manual catalog steps). A behaviour-preservation
+    test proves the refactor changes structure, not results, for every parcel. The StranglerRouter is a
+    routing façade that sends each request to the legacy or the modern path behind a flag — the system
+    scale's incremental cutover sketched small, with a test driving both routes and the rollback. Zero
+    runtime dependencies — JDK only — so it dogfoods the book and builds fast and green. The contracts
+    are machine-checked by the `quality` profile (Checkstyle + SpotBugs, Chapter 16).
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>refactoring-legacy-modernization</artifactId>
+  <name>Chapter 39 — Changing Code Without Breaking It (refactoring-legacy-modernization)</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The maven-checkstyle-plugin ships an OLD bundled engine (Checkstyle 9.3); we override it to
+    the pinned engine via a plugin-level dependency — the "two-pin" lesson (the build plugin and the
+    analyzer engine are separate versions). This module is a direct child of the companion-code root,
+    which pins no quality profile of its own, so the profile is declared here (the same shape the
+    Chapter 19 and Chapter 09 modules use) and reads the config under this module's config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16) — complementary to Checkstyle's source
+            view. This module ships ONE deliberate legacy counter-example (LegacyShippingCalculator)
+            whose representation-exposure finding is part of the teaching point: the legacy class hands
+            back its internal mutable list of applied surcharges, the kind of latent leak the
+            modernized refactor closes with an immutable snapshot. So the exclude filter carries one
+            narrowly-scoped, reasoned suppression (the leaked surcharge list on the legacy type). That
+            is the chapter's own "suppress with a documented reason, never disable a detector"
+            discipline (Chapter 16) made concrete — not a way to hide a real defect; the modern
+            ShippingCalculator carries no such finding.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

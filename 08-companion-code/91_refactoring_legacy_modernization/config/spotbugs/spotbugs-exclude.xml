@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    Reviewed suppressions (Chapter 16: suppress with a reason, never disable a whole detector).
+
+    This module ships ONE deliberate legacy counter-example whose contract violations ARE the lesson,
+    so the characterization and behaviour-preservation tests can prove the refactoring the prose
+    describes rather than merely assert it. The detectors are left fully ENABLED for the rest of the
+    module (the modern ShippingCalculator, the value types, the sealed Quote hierarchy, the strangler
+    router all stay clean); only the named legacy class carries findings, suppressed narrowly, with a
+    reason, and pointed at the tests that demonstrate why they matter. Refactoring the class — which
+    ShippingCalculator already does — is the real advice; the suppression exists only so the teaching
+    counter-example can ship green.
+  -->
+
+  <!--
+    LegacyShippingCalculator hands its internal mutable surcharge list back from appliedSurcharges(),
+    so a caller can mutate the calculator's state through the returned reference — the kind of
+    representation-exposure leak the modern refactor closes with an immutable snapshot. At this module's
+    threshold SpotBugs raises EI_EXPOSE_REP on the accessor; EI_EXPOSE_REP2 (the store-side pattern) is
+    matched too in case a stricter threshold raises it. Proven by
+    SafeChangeTest#legacyCalculatorLeaksItsInternalSurchargeList. The fix is the unmodifiable snapshot in
+    ShippingCalculator (List.of / List.copyOf), never this suppression.
+  -->
+  <Match>
+    <Class name="org.acme.refactoring.LegacyShippingCalculator"/>
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+  </Match>
+</FindBugsFilter>

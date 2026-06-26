@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 3 companion (A Map of the Territory). The chapter is the map; this module is the map made
+    concrete and the seed of the book's companion reference project (Chapter 46). Its load-bearing
+    artifact is THIS pom.xml: it assembles the layered LOCAL quality toolchain the chapter describes into
+    ONE build — the compiler held to -Xlint:all -Werror (author/compile moment), then Checkstyle reading
+    source, SpotBugs reading bytecode, and JaCoCo over the test run (build / CI moment). The two-axis
+    point of the chapter — different layers read the program at different moments and see different things
+    — is therefore demonstrated in the build, not only stated in prose. The small org.acme.toolchain
+    package exists so each layer gates something real; the module is written to pass its own gate.
+
+    Profile split (the same shape the peer modules 27 / 62 / 75 use): the compiler floor runs in the
+    DEFAULT build so every build is held to -Werror; the heavier analyzers are opt-in via -Pquality so
+    the default build stays fast (Chapter 16 ordering: cheap checks first). Configs are externalized
+    under this module's own config/ dir, so the module is self-contained.
+
+    SOURCE-PIN trace + the version splits this chapter inherits from its peers:
+      - Java runtime: anchor JDK 21 (SOURCE-PIN runtime baseline) — inherited from the aggregator.
+      - Checkstyle: maven-checkstyle-plugin (build plugin) and the Checkstyle ENGINE are pinned
+        SEPARATELY (the book's "two-pin" lesson). SOURCE-PIN §2 pins the Checkstyle engine line at
+        13.6.0; this module builds against engine 10.26.1 to match its proven-green peers (27 / 62 / 75)
+        on the cached toolchain — recorded in 09-flags/05_toolchain_plugin_versions.md.
+      - SpotBugs: SOURCE-PIN §2 pins the SpotBugs line at 4.10.2; this module builds against the
+        spotbugs-maven-plugin 4.9.3.0 + engine 4.9.3 its peers are pinned to — same flag.
+      - JaCoCo: SOURCE-PIN §3 pins 0.8.16, which is unpublished on Maven Central (404). This module
+        builds against 0.8.15, the real latest, exactly as the Chapter 48 module does — see the existing
+        09-flags/48_jacoco_pin_0816_unpublished.md.
+      - The maven-*-plugin version literals for the analyzers are NOT pinned as separate rows in
+        SOURCE-PIN (only the engines / project lines are). They are held as named properties and flagged,
+        the same pattern as 09-flags/62_enforcer_versions_plugin_versions_unpinned.md.
+      - Spotless: SOURCE-PIN "Spotless 8.7.0" is the project/Gradle line and does not resolve as a
+        Maven-plugin coordinate (09-flags/34_spotless_maven_plugin_version_unresolved.md). Following the
+        Chapter 6 precedent, the formatter layer is shown as a REFERENCE configuration in
+        config/spotless/spotless-reference.xml (the `formatter` snippet, google-java-format pinned to the
+        resolvable 1.35.0) rather than wired live; the green build does not depend on it.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>java-quality-toolchain</artifactId>
+  <name>Chapter 3 — A Map of the Territory (java-quality-toolchain)</name>
+
+  <properties>
+    <!--
+      Analyzer build-plugin + engine version literals. SOURCE-PIN pins the engines / project lines, not
+      these specific maven-plugin coordinates, so they live here as named properties (one edit re-pins
+      each once the SOURCE-PIN rows are split) and are flagged in 09-flags/05_toolchain_plugin_versions.md.
+      The engine values match the proven-green peer modules on the cached toolchain.
+    -->
+    <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
+    <checkstyle.engine.version>10.26.1</checkstyle.engine.version>
+    <spotbugs.plugin.version>4.9.3.0</spotbugs.plugin.version>
+    <jacoco.version>0.8.15</jacoco.version>
+  </properties>
+
+  <dependencies>
+    <!--
+      JDK-only at runtime: the domain seed is plain Java, and the toolchain runs in the build, not as a
+      runtime dependency. The test libraries are the only additions, and their versions are inherited
+      from the companion-code aggregator's dependencyManagement — no version literal lives in this module.
+    -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!--
+        The compiler is the first and cheapest quality layer (Chapter 4, shift-left). It runs in every
+        build: -Xlint:all turns on the full set of javac warnings, and -Werror promotes them to errors so
+        a warning cannot accumulate unnoticed. -processing is excluded only to keep annotation-processor
+        notes (here, the test libraries') from being fatal; every code-level lint stays on and fatal. The
+        compiler version + base -Xlint config are inherited from the aggregator; -Werror is added here so
+        the chapter can show the failure-promoting flag as a self-contained region.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <!-- tag::compiler-flags[] -->
+          <compilerArgs>
+            <arg>-Xlint:all,-processing</arg> <!-- turn on every javac warning... -->
+            <arg>-Werror</arg>                <!-- ...and make any warning fail the build -->
+          </compilerArgs>
+          <!-- end::compiler-flags[] -->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!--
+    The heavier analysis layers, opt-in via -Pquality so the default build stays fast (Chapter 16: cheap
+    checks first, heavier analysis later). This is the map's "build / CI moment" column made runnable:
+    Checkstyle reads source, SpotBugs reads bytecode, JaCoCo measures the test run — three different
+    vantage points on the same module, which is the chapter's whole point.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <!--
+            Checkstyle — the SOURCE vantage point (Chapter 16). The maven-checkstyle-plugin ships an OLD
+            bundled engine; it is overridden to the pinned house engine via a plugin-level dependency, so
+            the build plugin and the analyzer engine are pinned separately (the two-pin lesson). The
+            ruleset is externalized under this module's config/ dir.
+          -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>${checkstyle.plugin.version}</version>
+            <!-- tag::checkstyle-wire[] -->
+            <dependencies>
+              <dependency> <!-- override the plugin's bundled engine: pin it separately -->
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>${checkstyle.engine.version}</version>
+              </dependency>
+            </dependencies>
+            <!-- end::checkstyle-wire[] -->
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!--
+            SpotBugs — the BYTECODE vantage point (Chapter 16), complementary to Checkstyle's source view:
+            it sees what the compiler actually produced. effort=Max / threshold=Medium is the house
+            setting. The module's types keep the representation-exposure detectors quiet on their own
+            merits (integer-cent money, a defensive copy in Cart), so the exclude filter is empty; a
+            genuine reviewed false positive would go there narrowly, with a reason, never by disabling a
+            detector wholesale.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>${spotbugs.plugin.version}</version>
+            <!-- tag::spotbugs-wire[] -->
+            <configuration>
+              <effort>Max</effort>                 <!-- deepest analysis -->
+              <threshold>Medium</threshold>        <!-- report Medium-confidence findings and up -->
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <!-- end::spotbugs-wire[] -->
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!--
+            JaCoCo — test adequacy (Chapter 23), the coverage layer. prepare-agent sets the argLine
+            Surefire consumes, so tests run under the coverage agent; report writes the HTML/XML report
+            (this profile's observability surface). No coverage THRESHOLD is gated here on purpose: this
+            is the map chapter, and a coverage number gated as a pass/fail bar belongs to its own chapter
+            (Chapter 23), where the "coverage is necessary, not sufficient" limitation is argued in full.
+          -->
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.version}</version>
+            <!-- tag::coverage-wire[] -->
+            <executions> <!-- run tests under the coverage agent, then write the report -->
+              <execution><id>agent</id>
+                <goals><goal>prepare-agent</goal></goals></execution>
+              <execution><id>report</id><phase>verify</phase>
+                <goals><goal>report</goal></goals></execution>
+            </executions>
+            <!-- end::coverage-wire[] -->
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

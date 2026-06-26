@@ -20,6 +20,7 @@
   <modules>
     <module>storefront-checkout</module>
     <module>03_readability_maintainability</module>
+    <module>05_java_quality_toolchain</module>
     <module>07_naming_structure_formatting</module>
     <module>08_effective_java</module>
     <module>09_api_method_contracts</module>
@@ -52,10 +53,12 @@
     <module>81_branch_protection_precommit_parity</module>
     <module>83_release_quality</module>
     <module>84_code_review_standards_documentation</module>
+    <module>91_refactoring_legacy_modernization</module>
     <module>96_remediation_playbook_automated_change</module>
     <module>101_performance_profiling_memory_benchmarking</module>
     <module>105_performance_regression_gates</module>
     <module>106_observability_logging_metrics_feedback</module>
+    <module>109_reference_quality_stack_gate</module>
     <module>capstones</module>
   </modules>
 

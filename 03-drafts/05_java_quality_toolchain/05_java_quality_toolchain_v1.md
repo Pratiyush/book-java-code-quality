@@ -89,6 +89,26 @@ Three distinctions explain the apparent redundancy, and a senior reader should h
 
 The map becomes a build through Maven or Gradle plugins (`maven-checkstyle-plugin`, `spotbugs-maven-plugin`, `spotless-maven-plugin`, `jacoco-maven-plugin`, and Gradle equivalents). **Ordering matters:** fast, cheap checks first (format, fast linters to fail fast), heavier analysis (SpotBugs, Sonar) later, coverage and mutation gates near the end (Chapters 33, 34). The same checks run at pre-commit (Chapter 35) and in CI (Chapter 34) so developers are not surprised at the gate.
 
+The companion module assembles that order in one build. The cheapest layer is the compiler itself, held to every warning and made fatal:
+
+<!-- include: 05_java_quality_toolchain/pom.xml#compiler-flags -->
+
+A formatter runs next, pinned so its rendering does not drift and applied only to changed files:
+
+<!-- include: 05_java_quality_toolchain/config/spotless/spotless-reference.xml#formatter -->
+
+Then the analyzers, each at its own vantage point — Checkstyle on source (its engine pinned separately from the plugin, the two-pin split):
+
+<!-- include: 05_java_quality_toolchain/pom.xml#checkstyle-wire -->
+
+SpotBugs on the compiled bytecode:
+
+<!-- include: 05_java_quality_toolchain/pom.xml#spotbugs-wire -->
+
+And coverage over the test run, last:
+
+<!-- include: 05_java_quality_toolchain/pom.xml#coverage-wire -->
+
 > **Trace it back.** Every tool named here resolves to a pinned row in `SOURCE-PIN.md` (versions dated 2026-06-20); the source/bytecode/compile-time placements trace to each tool's own docs. This is a map chapter, so the do-and-verify beat is: open `SOURCE-PIN.md` and confirm each tool's pinned version before you reach for it.
 
 ## Deep dive
@@ -147,6 +167,8 @@ The territory is mapped. Tools only stick in a team that wants them, and quality
 
 - Tool inventory + pinned versions: `00-strategy/SOURCE-PIN.md` (dated 2026-06-20). Maven/Gradle plugin GAVs: Chapters 16, 27.
 - Dead → current: FindBugs → SpotBugs; `findbugs-maven-plugin` → `spotbugs-maven-plugin`.
+
+**Companion module (built — EXAMPLE-BUILD green at JDK 21.0.11, `mvn -B -Pquality verify` SUCCESS; 4 tests pass, 0 Checkstyle violations, 0 SpotBugs findings, JaCoCo report written):** `08-companion-code/05_java_quality_toolchain/` — the map made concrete and the seed of the companion reference project (Chapter 46). One Maven build assembles the layered local toolchain: the compiler held to `-Xlint:all -Werror` in the default build (the cheapest layer), and Checkstyle (source), SpotBugs (bytecode) and JaCoCo (coverage) in the opt-in `-Pquality` profile (cheap checks first, heavier analysis later). The displayed snippets are tag regions inside that build: the compiler flags, the two-pin Checkstyle engine override, the SpotBugs configuration, and the JaCoCo executions live in `pom.xml`; the formatter layer is shown as a reference configuration in `config/spotless/spotless-reference.xml` (Spotless + google-java-format `1.35.0`, not wired live — the pinned `Spotless 8.7.0` is the project/Gradle line and does not resolve as a Maven-plugin coordinate; see `09-flags/34`). The small `org.acme.toolchain` package (`LineItem`, `Cart`) gives each layer something real to read and the module passes its own gate. **Failure path:** `LineItem` rejects a blank SKU, a negative price, or a non-positive quantity at construction; **observability:** `Cart.size()` is the headline metric and `Cart.isReady()` a readiness probe, with the JaCoCo report the coverage surface. Analyzer plugin/engine versions track the proven-green peer modules and are flagged where they differ from `SOURCE-PIN.md` (`09-flags/05_toolchain_plugin_versions.md`). Snippet tags: `compiler-flags`, `formatter`, `checkstyle-wire`, `spotbugs-wire`, `coverage-wire`.
 
 **Sources and further reading**
 
