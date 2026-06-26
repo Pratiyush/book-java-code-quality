@@ -1612,3 +1612,91 @@ long monospace identifiers; use the column-card layout only for short labels.
   over the wider import while the clean package stays green — plus a test that the reflective inspector is
   silent on a `double` reached through an erased generic (the "each rule sees only its own artifact" limit,
   in code). Generalizes the key-55 "seed the breach, assert it is reported" discipline.
+
+## 2026-06-26 — EXAMPLE-BUILD (key 106, observability — logging/metrics/feedback)
+- **Trigger:** built `08-companion-code/106_observability_logging_metrics_feedback/`; `mvn -B -Pquality verify`
+  GREEN on JDK 21.0.11 (6 tests, 0 Checkstyle, 0 SpotBugs); 7/7 snippet tags resolve and are bound.
+- **Lessons:**
+  1. **Observability cluster (106/107/108) hits the same unpinned-tool fork as concurrency (jcstress).**
+     SLF4J, Micrometer, OpenTelemetry are the chapter's named standards but are **not `SOURCE-PIN.md` rows**
+     (§7 canon TO-PIN). A pin-clean module shows the *facade shape* on JDK primitives: `java.lang.System.Logger`
+     for structured/leveled/parameterized logging (has `Level.getSeverity()` for a threshold gate + a
+     parameterized `log(level, msg, params)` form; already used in module 09), `LongAdder`/`AtomicLong` for a
+     counter+timer registry (mirrors shared-platform `org.acme.platform.obs.Metrics`), and a small `ThreadLocal`
+     correlation context to fill `System.Logger`'s one gap vs SLF4J (no MDC). Flagged to `09-flags/` for
+     SOURCE-VERIFY. **Decide once for the cluster:** add SLF4J/Micrometer/OTel pin rows (would strengthen the
+     Ch 46 capstone) OR record in EXAMPLES-GUIDE that observability modules teach the facade *pattern* on the JDK.
+  2. **"Incident → failing test → fix" reads best as a guard + regression-test pair with a comment naming the
+     escape** (a non-positive checkout amount that "reached payment"; the guard is the fix, `zeroAmountOrderIsRejected`
+     is the failing test now in the suite). Makes a shift-right chapter's central claim demonstrable, not asserted.
+  3. **`HealthGauge` + an SLO error-budget property is a compact "alert on burn, not blips" demo** with no
+     alerting infra: the budget lives in the externalized dev/prod profile (looser in dev, tighter in prod),
+     doubling as the externalized-config requirement. Reusable for the capstone health surface.
+- **Verdict:** FLOOR C PASS — build green on the pin, zero invented atoms, no version asserted for an unpinned
+  tool, all snippets ≤9 lines.
+- **Promoted to:** not yet — propose the cluster-level SOURCE-PIN decision (observability facades) + an
+  EXAMPLES-GUIDE note (prefer `System.Logger` for logging snippets; the incident→test pair pattern).
+
+---
+
+## EXAMPLE-BUILD — Chapter 48 (coverage vs mutation effectiveness) — 2026-06-26
+
+- **Context:** Built `08-companion-code/48_coverage_mutation_effectiveness/` — one `Discount.apply`
+  method (boundary + arithmetic + early return) under both JaCoCo (coverage, default `verify`) and
+  PITest (mutation, `pitest` profile). `mvn -B -Pquality verify` → BUILD SUCCESS, 12 tests, BRANCH
+  gate met, 0 Checkstyle / 0 SpotBugs; 4 snippets bound, check_snippets all PASS.
+- **Learning — a pinned version can be AHEAD of the authority's real release channel.** SOURCE-PIN.md
+  §3 pins JaCoCo **0.8.16**, but only **0.8.15** is published (0.8.16 = 404 on Maven Central). Resolved
+  by verifying the pin against Central metadata, building on the nearest real version (0.8.15, which
+  covers JDK 21/25), and flagging `09-flags/48_jacoco_pin_0816_unpublished.md` for a deliberate re-pin —
+  never invent the unpublished artifact, never silently substitute. Sibling of the "no version from
+  memory" rule, extended to "a pinned version is itself a claim to verify against the release channel."
+- **Learning — metric-chapter failure path = scope the gate to the weak test.** "A covered line can be
+  untested" is made tactile by one method + weak/strong tests in one GREEN module, with the failure
+  reproduced on demand by scoping the mutation run (`-DtargetTests=...WeakTest`: 15 mutations, 5 killed
+  = 33%, gate fails) while the default build stays green (full suite 87%). Reuse for any
+  necessary-not-sufficient pairing (coverage 48; MI 04).
+- **Learning — keep the demonstrated gate honest: delete dead code, don't relax the threshold.** An
+  unused `Money.times` left permanent uncovered branches; removing it let the BRANCH gate stay at a
+  strict `MISSEDCOUNT max 0` rather than being loosened for code nothing calls.
+- **Learning — `pitest-junit5-plugin` is a real setup-trap atom and belongs in SOURCE-PIN.md.** Required
+  for Jupiter; the build proved it works (7 tests examined, not the silent no-coverage failure). Its
+  version (1.2.3) was left implicit in the pin — flagged `09-flags/48_pitest_junit5_plugin_matrix_verify_at_pin.md`.
+- **Promoted to:** propose a `/pin-source` post-check that resolves each pinned GAV against Central
+  metadata (catch phantom versions before a chapter prints them); propose pinning `pitest-junit5-plugin`
+  explicitly in SOURCE-PIN.md §3 alongside PITest.
+
+## EXAMPLE-BUILD — Chapter 45 (`45_integration_property_based_testing`) — 2026-06-26
+
+- **Context:** Built `08-companion-code/45_integration_property_based_testing/` — a storefront-catalog
+  domain realizing the chapter's two techniques: integration against a real collaborator (a `CatalogApi`
+  HTTP service on the JDK's `HttpServer` driven by a real `CatalogClient`/`HttpClient` in-JVM on an
+  ephemeral port) and property-based testing (a `parse(format(x))==x` round-trip over a seeded JDK
+  generator + a shrinker). `mvn -B -Pquality verify` → BUILD SUCCESS, 217 tests, 0 Checkstyle / 0
+  SpotBugs, warning-clean under `-Xlint:all`; 4 snippets bound, check_snippets all PASS.
+- **Learning — "pinned ≠ must-be-compiled."** Both named tools (Testcontainers 2.0.5, jqwik 1.10.1) ARE
+  SOURCE-PIN rows, yet compiling either violates a harder floor: Testcontainers needs a Docker runtime
+  (no green build on a Docker-less runner — FLOOR C wants green on the baseline), and jqwik is off the
+  aggregator BOM and in maintenance mode. Resolution: realize the *technique* with the pinned JDK stack,
+  cite each tool crown-none in prose with every fact traced to its own pinned docs, and flag both
+  cited-not-built (`09-flags/45_testcontainers_docker_gated_not_built.md`,
+  `09-flags/45_jqwik_cited_not_built.md`). A red/skipped build off the happy environment is worse than a
+  faithful pinned-stack realization plus an honest flag.
+- **Learning — in-JVM ephemeral-port HTTP is the standalone realization of "integration against a real
+  collaborator."** The capstones' `*IntegrationTest` reuse `shared-platform`'s `HttpApp`; a standalone
+  numbered module (no cross-module imports) can author a small `CatalogApi`/`CatalogClient` on the JDK's
+  `HttpServer`/`HttpClient` for the same real-wire fidelity (encoding + status mapping + parse) with zero
+  runtime dependency. Worth surfacing in `DEMO-CATALOG` so integration chapters reuse the shape rather
+  than reaching for Testcontainers by default.
+- **Learning — the "kept-green failure path" pattern generalizes to PBT.** Key-42 kept the over-mock
+  smell green by asserting the guard fires; key-45 keeps the property's deliberately-seeded bug green by
+  asserting the shrinker reports the minimal counterexample (`1000`). Reusable for any "this technique
+  finds a failure" chapter: assert the catching mechanism, don't redden the build.
+- **Learning — `System.Logger.log` arg order differs from `java.util.logging`.** The throwable-carrying
+  overload is `log(Level, Supplier<String>, Throwable)` (message-supplier first, throwable last), not the
+  j.u.l. `(Level, Throwable, Supplier)`. A one-line compile trap when porting log calls between the two.
+- **Promoted to:** propose an `EXAMPLES-GUIDE` note — when a chapter's named tool is environment-gated
+  (Docker) or maintenance-mode, prefer a pinned-stack realization of the technique + a `09-flags/`
+  cited-not-built entry over a build that is red/skipped off the happy environment; propose a
+  `DEMO-CATALOG` note recording the in-JVM `HttpServer`/`HttpClient` shape as the standalone integration-
+  test idiom.
