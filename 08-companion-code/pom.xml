@@ -30,8 +30,11 @@
     <module>20_thread_safety_jmm</module>
     <module>22_virtual_threads_structured_concurrency</module>
     <module>26_how_static_analysis_works</module>
+    <module>38_custom_rules_codegen_lombok</module>
+    <module>42_unit_testing_assertions_mocking</module>
     <module>53_solid_coupling_cohesion_packages</module>
     <module>55_enforcing_architecture_fitness_functions</module>
+    <module>69_secure_coding_owasp</module>
     <module>capstones</module>
   </modules>
 

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 42 companion (The Base of the Pyramid). A small order/pricing service plus a JUnit
+    Jupiter harness that puts the chapter's three disciplines into one buildable module: the harness
+    (AAA structure, @DisplayName, @Nested, @ParameterizedTest, assertThrows/assertAll); the assertion
+    styles the chapter contrasts (JUnit built-in, AssertJ, Hamcrest) shown asserting the SAME fact
+    side by side; and the-right-double-for-the-job under @ExtendWith(MockitoExtension.class) with the
+    default STRICT_STUBS — a stub for a query port, a verify for a command port, and a Money record
+    used real (never mocked). The failure path is the over-mock anti-pattern: a passing-but-brittle
+    test that over-specifies call order, which the prose critiques as the cost of behaviour
+    verification, and a documented dead stub that STRICT_STUBS would fail the build on.
+
+    This is a child module of the companion-code reactor. It sets <parent>, carries no groupId or
+    version literal of its own, and inherits the runtime pin and the JUnit/AssertJ pins from the
+    aggregator. Mockito and Hamcrest are added here as explicit test-scope dependencies because the
+    aggregator does not manage them; each version literal traces to SOURCE-PIN.md §3 (Mockito 5.23.0;
+    Hamcrest 3.0). The contracts and analyzers are run by the `quality` profile (Checkstyle +
+    SpotBugs, Chapter 16), self-contained under this module's config/ dir like the key-09 module.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>unit-testing-assertions-mocking</artifactId>
+  <name>Chapter 42 — The Base of the Pyramid (unit-testing-assertions-mocking)</name>
+
+  <properties>
+    <!--
+      Test-library versions the aggregator does NOT manage, pinned here to their SOURCE-PIN.md §3
+      rows. JUnit (junit-bom) and AssertJ are inherited from the parent's dependencyManagement and
+      carry no literal here.
+    -->
+    <mockito.version>5.23.0</mockito.version>
+    <hamcrest.version>3.0</hamcrest.version>
+  </properties>
+
+  <dependencies>
+    <!-- JUnit Jupiter — the harness; version managed by the aggregator's junit-bom import. -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!--
+      AssertJ — one of the four assertion styles the chapter contrasts (fluent). Version managed by
+      the aggregator (SOURCE-PIN.md §3: AssertJ 3.27.7).
+    -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!--
+      Hamcrest — the matcher-composition assertion style the chapter contrasts. Not managed by the
+      aggregator, so the one pinned GAV is declared here (SOURCE-PIN.md §3: org.hamcrest:hamcrest
+      3.0). The fourth style the chapter's table contrasts, Truth, is presented in the README and the
+      prose for comparison rather than compiled, to keep the module's dependency set to the versions
+      this build resolves cleanly; see README "The four assertion styles".
+    -->
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>${hamcrest.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!--
+      Mockito — the library under study; creates the stubs, spies and mocks. Not managed by the
+      aggregator, so the pinned GAVs are declared here (SOURCE-PIN.md §3: Mockito 5.23.0).
+      mockito-junit-jupiter provides MockitoExtension; both move together at one version. From
+      Mockito 5.0.0 the inline mock maker is the default, so no mockito-inline artifact is added.
+    -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The same self-contained shape as the key-09 module: the maven-checkstyle-plugin ships an
+    OLD bundled engine, so the pinned engine is overridden via a plugin-level dependency (the
+    "two-pin" lesson — the build plugin and the analyzer engine are separate versions). The profile
+    reads the config under this module's own config/ dir. Checkstyle includes the test source
+    directory (the tests are first-class code held to the house ruleset); SpotBugs runs over main
+    bytecode only.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16), complementary to Checkstyle's source
+            view. The production code here is a small, contract-tight service, so the exclude filter
+            is empty: zero reviewed suppressions are needed. A genuine, reviewed false positive would
+            go in the filter with a reason, never by disabling a detector wholesale.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
