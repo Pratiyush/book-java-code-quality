@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    Reviewed suppressions (Chapter 16: suppress with a reason, never disable a whole detector).
+
+    This module ships one deliberate counter-example whose defect IS the lesson: an AI-drafted lookup
+    that concatenates an input into its SQL text, so a test can prove the vulnerability-inheritance the
+    prose describes rather than merely assert it. The detectors are left fully ENABLED for the rest of
+    the module (the reviewed PreparedStatement fix, the inventory code under test, and the AiReviewGate
+    running path all stay clean); only the named counter-example core SpotBugs raises at this module's
+    threshold carries a finding, suppressed narrowly, with a reason, and pointed at the test that
+    demonstrates it. The finding was verified load-bearing (BugInstance size is 1 with this filter
+    empty, 0 with it as below, deterministic across runs). Fixing the class — which ReviewedLookup
+    already does — is the real advice; the suppression exists only so the teaching counter-example ships
+    green.
+
+    The chapter's thesis is exactly this firing: a SQL injection is caught by the same SpotBugs rule
+    whether a human or a model wrote it. The gate does not care who wrote the code.
+  -->
+
+  <!--
+    Injection (OWASP A03 / CWE-89), AI-drafted. AiDraftedLookup.findIdsByEmail builds its query by
+    string concatenation and passes the nonconstant String to Statement.executeQuery, so SpotBugs
+    raises SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE (verified to fire here, so the suppression is
+    load-bearing, not decorative). The finding IS the vulnerability-inheritance lesson, so it is named
+    as an intentional teaching counter-example. Proven by
+    AiGeneratedCodeQualityTest.AiDraftGoesThroughTheGate#stringConcatenationFoldsTheInputIntoTheQueryText.
+    The fix is the bound '?' parameter in ReviewedLookup.findIdsByEmail, never this suppression.
+  -->
+  <Match>
+    <Class name="org.acme.ai.AiDraftedLookup"/>
+    <Method name="findIdsByEmail"/>
+    <Bug pattern="SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE"/>
+  </Match>
+</FindBugsFilter>

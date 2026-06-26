@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 100 companion (Only Policy Can Ship It — governing AI in the development workflow, the
+    Part XII closer). The chapter is GOVERNANCE-, policy-, and config-centric, so the load-bearing
+    decision the chapter argues for is made runnable and unit-tested: the AI-usage GATE in
+    org.acme.aigovernance.AiUsageGate — "AI can write code, but only policy can ship it" (the chapter's
+    thesis, attributed to Sonatype). The gate takes an AI-assisted change's governance state and decides
+    whether policy allows it to merge: a sanctioned tool, the AI-specific checks run, disclosure present,
+    an accountable human, and — the hard line the chapter names — NO auto-merge on an AI approval.
+
+    The policy axes are EXTERNALIZED (org.acme.aigovernance.AiGovernancePolicy), selected at startup by
+    a profile (dev / prod) the same way a framework's %dev / %prod config blocks work, so no threshold is
+    compiled in — the chapter's "policy + culture, not a rules page" point starts with the policy being a
+    real, swappable artifact rather than a constant.
+
+    The one-page AI-in-the-workflow policy the chapter's companion spec calls for is the docs/ markdown
+    (the policy template); the policy CODE here is its executable half. The illustrative AI-review outcome
+    (a real catch, a false positive, and a MISSED subtle bug — the intent ceiling) is carried by
+    org.acme.aigovernance.AiReviewOutcome, and the counter-metric (productivity AND risk) by
+    org.acme.aigovernance.AiAdoptionCounterMetric — the observability surface.
+
+    The module is built on the JDK alone (zero runtime dependencies), so it dogfoods the book and builds
+    fast and green; its own signals are machine-checked by the `quality` profile (Checkstyle + SpotBugs),
+    the same way the Chapter 33 (key 75) and Chapter 37 (key 84) modules are. Java pin: SOURCE-PIN.md
+    anchor JDK 21; test libs inherited from the aggregator's dependencyManagement (JUnit 6.x line,
+    AssertJ 3.27.7) — no version literal lives in this module.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>governing-ai-ai-review</artifactId>
+  <name>Chapter 100 — Only Policy Can Ship It (governing-ai-ai-review)</name>
+
+  <dependencies>
+    <!--
+      JDK-only at runtime: the governance gate and counter-metric are plain Java, and the tools the
+      policy MANDATES (the SAST/SCA/secrets scanners, the AI review bot, the mutation runner) run in the
+      pipeline, not as runtime dependencies of this module. The test libraries are the only additions,
+      and their versions are inherited from the companion-code aggregator's dependencyManagement.
+    -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates, opt-in via `-Pquality` so the default build stays fast (the same shape
+    the peer modules use). The maven-checkstyle-plugin ships an OLD bundled engine; we override it to the
+    pinned engine (com.puppycrawl.tools:checkstyle:10.26.1) via a plugin-level dependency — the build
+    plugin and the analyzer engine are versioned separately ("two-pin"). This module is a direct child of
+    the companion-code root, which pins no quality profile of its own, so the profile is declared here and
+    reads the config under this module's own config/ dir, keeping the module self-contained.
+
+    There is a quiet bit of dogfooding in this: a chapter about governing AI-assisted code holds its own
+    (AI-written) code to exactly the deterministic gates the policy it describes would mandate.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point, complementary to Checkstyle's source view. This module's
+            model types are immutable records and a sealed verdict, and the gate exposes no mutable state
+            beyond its own atomic counters, so the representation-exposure detectors stay quiet without
+            suppression. The exclude filter is kept (empty) so a future, genuinely-reviewed suppression
+            has a home with a reason rather than being added inline (the Chapter 39 discipline).
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

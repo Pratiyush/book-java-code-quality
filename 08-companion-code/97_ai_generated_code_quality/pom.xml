@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 41 companion (The Draft That Looks Like a Deliverable — the Part XII umbrella). The
+    chapter's stance is that AI-generated code is a draft, not a deliverable: it goes through the same
+    quality gate as human code, plus a few AI-specific checks. This module shows that stance in code on
+    the storefront domain, in two demonstrations.
+
+    (a) An AI-drafted customer lookup that builds its SQL by string concatenation — the
+    vulnerability-inheritance pattern the chapter describes, reproduced from the insecure examples that
+    are well-represented in public training data. It is the same OWASP A03 / CWE-89 injection class the
+    Chapter 30 module covers, here framed as an AI draft. The reviewed fix passes the value as a bound
+    PreparedStatement parameter. The AiReviewGate running path is wired to the reviewed fix alone; the
+    AI-drafted shape is never reachable from it and exists only so a test can prove the defect.
+
+    (b) An AI test generated FROM the implementation that reaches full line coverage while asserting
+    almost nothing, so the boundary and arithmetic mutants on the code under test survive — the
+    tests-from-code trap (the test pins current behavior, bugs included, instead of independently
+    encoding intended behavior). Beside it, a spec-derived test encodes the intended behavior from the
+    requirement and kills those mutants. Mutation testing (Chapter 23) is the check that exposes the
+    hollow test; this module demonstrates the contrast with tests and prose, the way the Chapter 23
+    module does, rather than wiring a mutation-testing plugin into this build.
+
+    Every AI statistic in the chapter prose is a dated, attributed snapshot; none is embedded here,
+    because a statistic baked into code would silently go stale. The code demonstrates the structural
+    mechanisms (which do not date), not the figures (which do).
+
+    Runtime dependencies are JDK-only; the one extra GAV is the SpotBugs annotations artifact, on the
+    compile path only. The module dogfoods the book: every shape is held to the same `quality` gate the
+    chapter describes, and the build is green.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>ai-generated-code-quality</artifactId>
+  <name>Chapter 41 — The Draft That Looks Like a Deliverable (ai-generated-code-quality)</name>
+
+  <dependencies>
+    <!--
+      SpotBugs annotations (SOURCE-PIN.md: SpotBugs 4.10.2 line; this module builds against the locally
+      cached 4.9.3 engine the companion code is pinned to, so the annotations track that engine). The
+      single version literal here is the one pinned GAV available for a per-site
+      @SuppressFBWarnings(value, justification) — not a BOM or version-set. The annotations are
+      CLASS-retained, so `provided` scope keeps them on the compile path only and the module's runtime
+      stays JDK-only like the rest of the companion code.
+    -->
+    <dependency>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
+      <version>4.9.3</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The maven-checkstyle-plugin ships an OLD bundled engine (Checkstyle 9.3); we override it to
+    the pinned engine via a plugin-level dependency — the "two-pin" lesson (the build plugin and the
+    analyzer engine are separate versions). This module is a direct child of the companion-code root,
+    which pins no quality profile of its own, so the profile is declared here (the same shape the
+    Chapter 30 module uses) and reads the config under this module's config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16) — complementary to Checkstyle's source
+            view. This module ships one deliberate counter-example — the AI-drafted string-concatenated
+            query — which core SpotBugs raises at this threshold; it carries a single narrowly-scoped,
+            reasoned suppression in the exclude filter (the chapter's "suppress with a documented
+            reason, never disable a detector" discipline). That finding firing on AI-drafted code is the
+            chapter's thesis in the build: the gate does not care who wrote the code.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

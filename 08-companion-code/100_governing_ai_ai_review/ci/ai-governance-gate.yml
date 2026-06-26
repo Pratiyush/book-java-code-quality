@@ -1,0 +1,61 @@
+# Illustrative CI step that gates AI-assisted changes (Chapter 100 — Only Policy Can Ship It).
+#
+# This file is CONFIGURATION, not run by this module's Maven build. It shows the pipeline shape the chapter
+# teaches: the AI-usage gate as a REQUIRED status check that runs the SAME policy a developer can run
+# locally — the gate logic in org.acme.aigovernance.AiUsageGate, which this step mirrors and which is
+# unit-tested. The chapter's hard line is wired here: no auto-merge on an AI approval (the human gate
+# stays), and the AI-specific checks (SAST/SCA/secrets, mutation-verified AI tests) are required for an
+# AI-assisted change before this gate can pass.
+#
+# The GitHub Actions used here (actions/checkout, actions/setup-java) are hosted/SaaS — SOURCE-PIN.md §5
+# records them as "docs as of 2026-06 (rolling)", so they are DATED AT USE (2026-06), not timeless; pin
+# each to a release tag and a digest when this is adopted. The specific AI-review and security-scan actions
+# a team wires are its own sanctioned, vetted choices — the book names and crowns none.
+name: ai-governance-gate
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------------------------------------------
+  # The AI-specific checks the policy mandates ON TOP OF the normal gates. These run the security stack
+  # and (for AI-generated tests) the mutation runner, producing the "checks ran" facts the gate consumes.
+  # The tools are the team's own sanctioned choices; the names below are placeholders.
+  # ---------------------------------------------------------------------------------------------------
+  ai-specific-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4        # SaaS action, dated-at-use 2026-06 (pin to a digest at adoption)
+      - uses: actions/setup-java@v4      # SaaS action, dated-at-use 2026-06
+        with:
+          distribution: temurin
+          java-version: "21"             # SOURCE-PIN.md anchor LTS (Java 21)
+      - name: SAST / SCA / secrets (inherited-vulnerability checks for AI-assisted code)
+        run: echo "run the org's sanctioned SAST, SCA and secrets scanners (Chapters 30/28/31)"
+      - name: Mutation-verify any AI-generated tests
+        run: echo "run PITest on changed tests (Chapter 23) — coverage alone can be empty"
+
+  # ---------------------------------------------------------------------------------------------------
+  # The blocking gate: wired as a REQUIRED status check in branch protection (Chapter 35) so it cannot be
+  # merged around. It enforces the policy clauses (org.acme.aigovernance.AiUsageGate): a sanctioned tool,
+  # the required AI-specific checks present, AI use disclosed, an accountable human, and NO auto-merge on
+  # an AI approval. A green gate means policy was satisfied — never that the code is correct; a human still
+  # reviews intent (the thing no gate and no AI can verify).
+  # ---------------------------------------------------------------------------------------------------
+  ai-usage-gate:
+    needs: ai-specific-checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # tag::ai-gate-step[]
+      - name: AI-usage policy gate (only policy can ship it)
+        run: |
+          # mirrors org.acme.aigovernance.AiUsageGate under -Daigov.profile=prod:
+          # block unless tool is sanctioned, AI-specific checks ran, AI use disclosed,
+          # an accountable human owns the PR, and NO auto-merge on an AI approval.
+          echo "enforce AI-in-the-workflow policy; keep the human gate (no auto-merge on AI review)"
+      # end::ai-gate-step[]
