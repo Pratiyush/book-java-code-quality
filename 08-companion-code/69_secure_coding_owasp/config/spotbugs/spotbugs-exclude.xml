@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+  <!--
+    Reviewed suppressions (Chapter 16: suppress with a reason, never disable a whole detector).
+
+    This module ships deliberate counter-examples whose defect IS the lesson, so a test can prove the
+    vulnerability the prose describes rather than merely assert it. The detectors are left fully
+    ENABLED for the rest of the module (the PreparedStatement fix, the AES/GCM + SecureRandom + PBKDF2
+    fix, the JSON-shaped parse, the ObjectInputFilter allow-list, and the SecurityGate running path all
+    stay clean); only the two named counter-examples core SpotBugs raises at this module's threshold
+    carry a finding, each suppressed narrowly, with a reason, and pointed at the test that demonstrates
+    it. Both findings were verified load-bearing (BugInstance size is 2 with this filter empty, 0 with
+    it as below, deterministic across runs). Fixing the classes — which CustomerLookup and TokenCrypto
+    already do — is the real advice; the suppressions exist only so the teaching counter-examples ship
+    green.
+
+    Note: core SpotBugs (this build's engine) has no crypto-specific detector for ECB mode, MD5, or the
+    deserialization sink. Those misuse patterns are FindSecBugs territory (the SpotBugs security plugin,
+    Chapter 16), which is not part of this build's engine; the ECB, MD5, and readObject counter-examples
+    are therefore demonstrated by tests and prose here, and need no suppression because the core engine
+    does not flag them. See the module README.
+  -->
+
+  <!--
+    Injection (OWASP A03 / CWE-89). VulnerableCustomerLookup.findIdsByEmail builds its query by string
+    concatenation and passes the nonconstant String to Statement.executeQuery, so SpotBugs raises
+    SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE (verified High here, so the suppression is load-bearing,
+    not decorative). The finding IS the injection lesson, so it is named as an intentional teaching
+    counter-example. Proven by SecureCodingTest.Injection#stringConcatenationFoldsTheInputIntoTheQueryText.
+    The fix is the bound '?' parameter in CustomerLookup.findIdsByEmail, never this suppression.
+  -->
+  <Match>
+    <Class name="org.acme.security.VulnerableCustomerLookup"/>
+    <Method name="findIdsByEmail"/>
+    <Bug pattern="SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE"/>
+  </Match>
+
+  <!--
+    Bad randomness (OWASP A02 / CWE-330). VulnerableTokenCrypto.predictableIv creates a
+    java.util.Random and uses it once, so SpotBugs raises DMI_RANDOM_USED_ONLY_ONCE (verified High
+    here, so the suppression is load-bearing, not decorative) — the same predictable-randomness misuse
+    the chapter calls out for IV and key generation. The finding IS the bad-randomness lesson, so it is
+    named as an intentional teaching counter-example. Proven by
+    SecureCodingTest.Cryptography#randomIvIsPredictableFromSeedWhileSecureRandomDoesNotRepeat. The fix
+    is the held SecureRandom in TokenCrypto (newSalt / the GCM nonce), never this suppression.
+  -->
+  <Match>
+    <Class name="org.acme.security.VulnerableTokenCrypto"/>
+    <Method name="predictableIv"/>
+    <Bug pattern="DMI_RANDOM_USED_ONLY_ONCE"/>
+  </Match>
+</FindBugsFilter>

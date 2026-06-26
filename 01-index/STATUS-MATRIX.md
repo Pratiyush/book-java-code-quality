@@ -8,7 +8,7 @@
 
 - **47/47 chapters** drafted (🟢 `draft`).
 - **39** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).
-- **33** need EXAMPLE-BUILD (FLOOR-C compile).
+- **30** need EXAMPLE-BUILD (FLOOR-C compile).
 - **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 42 in lift · 5 need an independent score · 0 approved (in 04-approved/).
 - **DRIFT: ✅ none**.
 
@@ -44,12 +44,12 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
 | 16 | 27 | Checkstyle, PMD, SpotBugs, Error Prone | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 17 | 35 | SonarQube, IDE inspections & the layered sta… | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
-| 18 | 38 | Writing custom rules; annotation processors … | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 18 | 38 | Writing custom rules; annotation processors … | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part IV — Static Analysis, Linting & Formatting** |  |  |  |  |  |  |  |  |  |  | |
 | 19 | 39 | Living with findings: false positives, basel… | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
 | 20 | 41 | The testing landscape & test quality | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
-| 21 | 42 | Unit testing, assertions & mocking | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 21 | 42 | Unit testing, assertions & mocking | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 22 | 45 | Integration & property-based testing | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 23 | 48 | Coverage, mutation & test effectiveness | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 24 | 50 | Contract & approval testing | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
@@ -58,7 +58,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | 27 | 62 | The build & dependency hygiene | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 28 | 65 | Dependency scanning, SBOM & supply-chain sec… | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 29 | 67 | Reproducible builds & license compliance | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
-| 30 | 69 | Secure coding & OWASP for Java | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 30 | 69 | Secure coding & OWASP for Java | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 31 | 70 | SAST & secrets detection | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part VIII — Security & SAST** |  |  |  |  |  |  |  |  |  |  | |
 | 32 | 73 | Security in CI — the security gate | 🟢 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |

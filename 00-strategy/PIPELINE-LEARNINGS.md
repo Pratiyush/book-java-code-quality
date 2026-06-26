@@ -1538,3 +1538,77 @@ long monospace identifiers; use the column-card layout only for short labels.
 - **Lesson 3 (reusable — a deliberately-"bad" pattern can pass SpotBugs without a suppression by narrowing the offending reference):** the two-package cycle's `OrderNotifier` storing a concrete `OrderService` fired `EI_EXPOSE_REP2` (storing an externally-mutable object). House rule is "prefer fixing over reasoned-suppression" — so instead of suppressing, introduce an `orders`-owned `OrderSummaries` functional interface for the read-back surface. The package cycle is PRESERVED (both packages still import each other — the teaching point survives) and SpotBugs goes clean; the empty exclude filter (zero suppressions) is kept. Generalizes the ch19/20 "keep the seeded finding real" discipline to "keep the bad SHAPE real while clearing an incidental detector hit".
 - **Lesson 4 (confirms ch08/55 — design tags ≤9 with extract_snippet BEFORE wiring; mind the awk slice boundaries):** final spread 7/6/7/6/7/8, all verified with `extract_snippet.sh` before inserting markers. Putting the `// tag::` marker BELOW a class Javadoc and ABOVE a one-line `/** … */` method comment keeps the region tight; moving fields outside the region (key-22 Lesson 6) was not needed here because each region was scoped to a single method or interface body.
 - **Confirms ch07/08/09/10/11/12/14/19/20/22/55 pattern:** the self-contained mirror (own `config/` copied from 09 + own `quality` profile, `<parent>` set, JDK-only with ZERO added version literals — production code is plain JDK, only inherited JUnit/AssertJ at test scope) reproduced a green gate; two-pin Checkstyle-engine override (10.26.1) + spotbugs-maven-plugin 4.9.3.0 carried over verbatim (the tree-wide house engine versions — these trail SOURCE-PIN's Checkstyle 13.6.0 / SpotBugs 4.10.2 rows; a one-time tree-wide bump is the right place to close that gap, flagged in the gate report); standalone `-f <module>/pom.xml` resolved `<parent>` via the GAV without reactor registration — register-last honored. No subject-native UI to capture (plain-JDK library); figs 53.1/53.2 are pre-authored designed diagrams.
+
+## 2026-06-26 — key 42 (unit testing, assertions, mocking; folds 43+44) EXAMPLE-BUILD: a comparison chapter compiles the AUTHORIZED subset of its libraries and shows the rest in prose+flag; over-mock smell ships GREEN as passing-but-brittle + a documented (not-triggered) dead stub; first companion module to add Mockito/Hamcrest as explicit pinned test-scope deps
+- **Confirms ch07/08/09/10/11/12/14/19/20/22/53/55 self-contained-mirror pattern.** Own `config/` copied from key-09 + own `quality` profile, `<parent>` set, ZERO own version literals for inherited deps (JUnit via parent `junit-bom`, AssertJ managed); two-pin Checkstyle engine override (10.26.1 over plugin 3.6.0) + spotbugs 4.9.3.0 carried verbatim; standalone `-f <module>/pom.xml … verify` resolved `<parent>` by GAV without reactor registration — register-last honored. 13 tests, 0 Checkstyle, 0 SpotBugs, BUILD SUCCESS on JDK 21.0.11 / Maven 3.9.16.
+- **Lesson 1 (reusable — comparison chapter, authorized-dep subset):** when a chapter contrasts N libraries (here 4 assertion styles) but the build brief authorizes a subset, COMPILE the subset (JUnit built-in + AssertJ + Hamcrest — all pinned AND present in `.m2`) and present the rest (Truth 1.4.5) in README/prose with a `09-flags/` note, rather than pulling an unauthorized-by-brief dep that also drags a heavy transitive tree (Guava+). The chapter's table still shows all four; the build stays green and in-bounds. **Propose:** the example brief should state which of a comparison chapter's libraries MUST be compiled vs MAY be prose-only.
+- **Lesson 2 (reusable — aggregator pin vs brief pin drift):** the brief named JUnit 6.1.0 but the aggregator's `junit-bom` pins 6.0.3, so the correctly-inheriting child resolves 6.0.3 (both the pinned JUnit 6 line). A child that inherits silently takes the parent's managed version, NOT a version a task names. Bumping a managed version is an aggregator-level change that re-tests every child — out of scope for a single-module build that must not edit `08-companion-code/pom.xml`. **Propose:** a one-line example-brief check — "confirm the aggregator's managed version matches the SOURCE-PIN row before building."
+- **Lesson 3 (reusable — anti-pattern as failure path, kept green):** the over-mock smell ships as a PASSING-BUT-BRITTLE `InOrder` test the prose critiques (pins internal call order, not the outcome), with the dead-stub `UnnecessaryStubbingException` case DOCUMENTED in a Javadoc/comment rather than triggered (kept out of the running test). Satisfies both the chapter's teaching need and the build-must-stay-green floor. Reusable for any chapter whose failure path is a "bad test" that a live failing test would otherwise redden the build with.
+- **Lesson 4 (confirms ch53 Lesson 4 / ch08/55):** designed all 7 tags ≤9 lines with `extract_snippet.sh` BEFORE wiring markers (spread 7/6/6/2/7/6/5). Used a fully-qualified `org.assertj.core.api.Assertions.assertThat(...)` inside the `four-assertion-styles` tag to avoid the static-import collision with Hamcrest's `assertThat` and keep the snippet self-explanatory. No literal `tag::`/`<!-- include:` token left in prose (the "Snippet tags:" line uses plain words — the literal `<!-- include: … -->` first written there tripped `check_snippets` as an 8th bogus marker; reworded to "tag-include markers").
+- **First module to add Mockito (5.23.0: `mockito-core` + `mockito-junit-jupiter`) and Hamcrest (3.0) as explicit pinned test-scope deps** (the aggregator manages neither). Byte Buddy core resolves transitively to 1.18.3 while Mockito's pinned `byte-buddy-agent` is 1.17.7 — tolerated at runtime, build green; recorded as a NOTE for provenance. Mockito self-attach advisory under JDK 21 is informational, not a build warning.
+- **No subject-native UI to capture** (a unit-testing library chapter); figs 42.1/42.2 are pre-authored designed diagrams (HTML→PNG with sidecars). The dossier's OPTIONAL Fig 44.3 (`UnnecessaryStubbingException` console) is NOT in the draft's fixed figure plan → not captured (Step 4c forbids inventing an unplanned figure).
+
+## EXAMPLE-BUILD — key 69 (secure coding / OWASP) — 2026-06-26
+
+- **Reusable "vuln→fix pair per vulnerability class" module shape** for secure-coding chapters: one
+  `Vulnerable*` counter-example beside its design-out `*Fix`, plus a running-path facade (`SecurityGate`)
+  wired to the fixes alone (the `Vulnerable*` types unreachable from it, exercised only by tests). Keeps
+  every snippet ≤9 lines and shows the "vulnerable flagged / fix passes" thesis in code. 11 tags here:
+  sql-concat/sql-prepared, deser-native/deser-dto/deser-filter, crypto-ecb/crypto-gcm,
+  crypto-random-iv/crypto-pbkdf2, crypto-md5, failure-path.
+- **Core SpotBugs vs FindSecBugs scope, mapped empirically (important for any security chapter):** core
+  SpotBugs 4.9.3 genuinely raises `SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE` (SQL injection) and
+  `DMI_RANDOM_USED_ONLY_ONCE` (Random-used-once), but has NO crypto-specific (ECB/MD5/weak-alg) detector
+  and NO deserialization-sink detector — those are FindSecBugs patterns. A chapter that says "FindSecBugs
+  flags ECB/MD5" must pin FindSecBugs OR scope the claim to prose+tests; never pretend the core engine
+  flags them, never fake output. Flagged to 09-flags/69_findsecbugs_not_in_local_engine.md (analog of the
+  key-24 JCStress-not-pinned handling).
+- **ECB takes no IV:** the textbook "ECB + Random IV" misuse cannot run as one call — the JDK throws
+  `InvalidAlgorithmParameterException: ECB mode cannot use IV`. Decompose into pure-ECB (block-equality
+  leak) + a separate predictable-`Random` IV/nonce defect for a runnable, honest counter-example.
+- **`java.util.Random` predictability is provable in a unit test** via two same-seed streams matching
+  (`new Random(42L).nextBytes(..)` twice → equal) — the load-bearing demonstration of the defect
+  `SecureRandom` removes; pairs with SpotBugs's `DMI_RANDOM_USED_ONLY_ONCE` on the production-shape call.
+- **PBKDF2 is the JDK-native password hash** (`SecretKeyFactory "PBKDF2WithHmacSHA256"` + `PBEKeySpec`);
+  bcrypt/scrypt/Argon2 each require an unpinned external GAV, so PBKDF2 keeps a crypto chapter JDK-only
+  and pin-clean while honoring the draft's list (which names all four). Iteration count recorded as a
+  DATED baseline (prod 210k), not a timeless constant.
+- **Dynamic-proxy JDBC test doubles** (`java.lang.reflect.Proxy` over Connection/Statement/
+  PreparedStatement/ResultSet) keep a wide-interface fake compact (one `InvocationHandler` per role),
+  letting the SQL examples run with no JDBC driver and no live database — the right way to demonstrate
+  `PreparedStatement` vs string-concat against the `java.sql` API shape only.
+- **Confirms the key-26 "design tags ≤9 lines, then place markers" order:** two regions first came out
+  10 and 12 lines; tightened by moving the `// tag::` start inside the method (past the signature) and
+  factoring a `reject(code, cause)` helper so the failure-path body fit in 8 lines. Verify with
+  `extract_snippet.sh` BEFORE wiring `<!-- include: -->` markers.
+
+## 2026-06-26 — key 38 EXAMPLE-BUILD (custom rules, codegen & the Lombok debate)
+- **New reusable module shape: "one invariant, N realizations, pinned-only."** When a chapter's spec
+  enforces one rule via several tools whose authoring SDKs are not all pinned, build only the pinned-or-JDK
+  forms and add a runnable JDK stand-in for the unpinned-SDK ones, keeping the shared
+  select→predicate→report→gate shape visible. Key 38 shipped five realizations — a hand-written guard
+  (JDK), a `record` compact constructor (JDK), an Error Prone-style `@RestrictedApi` fence (pinned
+  `error_prone_annotations`), a custom ArchUnit `DescribedPredicate`+`ArchCondition` (pinned `archunit`),
+  and a reflective API inspector (JDK) standing in for the Checkstyle/PMD/SpotBugs custom checks whose
+  authoring SDKs are unpinned. The prose teaches every tool's authoring API by identity; the build carries
+  no unpinned GAV. Sibling of the key-26 "analyzer-target per technique" shape.
+- **Pinned annotations vs. unpinned check engines.** `error_prone_annotations` 2.36.0 is a SOURCE-PIN row
+  and ships real, applicable fences (`@RestrictedApi`, `@Immutable`, `@CheckReturnValue`,
+  `@CompileTimeConstant`), so a chapter can demonstrate the Error Prone *annotation* dimension on the pin
+  even when the *check API* (`error_prone_check_api`) that reads it is unpinned. Concrete instance of
+  "verify API identity, defer versions": `javap` the cached jar first — only `@RestrictedApi.explanation`
+  is required; `link`/`allowedOnPath`/the allowlist arrays default.
+- **Testing a compile-time fence: class-file assertion, not runtime reflection.** `@RestrictedApi` declares
+  no `@Retention`, so it is class-retained by default and invisible to `isAnnotationPresent` at run time.
+  Assert it is applied by (a) reading the compiled class file and checking the descriptor
+  `Lcom/google/errorprone/annotations/RestrictedApi;` is present, and (b) asserting it is NOT
+  runtime-visible. Worth a one-line note in EXAMPLES-GUIDE on testing compile-time-only annotations.
+- **ArchUnit custom rules go in `src/test/java`** (ArchUnit is test-scope). A rule class started in
+  `src/main/java` fails the main compile (`cannot find symbol DescribedPredicate`); move it to the test
+  tree and reference it from any main-tree `package-info` with `{@code}`, not `{@link}`. Matches the
+  key-55 precedent.
+- **Reusable failure-path + honest-limit pattern for rule chapters:** one seeded breach in its own package
+  (`legacy.LegacyOrderLine` exposes `double` money) that every realization reports, asserted as detected
+  over the wider import while the clean package stays green — plus a test that the reflective inspector is
+  silent on a `double` reached through an erased generic (the "each rule sees only its own artifact" limit,
+  in code). Generalizes the key-55 "seed the breach, assert it is reported" discipline.

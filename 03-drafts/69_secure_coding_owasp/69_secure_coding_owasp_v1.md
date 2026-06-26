@@ -2,7 +2,7 @@
 Dossier key: 69 (owner, leads) + folds 72 + 74 — per 01-index/FINAL_INDEX.md Ch 30 (OPENS Part VIII — Security & SAST)
 Slug: 69_secure_coding_owasp (owner key 69)
 Part / arc position: Part VIII — Security & SAST, Chapter 30 (OPENS Part VIII; Ch 30-32)
-Companion module: 08-companion-code/ (vulnerable endpoint: string-concat SQL + native deser + AES/ECB+Random IV+MD5 → fixes: PreparedStatement + ObjectInputFilter/JSON + AES/GCM+SecureRandom+password-hash; FindSecBugs flags the bad) — ⚠ EXAMPLE-BUILD = PENDING (toolchain READY: JDK 21.0.11+25.0.3). Spec at foot.
+Companion module: 08-companion-code/69_secure_coding_owasp/ (vulnerable endpoint: string-concat SQL + native deser + AES/ECB+Random IV+MD5 → fixes: PreparedStatement + ObjectInputFilter/record-parse + AES/GCM+SecureRandom+salted-PBKDF2) — ✅ EXAMPLE-BUILD = BUILT GREEN [MANUAL — tooling pending] (JDK 21.0.11; -Pquality verify: 19 tests, 0 Checkstyle, 0 SpotBugs; 11 snippet tags). Spec + Snippet tags at foot.
 Verified against SOURCE-PIN: 2026-06-20. Sources (umbrella + 2 deep sections; standards-edition discipline; NOT legal/pentest advice):
 - Secure coding/OWASP (69, umbrella): security = quality attribute (ISO 25010 Security characteristic, Ch 1). Most exploited vulns = well-understood CLASSES a dev can design out. Secure coding = part of code quality not a silo; shift-left (Ch 1), cheapest designed in, gated automatically. OWASP Top 10:2025 CURRENT (2021 prior — EDITION discipline; exact 2025 category list ⚠ verify at pin against owasp.org; partial knowns A03 Injection, A02 Cryptographic Failures, A07 Auth failures, A08 Software/Data Integrity incl. insecure deserialization; 2025 expands toward supply chain). Use as MAP not gospel. Java manifestation + routing: injection→parameterize (§B); crypto→correct-API (§C); deser→avoid-native-untrusted (§B); vulnerable components→SCA (Ch 28 key 65); auth/access-control/misconfig/SSRF/logging→framework config + patterns. Tooling map: SAST finds in YOUR code (Ch 31 key 70); SCA in deps (Ch 28 key 65); secrets scanners (Ch 31 key 71); security gate CI (Ch 32 key 73); FindSecBugs = SpotBugs security plugin (Ch 16 key 29). Beyond Top 10: ASVS (verification requirements = the actual spec), Cheat Sheets (how-to), CWE (weakness taxonomy SAST maps to). LIMITS: Top 10 = AWARENESS not checklist (prioritized risk list, not complete requirements spec; ASVS is the spec; "no Top-10 findings" ≠ secure = category error); tools miss logic/authorization flaws (SAST weak on business-logic + broken-access-control → design review + tests Ch 84); edition drift (2021-as-current trap; anchor 2025); security ≠ whole of quality; not legal advice.
 - Injection/deserialization (72, §B): two most dangerous Java vuln classes share root cause UNTRUSTED DATA TREATED AS TRUSTED. Injection (SQL/command/LDAP/EL) = input concatenated into interpreter; insecure deser = untrusted bytes → objects → RCE. Deep dive behind A03 + A08. Injection defenses: SQL → PreparedStatement bind params (NEVER concat); JPA/criteria binding. Command → avoid Runtime.exec w/ user input; allow-lists/ProcessBuilder fixed args. LDAP/XPath/EL/SpEL/OGNL → encode/parameterize (OGNL/EL injection = major RCEs). Principle PARAMETERIZE DON'T CONCATENATE; validate input (Ch 9 key 18); encode on output context-aware. Deser defenses: AVOID native Java serialization of untrusted data (readObject on attacker bytes = RCE via gadget chains); if unavoidable ObjectInputFilter (JEP 290 allow-list classes); prefer JSON/Protobuf configured NOT to deser arbitrary types (disable polymorphic typing); Effective Java (Ch 5) "prefer alternatives to Java serialization". Validation substrate: Jakarta Bean Validation (Ch 9) structural; but validation = defense-in-depth NOT a substitute for parameterization/filtering. HONEST: validation ≠ safety (a "valid" string can still inject; parameterization mandatory); gadget chains evolve (allow-list helps but "avoid entirely for untrusted" only robust stance); third-party sinks; SAST false negatives.
@@ -70,9 +70,29 @@ For **injection**, the principle is *parameterize, do not concatenate*:
 
 Input *validation* (Jakarta Bean Validation, Chapter 9) is a useful substrate, but **validation is not a substitute for parameterization**. A string can be perfectly "valid" by every structural rule and still inject; validation is defense-in-depth, parameterization is the actual fix. A team that sells input validation as the injection defense has misunderstood the class.
 
+The difference is one line of code. The vulnerable lookup folds the value straight into the query text:
+
+<!-- include: 69_secure_coding_owasp/src/main/java/org/acme/security/VulnerableCustomerLookup.java#sql-concat -->
+
+The bound-parameter form passes the value as data the database never parses as SQL, eliminating the class:
+
+<!-- include: 69_secure_coding_owasp/src/main/java/org/acme/security/CustomerLookup.java#sql-prepared -->
+
 For **deserialization**, the core advice is blunter: **avoid native Java serialization of untrusted data entirely.** Calling `readObject` on attacker-controlled bytes is the RCE-prone operation, and because gadget chains are assembled from whatever classes happen to be on the classpath, the threat evolves continuously.
 
 > **CONCEPT** *Eliminate the class; filter only when elimination is not possible.* The robust stance for untrusted data is to not use native Java serialization at all. Prefer a safe data format (JSON, Protobuf) with the library configured *not* to deserialize arbitrary types (polymorphic typing disabled). Where native serialization is unavoidable, `ObjectInputFilter` (JEP 290) constrains what classes may be deserialized via an allow-list, but an allow-list is a *mitigation* of an evolving threat, not the elimination a safe format provides. This is the same hierarchy *Effective Java* states (Chapter 5): prefer alternatives to Java serialization.
+
+The RCE-prone operation is `readObject` deciding which classes to instantiate from the bytes:
+
+<!-- include: 69_secure_coding_owasp/src/main/java/org/acme/security/VulnerableOrderIntake.java#deser-native -->
+
+The elimination parses the request into one fixed-shape record, so the bytes can become nothing else:
+
+<!-- include: 69_secure_coding_owasp/src/main/java/org/acme/security/OrderIntake.java#deser-dto -->
+
+Where native serialization cannot be removed, the JEP 290 allow-list is the mitigation — narrower than elimination, and only as good as the list:
+
+<!-- include: 69_secure_coding_owasp/src/main/java/org/acme/security/OrderIntake.java#deser-filter -->
 
 ### Cryptographic-API misuse: the failure is the usage, not the algorithm
 
@@ -89,11 +109,37 @@ Cryptography is famously easy to *use* and hard to use *correctly*, and the cruc
 
 The stance behind the checklist is **"don't roll your own crypto"**: reach for vetted high-level libraries and safe platform defaults rather than hand-assembling primitives. Many of these misuses are static patterns. FindSecBugs (the SpotBugs security plugin, Chapter 16) and Error Prone flag MD5, ECB, and `Random`-for-keys at build time, shifting the catch left.
 
+Three of the misuses, side by side with their fixes. The unauthenticated ECB default that leaks block equality:
+
+<!-- include: 69_secure_coding_owasp/src/main/java/org/acme/security/VulnerableTokenCrypto.java#crypto-ecb -->
+
+becomes authenticated AES/GCM under a fresh random nonce:
+
+<!-- include: 69_secure_coding_owasp/src/main/java/org/acme/security/TokenCrypto.java#crypto-gcm -->
+
+The predictable `java.util.Random` initialization vector:
+
+<!-- include: 69_secure_coding_owasp/src/main/java/org/acme/security/VulnerableTokenCrypto.java#crypto-random-iv -->
+
+becomes a cryptographic source — `SecureRandom`, here generating the per-password salt:
+
+<!-- include: 69_secure_coding_owasp/src/main/java/org/acme/security/TokenCrypto.java#crypto-pbkdf2 -->
+
+And the fast, unsalted MD5 password digest:
+
+<!-- include: 69_secure_coding_owasp/src/main/java/org/acme/security/VulnerableTokenCrypto.java#crypto-md5 -->
+
+becomes a salted, iterated PBKDF2 hash (bcrypt, scrypt, and Argon2 are equivalent choices; PBKDF2 is the one the JDK ships) — the `crypto-pbkdf2` region above. The parameters are a baseline dated against current OWASP/NIST guidance, not a timeless constant.
+
 > **CONCEPT** *Tools catch misuse patterns, not protocol design; and crypto needs experts.* Static analysis finds ECB and MD5; it does *not* find a correct set of primitives composed into an insecure protocol, or a broken key-management design. This chapter gives crypto *hygiene*: it is not a cryptography course or a security sign-off, and anything bespoke needs a security expert. Two further disciplines: a flagged `MD5` may be a legitimate non-security checksum, so suppress false positives with a recorded justification (Chapter 19); and algorithm guidance *evolves* (key sizes change, post-quantum migration looms), so any specific recommendation must be dated against current OWASP/NIST guidance rather than asserted as timeless.
 
 ## Deep dive: design out the class, then detect the rest
 
 The three parts of this chapter are one method: **identify the vulnerability class, eliminate it by construction where possible, mitigate where elimination is not feasible, and detect what remains automatically.** Every section is an instance. Injection: the class is "untrusted data parsed as code," eliminated by parameterization (`PreparedStatement` makes the bound value un-parseable as SQL). Deserialization: the class is "untrusted bytes reconstituted as objects," eliminated by not using native serialization for untrusted data (and mitigated by `ObjectInputFilter` when that is unavoidable). Crypto: the class is "primitive used wrong," eliminated by safe defaults (`SecureRandom`, AES/GCM, a real password hash) rather than hand-assembly. The OWASP Top 10 tells *which* classes to prioritize; the design-out principle tells *how* to address each at the highest quality.
+
+The last leg — reject what cannot be made safe — completes the method: an intake that parses untrusted input through the design-out path and turns away anything malformed or oversized with a stable reason, rather than passing it on:
+
+<!-- include: 69_secure_coding_owasp/src/main/java/org/acme/security/SecurityGate.java#failure-path -->
 
 The reason to prefer "design out" over "mitigate" is the same reason this book has favored making bad states unrepresentable throughout: a record that cannot hold invalid data (Chapter 8), a type that cannot be null (Chapter 9), an exhaustive switch that cannot miss a case (Chapter 5). A mitigation is a control that can be misconfigured, forgotten, or bypassed; an elimination is a property of the code that holds regardless. `ObjectInputFilter` is a mitigation: it works only if the allow-list is correct and maintained as gadget chains evolve. Not deserializing untrusted data is an elimination. There is no allow-list to get wrong. Moving a vulnerability from "mitigated" to "impossible by construction" is always preferable, because the impossible-by-construction version does not depend on anyone remembering anything.
 
@@ -141,7 +187,9 @@ This chapter covered the vulnerability *classes* and how to design them out. Des
 - **Crypto misuse** (key 74, §C; OWASP A02) — failure = API misuse not broken algorithm. Misuses: MD5/SHA-1/DES, **ECB** (`Cipher.getInstance("AES")` bad default → AES/GCM), `Random`/`Math.random` for security (→ `SecureRandom`), hardcoded/static keys+IVs, plain-SHA passwords (→ bcrypt/scrypt/Argon2/PBKDF2 + salt), disabled TLS verification/trust-all `TrustManager`, misused JCA. "Don't roll your own crypto"; vetted defaults. Detection: FindSecBugs/Error Prone (Ch 16/18), SAST taint, CryptoGuard/CogniCrypt, SCA. *(static-catches-misuse-not-protocol/key-mgmt → expert review; hygiene-not-a-crypto-course; FP non-security-checksums → justified suppression Ch 19; DATE algorithm guidance vs OWASP/NIST; post-quantum AHEAD-OF-PIN; not legal advice; rule IDs/JCA strings ⚠ @pin.)*
 - **Routing** — SAST + secrets → Ch 31 (70/71); security gate → Ch 32 (73); SCA/supply chain → Ch 28 (65/66); FindSecBugs → Ch 16 (29); Error Prone → Ch 18 (30); validation → Ch 9 (18); EJ serialization → Ch 5 (08); review (logic/access-control) → key 84; ISO 25010 Security → Ch 1 (01); the book's own IP/legal → legal-IP rules file. SOURCE-PIN: OWASP/ASVS/CWE/JCA standards-edition discipline.
 
-**Companion module (spec — ⚠ EXAMPLE-BUILD = PENDING; toolchain READY):** `08-companion-code/69_secure_coding_owasp/` — one vulnerable `org.acme.storefront` endpoint demonstrating three classes and their design-out fixes: (a) **injection** — a string-concatenated SQL query → `PreparedStatement` with bind parameters (FindSecBugs flags the former); (b) **deserialization** — a `readObject` on request bytes → a JSON DTO (or an `ObjectInputFilter` allow-list if native serialization is kept); (c) **crypto misuse** — `Cipher.getInstance("AES")` (ECB) + a `Random` IV + an `MD5` password → AES/GCM + `SecureRandom` + a password-hash library, flagged by FindSecBugs. **Failure path:** the vulnerable variant is flagged by the security analyzer (FindSecBugs gate) and the fix passes — the demonstrated security floor. **Honest edges (comments):** validation alone does not stop the injection (parameterization does); the allow-list filter is a mitigation, not the elimination JSON provides; the crypto fixes are hygiene, dated, and "not a security sign-off — consult an expert for bespoke." This is the secure-coding companion to the SAST detection of Ch 31.
+**Companion module (spec — ✅ EXAMPLE-BUILD = BUILT GREEN `[MANUAL — tooling pending]`; report `69_secure_coding_owasp_EXAMPLE.md`):** `08-companion-code/69_secure_coding_owasp/` (`secure-coding-owasp`) — three `org.acme.security` vulnerability classes, each a deliberate counter-example beside its design-out fix, with a `SecurityGate` running path wired to the fixes alone: (a) **injection** — a string-concatenated SQL query → `PreparedStatement` with a bind parameter (the concatenated form is the one core-SpotBugs finding, `SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE`, narrowly suppressed with a reason); (b) **deserialization** — a `readObject` on request bytes → a fixed-shape record parse, with an `ObjectInputFilter` (JEP 290) allow-list shown as the mitigation when native serialization is unavoidable; (c) **crypto misuse** — `Cipher.getInstance("AES")` (ECB) + a `java.util.Random` IV (core-SpotBugs `DMI_RANDOM_USED_ONLY_ONCE`, narrowly suppressed) + an MD5 password → AES/GCM + `SecureRandom` + salted, iterated PBKDF2, all JDK `javax.crypto`. **Failure path:** the gate rejects malformed/oversized input with a stable reason code (a real error response, test-driven). **Honest edges (comments):** validation alone does not stop the injection (parameterization does); the allow-list filter is a mitigation, not the elimination the record parse provides; the crypto fixes are hygiene, dated against OWASP/NIST, and "not a security sign-off — consult an expert for bespoke." **FindSecBugs note:** the crypto/ECB/MD5/deserialization *detection* the prose attributes to FindSecBugs (the SpotBugs security plugin) is **prose-only** here — FindSecBugs is not in this build's engine (core SpotBugs 4.9.3); the module instead proves those misuses by tests and shows the two findings the core engine genuinely raises. This is the secure-coding companion to the SAST detection of Ch 31.
+
+**Snippet tags:** `sql-concat`, `sql-prepared` (injection); `deser-native`, `deser-dto`, `deser-filter` (deserialization); `crypto-ecb`, `crypto-gcm`, `crypto-random-iv`, `crypto-pbkdf2`, `crypto-md5` (crypto misuse); `failure-path` (the gate's reject path). All eleven resolve to ≤9-line `// tag::` regions inside the compiled module (verified by `check_snippets.sh`).
 
 ## Next chapter teaser
 

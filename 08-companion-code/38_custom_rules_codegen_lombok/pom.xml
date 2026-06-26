@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 18 companion (Teaching the Build Your Rules; dossier key 38, folds 40). One house
+    invariant — "money is a dedicated value type, never a raw double/float" — encoded five ways over
+    five different artifacts, plus a codegen comparison for the boilerplate those conventions create.
+    The five enforcement forms use only SOURCE-PIN-pinned dependencies: a hand-written runtime guard
+    (JDK), a record compact constructor (JDK), an Error Prone-style declarative fence built from the
+    pinned error_prone_annotations (SOURCE-PIN.md §2 row "Error Prone (+ Refaster)"), a custom ArchUnit
+    DescribedPredicate + ArchCondition (SOURCE-PIN.md §2: com.tngtech.archunit 1.4.2), and a reflective
+    API inspector that realizes the same select->predicate->report->gate shape without an unpinned
+    analyzer SDK. The codegen half compares hand-written value boilerplate with a compiler-derived
+    record; the new-file processors (AutoValue/Immutables/MapStruct) and Lombok are described in prose
+    only because none is a SOURCE-PIN row (see 09-flags/38_codegen_tools_not_pinned.md). Runtime is
+    JDK-only; the analysis libraries are test/provided scope. Gated by the `quality` profile
+    (Checkstyle + SpotBugs, Chapter 16).
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>custom-rules-codegen-lombok</artifactId>
+  <name>Chapter 18 — Teaching the Build Your Rules (custom-rules-codegen-lombok)</name>
+
+  <dependencies>
+    <!--
+      Error Prone annotations (SOURCE-PIN.md §2: com.google.errorprone, the Error Prone line; the
+      cached pinned coordinate the peer modules resolve is error_prone_annotations 2.36.0, the version
+      NullAway 0.13.4 also requires per the same row). These annotations are CLASS-retained, so
+      `provided` scope keeps them on the compile path only and the module's runtime stays JDK-only like
+      the rest of the companion code. The annotations are the part of Error Prone that is pinned; the
+      check API (error_prone_check_api) that *reads* @RestrictedApi at compile time is NOT a SOURCE-PIN
+      row, so the chapter describes that compile-time check in prose rather than wiring it here.
+    -->
+    <dependency>
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>error_prone_annotations</artifactId>
+      <version>2.36.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!--
+      ArchUnit core (SOURCE-PIN.md §2: com.tngtech.archunit:archunit 1.4.2), test scope. The custom
+      architecture rule is driven through ClassFileImporter + rule.check(...) from a plain JUnit test,
+      so the engine-agnostic core artifact is used rather than archunit-junit5; that keeps the module on
+      the parent's one JUnit platform version. ArchUnit reads bytecode only, so it stays a build-time
+      dependency and the module's runtime is JDK-only.
+    -->
+    <dependency>
+      <groupId>com.tngtech.archunit</groupId>
+      <artifactId>archunit</artifactId>
+      <version>1.4.2</version>
+      <scope>test</scope>
+    </dependency>
+    <!--
+      ArchUnit logs through SLF4J; with no provider on the test classpath it prints a "no providers
+      found" warning. Binding the no-op provider keeps the test run quiet. The version is the exact
+      slf4j-api version ArchUnit 1.4.2 declares transitively (2.0.17), matching the resolved graph
+      rather than introducing a new line. Test scope only — the module's runtime stays JDK-only.
+    -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-nop</artifactId>
+      <version>2.0.17</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The maven-checkstyle-plugin ships an OLD bundled engine; we override it to the pinned engine
+    via a plugin-level dependency — the "two-pin" lesson (the build plugin and the analyzer engine are
+    separate versions). This module is a direct child of the companion-code root, which pins no quality
+    profile of its own, so the profile is declared here (the same shape the other modules use) and
+    reads the config under this module's config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16) — complementary to Checkstyle's source
+            view. The exclude filter is empty: this module needs zero reviewed suppressions. A genuine,
+            reviewed false positive would go in the filter with a reason, never by disabling a detector
+            wholesale.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

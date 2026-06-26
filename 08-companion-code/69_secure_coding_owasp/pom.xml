@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Chapter 30 companion (The Vulnerabilities You Write Yourself). Three Java vulnerability classes,
+    each shown as a vulnerable shape beside the construction that designs it out: SQL injection
+    (string concatenation versus a PreparedStatement bind parameter), insecure deserialization
+    (readObject over request bytes versus a parsed fixed-shape record, with an ObjectInputFilter
+    allow-list as the mitigation when native serialization is unavoidable), and cryptographic-API
+    misuse (ECB + a Random IV + MD5 versus AES/GCM + SecureRandom + salted PBKDF2). The vulnerable
+    types are deliberate teaching counter-examples, exercised only for behavior by a test and never
+    wired into a running path; the SecurityGate running path uses the fixes alone. Crypto is JDK
+    javax.crypto only. Runtime dependencies are JDK-only; the one extra GAV is the SpotBugs annotations
+    artifact, on the compile path only.
+
+    The module dogfoods the book: every shape is held to the same `quality` gate the chapter
+    describes. The string-concatenated query is the one deliberate finding core SpotBugs raises at this
+    threshold (SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE); it carries a single narrow, reasoned
+    suppression in config/spotbugs/spotbugs-exclude.xml. Detecting the crypto and deserialization
+    misuse PATTERNS is a security analyzer's job (FindSecBugs, the SpotBugs security plugin) — see the
+    README for why those are demonstrated by tests and prose here rather than by the core engine.
+  -->
+  <parent>
+    <groupId>org.acme.storefront</groupId>
+    <artifactId>companion-code</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>secure-coding-owasp</artifactId>
+  <name>Chapter 30 — The Vulnerabilities You Write Yourself (secure-coding-owasp)</name>
+
+  <dependencies>
+    <!--
+      SpotBugs annotations (SOURCE-PIN.md: SpotBugs 4.10.2 line; this module builds against the locally
+      cached 4.9.3 engine the companion code is pinned to, so the annotations track that engine). The
+      single version literal here is the one pinned GAV available for a per-site
+      @SuppressFBWarnings(value, justification) — not a BOM or version-set. The annotations are
+      CLASS-retained, so `provided` scope keeps them on the compile path only and the module's runtime
+      stays JDK-only like the rest of the companion code.
+    -->
+    <dependency>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
+      <version>4.9.3</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!--
+    Static-analysis rule gates from Chapter 16, opt-in via `-Pquality` so the default build stays
+    fast. The maven-checkstyle-plugin ships an OLD bundled engine (Checkstyle 9.3); we override it to
+    the pinned engine via a plugin-level dependency — the "two-pin" lesson (the build plugin and the
+    analyzer engine are separate versions). This module is a direct child of the companion-code root,
+    which pins no quality profile of its own, so the profile is declared here (the same shape the
+    Chapter 09 and Chapter 26 modules use) and reads the config under this module's config/ dir.
+  -->
+  <profiles>
+    <profile>
+      <id>quality</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.6.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>10.26.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkstyle-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+            SpotBugs: the bytecode vantage point (Chapter 16) — complementary to Checkstyle's source
+            view. This module ships deliberate counter-examples; the string-concatenated query is the
+            one core SpotBugs raises at this threshold and it carries a single narrowly-scoped,
+            reasoned suppression in the exclude filter — the chapter's "suppress with a documented
+            reason, never disable a detector" discipline, not a way to hide a real defect. The crypto
+            and deserialization misuse patterns are FindSecBugs territory (not in this build's engine),
+            so they are demonstrated by tests and prose rather than by the core detector.
+          -->
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.9.3.0</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <includeTests>false</includeTests>
+              <excludeFilterFile>config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
