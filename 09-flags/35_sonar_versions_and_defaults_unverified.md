@@ -1,6 +1,11 @@
 # FLAG — key 35 (Sonar platform): versions, defaults & edition gating UNVERIFIED until pin
 
-**Status:** `⚠ verify at pin` (multi-authority SOURCE-PIN row "SonarQube / SonarLint / Sonar rules" is `TO-PIN`).
+**Status:** `⚠ verify at pin` (PARTIAL). As of **2026-06-27** the multi-authority SOURCE-PIN row "SonarQube /
+SonarLint / Sonar rules" is **PINNED at SonarQube Server 2026.1 LTA (patch 2026.1.3)** — the Server version is
+no longer `TO-PIN`. The remaining atoms below stay `⚠ verify at pin` because Sonar is SaaS / continuously
+released: scanner GAVs, rule default severities / "Sonar way" membership, SQALE grid values, the exact
+edition-version matrix for taint/SAST, and the IDE/Qodana rows (not yet in SOURCE-PIN §2) are version-sensitive
+and dated-at-use, never timeless.
 
 ## What IS verified (live-line, from Sonar's own docs/source/press release)
 - Product names (Oct 2024 rename): **SonarQube Server** (was SonarQube), **SonarQube Cloud** (was SonarCloud),
@@ -12,7 +17,9 @@
 - Technical debt = sum of remediation minutes; `sqale_debt_ratio` = debt ÷ (30 min/line × LOC); Maintainability grid A=0-0.05…E=0.51-1.
 
 ## What is NOT verified (must re-trace after `/pin-source`)
-- Exact Sonar Server (LTA, e.g. 2025.x) + `sonar-java` analyzer versions.
+- ~~Exact Sonar Server (LTA) version~~ → **RESOLVED 2026-06-27: SonarQube Server 2026.1 LTA (patch 2026.1.3),
+  SOURCE-PIN §2.** The bundled `sonar-java` analyzer version that ships inside that Server LTA is still
+  version-sensitive — verify at pin.
 - GAV/version: `org.sonarsource.scanner.maven:sonar-maven-plugin`, `org.sonarqube` Gradle plugin, SonarScanner CLI.
 - Default severity / "Sonar way" membership of named rules: `java:S106`, `java:S1192`, `java:S1118`, `java:S2259`, `java:S2077` (existence verified; defaults version-sensitive).
 - SQALE/debt grid values + the 30-min/line develop cost (configurable defaults).
@@ -41,3 +48,19 @@ continuously released, the SaaS / rolling discipline was applied throughout the 
 - The GitHub Actions in `ci/sonar-analysis.yml` (`actions/checkout@v4`, `actions/setup-java@v4`) are SaaS
   (SOURCE-PIN §5, "docs as of 2026-06 rolling") and carry inline **dated-at-use (2026-06)** comments; pin to
   commit-sha digests at the public-push sign-off (`COMPANION-REPO.md` §5).
+
+## Marker-resolution note (2026-06-27 — draft `35_..._v1.md` deferred-verification pass)
+Resolved the draft's deferred-verification markers against (a) SOURCE-PIN §2 corrected 2026-06-27 and (b) the
+green companion build:
+- **CONFIRMED & markers removed:** the stale `EXAMPLE-BUILD = PENDING` build-status string → built-green
+  (`mvn -B -Pquality verify`, 7 tests, 0 Checkstyle, 0 SpotBugs, 2026-06-26); the `sonar-project.properties`
+  keys (`sonar.java.binaries`, `sonar.qualitygate.wait`, new-code reference), the local layered gate
+  (`-Pquality`: Checkstyle→SpotBugs), and the CI sonar step all green-build-verified; the SonarQube Server
+  version now anchored at 2026.1 LTA per the corrected pin.
+- **LEFT dated-at-use / `⚠ verify at pin` (Sonar is SaaS/rolling — unconfirmable from disk):** scanner GAV
+  version (invoked by goal `sonar:sonar`); rule default severities / "Sonar way" membership; SQALE grid
+  values + 30-min/line cost; the exact edition-version matrix for taint/SAST (the specific "9.9 LTS+"
+  edition-version was REMOVED from prose back matter — it is unverified and "has shifted historically" — and
+  replaced with "Developer Edition (or higher)", matching the chapter body); SonarLint/SonarQube-for-IDE
+  connected-mode specifics; AI CodeFix (AHEAD-OF-PIN); IntelliJ/Eclipse/Qodana (confirmed NOT in SOURCE-PIN
+  §2 — genuine pin gaps). No fact was invented; no verified fact was altered.

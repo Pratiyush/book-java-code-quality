@@ -50,3 +50,27 @@ identity-verified only.
   lines, so no rule-rename re-trace is expected; confirm at re-pin.
 - Items 1, 3, 4, 5 (plugin GAV/bundled-engine, Gradle extension props, bundled-config XML contents) remain
   `⚠ verify at pin` — not exercised by this Maven module.
+
+## Update — 2026-06-27 (deferred-marker resolution pass on `27_checkstyle_v1.md`, source-verifier)
+
+The draft's deferred markers were resolved against (a) SOURCE-PIN (Checkstyle **13.6.0**) and (b) the BUILT
+green module `08-companion-code/27_checkstyle/` (artifacts on disk: `checkstyle-result.xml` 0 errors,
+`spotbugsXml.xml` 0 BugInstance, 6/6 tests). **Resolved to fact + marker removed** in the draft: the
+`Checker`/`TreeWalker`/`Check` hierarchy, `severity` default `error`, the `ConstantName` regex (live), the
+naming family incl. `RecordComponentName`/`PatternVariableName`, `SuppressWarningsFilter`/`SuppressWarningsHolder`,
+and the `maven-checkstyle-plugin` 3.6.0 → engine 10.26.1 two-pin override. Stale build-status strings in the
+header + companion spec corrected to BUILT-GREEN (per `_EXAMPLE.md`).
+
+**Still carried as `⚠ verify-at-pin` in the draft (this flag is their home):**
+- The two **verbatim doc quotes** — the purpose quote ("a development tool to help programmers …") and the
+  single-file limitation ("cannot determine the type … cannot determine the full inheritance hierarchy") —
+  trace to **live `checkstyle.org` docs**, not yet to the pinned **13.6.0** doc snapshot. Re-confirm the quote
+  text character-for-character at the pinned version (LEGAL-IP §2 / §8 verbatim-span rule).
+- `LineLength` default `max=80` and the **Google config = 100** number: not exercised by this module (which
+  sets house `max=120`); per-rule default at the pinned version still `⚠ verify at pin` (item 2).
+- Bundled-config **membership** (`google_checks.xml` / `sun_checks.xml` / `openjdk_checks.xml` /
+  `doc_comments_checks.xml`): not loaded by this module (item 5).
+
+(Engine-vs-pin **version** delta is tracked in `09-flags/20_companion_engine_versions_vs_pin.md` — not
+duplicated here.) PMD/SpotBugs/Error Prone deferred atoms for the folded keys live in
+`28_pmd_*`, `29_spotbugs_*`, `30_error_prone_*`, and `69_findsecbugs_*` (those peer modules not yet built).
