@@ -68,7 +68,7 @@ flagged to `09-flags/`.
 | JSpecify | **1.0.0** (stable; @Nullable/@NonNull/@NullMarked/@NullUnmarked) | jspecify.dev + github.com/jspecify/jspecify | ✅ pinned |
 | Checker Framework | **4.2.0** (2026-06) | checkerframework.org | ✅ pinned |
 | ArchUnit | **1.4.2** (2026-04) | archunit.org + github.com/TNG/ArchUnit | ✅ pinned |
-| Spotless | **8.7.0** (Maven/Gradle plugin) | github.com/diffplug/spotless | ✅ pinned |
+| Spotless | **spotless-maven-plugin 3.6.0** (2026-06-17; the book uses Maven) | github.com/diffplug/spotless | ✅ re-pinned 2026-06-27 (was "8.7.0" — no such Maven-plugin version exists; latest is 3.6.0) |
 | google-java-format / palantir-java-format | **1.35.0** (g-j-f; min JDK 21) | github.com/google/google-java-format | ✅ pinned |
 | SonarQube / SonarLint / Sonar rules | **Server 2026.1 LTA** (patch 2026.1.3) | docs.sonarsource.com + rules.sonarsource.com | ✅ pinned |
 | Semgrep (Java rules) | **1.163.0** | semgrep.dev | ✅ pinned |
@@ -83,7 +83,7 @@ flagged to `09-flags/`.
 | Testcontainers (Java) | **2.0.5** | testcontainers.org | ✅ pinned |
 | jqwik (property-based) | **1.10.1** (⚠ maintenance mode) | jqwik.net | ✅ pinned |
 | PITest (mutation) | **1.25.3** | pitest.org | ✅ pinned |
-| JaCoCo (coverage) | **0.8.16** | jacoco.org | ✅ pinned |
+| JaCoCo (coverage) | **0.8.15** (latest stable on Central; 0.8.16 is an unreleased SNAPSHOT) | jacoco.org | ✅ re-pinned 2026-06-27 (was 0.8.16 — not published to Central) |
 | JMH (benchmarking) | **1.37** | github.com/openjdk/jmh | ✅ pinned |
 | REST-assured / Pact (contract) | **REST-assured 6.0.0** (2025-12; Java 17+) / **Pact-JVM 4.7.0** | rest-assured.io / pact.io | ✅ pinned |
 

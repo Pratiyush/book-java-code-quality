@@ -3,7 +3,7 @@ Dossier key: 07 (owner) + folds 17 + 34 — per 01-index/FINAL_INDEX.md Ch 6
 Slug: 07_naming_structure_formatting
 Part / arc position: Part II — Writing Quality Java, Chapter 6
 Companion module: 08-companion-code/07_naming_structure_formatting/ — ⚠ EXAMPLE-BUILD = PENDING-RUNTIME (no JDK). Spec at foot.
-Verified against SOURCE-PIN: 2026-06-20. Sources: Google Java Style Guide (§3 structure, §4 formatting, §5 naming); Effective Java 3e (2018) Item 56, Item 68; JLS SE 21/25 §6.1 (verify wording @pin); Checkstyle 13.6.0; PMD 7.25.0; SonarQube 2026.1 LTA (java:S100/S101/S115/S116/S117, java:S125); Spotless 8.7.0; google-java-format 1.35.0; palantir-java-format; EditorConfig spec; JDK 21 doc-comment spec; JEP 413 ({@snippet}, JDK 18); JEP 467 (/// Markdown comments, JDK 23 — ⚠ AHEAD-OF-PIN); Clean Code (2008); A Philosophy of Software Design (2018).
+Verified against SOURCE-PIN: 2026-06-20. Sources: Google Java Style Guide (§3 structure, §4 formatting, §5 naming); Effective Java 3e (2018) Item 56, Item 68; JLS SE 21/25 §6.1 (verify wording @pin); Checkstyle 13.6.0; PMD 7.25.0; SonarQube 2026.1 LTA (java:S100/S101/S115/S116/S117, java:S125); Spotless 3.6.0; google-java-format 1.35.0; palantir-java-format; EditorConfig spec; JDK 21 doc-comment spec; JEP 413 ({@snippet}, JDK 18); JEP 467 (/// Markdown comments, JDK 23 — ⚠ AHEAD-OF-PIN); Clean Code (2008); A Philosophy of Software Design (2018).
 ⚠ contested practice: the comments debate (Clean Code vs APoSD) is presented two-schools, no crown.
 ⚠ verify-at-pin: exact default regexes for several Checkstyle/PMD/Sonar naming rules; JLS §6.1 wording; JEP numbers; verbatim book quotes.
 DRAFT v1 — gates manual; format/lint split + convention-vs-meaning shape; EXAMPLE-BUILD pending JDK.
@@ -224,7 +224,7 @@ The readability fundamentals now have clear ownership: a formatter owns typograp
 - **Checkstyle 13.6.0** — `ConstantName` `^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$`, `MethodName` `^[a-z][a-zA-Z0-9]*$` (verified); `MissingJavadocMethod`, `SummaryJavadoc`, `LineLength` (default 80) ⚠ verify @pin.
 - **PMD 7.25.0** — `ClassNamingConventions.classPattern` `[A-Z][a-zA-Z0-9]*`, `FieldNamingConventions.constantPattern` `[A-Z][A-Z_0-9]*` (verified); `CommentRequired`, `CommentSize`.
 - **SonarQube 2026.1 LTA** — `java:S100/S101/S115/S116/S117` (naming), `java:S125` (commented-out code). *(⚠ default regexes verify @pin.)*
-- **Spotless 8.7.0** — `spotless:check`/`apply`, `<googleJavaFormat>`/`<palantirJavaFormat>` steps, `<ratchetFrom>` (verbatim "only format files which have changed since origin/main").
+- **Spotless 3.6.0** — `spotless:check`/`apply`, `<googleJavaFormat>`/`<palantirJavaFormat>` steps, `<ratchetFrom>` (verbatim "only format files which have changed since origin/main").
 - **google-java-format 1.35.0** — "no configurability… deliberate design decision" (verbatim README); `--aosp`.
 - **palantir-java-format** — "modern, lambda-friendly, 120 character Java formatter," "based on the excellent google-java-format" (verbatim README).
 - **EditorConfig spec** — `root`, `indent_style`, `indent_size`, `end_of_line`, `charset`, `trim_trailing_whitespace`, `insert_final_newline`; "closer files take precedence." *(⚠ EditorConfig not yet a SOURCE-PIN row; `max_line_length` not in core spec list.)*

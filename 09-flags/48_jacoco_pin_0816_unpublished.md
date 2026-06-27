@@ -42,3 +42,6 @@ flagged here so the human re-pins deliberately.
 2. Re-trace any chapter prose that prints `0.8.16` as a JaCoCo version fact (keys 48, 80, 35, and the
    capstone if it wires coverage) to the corrected version.
 3. The module's `<jacoco.version>` property updates with the re-pin (single literal to change).
+
+---
+**✅ RESOLVED 2026-06-27** (online re-verify): JaCoCo 0.8.16 confirmed an unreleased SNAPSHOT (not on Maven Central); 0.8.15 is the latest stable. SOURCE-PIN.md §3 re-pinned 0.8.16 → **0.8.15**; all live citations (drafts + figure sidecars + 4 figure HTMLs re-rendered) swept 0.8.16 → 0.8.15. Companion modules already build on 0.8.15. No remaining action.
