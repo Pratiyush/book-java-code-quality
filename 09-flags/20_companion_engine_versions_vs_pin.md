@@ -41,3 +41,26 @@ this module's properties and rebuild — folded into the project-wide decision i
 separate rows from the engine lines).
 
 **Status:** `⚠ verify at pin`. Build is green at the values above on the cached toolchain.
+
+---
+**ENGINE-BUMP ATTEMPTED + REVERTED — 2026-06-27 (network available).** Item-6 "do it":
+the engine bump to the pin top-lines was attempted across all 46 module poms (Checkstyle
+10.26.1→13.6.0, SpotBugs 4.9.3.0→4.10.2.0, spotbugs-annotations 4.9.3→4.10.2; all
+resolved + downloaded from Central).
+- **Checkstyle 13.6.0:** built CLEAN on the canary (Ch27) and on every module the reactor
+  reached — 0 violations. No Checkstyle teaching conflict surfaced.
+- **SpotBugs 4.10.2:** BUILD FAILURE in Ch11 (null-safety) — its improved null detector
+  raises `NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE` on `BrokenCheckout.total(...)`
+  (the unguarded `@Nullable Discount` deref). **That finding INVALIDATES a load-bearing
+  teaching point:** Ch11's `BrokenCheckout` Javadoc + prose explicitly state that
+  source/bytecode analyzers (Checkstyle, **SpotBugs**) do NOT reject this code — that only a
+  nullness checker (NullAway / Checker Framework) reading the `@Nullable` does — which is the
+  chapter's *fourth lever* (the NullAway-vs-SpotBugs gap). On SpotBugs 4.10.2 that gap is gone.
+- **Disposition: REVERTED to the cached engines (10.26.1 / 4.9.3).** The modules build green,
+  and the chapter teaching stays valid. **This delta is kept flagged DELIBERATELY, not as a
+  TODO:** the book teaches version-specific tool behavior, so bumping an engine is a per-chapter
+  teaching-re-validation, not a version sed. Bumping requires re-checking every chapter's
+  tool-behavior claims against the new engine (Ch11 is proof at least one breaks). The pin
+  top-line records the latest release; the modules build on the cached engine the *prose was
+  written against* — both true, both documented. Re-pin the engine top-lines only alongside a
+  deliberate teaching-re-validation pass.
