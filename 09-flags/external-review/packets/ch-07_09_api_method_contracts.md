@@ -97,9 +97,9 @@ DRAFT v1 — gates manual; contract-card + two-halves shape; EXAMPLE-BUILD GREEN
 
 ## Hook
 
-A teammate calls `findAccount(id)` and writes `account.getBalance()` on the next line. It throws `NullPointerException` — because `findAccount` returns `null` when there is no match, and nothing in the signature said so. The fix is not a null check at the call site. The method's *signature lied*: it claimed to return an `Account`, but it sometimes returns nothing, and that "sometimes nothing" was invisible. Change the return type to `Optional<Account>` and the same mistake no longer compiles — the caller is forced to handle the empty case before touching a balance.
+A teammate calls `findAccount(id)` and writes `account.getBalance()` on the next line. It throws `NullPointerException`, because `findAccount` returns `null` when there is no match and nothing in the signature said so. The fix is not a null check at the call site. The method's *signature lied*: it claimed to return an `Account`, but it sometimes returns nothing, and that "sometimes nothing" was invisible. Change the return type to `Optional<Account>` and the same mistake no longer compiles; the caller is forced to handle the empty case before touching a balance.
 
-A method is a *contract* — a promise about what callers must supply, what they get back, and what happens when the promise is broken. The craft of API design is making that contract **explicit, hard to misuse, and machine-checkable**, so a violation becomes a compile error or a failed build instead of a 2 a.m. page. The chapter closes where the contract meets *time*: how a published API changes without silently breaking dependents.
+A method is a *contract*: a promise about what callers must supply, what they get back, and what happens when the promise is broken. The craft of API design is making that contract **explicit, hard to misuse, and machine-checkable**, so a violation becomes a compile error or a failed build instead of a 2 a.m. page. The chapter closes where the contract meets *time*, the question of how a published API changes without silently breaking dependents.
 
 ## Overview
 
@@ -117,6 +117,8 @@ The one idea worth holding: *push as much of the contract into the type system a
 
 ## How it works
 
+Figure 7.1 lays the contract out as two columns: the type-carried half the compiler enforces, and the doc/runtime-carried half a Javadoc clause states and a fail-fast check defends. Read it left to right; it is the map the rest of the chapter fills in.
+
 ![Fig 7.1 — The two halves of a method contract — Push as much of the contract into the type system as possible — the cheapest feedback on a broken contract is "it didn't compile"](../../05-figures/09_api_method_contracts/fig09_1.png)
 
 *Fig 7.1 — The two halves of a method contract — Push as much of the contract into the type system as possible — the cheapest feedback on a broken contract is "it didn't compile"*
@@ -128,16 +130,16 @@ Every method makes a promise with two parts, and they are enforced in completely
 
 | Half | Carries | Enforced by | Cost of a violation |
 |---|---|---|---|
-| **Type-carried** | visibility, types, immutability, `Optional`, nullness, generics | compiler / static checker | compile error — cheapest |
-| **Doc/runtime-carried** | preconditions beyond the type (`index ≥ 0`), exception semantics, thread-safety, side effects | Javadoc + fail-fast runtime check | runtime exception — later, costlier |
+| **Type-carried** | visibility, types, immutability, `Optional`, nullness, generics | compiler / static checker | compile error (cheapest) |
+| **Doc/runtime-carried** | preconditions beyond the type (`index ≥ 0`), exception semantics, thread-safety, side effects | Javadoc + fail-fast runtime check | runtime exception (later, costlier) |
 
-The whole skill is *moving promises leftward* — from a comment nobody reads, to a runtime check that fails fast, to a type that will not compile when broken. The `Optional<Account>` change from the opening example is exactly that move: it took "may be absent," which had been an undocumented runtime surprise, and made it a fact in the signature.
+The whole skill is *moving promises leftward*: from a comment nobody reads, to a runtime check that fails fast, to a type that will not compile when broken. The `Optional<Account>` change from the opening example is exactly that move. It took "may be absent," which had been an undocumented runtime surprise, and made it a fact in the signature.
 
 > **CONCEPT** *The contract-card.* For each design rule in this chapter: state **the promise**, name **the mechanism** that carries it, cite the **Effective Java item**, list the **analyzer rule** that machine-checks it (if any), and give its **when-NOT-to-use**. The recurring "is this machine-checkable?" question is the point.
 
 ### Minimize the surface (Items 15–17)
 
-The smallest API is the easiest to keep correct, because every `public` or `protected` member is a promise that must be kept *forever* (the binary-compatibility burden covered at the end of this chapter). *Effective Java* Item 15 — "Minimize the accessibility of classes and members": make each as inaccessible as it can be; a top-level class that can be package-private should be. Item 16 — use accessor methods, not public fields, in public classes. Item 17 — "Minimize mutability": an immutable type has the simplest contract there is, because its state never changes, so it is automatically thread-safe and never needs a defensive copy. (Records, JEP 395, GA in Java 16, are the modern shorthand — Chapter 8.)
+The smallest API carries the lowest maintenance burden, because every `public` or `protected` member is a promise that must be kept *forever* (the binary-compatibility burden covered at the end of this chapter). *Effective Java* Item 15, "Minimize the accessibility of classes and members," makes each member as inaccessible as it can be; a top-level class that can be package-private should be. Item 16 uses accessor methods, not public fields, in public classes. Item 17, "Minimize mutability," gives an immutable type the simplest contract there is: its state never changes, so it is automatically thread-safe and never needs a defensive copy. (Records, JEP 395, GA in Java 16, are the modern shorthand; see Chapter 8.)
 
 The mechanism is subtraction: a smaller surface means a smaller contract to maintain.
 
@@ -152,16 +154,16 @@ The precondition half of the contract is enforced by **checking parameters at th
 | `checkIndex(int, int)` (and `long` overload, since 16) | 9 / 16 | `IndexOutOfBoundsException` |
 | `checkFromToIndex` / `checkFromIndexSize` | 9 | `IndexOutOfBoundsException` |
 
-The documented exception conventions are part of the contract too: `NullPointerException` for null, `IndexOutOfBoundsException` for a bad index, `IllegalArgumentException` for other bad values, `IllegalStateException` for bad object state. (Heavier *declarative* validation — Jakarta Bean Validation `@NotNull`/`@Size` — is Chapter 10's territory; the in-method fail-fast idiom is what this chapter covers.)
+The documented exception conventions are part of the contract too: `NullPointerException` for null, `IndexOutOfBoundsException` for a bad index, `IllegalArgumentException` for other bad values, `IllegalStateException` for bad object state. (Heavier *declarative* validation, such as Jakarta Bean Validation `@NotNull`/`@Size`, is Chapter 10's territory; the in-method fail-fast idiom is what this chapter covers.)
 
-In the companion module, a transfer guards every argument before it reads or writes anything — `requireNonNull` for the references, `checkIndex` for the bounded retry attempt, an explicit range test for the amount — so a broken call fails at the call site, not deep in the computation:
+In the companion module, a transfer guards every argument before it reads or writes anything (`requireNonNull` for the references, `checkIndex` for the bounded retry attempt, an explicit range test for the amount), so a broken call fails at the call site, not deep in the computation:
 
 <!-- include: 09_api_method_contracts/src/main/java/org/acme/contracts/MoneyTransferService.java#precondition-guards -->
 
 ### Design the signature, return type, and parameters (Items 51–55)
 
 - **Signatures (Item 51):** name methods carefully; keep parameter lists short (Bloch's guidance: aim for four or fewer); for long lists, prefer a builder or a parameter object; favour interfaces over classes for parameter types; prefer a two-value enum over a `boolean` parameter when the call site is not otherwise self-explanatory (`setVisible(Visibility.HIDDEN)` over `setVisible(false)`).
-- **Overloading (Item 52) and varargs (Item 53):** use both judiciously. Overload *resolution* is static (compile-time, by declared type — JLS §15.12.2), which surprises callers who expect override-like dynamic dispatch; avoid two same-arity overloads a single argument could match either way. Varargs (JLS §8.4.1) allocate an array per call; for "at least one required," use an explicit first parameter plus varargs for the rest. (PMD `UseVarargs` nudges toward varargs where an array parameter is used.)
+- **Overloading (Item 52) and varargs (Item 53):** use both judiciously. Overload *resolution* is static (compile-time, by declared type, JLS §15.12.2), which surprises callers who expect override-like dynamic dispatch; avoid two same-arity overloads a single argument could match either way. Varargs (JLS §8.4.1) allocate an array per call; for "at least one required," use an explicit first parameter plus varargs for the rest. (PMD `UseVarargs` nudges toward varargs where an array parameter is used.)
 - **Return empty, not null (Item 54):** a method that can return "no elements" returns an empty collection or array, never `null`, so callers need no guard.
 - **Return `Optional` judiciously (Item 55):** `Optional<T>`, used as a *return type only*, puts "a result may be absent" into the type, as the hook showed. Bloch's caveats: never `Optional` of a boxed primitive (use `OptionalInt`/`OptionalLong`/`OptionalDouble`); never for collection element types (return empty); avoid `Optional` fields and parameters.
 
@@ -192,15 +194,15 @@ The companion module's batch type copies its list on the way in and on the way o
 
 ### Document the part types cannot carry (Item 56)
 
-For everything the signature cannot express, the doc comment *is* the contract. *Effective Java* Item 56 — "Write doc comments for all exposed API elements." The conventions: `@param` per parameter (its preconditions), `@return` for every non-void method, `@throws` for each exception with its triggering condition, and a first sentence that stands alone as the summary. `@implSpec` documents the contract a subclass may rely on. (The contested question of *how much* to comment implementation code belongs to the previous chapter; the point here is narrower — a published API's contract is documented.) A query method in the companion module carries each of those clauses, so the parts the signature cannot state are stated where a reader and a doc generator both find them:
+For everything the signature cannot express, the doc comment *is* the contract. *Effective Java* Item 56 states the rule: "Write doc comments for all exposed API elements." The conventions: `@param` per parameter (its preconditions), `@return` for every non-void method, `@throws` for each exception with its triggering condition, and a first sentence that stands alone as the summary. `@implSpec` documents the contract a subclass may rely on. (The contested question of *how much* to comment implementation code belongs to the previous chapter; the point here is narrower, that a published API's contract is documented.) A query method in the companion module carries each of those clauses, so the parts the signature cannot state are stated where a reader and a doc generator both find them:
 
 <!-- include: 09_api_method_contracts/src/main/java/org/acme/contracts/MoneyTransferService.java#javadoc-contract -->
 
-> **A note on what's coming (JDK 23+).** Markdown doc comments — the `///` form, JEP 467 — ship in JDK 23, past this book's Java 21 anchor. They are a direction-of-travel for Javadoc authoring, not a feature available at the anchor, so nothing in this chapter relies on them; at Java 21 the contract is written with HTML-and-`@tag` Javadoc as shown above.
+> **A note on what is coming (JDK 23+).** Markdown doc comments, the `///` form from JEP 467, ship in JDK 23, past this book's Java 21 anchor. They are a direction-of-travel for Javadoc authoring, not a feature available at the anchor, so nothing in this chapter relies on them; at Java 21 the contract is written with HTML-and-`@tag` Javadoc as shown above.
 
 ### Where each rule is enforced
 
-These design rules are *machine-checkable*, not folklore — but each in a specific place, and some only by review.
+These design rules are *machine-checkable*, not folklore. Each is checked in a specific place, though, and some only by review.
 
 | Contract concern | Type system | Runtime guard | Analyzer (cited to its own tool) | Review only |
 |---|---|---|---|---|
@@ -218,29 +220,29 @@ These tools are *enforcers of the same design rules*, not rivals; where two cove
 
 A published contract must be kept *over time*. That is where API design meets release discipline, and where Java has a trap that catches even careful teams: **source compatibility and binary compatibility are not the same thing.**
 
-A change can recompile cleanly in the local build and still break a consumer who does not recompile — because that consumer links against the shipped `.jar` at runtime. The JLS (ch. 13) defines binary compatibility precisely; the short version is that some changes which look harmless in source (certain signature changes, inlined constants, a method moving up a hierarchy) are binary-*incompatible* for an already-compiled caller. Consumers who do not recompile care about binary compatibility, and `mvn test` in the library's own build will never surface that breakage.
+A change can recompile cleanly in the local build and still break a consumer who does not recompile, because that consumer links against the shipped `.jar` at runtime. The JLS (ch. 13) defines binary compatibility precisely; the short version is that some changes which look harmless in source (certain signature changes, inlined constants, a method moving up a hierarchy) are binary-*incompatible* for an already-compiled caller. Consumers who do not recompile care about binary compatibility, and `mvn test` in the library's own build will never surface that breakage.
 
-**Semantic versioning** is the contract that communicates change: `MAJOR.MINOR.PATCH`, where a breaking change demands a MAJOR bump, additive changes a MINOR, and fixes a PATCH (semver.org). The promise is only as good as the accuracy of what is declared changed — and that is exactly what can be *computed* from the actual API diff rather than left to memory:
+**Semantic versioning** is the contract that communicates change: `MAJOR.MINOR.PATCH`, where a breaking change demands a MAJOR bump, additive changes a MINOR, and fixes a PATCH (semver.org). The promise is only as good as the accuracy of what is declared changed, and that is exactly what can be *computed* from the actual API diff rather than left to memory:
 
 - **japicmp** compares two JARs for binary *and* source incompatibilities; its `--semantic-versioning` mode reports which version part requires a bump, and the Maven option `breakBuildBasedOnSemanticVersioning` fails the build when the declared bump does not match the detected changes.
 - **revapi** does API analysis and change-tracking, categorizes changes by severity, and runs standalone, as a Maven plugin, or as a library; its scope reaches beyond Java classes (configuration, schemas).
 
-The two tools take different approaches: revapi is broader-than-Java and severity-driven; japicmp is focused on diffing two JARs. A team chooses by need, and neither is crowned. Wired into CI against the last released artifact, either turns "did we break someone?" from hope into a build gate (a fitness function, Chapter 26). The design rules from the earlier sections are what make this gate *quiet*: a smaller public surface (Item 15) and a more additive evolution (`@Deprecated(forRemoval=true, since=...)` with a migration path rather than deletion) mean the compatibility check fires less often.
+The two tools take different approaches: revapi is broader-than-Java and severity-driven; japicmp is focused on diffing two JARs. A team chooses by need, and neither is crowned. Wired into CI against the last released artifact, either turns "did this release break a consumer?" from hope into a build gate (a fitness function, Chapter 26). The design rules from the earlier sections are what make this gate *quiet*: a smaller public surface (Item 15) and a more additive evolution (`@Deprecated(forRemoval=true, since=...)` with a migration path rather than deletion) mean the compatibility check fires less often.
 
 ## Limitations & when NOT to reach for it
 
 - **Runtime checks are not free or complete.** `requireNonNull` and explicit guards add a check on every call and shift failure to runtime. Item 49's own caveat: for private/package-private methods with a closed, controlled caller set, prefer `assert`, or skip the check where the computation validates implicitly. Over-checking every internal method is ceremony.
 - **`Optional` has real costs.** It is a heap object, it is not `Serializable`, and it is an anti-pattern for fields, parameters, and boxed primitives. Returning it where an empty collection is clearer over-engineers the contract.
 - **Defensive copying can be expensive or wrong.** Copying large collections on every getter is real cost; and `.clone()` on a multi-dimensional or element-mutable array is a *shallow* copy that does not actually protect the representation (a documented SpotBugs sharp edge). When the stored type is already immutable, copies are pure overhead; reach for immutability instead.
-- **Analyzer rules have documented scope limits.** Sonar `java:S2201` checks only a *fixed list* of immutable return types — `String`, `Boolean`, the boxed numerics (`Integer`, `Double`, `Float`, `Byte`, `Short`), `Character`, and `StackTraceElement` — and misses the rest; the precise list can widen between analyzer versions (verify against the pinned Sonar release; tracked in `09-flags/09_s2201_scope_limit_unverified.md`). Error Prone `CheckReturnValue` fires only where the annotation is present. "The analyzer enforces my contract" is true only for the annotated/scoped subset.
+- **Analyzer rules have documented scope limits.** Sonar `java:S2201` checks only a *fixed list* of immutable return types (`String`, `Boolean`, the boxed numerics `Integer`, `Double`, `Float`, `Byte`, `Short`, plus `Character` and `StackTraceElement`) and misses the rest; the precise list can widen between analyzer versions (verify against the pinned Sonar release; tracked in `09-flags/09_s2201_scope_limit_unverified.md`). Error Prone `CheckReturnValue` fires only where the annotation is present. "The analyzer enforces my contract" is true only for the annotated/scoped subset.
 - **Annotation packages are not one standard.** Error Prone's, the dormant JSR-305 `javax.annotation`, and JSpecify all exist; mixing them, or annotating a library and hoping every consumer's checker honours it, is fragile. JSpecify is the consolidation effort, but adoption is partial (Chapter 9).
 - **Documentation contracts drift.** A `@param`/`@throws` clause can silently disconnect from the code; a precise-looking comment that no longer matches the code actively misleads.
 - **Compatibility tools detect signature breaks, not behavioural ones.** A method that keeps its signature but changes its *meaning* passes japicmp/revapi and still breaks consumers; tests and a changelog remain necessary. The tools also cost setup: excluding intentional breaks, internal packages, and generated code is real configuration, and a noisy report gets ignored (Chapter 18).
-- **When not to invest at all.** Compatibility gating is overkill for a leaf service that nobody depends on as a library — it has no external consumers to protect. A tiny internal API among three colleagues does not need the full contract apparatus on every method.
+- **When not to invest at all.** Compatibility gating is overkill for a leaf service that nobody depends on as a library; it has no external consumers to protect. A tiny internal API among three colleagues does not need the full contract apparatus on every method.
 
 ## Alternatives & adjacent approaches
 
-- **Bean Validation** (`@NotNull`, `@Size`): declarative precondition checking, strong at system boundaries (request DTOs). Complementary to in-method fail-fast, not a replacement — Chapter 10.
+- **Bean Validation** (`@NotNull`, `@Size`): declarative precondition checking, strong at system boundaries (request DTOs). Complementary to in-method fail-fast, not a replacement; see Chapter 10.
 - **Design by Contract** (Eiffel-style pre/post/invariants, or libraries that emulate it): a more formal version of the same idea; Java's idiom is the lightweight `Objects` checks plus Javadoc rather than language-level contracts.
 - **`assert` statements:** the right tool for *internal* invariants where the caller set is fully controlled (Item 49), but they are disabled by default at runtime, so never use them for a public method's argument validation.
 - **Clirr / japi-compliance-checker:** older or alternative compatibility checkers in the same space as revapi/japicmp; named for completeness, with the same "signature-break, not behaviour-break" limit.
@@ -258,7 +260,7 @@ These layer rather than compete: types catch what they can at compile time, runt
 
 ## Hand-off to the next chapter
 
-The contract framing is now in place: a promise with a type-carried half and a doc/runtime half, enforced as far left as the type system allows, and held stable across versions. The next chapters apply that framing to the specific contracts a method makes when things go *wrong* — the exception and error-handling design that determines what a `@throws` clause actually promises, and the immutability and `equals`/`hashCode` contracts that determine whether value types behave correctly in collections. The fail-fast guard is the first sentence of that larger story about failure.
+The contract framing is now in place: a promise with a type-carried half and a doc/runtime half, enforced as far left as the type system allows, and held stable across versions. The next chapters apply that framing to the specific contracts a method makes when things go *wrong*: the exception and error-handling design that determines what a `@throws` clause actually promises, and the immutability and `equals`/`hashCode` contracts that determine whether value types behave correctly in collections. The fail-fast guard is the first sentence of that larger story about failure.
 
 ## Back matter — sources & traceability
 
@@ -273,8 +275,8 @@ The contract framing is now in place: a promise with a type-carried half and a d
 - **JSpecify 1.0.0** — `@Nullable`/`@NonNull`/`@NullMarked`/`@NullUnmarked`; spec, not a checker. (Version per SOURCE-PIN §2; `@NullMarked`-package + explicit `@Nullable` opt-out exercised green in the companion module via `org.jspecify:jspecify:1.0.0`.)
 - **SemVer** (semver.org) — `MAJOR.MINOR.PATCH`. **revapi** 0.15.1 (revapi.org) — severity-categorized API change tracking. **japicmp** 0.25.6 (siom79.github.io/japicmp) — JAR diff, `--semantic-versioning`, `breakBuildBasedOnSemanticVersioning`. (Versions per SOURCE-PIN §6; exact CLI/Maven option names verified against each tool's docs at `/pin-source` — the compatibility sub-module is a spec here, not yet built.)
 
-**Companion module (BUILT GREEN — Floor C):** `08-companion-code/09_api_method_contracts/` — a contract-tight `MoneyTransfer` service: minimized accessibility, `Objects.requireNonNull`/`checkIndex` fail-fast, an immutable `record` result, an `Optional<Account>` lookup, a defensive copy, full `@param`/`@return`/`@throws`/`@implSpec` Javadoc, `@NullMarked` package. The contracts are machine-checked by Checkstyle + SpotBugs under the `-Pquality` profile (`mvn -Pquality verify`), with the SpotBugs suppression filter empty — the representation-exposure detectors stay quiet by design, not by suppression — and 11 JUnit tests assert each contract holds at runtime. **Failure path:** removing the `requireNonNull` guard reintroduces a late NPE the tests catch, and re-exposing the internal list trips the SpotBugs `EI_EXPOSE_REP` family at `verify`. **Companion sub-module (planned):** a tiny library `v1`→`v2` with a deliberate binary-incompatible change that japicmp (or revapi) flags in CI, demanding a MAJOR bump — not yet built. Snippet tags: `precondition-guards`, `optional-return`, `defensive-copy`, `javadoc-contract`, `nullness-marked`.
+**Companion module (BUILT GREEN — Floor C):** `08-companion-code/09_api_method_contracts/` — a contract-tight `MoneyTransfer` service: minimized accessibility, `Objects.requireNonNull`/`checkIndex` fail-fast, an immutable `record` result, an `Optional<Account>` lookup, a defensive copy, full `@param`/`@return`/`@throws`/`@implSpec` Javadoc, `@NullMarked` package. The contracts are machine-checked by Checkstyle + SpotBugs under the `-Pquality` profile (`mvn -Pquality verify`), with the SpotBugs suppression filter empty, so the representation-exposure detectors stay quiet by design, not by suppression; 11 JUnit tests assert each contract holds at runtime. **Failure path:** removing the `requireNonNull` guard reintroduces a late NPE the tests catch, and re-exposing the internal list trips the SpotBugs `EI_EXPOSE_REP` family at `verify`. **Companion sub-module (planned):** a tiny library `v1`→`v2` with a deliberate binary-incompatible change that japicmp (or revapi) flags in CI, demanding a MAJOR bump; not yet built. Snippet tags: `precondition-guards`, `optional-return`, `defensive-copy`, `javadoc-contract`, `nullness-marked`.
 
 ## Next chapter teaser
 
-The *interface* is now honest. Next comes the *value*: immutability, and the `equals`/`hashCode`/`Comparable` contracts that determine whether objects behave correctly in a `HashMap` or a sorted set — the contracts the language enforces silently, and punishes silently when broken.
+The *interface* is now honest. Next comes the *value*: immutability, and the `equals`/`hashCode`/`Comparable` contracts that determine whether objects behave correctly in a `HashMap` or a sorted set. These are the contracts the language enforces silently, and punishes silently when broken.

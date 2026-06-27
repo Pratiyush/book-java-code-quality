@@ -34,18 +34,20 @@ The division of labour matters. Naming, structure, and formatting are the lowest
 
 **What this chapter does NOT cover.** The deep tool mechanics: how to author a Checkstyle ruleset (Chapter 16), PMD (Chapter 16), the Sonar engine (Chapter 17), suppression and baselines (Chapter 18), pre-commit parity (Part XI). This chapter teaches the *practice and the conventions*; the tools appear here as the enforcement surface.
 
-**The one idea worth holding is the axis**: a tool checks typography (regex-enforceable); a human checks meaning (un-enforceable). Selling "we enforce naming with a linter" as "our names are good" is the category error this chapter exists to prevent.
+One axis runs under all of it: a tool checks typography (regex-enforceable); a human checks meaning (un-enforceable). Selling "we enforce naming with a linter" as "our names are good" is the category error this chapter exists to prevent.
 
 ## How it works
 
-![Fig 6.1 — The typography / meaning axis — What a tool can settle once vs. what only a human with domain knowledge can judge — the spine of Chapter 6](../../05-figures/07_naming_structure_formatting/fig07_1.png)
+One axis carries this chapter. Figure 6.1 sets it out: on one side, the part a tool settles once and for all; on the other, the part only a human with domain knowledge can judge. Every concern below sorts onto that axis.
 
-*Fig 6.1 — The typography / meaning axis — What a tool can settle once vs. what only a human with domain knowledge can judge — the spine of Chapter 6*
+![Fig 6.1 — the typography / meaning axis: what a tool settles once versus what only a human with domain knowledge can judge, the spine of Chapter 6](../../05-figures/07_naming_structure_formatting/fig07_1.png)
+
+*Figure 6.1 — the typography / meaning axis: what a tool settles once versus what only a human with domain knowledge can judge.*
 
 
 ### The three layers, and where each is enforced
 
-The chapter's spine is one picture. Three concerns that feel like taste are actually three different *kinds* of decision, and they get enforced in three different places.
+Three concerns that feel like taste are actually three different *kinds* of decision, and they get enforced in three different places.
 
 | Layer | What it is | How much is mechanical | Enforced by |
 |---|---|---|---|
@@ -53,7 +55,7 @@ The chapter's spine is one picture. Three concerns that feel like taste are actu
 | **Structure** | source-file order; member order within a class | overload-contiguity is checkable; the rest is judgment | linter checks file layout; human explains member order |
 | **Formatting** | whitespace, indentation, braces, line length, import order | almost entirely mechanical | a deterministic formatter *rewrites* it |
 
-Read top to bottom, the column that matters is "how much is mechanical." Formatting is fully decidable, so a formatter can *produce* the right answer rather than merely detect a wrong one. Naming is half-decidable: a regex confirms `customerId` is `lowerCamelCase`, but no tool knows whether `customerId` actually holds an *order* id. Structure sits in between.
+Read top to bottom, the column that matters is "how much is mechanical." A *linter* here is a static-analysis tool that reads source and reports rule violations; a *formatter* is one that rewrites the source into a canonical shape. Formatting is fully decidable, so a formatter can *produce* the right answer rather than merely detect a wrong one. Naming is half-decidable: a regex confirms `customerId` is `lowerCamelCase`, but no tool knows whether `customerId` actually holds an *order* id. Structure sits in between.
 
 > **CONCEPT** *Convention vs meaning.* Every naming/style decision splits into a typographical part (a tool checks it with a regex) and a semantic part (only a person can judge it). The settled-feeling parts of "readability" are exactly the typographical ones, which is *why* they are safe to automate, and why automating them reveals nothing about the semantic ones.
 
@@ -71,7 +73,7 @@ The typographical conventions are near-universal. *Effective Java* Item 68 calls
 | Parameter / local variable | `lowerCamelCase` | `customerId`, `subtotal` |
 | Type variable | single capital `±` numeral, or class-form + `T` | `T`, `RequestT` |
 
-There is a Java-concrete trap hiding in that "constant" row. Google Java Style §5.2.4 defines a *constant* as a `static final` field "whose contents are deeply immutable and whose methods have no detectable side effects" — **not** every `static final`. So `static final ImmutableList<String> NAMES` is `CONSTANT_CASE`, but `static final MutableThing thing` is `lowerCamelCase`. A linter rule that naively maps "`static final` ⇒ uppercase" gets this wrong; the convention is about *deep immutability*, not the modifier.
+There is a Java-concrete trap hiding in that "constant" row. Google Java Style §5.2.4 defines a *constant* as a `static final` field "whose contents are deeply immutable and whose methods have no detectable side effects", not every `static final`. So `static final ImmutableList<String> NAMES` is `CONSTANT_CASE`, but `static final MutableThing thing` is `lowerCamelCase`. A linter rule that naively maps "`static final` ⇒ uppercase" gets this wrong; the convention is about *deep immutability*, not the modifier.
 
 These are encoded as regexes by every major linter, and the regexes are *not identical across tools*, which is the first place neutrality bites:
 
@@ -85,7 +87,7 @@ These are encoded as regexes by every major linter, and the regexes are *not ide
 
 Checkstyle, PMD, and SonarQube each ship their *own* naming defaults; they overlap heavily but the exact regexes differ. State each from its own source; do not present one as *the* canonical default. (Which to run, and how to stop them fighting, is Chapter 17.)
 
-In the companion module the naming layer is a curated block of Checkstyle modules — each settling one element's *case*, none of them reaching its meaning:
+In the companion module the naming layer is a curated block of Checkstyle modules. Each settles one element's *case*; none of them reaches its meaning:
 
 <!-- include: 07_naming_structure_formatting/config/checkstyle/checkstyle.xml#checkstyle-naming -->
 
@@ -113,7 +115,7 @@ Google Java Style §4 fixes the values teams argue about: indentation "+2 spaces
 - **An orchestrator** (**Spotless**), which defines no style of its own but wires an engine plus auxiliary steps (`importOrder`, `removeUnusedImports`, `licenseHeader`, `trimTrailingWhitespace`) into Maven (`spotless:check` / `spotless:apply`) and Gradle (`spotlessCheck` / `spotlessApply`). Its `ratchetFrom` step ("only format files which have changed since `origin/main`") is the documented answer to the "10,000-line reformat PR" problem.
 - **An author-time baseline** (**EditorConfig**): a `.editorconfig` file that carries a few whitespace settings (`indent_style`, `indent_size`, `end_of_line`, `charset`, `trim_trailing_whitespace`, `insert_final_newline`) to every contributor's editor *as they type*, with "closer files take precedence" and `root=true` to stop the upward search.
 
-The companion module wires the orchestrator and the engine together — Spotless driving google-java-format, with `ratchetFrom` so only files changed since trunk are touched:
+The companion module wires the orchestrator and the engine together, Spotless driving google-java-format, with `ratchetFrom` so only files changed since trunk are touched:
 
 <!-- include: 07_naming_structure_formatting/config/spotless/spotless-reference.xml#spotless-config -->
 
@@ -129,13 +131,13 @@ The practice lesson is one sentence: pick one deterministic formatter, run its `
 
 Comments split into two populations that must be reasoned about separately, because the field agrees about one and argues about the other.
 
-**Javadoc as a contract — near-consensus.** For code other people call, an API doc comment is part of the deliverable. *Effective Java* Item 56 states the strong form: precede every exported class, interface, constructor, method, and field with a doc comment describing the *contract* (preconditions often via `@throws`, postconditions, side effects), not the implementation. The JDK 21 doc-comment spec defines the grammar: a `/** … */` block recognized only immediately before a declaration (comments in a method body are ignored), a main description whose first sentence becomes the summary, then block tags (`@param`, `@return`, `@throws`, `@see`, `@since`, `@deprecated`) and inline tags (`{@code}`, `{@link}`, `{@inheritDoc}`).
+**Javadoc as a contract: near-consensus.** For code other people call, an API doc comment is part of the deliverable. *Effective Java* Item 56 states the strong form: precede every exported class, interface, constructor, method, and field with a doc comment describing the *contract* (preconditions often via `@throws`, postconditions, side effects), not the implementation. The JDK 21 doc-comment spec defines the grammar: a `/** … */` block recognized only immediately before a declaration (comments in a method body are ignored), a main description whose first sentence becomes the summary, then block tags (`@param`, `@return`, `@throws`, `@see`, `@since`, `@deprecated`) and inline tags (`{@code}`, `{@link}`, `{@inheritDoc}`).
 
 Two platform features make Javadoc more than prose. `{@snippet}` (JEP 413, GA in JDK 18) makes example code *compiler-discoverable and validatable*: an example in a doc comment can be compiled in CI instead of rotting. And `-Xdoclint` (on by default since JDK 8; the maven-javadoc-plugin `<doclint>` element) can fail the build on comment problems across categories `accessibility`, `html`, `missing`, `reference`, `syntax`. The documented middle path is `<doclint>all,-missing</doclint>`, which validates the *shape* of comments without forcing one onto every member.
 
 > **Past the anchor (Java 23).** Markdown documentation comments (`///`, JEP 467) ship in **JDK 23**, past the Java 21 anchor and ahead of the Java 25 forward LTS line. Treat them as a Java 23-era delta, not anchor fact; formatter support has lagged (google-java-format issue #1193). Do not adopt `///` while pinned to 21.
 
-**Implementation comments — genuinely contested.** How much to comment code *inside* method bodies is not settled, and this book does not pretend it is. Two reputable schools:
+**Implementation comments: genuinely contested.** How much to comment code *inside* method bodies is not settled, and this book does not pretend it is. Two reputable schools:
 
 | School | Position | Hardest objection against it |
 |---|---|---|
@@ -176,7 +178,7 @@ public final class OutstandingInvoices {
 }
 ```
 
-The companion module carries the conventionally-named, conventionally-formatted result — an order line whose constant is `static final` *and* deeply immutable (the only kind that earns `CONSTANT_CASE`), and whose method name reads as what it returns:
+The companion module carries the conventionally-named, conventionally-formatted result. It is an order line whose constant is `static final` *and* deeply immutable (the only kind that earns `CONSTANT_CASE`), and whose method name reads as what it returns:
 
 <!-- include: 07_naming_structure_formatting/src/main/java/org/acme/storefront/readability/OrderLine.java#naming-good -->
 
@@ -190,7 +192,7 @@ Adoption cost is real: introducing a formatter to an existing codebase rewrites 
 - **Member order is judgment, not a rule.** Google Java Style declines a single recipe on purpose. Gating member order mechanically (beyond overload contiguity) fights the guide and generates noise.
 - **Style values are choices, not truths.** Two-space vs four-space, 80 vs 100 vs 120 columns: Google uses 2/100, AOSP 4, palantir 120, Checkstyle `LineLength` defaults to 80. There is no *correct* value; the value is in picking one. Stating any single value as "right" is the neutrality landmine of this whole topic.
 - **Over-strict naming regexes cause false positives.** `java:S101`'s default can reject legitimate names; a rigid `ShortVariable` flags idiomatic `i`/`x` loop and lambda names. Naming rules need per-project tuning and suppression discipline (Chapter 18), or developers learn to ignore the linter. (Java 21's unnamed variable `_`, JEP 456 — ⚠ verify number/JDK @pin — interacts directly with short-name rules.)
-- **Over-enforced Javadoc breeds vacuous comments.** Forcing `@param`/`@return` on every trivial getter (`-Xdoclint:all` with `missing`, or PMD `CommentRequired` everywhere) produces `@param name the name`, which satisfies the linter and informs no one. Use `all,-missing`.
+- **Over-enforced Javadoc breeds vacuous comments.** Forcing `@param`/`@return` on every no-logic getter (`-Xdoclint:all` with `missing`, or PMD `CommentRequired` everywhere) produces `@param name the name`, which satisfies the linter and informs no one. Use `all,-missing`.
 - **Formatter output shifts between versions, and couples to the JDK.** A formatter's rendering can change across its own versions, so pin the formatter GAV (do not float it). Because the engines parse Java source, a given formatter version is coupled to a JDK range: the *same* `spotless:check` can pass on one JDK and fail to launch on another (⚠ exact version↔JDK matrix and any `--add-exports` args verify @pin). 
 - **`.editorconfig` is a baseline, not a formatter.** It carries whitespace settings to editors but has no concept of line-wrapping or import order, and `max_line_length` is widely supported but not in the core spec's listed properties. Do not rely on it as a hard column gate.
 - **When not to invest at all.** A throwaway script, a spike, a two-week prototype slated for deletion does not earn a formatter plus three linters' naming rules in CI. The investment pays back over a file's *lifetime*; short-lived code has none.

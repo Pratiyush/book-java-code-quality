@@ -10,9 +10,9 @@ DRAFT v1 — gates manual; throwable-decision + item-to-rule crosswalk + two-pat
 
 # When Things Go Wrong
 
-*Exceptions, resource cleanup, and not trusting your inputs — the failure paths done right · 12 (folds 16, 18) · Part II*
+*Exceptions, resource cleanup, and not trusting inputs: the failure paths done right · 12 (folds 16, 18) · Part II*
 
-> The happy path is where the program does its job. The failure paths are where it earns your trust.
+> The happy path is where the program does its job. The failure paths are where it earns trust.
 
 ## Hook
 
@@ -39,13 +39,17 @@ This chapter takes on the failure paths: how to signal an error (exceptions, and
 
 **What this chapter does NOT cover.** The analyzer internals (Part IV), concurrency error handling and structured concurrency (Part III, still preview), the security framing of injection and deserialization (the security part covers the *attack/defense*; this chapter covers the *technique*), and exception translation across architectural layers in depth (the architecture part).
 
-**One idea worth holding**: *a visible error is a fixable error.* Every move in this chapter (the right throwable kind, the documented `@throws`, the preserved cause, the suppressed-not-masked close exception, the fail-fast guard) exists to keep failure visible instead of letting it go quiet.
+*A visible error is a fixable error.* Every move in this chapter (the right throwable kind, the documented `@throws`, the preserved cause, the suppressed-not-masked close exception, the fail-fast guard) exists to keep failure visible instead of letting it go quiet.
 
 ## How it works
+
+Two figures anchor the chapter. Figure 10.1 lays out the `Throwable` hierarchy that the exception-model section walks: where the checked/unchecked split falls, and which branch the compile-time catch-or-specify rule governs.
 
 ![Fig 10.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java](../../05-figures/12_error_handling_exceptions/fig12_1.png)
 
 *Fig 10.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java*
+
+Figure 10.2 sets up the resource-management section: it contrasts the suppressed exception that try-with-resources records against the masked exception the older `finally`-with-close idiom loses.
 
 ![Fig 10.2 — try-with-resources: suppressed vs masked exceptions — JLS SE 21 §14.20.3 · Effective Java](../../05-figures/12_error_handling_exceptions/fig12_2.png)
 
@@ -96,17 +100,17 @@ Item 73 done right is exception translation that chains the cause; the companion
 
 ### Fail fast: detect the violation at its cause
 
-Fail-fast means detecting a broken contract as close to its cause as possible and throwing immediately, rather than letting a corrupted value travel to a distant, confusing failure. In Java that is guard clauses at method entry: `Objects.requireNonNull(x, "x")` for null, `Objects.checkIndex` for range, an explicit `throw new IllegalArgumentException(...)` for everything else, following Item 72's exception conventions. And when a null still slips through, **JEP 358** helpful NullPointerExceptions name the exact null expression (delivered in JDK 14 behind `-XX:+ShowCodeDetailsInExceptionMessages`, on by default since JDK 15, so active at the Java 21 anchor with no flag — openjdk.org JEP 358), so even the failure that was not caught early is diagnosable in one read. (The full defensive-coding treatment is its own section below.)
+Fail-fast means detecting a broken contract as close to its cause as possible and throwing immediately, rather than letting a corrupted value travel to a distant, confusing failure. In Java that is guard clauses at method entry: `Objects.requireNonNull(x, "x")` for null, `Objects.checkIndex` for range, an explicit `throw new IllegalArgumentException(...)` for everything else, following Item 72's exception conventions. And when a null still slips through, **JEP 358** helpful NullPointerExceptions name the exact null expression (delivered in JDK 14 behind `-XX:+ShowCodeDetailsInExceptionMessages`, on by default since JDK 15, so active at the Java 21 anchor with no flag, per openjdk.org JEP 358), so even the failure that was not caught early is diagnosable in one read. (The full defensive-coding treatment is its own section below.)
 
 ### Modern error models: the typed alternative
 
-Exceptions are not the only way to model failure. A closed set of outcomes can be a *value*: a `sealed` interface (JEP 409, Java 17) with record (JEP 395) cases, deconstructed exhaustively by pattern matching for `switch` (JEP 441, GA in Java 21). The compiler rejects a `switch` that misses a permitted case. This is a `Result`/`Either`-style model, presented here as an *approach alongside* exceptions, not a winner: it puts every failure in the type (every call site must destructure it), which is precise but verbose and interoperates awkwardly with the exception-throwing libraries (JDBC, Spring) most code crosses. These features are post-2018, so they are not *Effective Java* recommendations. They are the modern modelling option, with their own trade-offs in the Limitations section. (Structured concurrency's `StructuredTaskScope`, which streamlines concurrent error handling, is **preview** across 21→25 — Part III, not anchor fact.)
+Exceptions are not the only way to model failure. A closed set of outcomes can be a *value*: a `sealed` interface (JEP 409, Java 17) with record (JEP 395) cases, deconstructed exhaustively by pattern matching for `switch` (JEP 441, GA in Java 21). The compiler rejects a `switch` that misses a permitted case. This is a `Result`/`Either`-style model, presented here as an *approach alongside* exceptions, not a winner: it puts every failure in the type (every call site must destructure it), which is precise but verbose and interoperates awkwardly with the exception-throwing libraries (JDBC, Spring) most code crosses. These features are post-2018, so they are not *Effective Java* recommendations. They are the modern modelling option, with their own trade-offs in the Limitations section. (Structured concurrency's `StructuredTaskScope`, which streamlines concurrent error handling, is **preview** across 21→25; it belongs to Part III, not the anchor.)
 
 The companion module models that closed set as a sealed `Result` with record cases:
 
 <!-- include: 12_error_handling_exceptions/src/main/java/org/acme/orders/Result.java#result-model -->
 
-## Deep dive: resources and inputs — the two failure paths code forgets
+## Deep dive: resources and inputs, the two failure paths code forgets
 
 Two failure paths are systematically under-handled: the resource a failing block still has to close, and the input a method should never have trusted. Both fold into this chapter because both are about *what happens when the happy path does not*.
 
@@ -139,9 +143,9 @@ The companion module registers such a backstop, with the cleaning action holding
 
 <!-- include: 12_error_handling_exceptions/src/main/java/org/acme/orders/NativeCounter.java#cleaner-backstop -->
 
-### Defensive coding: don't trust the input
+### Defensive coding: do not trust the input
 
-The other forgotten path is the input that should have been rejected at the door. Defensive coding is the discipline of not trusting inputs (to a method, a constructor, an endpoint, a deserializer) and failing fast and clearly when one violates its contract. There are two complementary mechanisms.
+The other forgotten path is the input that should have been rejected at the door. Defensive coding is the discipline of not trusting inputs (to a method, a constructor, an endpoint, a deserializer) and failing fast and clearly when one violates its contract. Two complementary mechanisms carry that discipline.
 
 **Guard clauses (imperative, in-method)** are the codification of *Effective Java* Item 49: "check parameters for validity… at the beginning of the method body." The JDK ships the primitives: `requireNonNull` (check-and-assign in one expression), `checkIndex`, and the `assert` statement (for *private* methods only; assertions are disabled in production, so never use them for public-API argument checks). The record compact constructor is the canonical home for invariant guards:
 
@@ -149,7 +153,7 @@ The other forgotten path is the input that should have been rejected at the door
 public record Money(long minorUnits, String currency) {
     public Money {
         Objects.requireNonNull(currency, "currency");
-        if (minorUnits < 0) throw new IllegalArgumentException("minorUnits < 0: " + minorUnits);
+        if (minorUnits < 0) throw new IllegalArgumentException("minorUnits must not be negative: " + minorUnits);
     }
 }
 ```
@@ -158,7 +162,7 @@ The companion module's `Money` puts that guard in a compact constructor, so an i
 
 <!-- include: 12_error_handling_exceptions/src/main/java/org/acme/orders/Money.java#guard-clause -->
 
-**Jakarta Validation (declarative, annotation-driven)** is the boundary mechanism: constraints (`@NotNull`, `@Size`, `@Email`, `@Valid` to cascade) declared on fields, record components, or method parameters, then enforced by a `Validator` programmatically or by the container (Jakarta REST, Persistence) at a request boundary. A `ConstraintViolation` carries the message, the property path, and the invalid value: a structured, reusable rejection. (Jakarta Validation 3.1, Final 2024-03-28; API `jakarta.validation-api:3.1.1`. The spec is implemented by a separate constraint engine plus a Jakarta EL provider; no specific implementation version is pinned for this book — ⚠ impl GAV @pin.)
+**Jakarta Validation (declarative, annotation-driven)** is the boundary mechanism: constraints (`@NotNull`, `@Size`, `@Email`, `@Valid` to cascade) declared on fields, record components, or method parameters, then enforced by a `Validator` programmatically or by the container (Jakarta REST, Persistence) at a request boundary. A `ConstraintViolation` carries the message, the property path, and the invalid value: a structured, reusable rejection. (Jakarta Validation 3.1, Final 2024-03-28; API `jakarta.validation-api:3.1.1`. The spec is implemented by a separate constraint engine plus a Jakarta EL provider; no specific implementation version is pinned for this book; ⚠ impl GAV @pin.)
 
 The companion module declares those constraints on a request record, cascading into each line with `@Valid`:
 
@@ -168,7 +172,7 @@ These are complementary, not rivals: guard clauses give local, visible, zero-dep
 
 > **CONCEPT** *Validation is a supporting control, not the frontline defense.* OWASP is explicit: input validation should **not** be the *primary* defense against XSS or SQL injection. Parameterized queries and output encoding are. Prefer an allowlist over a denylist (denylists are circumventable and reject legitimate input like `O'Brien`), and validation must run server-side on a trusted system. The security framing is the security part's; the discipline is this one's.
 
-The unifying thread: every technique here (the right throwable kind, the suppressed-not-masked close, the fail-fast guard, the boundary constraint) takes a failure that could have been silent or distant and makes it loud and local.
+Every technique here (the right throwable kind, the suppressed-not-masked close, the fail-fast guard, the boundary constraint) takes a failure that could have been silent or distant and makes it loud and local.
 
 ## Limitations & when NOT to reach for it
 
@@ -179,7 +183,7 @@ The unifying thread: every technique here (the right throwable kind, the suppres
 - **`AutoCloseable.close()` is not idempotent by contract.** A double-close is not guaranteed safe. Try-with-resources only manages resources named in its *header*; one created in the body, returned from a factory, or stored in a field still leaks (the false-negative class the linters target, imperfectly).
 - **`Cleaner` gives weak timing guarantees.** Backstop only, never the primary release path.
 - **Guard clauses scatter and over-guard.** Hand-written guards duplicate precondition logic; for private methods, prefer `assert` (zero cost when disabled). Avoid redundant guards on what the JVM already validates with an equally clear exception (an immediate array access already throws `IndexOutOfBoundsException`).
-- **Jakarta Validation is reflection-based and runtime.** A forgotten `@Valid` silently disables a cascade. The failure is the *absence* of an error, which static analysis catches only partially (Sonar `java:S5128` — ⚠ title @pin). It needs a wired implementation plus Jakarta EL on the classpath, and reflection/EL require explicit registration under GraalVM native image.
+- **Jakarta Validation is reflection-based and runtime.** A forgotten `@Valid` silently disables a cascade. The failure is the *absence* of an error, which static analysis catches only partially (Sonar `java:S5128`; ⚠ title @pin). It needs a wired implementation plus Jakarta EL on the classpath, and reflection/EL require explicit registration under GraalVM native image.
 - **JEP 358 is a diagnostic, not a defense.** It names the null only when bytecode analysis can, and can expose variable names in logs. It improves the message after the failure; it prevents nothing.
 
 > **AHEAD-OF-PIN** `StructuredTaskScope` (structured concurrency, JEP 453) is **preview** across Java 21→25. Its API is not stable. Its home is Part III, where it is marked preview.
@@ -199,7 +203,7 @@ These layer rather than compete: guard clauses and constraints stop bad input, e
 - **Choosing a throwable:** recoverable → checked (or `Optional`); programming error → unchecked; never `Error`. When in doubt, unchecked (Item 70).
 - **Catching:** catch the narrowest type the handler can act on; never empty-catch; preserve the cause on translation (`new DomainException(e)`); reserve broad `catch (Exception)` for a justified boundary handler that logs and maps.
 
-The companion module's boundary handler is the one place that justified broad catch lives — a narrow recoverable case first, then a backstop that logs the cause and maps it, so nothing escapes and nothing is swallowed:
+The companion module's boundary handler is the one place that justified broad catch lives. It takes a narrow recoverable case first, then a backstop that logs the cause and maps it, so nothing escapes and nothing is swallowed:
 
 <!-- include: 12_error_handling_exceptions/src/main/java/org/acme/orders/OrderBoundary.java#boundary-handler -->
 - **Resources:** anything `AutoCloseable` goes in a try-with-resources header; never a hand-rolled `finally`. Use `Cleaner` only as a native-resource backstop; let owners (pools, long-lived executors) manage field-held resources by their own lifecycle.
