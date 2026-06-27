@@ -26,11 +26,12 @@ layering), de-duplicated so the signal stays high (Chapter 19):
 | Bug-finding | SpotBugs 4.9.3.0 (bytecode) | `quality` profile | either vantage point alone |
 | Coverage | JaCoCo 0.8.15 — BRANCH gate | `quality` profile + default agent/report | — |
 
-The **format layer is shown as a reference config, not wired live**: SOURCE-PIN's "Spotless 3.6.0" is the
-project / Gradle-plugin line, and `com.diffplug.spotless:spotless-maven-plugin:3.6.0` does not exist —
-the Maven plugin is versioned on its own line (see `09-flags/34_spotless_maven_plugin_version_unresolved.md`).
-The reference config uses a `${spotless.maven.plugin.version}` placeholder so the build asserts no
-unpinned coordinate; `google-java-format` is pinned to the resolvable `1.35.0`.
+The **format layer is shown as a reference config, not wired live**: SOURCE-PIN §2 pins the Maven-plugin
+coordinate `com.diffplug.spotless:spotless-maven-plugin:3.6.0` (re-pinned 2026-06-27; flag 34 RESOLVED —
+the earlier "8.7.0" was the project/Gradle line). The reference config under `config/spotless/` pins that
+coordinate via `${spotless.maven.plugin.version}`; it is shown rather than wired live so the green build
+does not depend on the google-java-format JDK `--add-exports` matrix. `google-java-format` is pinned to
+the resolvable `1.35.0`.
 
 **Version notes (each a recorded deviation from a SOURCE-PIN top-line, forced by artifact availability,
 not invented):** Checkstyle engine **10.26.1** and SpotBugs **4.9.3.0** match the values the whole

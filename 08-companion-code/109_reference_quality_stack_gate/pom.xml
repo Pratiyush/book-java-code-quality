@@ -16,10 +16,10 @@
     The build-side stack assembled here (each row a distinct concern, Chapter 3 layering):
       * Compiler   — -Xlint:all (inherited from the aggregator), the floor every other tool builds on.
       * Format     — Spotless + google-java-format, shown as a reference config (config/spotless/) using
-                     a ${spotless.maven.plugin.version} placeholder, because SOURCE-PIN's "Spotless
-                     3.6.0" is the project/Gradle line and the Maven-plugin coordinate is versioned
-                     separately (09-flags/34_spotless_maven_plugin_version_unresolved.md). The placeholder
-                     teaches the config shape truthfully without asserting an unpinned version literal.
+                     the ${spotless.maven.plugin.version} property (3.6.0 — the Maven-plugin coordinate
+                     pinned in SOURCE-PIN §2; flag 34 RESOLVED 2026-06-27). Shown rather than wired live
+                     so the green build does not depend on the google-java-format JDK add-exports
+                     matrix; google-java-format is pinned to the resolvable 1.35.0.
       * Style      — Checkstyle (build-plugin 3.6.0, engine pinned via a plugin-level dependency, the
                      "two-pin" lesson), curated house ruleset under config/checkstyle/.
       * Bug-find   — SpotBugs (4.9.3.0) on bytecode, the complementary vantage point to Checkstyle.
@@ -52,14 +52,14 @@
     -->
     <jacoco.version>0.8.15</jacoco.version>
     <!--
-      Spotless Maven-plugin version is intentionally NOT given a literal here: SOURCE-PIN's "Spotless
-      3.6.0" is the project/Gradle line, and `com.diffplug.spotless:spotless-maven-plugin:3.6.0` does not
-      exist (09-flags/34_spotless_maven_plugin_version_unresolved.md). The format layer is shown as a
-      reference config under config/spotless/ using this placeholder, not wired as a live plugin, so the
-      build asserts no unpinned coordinate. Set the value once the Maven-plugin row is pinned at
-      /pin-source, then promote the reference config to the `quality` profile.
+      Spotless Maven-plugin coordinate, pinned per SOURCE-PIN §2 (re-pinned 2026-06-27 to the real
+      `com.diffplug.spotless:spotless-maven-plugin:3.6.0`; flag 34 RESOLVED — the earlier "8.7.0" was the
+      project/Gradle line). The format layer is shown as a reference config under config/spotless/ using
+      this property, NOT wired as a live plugin, so the green build does not depend on the
+      google-java-format JDK add-exports matrix. To wire it live, promote the reference config to the
+      `quality` profile and add the add-exports args.
     -->
-    <spotless.maven.plugin.version>SET-AT-PIN</spotless.maven.plugin.version>
+    <spotless.maven.plugin.version>3.6.0</spotless.maven.plugin.version>
   </properties>
 
   <dependencies>
