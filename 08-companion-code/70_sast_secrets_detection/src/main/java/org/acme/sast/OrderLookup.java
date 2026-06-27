@@ -11,7 +11,7 @@ import java.util.List;
  * The design-out fix for {@link VulnerableOrderLookup}: the same storefront order lookup with the email
  * passed as a bound parameter. The bound value is data, never parsed as SQL, so the source-to-sink flow
  * SAST traces in the counter-example no longer exists — a {@link PreparedStatement} does not make
- * injection harder, it removes the class (OWASP Top 10:2025 A03 / CWE-89). A taint engine reports a clean
+ * injection harder, it removes the class (OWASP Top 10:2025 Injection, CWE-89). A taint engine reports a clean
  * path here because there is no untrusted-source-to-dangerous-sink flow left to trace.
  *
  * <p>Input validation (Jakarta Bean Validation, Chapter 9) is useful defense-in-depth but is not a

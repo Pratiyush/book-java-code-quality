@@ -12,7 +12,7 @@ import java.util.List;
  * value flows untouched from the request into the query text. This is the source-to-sink flow that SAST
  * taint analysis traces and that the chapter's Semgrep rule ({@code config/semgrep/java-injection.yml})
  * targets: untrusted input (the source) reaches {@link Statement#executeQuery(String)} (the dangerous
- * sink) with no parameterization in between. It is the injection class behind OWASP Top 10:2025 A03
+ * sink) with no parameterization in between. It is the injection class behind the OWASP Top 10:2025 Injection category
  * (CWE-89).
  *
  * <p>This type is a deliberate teaching counter-example. It is exercised only for behavior by
