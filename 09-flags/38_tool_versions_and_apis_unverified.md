@@ -22,3 +22,15 @@ Custom-rule **API identity** for all five tools is verified from each tool's **o
 
 ## Action
 Re-trace the §2.7 reference matrix as one unit when each `SOURCE-PIN.md` §2/§3 row is pinned. Until then, every version/GAV/severity in the dossier carries `⚠ verify at pin`; the §8 "Verified @pin" column reads "live-line, verify at pin."
+
+## Update — 2026-06-27 (web-verify pass, Maven Central)
+- **Observed-but-unpinned versions: RESOLVED on Central** (`maven-metadata.xml`, fetched 2026-06-27):
+  `archunit`/`archunit-junit5` **1.4.2** (`<release>1.4.2`; already a SOURCE-PIN §2 row + built green —
+  draft 38 line 186 carries it as `✅ pinned`); `maven-checkstyle-plugin` **3.6.0** (`<release>3.6.0`);
+  `spotbugs-archetype` **0.4.19** is published (latest now **0.4.20**). These VERSION atoms resolve.
+- **LEFT FLAGGED (not Central-resolvable / not stated verbatim in a fetched versioned doc):** the custom-rule
+  authoring-SDK versions/GAVs/severities for Checkstyle/PMD/SpotBugs/Error Prone `check_api` (none a SOURCE-PIN
+  §2 row); Error Prone `@BugPattern` severity enum + full `*TreeMatcher` set; SpotBugs `findbugs.xml`/
+  `messages.xml` attribute set; ArchUnit `archunit.properties` freeze keys; PMD 7.x AST node renames + XPath
+  wrapper class; the JSR 269 `RoundEnvironment`/`Filer` verbatim spans + JEP 395 verbatim text. All stay
+  `⚠ verify-at-pin` (these are API-identity / spec-verbatim atoms, not tool-version atoms).

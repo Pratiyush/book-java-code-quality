@@ -64,3 +64,11 @@ green companion build:
   replaced with "Developer Edition (or higher)", matching the chapter body); SonarLint/SonarQube-for-IDE
   connected-mode specifics; AI CodeFix (AHEAD-OF-PIN); IntelliJ/Eclipse/Qodana (confirmed NOT in SOURCE-PIN
   §2 — genuine pin gaps). No fact was invented; no verified fact was altered.
+
+## Update — 2026-06-27 (web-verify pass — no web-resolvable tool-version atom)
+Sonar is SaaS / continuously released; there is no Maven-Central artifact-version atom to resolve here. The
+Server version is already pinned (SonarQube Server **2026.1 LTA / patch 2026.1.3**, SOURCE-PIN §2, corrected
+2026-06-27). Per the web-verify rule, the SaaS atoms stay flagged: scanner GAV (invoked by goal `sonar:sonar`),
+rule default severities / "Sonar way" membership, SQALE grid + 30-min/line cost, the exact edition-version
+matrix for taint/SAST, and the IDE/Qodana rows (not yet SOURCE-PIN §2 rows). No marker removed; no fact
+invented. Draft 35 already reflects this (Server pinned, scanner/rule/edition `⚠ verify at pin`).

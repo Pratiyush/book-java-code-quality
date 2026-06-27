@@ -18,3 +18,18 @@
 
 **Identity verified now** (from NullAway repo/wiki, live-line): flag names, annotation names, error-message
 stems, GAV coordinate. Only the *version numbers / minimums / since-versions / default severity* are deferred.
+
+## Update — 2026-06-27 (web-verify pass, Maven Central + official NullAway README/GitHub)
+- **Pinned version 0.13.4: RESOLVED (resolves on Central).** `com.uber.nullaway:nullaway` publishes 0.13.4
+  (and 0.13.5/0.13.6/0.13.7) on Maven Central (`maven-metadata.xml`, fetched 2026-06-27). SOURCE-PIN §2 pins
+  **0.13.4** — a valid published version. **Current latest = 0.13.7** (GitHub release tag `v0.13.7`, published
+  2026-06-16, per `api.github.com/repos/uber/NullAway/releases/latest`); recorded as the live latest, NOT a
+  re-pin (the pin governs; re-pin only via the runbook).
+- **Minimums (JDK 17 + Error Prone 2.36.0): RESOLVED verbatim.** NullAway README states, verbatim:
+  "NullAway requires that you build your code with JDK 17 or higher and Error Prone, version 2.36.0 or higher."
+  (`github.com/uber/NullAway`). `error_prone_annotations` 2.36.0 also resolves on Central. Draft 11 line 191
+  now cites this README confirmation; the minimums atom is no longer pin-deferred.
+- **Still deferred:** flag since-versions (`OnlyNullMarked` v0.12.3+, etc.) and the default severity of the
+  NullAway check were not re-confirmed verbatim this pass — they remain `⚠ verify-at-pin`. The FSE'19 overhead
+  figures/quote stay flagged separately (`31_nullaway_overhead_figures_unverified.md`) — the paper is outside
+  the pinned authority set (left flagged, by rule).

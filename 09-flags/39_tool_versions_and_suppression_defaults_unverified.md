@@ -38,3 +38,16 @@
 ## Action at `/pin-source`
 Re-trace every version/default/GAV above; update §1 atom list, §2.7 reference table, §6 dependency table.
 Same pre-pin caveat as keys 11/12/13/15/16/19/20/23/25: atoms are *flagged*, not *verified*, until the pin.
+
+## Update — 2026-06-27 (web-verify pass, Maven Central)
+- **Exact latest-stable versions + GAVs: RESOLVED on Central** (`maven-metadata.xml`, fetched 2026-06-27):
+  `maven-checkstyle-plugin` **3.6.0**; `spotbugs-maven-plugin` **4.10.2.0**; `spotbugs`/`spotbugs-annotations`
+  **4.10.2**; `error_prone_core` **2.50.0** (latest 2.x); NullAway **0.13.4** pinned (latest 0.13.7). The
+  SpotBugs/FindSecBugs/fb-contrib version atoms are confirmed in their home draft (Ch 27). SonarQube
+  server/analyzer version is SaaS — pinned at Server 2026.1 LTA in SOURCE-PIN §2, scanner GAV stays SaaS-flagged
+  (see flag 35).
+- **LEFT FLAGGED (plugin DEFAULT values, not Central facts):** `maven-checkstyle-plugin` `failOnViolation`/
+  `violationSeverity` defaults; `spotbugs-maven-plugin` `baselineFiles` param + "multi-file since 4.7.1.0";
+  PMD `--suppress-marker` vs `-suppressmarker` spelling. Resolve only against the pinned plugin doc stating
+  them verbatim (not fetched this pass). Stay `⚠ verify-at-pin`. (`EI_EXPOSE_REP`/`EI_EXPOSE_REP2` already
+  RESOLVED via the built engine, per the 2026-06-27 note above.)

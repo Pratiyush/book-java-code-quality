@@ -74,3 +74,15 @@ header + companion spec corrected to BUILT-GREEN (per `_EXAMPLE.md`).
 (Engine-vs-pin **version** delta is tracked in `09-flags/20_companion_engine_versions_vs_pin.md` — not
 duplicated here.) PMD/SpotBugs/Error Prone deferred atoms for the folded keys live in
 `28_pmd_*`, `29_spotbugs_*`, `30_error_prone_*`, and `69_findsecbugs_*` (those peer modules not yet built).
+
+## Update — 2026-06-27 (web-verify pass, Maven Central)
+- **Item 1 — Checkstyle version: RESOLVED.** `com.puppycrawl.tools:checkstyle` `maven-metadata.xml`
+  `<latest>13.6.0</latest>` / `<release>13.6.0</release>` (fetched 2026-06-27, `repo1.maven.org`). Confirms
+  SOURCE-PIN §2 **13.6.0**. Draft 27 line 171 now carries the Central confirmation.
+- **Item 3 — `maven-checkstyle-plugin` GAV: version RESOLVED.** `org.apache.maven.plugins:maven-checkstyle-plugin`
+  `<release>3.6.0` on Central (fetched 2026-06-27). The "bundles Checkstyle 9.3 by default" doc claim and the
+  override coordinate are unchanged; the plugin VERSION atom is confirmed.
+- **Items 2, 4, 5 — per-rule default property values/thresholds, Gradle `CheckstyleExtension` props, bundled-config
+  XML contents: LEFT FLAGGED.** Not Maven-Central facts; resolve only against the pinned 13.6.0 per-check doc
+  pages stating them verbatim (not fetched this pass). `LineLength max=80` / Google-config 100 stay
+  `⚠ verify-at-pin`. (`ConstantName` regex remains confirmed-live by the built engine, per the 2026-06-26 note.)
