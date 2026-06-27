@@ -24,3 +24,20 @@
   `PostgreSQLContainer` example is wanted, it must be added behind the book's REPRO gate (run only where a
   container runtime is present), at the SOURCE-PIN version (2.0.5), and must NOT block the default green build.
 - **Status:** OPEN — scope decision for the human gate. No fact error; no NEUTRALITY breach; build is green.
+
+---
+
+**Marker-resolution update (2026-06-27, source-verifier).** The deferred-verification markers in
+`03-drafts/45_integration_property_based_testing/45_integration_property_based_testing_v1.md` were resolved
+against (a) SOURCE-PIN.md (corrected 2026-06-27) and (b) the BUILT module:
+- **Confirmed + un-marked in the draft:** Testcontainers **2.0.5** version traces to SOURCE-PIN §3; the GAVs
+  `org.testcontainers:testcontainers` / `:junit-jupiter` / `:postgresql` are recorded; the Docker-gating
+  disposition is now resolved as cited-not-built (integration realized in-JVM on an ephemeral port, green on
+  a Docker-less runner).
+- **Left marked `⚠ @pin` in the draft (genuinely unverified here):** `@Testcontainers`/`@Container`
+  per-test-vs-static lifecycle semantics and the reuse/Ryuk flags — prose-only Testcontainers-doc atoms, NOT
+  in SOURCE-PIN and NOT exercised by the build; they need Testcontainers' pinned docs fetched.
+- The draft's "BUILD STATUS / EXAMPLE-BUILD = PENDING" strings (header line 5 + back-matter) were corrected
+  to **BUILT GREEN** per `45_integration_property_based_testing_EXAMPLE.md` (`mvn -B -Pquality verify` =
+  BUILD SUCCESS at JDK 21.0.11). This flag stays **OPEN** as the underlying cited-not-built scope decision
+  for the human gate.

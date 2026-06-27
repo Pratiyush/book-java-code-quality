@@ -38,3 +38,41 @@
   tree, `byte-buddy-agent` is 1.17.7 but `byte-buddy` (core) resolves to **1.18.3** (nearest-wins from
   another managed dep). Tolerated by Mockito at runtime; build green, 13 tests pass. Recorded for
   provenance; no action unless a future Mockito run misbehaves.
+
+## 4. Residual verify-at-pin atoms — NOT resolvable by SOURCE-PIN or the companion build
+
+> Appended 2026-06-27 by the deferred-verification resolution pass over
+> `03-drafts/42_unit_testing_assertions_mocking/42_unit_testing_assertions_mocking_v1.md`. All version
+> atoms (JUnit 6.1.0, AssertJ 3.27.7, Hamcrest 3.0, Truth 1.4.5, Mockito 5.23.0) and every idiom the
+> companion module compiles (the `@ExtendWith(MockitoExtension.class)`+`@Mock`/`@InjectMocks`/
+> `when().thenReturn`/`do*().when()`/`verify`/`never`/`verifyNoInteractions`/`InOrder`/`eq`/`any`/
+> default-`STRICT_STUBS` set, the three compiled assertion styles, value-object-used-real, the
+> over-mock `InOrder` failure path) were CONFIRMED and their markers removed. The atoms below remain
+> marked `⚠ … verify-at-pin` in the draft because they are **neither pinned in `SOURCE-PIN.md` nor
+> exercised by the green companion build**, so neither of this pass's two authorities can confirm
+> them. They need a direct read of the named tool's docs/Javadoc at its pin (Step-5 SOURCE-VERIFY).
+
+- **Mockito Java floor (claimed "11").** Not in `SOURCE-PIN.md` (the row pins only the Mockito
+  version, 5.23.0); the module builds on JDK 21, which cannot witness an 11 floor. Verify against
+  Mockito 5.23.0's own requirements page.
+- **Per-version standalone (non-`MockitoExtension`) strictness default.** The module only exercises the
+  *extension* default (`STRICT_STUBS`, confirmed). The plain `Mockito.mock(...)`/standalone default per
+  version is not exercised — verify in the Mockito Javadoc/`Strictness` docs.
+- **`@InjectMocks` precedence wording** (constructor vs setter vs field injection order). The module
+  uses `@InjectMocks` (constructor path) but does not pin the documented precedence text.
+- **`RETURNS_DEFAULTS` class name** and the exact default-answer return set (`0`/`false`/`null`/empty/
+  `Optional.empty()`). Behaviour is relied on in prose; the class-name token is unverified.
+- **`mockStatic`/`mockConstruction` scope wording** (`MockedStatic`/`MockedConstruction`, thread/scope
+  bounds). Not used by the module (deliberately — the chapter calls them a sharp edge).
+- **JUnit `@MethodSource`/`Assertions` signature changes 5→6 + the full 5→6 breaking-change list.** The
+  module uses neither `@MethodSource` nor `@ParameterizedTest`; the 5→6 delta is a doc-read item.
+- **Truth design-goal verbatim** ("deliberately small, consistent API" framing). Truth is prose-only
+  (item 1 above), so no compiled evidence; the verbatim must be checked against `truth.dev` and, if it
+  cannot be confirmed character-for-character, the quoted phrasing must be cut or de-quoted to a
+  paraphrase. This is a quoted-span verbatim item, not just a version item.
+
+Likewise the five-double / state-vs-behaviour **verbatim quotations** attributed to Fowler's *Mocks
+Aren't Stubs* (and via him to Meszaros) on draft lines 95–101 and the `STATE-vs-behaviour` CONCEPT are
+named-source verbatims that this pass did not open the source for; they remain to be confirmed
+character-for-character at SOURCE-VERIFY (Fowler is not a `SOURCE-PIN.md` §7 row — see the existing
+"SOURCE-PIN gaps" note in the draft front-matter).

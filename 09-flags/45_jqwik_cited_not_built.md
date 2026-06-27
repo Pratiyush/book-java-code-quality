@@ -24,3 +24,18 @@
   JDK-only realization. If a future decision wants jqwik compiled, add it as an explicit test-scope
   dependency at the SOURCE-PIN version (1.10.1) and re-run FLOOR C.
 - **Status:** OPEN — scope decision for the human gate. No fact error; no NEUTRALITY breach; build is green.
+
+---
+
+**Marker-resolution update (2026-06-27, source-verifier).** The deferred-verification markers in
+`03-drafts/45_integration_property_based_testing/45_integration_property_based_testing_v1.md` were resolved
+against (a) SOURCE-PIN.md (corrected 2026-06-27) and (b) the BUILT module:
+- **Confirmed + un-marked in the draft:** jqwik **1.10.1** version and **maintenance-mode** status both trace
+  to SOURCE-PIN §3 (recorded there as `⚠ maintenance mode`); GAV `net.jqwik:jqwik` recorded; the JUnit
+  param-source annotations the build actually exercises (`@ParameterizedTest`/`@ValueSource`/`@CsvSource`/
+  `@MethodSource`) compile green under JUnit 6 (BOM 6.0.3) in the module.
+- **Left marked `⚠ @pin` in the draft (genuinely unverified here):** jqwik default `@Property` tries count,
+  the `Arbitraries`/`@Provide` API surface, and `@EnumSource`/`@ArgumentsSource` — these are prose-only
+  jqwik-doc atoms, NOT in SOURCE-PIN and NOT exercised by the build; they need jqwik's pinned docs fetched.
+- This flag stays **OPEN** as the underlying cited-not-built scope decision for the human gate; the build
+  remains green and jqwik is realized prose-only with a seeded JDK generator + JDK shrinker.
