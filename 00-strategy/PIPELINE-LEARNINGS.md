@@ -2695,3 +2695,58 @@ Levers (a) em-dash density, (b) hype-word removal, (c) gloss-before-first-use, (
   out-of-bounds). Same shape as the key-39 research learning above (#4): name the un-liftable cluster on
   the scorecard so a lift pass is not wasted on it; the gap to 44 needs a non-prose action, not another
   loop.
+
+---
+
+## Ch 50 (key 50, folds 52) — LIFT pass: measure em-dash on the *running-prose body*, not the whole artifact (2026-06-27)
+
+- **Em-dash density must be measured on the narrative running prose, not the whole `.md`.** Ch 50's
+  full-artifact em-dash count read 10.29/1000 (over the ~8 ceiling), but the *running prose body* (hook
+  through hand-off, excluding the back-matter sources/snippet-tags/companion-module apparatus, figure
+  captions, table cells, and bullet-list `**term** — gloss` separators) read **6.84/1000 — already under
+  the ceiling.** The inflation was entirely caption labels, glossary-style list separators, table cells,
+  and reference apparatus, none of which is the over-used appositive cadence ("X — the thing — does Y")
+  the ceiling targets. Lesson: the lift lever "convert only if above ~8/1000" must scope to running prose;
+  a whole-file `grep -c "—"` over-counts and would trigger needless conversions that flatten legitimate
+  glossary/caption cadence. Suggest the AUDIT em-dash scan exclude back-matter, captions, table rows, and
+  list-item separator dashes before computing density.
+- **Possessive `'s` is not a narration contraction.** A naive contraction scan flags `Pact's`,
+  `consumer's`, `provider's` etc.; all are genitives, not the banned verb contractions ("don't", "it's").
+  Ch 50 had **zero** narration contractions. Classify apostrophe hits (possessive vs. verb) before
+  reporting a contraction lift, or the lever fires on clean prose.
+- **Figures dropped cold under a heading is the most common real lift here.** Both Ch 50 figures sat
+  directly under `## How it works` with captions but no preceding prose naming what they show — a VOICE
+  "refer to it before it appears" violation. Adding a one-sentence "Figure N shows …" lead-in before each
+  image is a high-value, zero-risk lift (no new facts; the content is already in the caption/chapter) that
+  serves CLARITY + READABILITY at once. Worth checking first on every chapter that carries figures.
+- **Cited-not-built corrected-test consistency held through the lift.** F1 (the
+  `rubberStampingAWrongBaselineHidesABug` test) had been rewritten to approve a wrong baseline then assert
+  it passes green forever; the draft prose ("bakes the bug into the baseline", "confirms the wrong output
+  forever", "passing-but-critiqued") was already consistent and was preserved verbatim. Confirms: when a
+  test is corrected post-EXAMPLE, re-grep the draft for the test name + its claim words to prove the prose
+  still matches before any lift edits land near it.
+- **Ch 55 LIFT (em-dash, no prior independent score): prose-body 15.31 → 3.46 per 1,000 words.** The
+  whole-file count (63 literal `—`) badly overstated the real problem because back-matter source-dump
+  bullets and a 5-em-dash companion-spec line dominate the tally; measuring the **reading body only**
+  (excluding the HTML header, fenced code, snippet-include markers, the figure caption, tables, and the
+  "Back matter / sources" + companion-spec + next-chapter source dumps) put the true density at 15.31 and
+  located it in seven dense narrative paragraphs (hook, ArchUnit limits, fitness-function limits, the
+  deep-dive trace, the hand-off, the teaser). Converting the appositive cadence there (`X — the thing —
+  does Y` → commas/parentheses, and several `— which means` → a period for the sanctioned short-sentence
+  beat) cleared it in one pass. Confirms the chapter-scorer rule: **always measure prose-body density
+  first; never act on the whole-file count** — on a chapter with verbose source-trace back matter the two
+  differ by 4×, and the back-matter dashes must be left alone (they sit beside verified atoms).
+- **Definitional-bullet dashes are a cheap second source of density.** Beyond prose appositives, "**Term**
+  — definition" list lead-ins and mid-item `— gloss` appositives in the rule-catalogue, alternatives, and
+  when-to-use lists carried ~10 more dashes; converting the lead-in `—` to `:` and the mid-item `—` to a
+  comma/semicolon is meaning-preserving and reads as cleanly. Worth sweeping after the prose paragraphs on
+  any survey chapter (which run long bulleted alternative/when-to-use sections).
+- **Genitive `'s` is not a contraction — do not "fix" it.** A naive contraction grep flags `ArchUnit's`,
+  `book's`, `system's`, `Chapter 1's`, `service's`; all are allowed possessives. Classify hits (possessive
+  vs. true contraction) before editing, or a lift introduces awkward rewrites for a non-problem. Likewise
+  the verb `lets` ("it lets the developer assert") trips a `let's` second-person grep but is third-person —
+  classify before acting. (Ch 55 had zero real contraction/second-person hits.)
+- **"not just X but Y" is filler "just".** The Google-sourced "just" ban catches the rhetorical "not just …
+  but …" intensifier (here "unifies not just architecture rules but every gate"); `not just` → `not only`
+  is the clean fix. A quoted "just this once" (a developer's rationalization in dialogue) is **not** filler
+  and stays — the ban is on narration filler, not quoted human speech.

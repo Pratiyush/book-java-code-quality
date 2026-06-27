@@ -119,9 +119,13 @@ That is the gap this final chapter of Part V closes, and it generalizes. Everyth
 
 ## How it works
 
+Contract testing runs as a sequence, and the guarantee holds only when every step runs. Figure 24.1 lays out that sequence as Pact's four-stage pipeline, from the consumer test that records the contract to the `can-i-deploy` gate that reads the results, and marks why any half-pipeline gives false confidence.
+
 ![Fig 24.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.](../../05-figures/50_contract_approval_testing/fig50_1.png)
 
 *Fig 24.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.*
+
+The three techniques in this chapter divide one boundary and its output between them. Figure 24.2 maps each to the question it answers (do the sides agree, does the endpoint behave, does the output still match the baseline) and to the reference whose failure breaks it.
 
 ![Fig 24.2 — Three techniques, three questions on the service boundary and its output — Each answers what the others cannot; each fails when its own reference goes wrong.](../../05-figures/50_contract_approval_testing/fig50_2.png)
 
@@ -137,7 +141,7 @@ The mechanism is a four-stage pipeline:
 1. **Consumer test** generates the contract. The consumer's test runs against a Pact **mock server**, not the real provider. It declares the expected interaction in a `@Pact` method, describing the body with `PactDslJsonBody` by **type, not value** (`stringType()`, `matchRegex()`, matching *shape*), and points the real client code at the injected `MockServer`, and on success the extension writes a pact JSON file to `target/pacts`.
 2. **Publish** the pact to a **Pact Broker**, the shared store of contracts and verification results.
 3. **Provider verification** replays the contract. The provider's test (`@Provider`, sourcing pacts via `@PactFolder` or `@PactBroker`) uses `@TestTemplate` to generate **one test per interaction**, calls `context.verifyInteraction()` to replay each recorded request against the *running provider* and check the real response matches, with `@State` methods seeding preconditions (e.g. "order 42 exists").
-4. **`can-i-deploy`** is the gate. The broker holds a **matrix** of verification results for every consumer-version × provider-version pair — "used by the can-i-deploy tool to determine if an application is safe to deploy." Consumer version selectors (`deployed`, `released`) scope verification to what is actually running in each environment.
+4. **`can-i-deploy`** is the gate. The broker holds a **matrix** of verification results for every consumer-version × provider-version pair, "used by the can-i-deploy tool to determine if an application is safe to deploy." Consumer version selectors (`deployed`, `released`) scope verification to what is actually running in each environment.
 
 The companion module realizes the same guarantee in plain JUnit, since Pact's provider verification needs a running provider. The consumer drives a contract by declaring exactly the fields it reads:
 
@@ -159,7 +163,7 @@ The contract's own check is a presence test over the fields the consumer named, 
 
 ### API testing: does the running endpoint respond correctly?
 
-**REST-assured** answers a different question on the same boundary: not "do the sides agree?" but "does this running endpoint actually respond correctly?" It exercises a live (or test-instance) HTTP service with a fluent BDD-style DSL:
+**REST-assured** answers a different question on the same boundary: not "do the sides agree?" but "does this running endpoint actually respond correctly?" It exercises a live (or test-instance) HTTP service with a fluent given/when/then DSL:
 
 ```java
 given().param("id", 42)
@@ -167,7 +171,7 @@ given().param("id", 42)
 .then().statusCode(200).body("id", equalTo(42));
 ```
 
-`given()` sets up the request (params, headers, body auto-serialized, auth), `when()` issues the verb, and `then()` asserts on the **live response**: `statusCode`, headers, and `body(path, matcher)` where `path` is a **GPath** expression (Groovy GPath, explicitly *not* Jayway JsonPath, a distinction worth stating once) and `matcher` is a Hamcrest matcher. `RequestSpecBuilder`/`ResponseSpecBuilder` keep large suites DRY, and `matchesJsonSchemaInClasspath` validates a response against a JSON Schema. REST-assured produces no artifact and requires the endpoint to be *running*; in CI, it runs typically against a Testcontainers-backed or framework-test instance (Chapter 22).
+`given()` sets up the request (params, headers, body auto-serialized, auth), `when()` issues the verb, and `then()` asserts on the **live response**: `statusCode`, headers, and `body(path, matcher)` where `path` is a **GPath** expression (Groovy GPath, explicitly *not* Jayway JsonPath, a distinction worth stating once) and `matcher` is a Hamcrest matcher. `RequestSpecBuilder`/`ResponseSpecBuilder` keep large suites free of repeated setup, and `matchesJsonSchemaInClasspath` validates a response against a JSON Schema. REST-assured produces no artifact and requires the endpoint to be *running*; in CI, it runs typically against a Testcontainers-backed or framework-test instance (Chapter 22).
 
 The companion module exercises the same request-response-then shape in-JVM, asserting on the status and the body the consumer reads:
 
@@ -202,7 +206,7 @@ It shines exactly where inline assertions fail: output that is **large or hard t
 
 The power of all three techniques is that the assertion lives in an external reference; the danger is the same fact. An inward `assertThat(x).isEqualTo(2)` is wrong only if the author miswrote `2`. A reference-based test is wrong if the *reference* is wrong, and the reference can go wrong silently.
 
-**Approval testing's central risk: it verifies "unchanged," not "correct."** When a test fails because the output changed, the developer reviews the diff and approves the new `received` file as the baseline. If they actually *read* the diff, this is a powerful human-in-the-loop check. If they rubber-stamp it (promote `received` to `approved` without scrutiny because the build is red), they bake the bug into the baseline, and every future run happily confirms the wrong output forever. An approval suite where no one reads the diffs is pure theatre: it asserts that the output has not changed since someone stopped paying attention. The discipline is therefore mandatory: approval testing is only worth running where the diffs will genuinely be scrutinized, and approved files belong in version control precisely so they surface in pull-request review where a second person sees them. The secondary costs follow from the same root: large approved files create noisy diffs and merge conflicts (right-size the snapshot), and any un-scrubbed non-determinism makes the test flake (Chapter 20).
+**Approval testing's central risk: it verifies "unchanged," not "correct."** When a test fails because the output changed, the developer reviews the diff and approves the new `received` file as the baseline. If they actually *read* the diff, this is a genuine human-in-the-loop check. If they rubber-stamp it (promote `received` to `approved` without scrutiny because the build is red), they bake the bug into the baseline, and every future run happily confirms the wrong output forever. An approval suite where no one reads the diffs is pure theatre: it asserts that the output has not changed since someone stopped paying attention. The discipline is therefore mandatory: approval testing is only worth running where the diffs will genuinely be scrutinized, and approved files belong in version control precisely so they surface in pull-request review where a second person sees them. The secondary costs follow from the same root: large approved files create noisy diffs and merge conflicts (right-size the snapshot), and any un-scrubbed non-determinism makes the test flake (Chapter 20).
 
 **Contract testing has the analogous failure**, already named: a consumer pact whose mock expects data the real provider would never produce satisfies the contract while being wrong, until the provider verification catches it. Skip the provider half and the "contract" is the consumer's untested assumption with a broker behind it. Contract testing also carries hard scope limits stated by Pact itself: it is **not suitable for public or third-party APIs** (no team can identify or coordinate with every consumer), and it is **not a functional, performance, or load test**. A green contract proves the two sides agree on *message shape*, not that the provider's business logic is correct, that auth is enforced, or that the system survives load. Treating a green contract as proof of correctness is the central Pact anti-pattern. It also requires real operational discipline: a broker, `record-deployment`/`record-release` so `can-i-deploy` is meaningful, and `@State` handlers. A two-service shop may find the overhead exceeds the value.
 
