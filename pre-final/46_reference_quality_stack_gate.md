@@ -14,7 +14,7 @@ Here is one coherent, worked, end-to-end quality stack and CI gate. Not a menu b
 
 **What this chapter covers**
 
-**What this chapter does NOT cover.** The individual tools in depth, each of which has its own chapter in Parts IV–IX; this is the *synthesis* that composes them. The layering rationale lives in Chapter 3, the gate-stage mechanics in Chapters 33 and 35, and the *adoption roadmap* — how a team gets from zero to this over time — in the final chapter. All versions and GAV coordinates are verified at the pin, the stack is a *snapshot* that will age, and the capstone module is the rule-4 exception (full-file listings) that must build green before it ships.
+**What this chapter does NOT cover.** The individual tools in depth, each of which has its own chapter in Parts IV–IX; this is the *synthesis* that composes them. The layering rationale lives in Chapter 3, the gate-stage mechanics in Chapters 33 and 35, and the *adoption roadmap* (how a team gets from zero to this over time) in the final chapter. All versions and GAV coordinates are verified at the pin, the stack is a *snapshot* that will age, and the capstone module is the rule-4 exception (full-file listings) that must build green before it ships.
 
 **Hold this one idea**: *one defensible, layered, de-duplicated quality stack wired into a feedback-ordered CI gate (pre-commit → PR → nightly → merge), with new-code focus so it is adoptable on legacy. Clone it, then tailor it, because it is a starting point not a verdict. Adopt it incrementally, not all at once. The stack is necessary scaffolding, not quality itself: tools catch the mechanical, humans decide the substantive.*
 
@@ -34,9 +34,9 @@ Two pictures carry the whole recommendation before the prose unpacks it. The fir
 
 The organizing principle (from Chapter 3) is **layering**: each tool covers a *distinct* concern, so the stack catches more than any single tool could, with overlap tuned out (Chapter 19). One defensible composition follows. Each entry reads as *what it catches · the cost/limit · the named alternative and when to swap*:
 
-- **Build — Maven** (with the wrapper and pinned plugin versions). *Catches:* a reproducible build, the foundation everything else hangs on. *Cost:* XML verbosity. *Alternative:* Gradle (more flexible, more complex — Chapter 27); swap when the ecosystem or build logic favors it. Pin everything (Chapter 29).
+- **Build — Maven** (with the wrapper and pinned plugin versions). *Catches:* a reproducible build, the foundation everything else hangs on. *Cost:* XML verbosity. *Alternative:* Gradle (more flexible, more complex; Chapter 27); swap when the ecosystem or build logic favors it. Pin everything (Chapter 29).
 - **Format — Spotless with google-java-format.** *Catches:* style consistency, auto-fixed, ending style debate and taking it off review (Chapter 6). *Cost:* one imposed style. *Alternative:* palantir-java-format, or Checkstyle-only formatting; swap on house-style preference. The choice matters far less than picking one and automating it.
-- **Style/convention — Checkstyle with a curated ruleset.** *Catches:* naming, imports, Javadoc presence, conventions a formatter does not cover. *Cost:* noise if over-configured. *Alternative/also:* PMD (overlapping, rule-based — Chapter 16); run a curated subset, not the kitchen sink (Chapter 19).
+- **Style/convention — Checkstyle with a curated ruleset.** *Catches:* naming, imports, Javadoc presence, conventions a formatter does not cover. *Cost:* noise if over-configured. *Alternative/also:* PMD (overlapping, rule-based; Chapter 16); run a curated subset, not the kitchen sink (Chapter 19).
 - **Bug-finding — Error Prone (compile-time) + SpotBugs with FindSecBugs (bytecode).** *Catches:* two distinct layers. Error Prone gives fast in-compiler feedback on bug patterns; SpotBugs analyzes bytecode for a different bug class plus security (FindSecBugs). *Cost:* build time, false positives to tune. *Layered on purpose* (Chapter 3): they see different things. *Alternative:* either alone if build time is tight.
 - **Null-safety — NullAway with JSpecify annotations.** *Catches:* NullPointerException at build time, cheaply. *Cost:* annotation effort, not a total guarantee. *Alternative:* the Checker Framework for stronger guarantees at higher cost (Chapter 9); swap up when nullness correctness is critical.
 - **Architecture — ArchUnit rules as tests.** *Catches:* dependency cycles and layering violations, enforced as ordinary tests (Chapters 16, 25). *Cost:* the rules must be written and maintained. *Alternative:* Sonar architecture rules or manual review for smaller codebases.
@@ -58,10 +58,10 @@ The style layer wires the build plugin and the pinned analyzer engine as two sep
 
 ```xml
             <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>3.6.0</version>                                     <dependencies>
-              <dependency>                                                   <groupId>com.puppycrawl.tools</groupId>
+            <version>3.6.0</version>             <dependencies>
+              <dependency>                 <groupId>com.puppycrawl.tools</groupId>
                 <artifactId>checkstyle</artifactId>
-                <version>10.26.1</version>                                  </dependency>
+                <version>10.26.1</version>               </dependency>
             </dependencies>
 ```
 
@@ -80,7 +80,7 @@ The format layer takes the same shape, scoped to changed files so it is adoptabl
 The coverage layer gates on branch coverage rather than line coverage, because a line counts as covered the moment a single instruction on it runs, which lets an untested `else` pass a line gate:
 
 ```xml
-                        <limit>                                                    <counter>BRANCH</counter>
+                        <limit>                           <counter>BRANCH</counter>
                           <value>COVEREDRATIO</value>
                           <minimum>0.80</minimum>
                         </limit>
@@ -90,7 +90,7 @@ The coverage layer gates on branch coverage rather than line coverage, because a
 
 The stack is *what* runs; the gate is *when and where* it runs. The design principle is the feedback-latency ladder (Chapter 35): push each check to the earliest, fastest stage that can run it, so feedback arrives quickly and the slow checks do not block every push.
 
-> **CONCEPT** *The four-stage gate — fast feedback first, enforcement at the merge.* **Pre-commit** (seconds, on the developer's machine): format and secrets scan — the cheapest checks, caught before they ever leave the keyboard. **PR-fast** (a few minutes, blocking the PR): compile, Error Prone, Checkstyle, unit tests, and coverage *on new code* — block on new high-severity findings, so the PR gets fast, actionable feedback. **Main/nightly** (slow, off the fast path): SpotBugs, the full SonarQube analysis, SCA, mutation testing, and integration tests — the thorough, expensive checks that would make every PR painful. **Merge** (enforcement): the PR-fast gate as a *required status check*, with branch protection and a merge queue (Chapter 35) so `main` stays green and the gate cannot be bypassed. Fast feedback where it is cheap; full rigor where it is affordable; un-bypassable enforcement at the line that matters.
+> **CONCEPT** *The four-stage gate: fast feedback first, enforcement at the merge.* **Pre-commit** (seconds, on the developer's machine): format and secrets scan, the cheapest checks, caught before they ever leave the keyboard. **PR-fast** (a few minutes, blocking the PR): compile, Error Prone, Checkstyle, unit tests, and coverage *on new code*, blocking on new high-severity findings, so the PR gets fast, actionable feedback. **Main/nightly** (slow, off the fast path): SpotBugs, the full SonarQube analysis, SCA, mutation testing, and integration tests, the thorough and expensive checks that would make every PR painful. **Merge** (enforcement): the PR-fast gate as a *required status check*, with branch protection and a merge queue (Chapter 35) so `main` stays green and the gate cannot be bypassed. Fast feedback where it is cheap; full rigor where it is affordable; un-bypassable enforcement at the line that matters.
 
 Two design choices make this *adoptable*. The first is gate ordering: fast feedback keeps developers from waiting (Chapter 33). The second is the **new-code focus** (clean-as-you-code, Chapter 34), where the gate blocks on the quality of what the team *touches*, so the stack can be turned on a legacy codebase without a wall of findings (the adoption playbook, Chapters 38, 40). That second choice is what turns the stack from a greenfield ideal into something a real team with real legacy can adopt next week.
 
@@ -149,7 +149,7 @@ Adopt this stack, and *also* know that it is the beginning of quality work, not 
 ## Limitations & when NOT to reach for it
 
 - **This is *a* stack, not *the* stack.** The team's ecosystem, scale, budget, and regulatory context change the right picks, and every alternative named is legitimate. Treat it as a starting point to tailor, not gospel; that honesty is what keeps the recommendation from becoming a verdict.
-- **The full stack is a lot; adopt it incrementally.** Turning every tool on at once floods a team and gets reverted (Chapters 38, 40). Sequence it — format, then fast linters, then heavier analysis — and a small team may run a deliberate subset.
+- **The full stack is a lot; adopt it incrementally.** Turning every tool on at once floods a team and gets reverted (Chapters 38, 40). Sequence it: format, then fast linters, then heavier analysis, and a small team may run a deliberate subset.
 - **The stack is code to own.** Build time, false-positive tuning, and config maintenance are real ongoing costs (Chapters 33, 19, 27); the stack is itself a thing to maintain, not a one-time install.
 - **Tools do not make quality.** The stack is necessary scaffolding; design, review, and culture (Chapters 37, 1) are where quality is actually decided. A green gate over a bad design is a green dashboard on an unmaintainable system.
 - **Versions move; this is a snapshot.** Pin everything (Chapter 29) and re-verify at the team's own pin; the specific versions here will age.

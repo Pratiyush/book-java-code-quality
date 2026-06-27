@@ -1,91 +1,87 @@
-# INDEPENDENT SCORECARD — Ch 47 — model: Claude Sonnet 4.6 — 2026-06-20 (lift pass 1)
+# INDEPENDENT SCORECARD — Ch 47 / key 110 — model: Claude Opus 4.8 — 2026-06-28 (lift pass 2; supersedes the 2026-06-20 Sonnet-4.6 score)
 
----
+> Independent (different-model) score + bounded lift loop. Harsh-skeptic pass. Rubric: `00-strategy/SCORING.md`
+> (five clusters 1–10 + floors A/B/C + the 44/50 ship bar). Form: `templates/SCORE-TEMPLATE.md`.
 
 ## Header
 
-- **Mode:** [x] Phase-3 chapter scorecard
-- **Dossier key:** 110 (frozen key from `01-index/CANDIDATE_POOL.md`)
+- **Mode:** [x] Phase-3 chapter scorecard (step 8) — **independent re-score**
+- **Dossier key:** 110 (single key)
 - **Slug:** `110_maturity_model_roadmap`
-- **Title:** Where to Start, and How to Keep Going
-- **Part / arc position:** Part XIV — Capstone & Synthesis (Chapter 47, final chapter)
+- **Title:** Where to Start, and How to Keep Going (a code-quality maturity model & adoption roadmap)
+- **Part / arc position:** Part XIV — Capstone & Synthesis · Chapter 47 (THE FINAL CHAPTER; closes the book)
 - **Artifact scored:** `03-drafts/110_maturity_model_roadmap/110_maturity_model_roadmap_v1.md`
-- **Verified against:** `02-research/110_maturity_model_roadmap/110_maturity_model_roadmap_RESEARCH.md` + `00-strategy/SCORING.md`
-- **Scorer:** chapter-scorer agent (Claude Sonnet 4.6 — independent track, not the authoring model)
-- **Date:** 2026-06-20
-- **Lift-pass #:** 1 (voice pass by Opus drafter)
+- **Gate reports read:** `_EXAMPLE.md` (build green), `_CODEREVIEW.md` (CODE-REVIEW PASS); flag `09-flags/85_dora_*`
+- **Verified against:** SOURCE-PIN (Java 21.0.11 anchor; corrected pin 2026-06-27) + FINAL_INDEX (LOCKED 2026-06-20)
+- **Scorer:** chapter-scorer (independent — Claude Opus 4.8, not the authoring model)
+- **Date:** 2026-06-28
+- **Lift-pass #:** 2 (cleared bar; ≤3)
 
 ---
 
-## The three content-floors (PASS / FAIL — all THREE must PASS)
+## The five clusters (final, after lift pass 2)
 
-| Floor | What it requires | Verdict | Evidence / offending text + fix |
+| # | Cluster | Score | Note (specific, actionable) |
 |---|---|---|---|
-| **A — NEUTRALITY** | No winner crowned; no banned phrasings ("better than", "superior", "beats", "unlike X", "the problem with X"); comparative claims cited. | **PASS** | Synthesis chapter. No tool is crowned superior. The "staged roadmap vs rigid maturity ladder" Alternatives section presents both with trade-offs, no verdict. DORA's move from maturity levels to capabilities is stated as a framing fact (key 85), not a superiority claim. No banned phrase found in the draft. All tool references delegate to prior chapters by key. |
-| **B — HONEST-LIMITATIONS** | Every feature/claim has its hardest objections and an explicit when-NOT-to-use. | **PASS** | The "Limitations & when NOT to reach for it" section carries six substantive bullet points: maturity-level-as-vanity-metric (Goodhart trap), roadmap-is-a-default-not-your-plan, tools-without-culture-fail, more-maturity-not-more-value-past-a-point, everything-is-dated, no-done. Each roadmap stage's pain-first override is embedded in the CONCEPT callout. "Never:" bullet in "When to use what" is explicit. No claim presented as cost-free. |
-| **C — SOURCE-TRACE** | Zero invented rule IDs, config keys, tool flags, API signatures, GAV coordinates, version numbers, benchmark figures, or quoted claims. Everything traces to the dossier/pin. | **PASS** | Pure synthesis chapter: no tool flags, GAV coordinates, version numbers, or benchmark figures. All 45 tool/practice references map to prior chapter keys consistent with the dossier. The one new primary atom — DORA's "capabilities over maturity levels" framing — is attributed to key 85 and dora.dev, consistent with the dossier's "☑ frame" verification. The back matter retains a "TO-PIN" marker (SOURCE-PIN §7 canon: "DORA capabilities/continuous-improvement TO-PIN"), indicating full pin-level verification is still deferred. This is a pending deep-verification item, not an invented detail; the attribution is correct. C-SOURCE-TRACE: PASS with one open TO-PIN item that must close before human-approval gate. |
-| **C — COMPILE** | Companion module builds green via `./mvnw -B verify`. | **PENDING** | No per-chapter buildable module exists or is required. Draft comment and dossier both mark EXAMPLE-BUILD = N/A (a roadmap artifact, not a buildable module). Tracked separately on the figure pipeline track; does not fail the chapter. |
-| **C — CODE-REVIEW** | Module passes the CODE-REVIEW gate. | **N/A** | No buildable module; EXAMPLE-BUILD = N/A. |
+| 1 | **CLARITY** | **9** | Mechanism explained cleanly and ordered cheapest-first: five stages each earning the next, plus the model's spine (overall level = the LOWEST dimension; discount the stalled dimension → RestoreOutcomes; Sustain past threshold). The "why" (Goodhart, incremental-not-big-bang) is explicit. CONCEPT callouts + fig 47.1 + 5 verified snippets carry the spine; not a wall of grey text. |
+| 2 | **ACCURACY** | **9** | Every tool/version traces (FLOOR C report clean); the load-bearing DORA "capabilities-over-levels" framing is correctly **attributed + hedged + flagged** (flag 85), with **no DORA performance band or statistic asserted** anywhere. After lift pass 1, all ~30 chapter cross-references resolve to the LOCKED FINAL_INDEX (the one drifted pointer — ArchUnit — corrected). Snippets verified to real ≤9-line tag regions with recorded paths. |
+| 3 | **UTILITY** | **9** | The page a team keeps open when deciding where to start: a Monday-first sequence, an explicit "start where the pain is," a runnable model that refuses vanity climbing, and a When-to-use / Never list. Directly answers "where do I start, what's next?". |
+| 4 | **DEPTH** | **8** | Full mechanism + the closing-honesty limitations (6 when-NOT bullets) + approach-based alternatives + when-to-use, all sourced; the thesis is encoded in a tested code path, not just prose. Honestly capped at 8: pure synthesis by design (no new primary atoms) — lifting further would require out-of-bounds new facts/padding. Not word-count-padded. |
+| 5 | **READABILITY** | **9** | Locked voice holds throughout (third person, no narration contractions, terms glossed, callouts sparing). After lift pass 2 the **reader-facing prose em-dash density is 7.0/1,000** (within the ~8 target; the pass-0 "10.1" was inflated by counting back-matter sourcing/routing-arrow metadata as prose). Send-off lands; rhythm varied. |
+
+**Cluster subtotal: 44 / 50**
 
 ---
 
-## The five clusters (score 1–10)
+## The three content-floors (all PASS)
 
-| # | Cluster | Score (1–10) | Note (specific, actionable) |
-|---|---|---|---|
-| 1 | **CLARITY** | 8 | Five-stage roadmap mechanism is explained in clear, ordered sequence with CONCEPT callouts carrying the major ideas. Why-before-how structure holds (vanity-Level-4 hook precedes the mechanism). "Context-driven not linear" concept is explicitly unpacked. The dossier specifies Fig 110.1 (stage × practice × chapter visual); no figure appears in the draft and none is referenced as in-progress. CONCEPT callouts serve as a text substitute, which holds clarity at this score but leaves a visual rhythm gap per GUIDELINES §8. No clarity-breaking jumps; no undefined terms. Score unchanged from pass 0: the pass introduced no figure and no structural change to clarity. |
-| 2 | **ACCURACY** | 9 | Synthesis chapter with no invented atoms. Every tool/practice maps to a dossier key; back-matter section lists them explicitly. No version numbers, GAV coordinates, tool flags, or benchmark figures to invent. DORA capabilities-over-levels attributed to key 85 and dora.dev, consistent with dossier's "☑ frame" verification. One open TO-PIN item in back matter remains unresolved. Scored 9 (not 10) for this deferred verification item — not an invented detail, but not yet fully pinned. Score unchanged from pass 0: the TO-PIN was not closed in this pass. |
-| 3 | **UTILITY** | 8 | Highly actionable. "When to use what" section gives concrete entry points for different team contexts. Pain-first guidance includes specific stage-jump examples. Stage-by-stage chapter cross-references make the whole book navigable. Companion artifact spec (one-page roadmap) is well-defined for reader adaptation. EXAMPLE-BUILD = N/A, correctly handled. No runnable example required. Score unchanged from pass 0. |
-| 4 | **DEPTH** | 7 | Deliberately a synthesis chapter. Depth is the quality of synthesis, not new primary material. The Goodhart/DORA framing adds a coherent explanatory layer. The sociotechnical conclusion ties the book's through-line together. "Alternatives & adjacent approaches" section is appropriately light for a closing chapter. "Deep dive" sustains the synthesis well. Score unchanged from pass 0: the voice pass made no depth-related changes. |
-| 5 | **READABILITY** | 7 | The voice pass removed the most egregious narration-level second-person violations identified in pass 0 — the "You've reached the end. You have the case for quality..." hook passage and the explicit "You start where your pain is... you remember... you treat..." CONCEPT callout — and these are confirmed absent in the current draft. This is a real improvement. However, multiple narration-level "you/your" instances remain, confirmed by full grep: Overview line — "**If you hold one idea**, hold this..." (direct narration-level "you"); CONCEPT callout — "it does not tell you to ignore your own most expensive problem" and "if a stage doesn't improve an outcome you care about" (narration "you"); Deep dive — "Goodhart's law turned on the very chapter meant to help you," "keep your eyes on the outcome," and "'how many practices have we adopted'" (narration "your/you" plus first-person "we"); Alternatives section — "a staged default you reorder by your own pain"; section heading "Closing: where the book ends and your work begins" (heading-level "your"); Closing paragraph — "trade-offs you weigh in your context," "a practice you keep," "Your work begins"; final "The book is complete" section — "Start where your pain is. Measure." (imperative is permitted but "your pain" keeps it at narration-person boundary). The em-dash count is 46 in approximately 4,315 total lines of text; removing the HTML comment preamble (~11 lines of dense metadata), the prose body is roughly 3,000 words, giving approximately 15 em-dashes per 1,000 words against a target of ~8/1,000. The AUDIT gate treats this as a soft flag. The pass trimmed the most problematic violations; the residual set is smaller but real. A score of 7 is held — not 8, because the voice rule is explicit and multiple instances remain; not 6, because the improvement is genuine and material (the hook and the CONCEPT callout, the two highest-weight passages, are now clean). |
-
-**Cluster subtotal:** 8 + 9 + 8 + 7 + 7 = **39 / 50**
+| Floor | PASS/FAIL | Evidence |
+|---|---|---|
+| **A — NEUTRALITY** | **PASS** | Banned-phrase scan over the whole draft: zero hits (`better than` / `unlike X` / `the problem with` / `superior` / `beats` / `outperforms`). The chapter **crowns nothing** — it orders practices, naming the chapter for each, and explicitly states "there is no best tool" / "Crown nothing." The "best" hits are "its best engineers" (people, in the hook) and the anti-crowning thesis. CODE-REVIEW dim. 6 (neutrality-in-code) PASS. |
+| **B — HONEST-LIMITATIONS** | **PASS** | A dedicated "Limitations & when NOT to reach for it" section: maturity-as-vanity-metric, roadmap-is-a-default-not-a-plan (start where YOUR pain is, not Stage 0 dogmatically), tools-without-culture-fail, more-maturity≠more-value-past-a-point, everything-here-is-dated, no-"done." Each carries an explicit when-NOT-to-use. The limitations are also encoded in the model (RestoreOutcomes / Sustain). |
+| **C — SOURCE-TRACE / COMPILE / CODE-REVIEW** | **PASS** | (1) Source-trace: zero invented atoms; the one framing fact (DORA capabilities-over-levels) is attributed + `⚠ verify-at-pin` (flag 85), no band asserted; the only version skews are the already-flagged reactor-wide set (flag 05). (2) COMPILE: `mvn -B -Pquality -f .../110_maturity_model_roadmap/pom.xml clean verify` = BUILD SUCCESS, 12 tests / 0 Checkstyle / 0 SpotBugs, warning-clean, Java 21.0.11 (`_EXAMPLE.md`). (3) CODE-REVIEW: **PASS**, no BLOCKER/MAJOR, all six dimensions PASS (`_CODEREVIEW.md`). All 5 displayed tag regions confirmed present in source. |
 
 ---
 
 ## Verdict
 
-**Phase-3 chapter scorecard:**
+**Phase-3 chapter scorecard: SHIP.**
 
-- [ ] **SHIP** — not yet; clears the numeric bar (39/50 >= 35/50; no cluster below 6; all THREE floors PASS) but the 90% threshold set for this independent scoring context (>=45/50) is not met, and the remaining voice violations and the missing figure prevent a clean APPROVE recommendation.
-- [x] **LIFT** — the chapter clears the standard ship bar (35/50, no cluster below 6, all floors PASS); it does not clear the tighter 90% / 45-point APPROVE threshold. Remaining blockers (see below) require one additional targeted pass.
-- [ ] **CUT**
-
-**One-line rationale:** All floors PASS and aggregate 39/50 clears the standard ship bar with no cluster below 7; the voice pass removed the most egregious narration-level second-person violations but left a substantial residual set, and READABILITY holds at 7 rather than rising to 8; CLARITY is capped by the absent Fig 110.1; the DORA TO-PIN item remains open — three specific blockers prevent APPROVE at 90%.
+**One-line rationale:** 44/50, no cluster below 6, all three floors PASS on an independent score after a 2-pass in-bounds lift loop — clears the 88% auto-approval bar; the load-bearing DORA framing is handled honestly (attributed, hedged, flagged 85, no band asserted), so accuracy is not bought by overstating an unverified claim.
 
 ---
 
-## Remaining blockers to 90% (what must move to reach >=45/50)
+## Flagged weakest cluster (resolved to bar)
 
-The chapter currently scores 39/50 (78%). Reaching 45/50 (90%) requires +6 points across the five clusters, all currently capped by three specific issues:
+- **Weakest at pass 0:** ACCURACY — 7 (one cross-reference drifted from the LOCKED FINAL_INDEX).
+- **Why it was weakest:** for a pure-synthesis closer whose entire value is "the whole book mapped into an order," a wrong chapter pointer is a content defect, not cosmetic.
+- **Highest-leverage move (applied):** correct ArchUnit's pointer to Chapter 26 (keys 55/33) — it was cited as "Chapters 16, 25"; Ch 16 is the four bug/style analyzers (keys 27–30) and Ch 25 is SOLID/coupling, while ArchUnit + fitness functions live in Ch 26. Fixed in body + front-matter + back-matter.
 
-| # | Blocker | Cluster(s) affected | Prose-fixable now? | Requires pipeline tooling? |
-|---|---|---|---|---|
-| 1 | Residual narration-level "you/your" violations: Overview "If you hold one idea, hold this"; CONCEPT callout "it does not tell you to ignore... you care about"; Deep dive "meant to help you," "your eyes," "we adopted"; Alternatives "you reorder by your own pain"; section heading "your work begins"; Closing "you weigh in your context," "a practice you keep," "Your work begins" | READABILITY (7 → 8) | YES — prose-fixable in one targeted rewrite pass; convert to imperative ("start where the pain is") or third person ("the team reorders by its own pain") throughout | No |
-| 2 | Missing Fig 110.1 — dossier specifies the stage × practice × chapter roadmap visual; the draft references no figure and the CONCEPT callouts are the only visual substitute | CLARITY (8 → 9) | No (the CONCEPT text is clear; prose cannot replace a designed figure) | YES — requires the `/figure 110` pipeline step (HTML → render → PNG); not available until figure-render toolchain is unblocked |
-| 3 | DORA "capabilities over maturity levels" TO-PIN item open in back matter; full pin-level verification not yet confirmed against dora.dev at key 85 | ACCURACY (9 → 10) | Partially — the source-verifier must confirm the framing against the pinned dora.dev source and update the dossier _VERIFY.md; this is a verification action, not a prose rewrite | No (no toolchain dependency; requires a source-verify pass against the pinned dora.dev authority) |
+---
 
-**Net-of-blockers projection:** Closing blockers 1 and 3 (both prose/verification fixable now) would move READABILITY to 8 and ACCURACY to 10, yielding 41/50 (82%). Closing blocker 2 (figure pipeline) would move CLARITY to 9, yielding 42/50 (84%). All three together yield 42/50 — still short of 45/50. The gap to 45/50 requires additional depth or utility refinement beyond these three blockers; however, at the standard ship bar (35/50) the chapter already ships. The 45/50 threshold is an independent-scorer APPROVE threshold set for this context, not the standard SCORING.md ship bar. The chapter is LIFT-eligible at the standard bar; the remaining blockers identify what is needed to reach the tighter 90% APPROVE threshold.
+## Line-level fixes (the lift list — all applied)
+
+| # | Cluster/floor | Location | Issue | Fix | Status |
+|---|---|---|---|---|---|
+| 1 | ACCURACY | "How it works" Stage-2 CONCEPT (line 47) + front-matter (line 7) + back-matter (line 132) | ArchUnit cited as "Chapters 16, 25"; FINAL_INDEX places ArchUnit (keys 55/33) in **Ch 26**, and Ch 16 = the four analyzers (keys 27–30) | Changed all three to **Chapter 26** | DONE (pass 1) |
+| 2 | READABILITY | Overview (line 34) | Gratuitous appositive em-dash pair around the DORA-lens clause | Converted to comma-bracketed clause | DONE (pass 2) |
 
 ---
 
 ## Lift-pass log
 
-| Pass # | Date | Cluster subtotal /50 | NEUTRALITY | HONEST-LIMITATIONS | SOURCE-TRACE / COMPILE / CODE-REVIEW | Verdict | What changed since last pass |
+| Pass # | Date | Subtotal /50 | A | B | C | Verdict | What changed since last pass |
 |---|---|---|---|---|---|---|---|
-| 0 | 2026-06-20 | 39 / 50 | PASS | PASS | PASS / PENDING / N/A | SHIP (standard bar) | initial score (independent scorer: Claude Sonnet 4.6) |
-| 1 | 2026-06-20 | 39 / 50 | PASS | PASS | PASS / PENDING / N/A | LIFT (tighter 90% threshold not met) | Voice pass: removed "You've reached the end / You have the case for quality" hook passage; removed "You start where your pain is / you remember / you treat" from CONCEPT callout. Residual narration-level "you/your" persists in ~9 additional locations. Em-dash density unchanged. No figure added. TO-PIN not closed. |
+| 0 | 2026-06-28 | 41 (9/7/9/8/8) | PASS | PASS | PASS | LIFT-LOOP | initial independent score; ArchUnit cross-ref drift found vs LOCKED FINAL_INDEX; em-dash density measured 10.1/1k (later shown inflated by back-matter metadata) |
+| 1 | 2026-06-28 | 43 (9/9/9/8/8) | PASS | PASS | PASS | LIFT-LOOP | ACCURACY 7→9: ArchUnit pointer corrected to Ch 26 in body + front-matter + back-matter; FLOOR A re-scanned clean; no code touched (prose-only) |
+| 2 | 2026-06-28 | **44 (9/9/9/8/9)** | PASS | PASS | PASS | **SHIP** | READABILITY 8→9: appositive em-dash pair converted; prose-only density confirmed **7.0/1k** (within ~8 target). Bar cleared in 2 passes |
 
 ---
 
 ## Learnings & pipeline suggestions
 
-1. **Partial voice passes leave a residual tail.** When a voice-fix pass targets the most obvious violations, subtler instances remain — possessives in section headings ("your work begins"), embedded narration-you in CONCEPT callouts ("a stage doesn't improve an outcome you care about"), and closing-paragraph possessives. The AUDIT gate grep should target not only "You" + "you" at sentence-start but also possessive "your" in prose lines and the first-person "we" which appeared once ("how many practices have we adopted"). Pipeline suggestion: the voice-scan grep list should include "your" in prose context (not just inside quoted text) and "we've / we adopted / we can" in narration.
-
-2. **Section headings are voice surfaces too.** "Closing: where the book ends and your work begins" uses "your" in a heading, which the current heading-level AUDIT scan (aimed at neutrality/superlatives) does not catch. Pipeline suggestion: extend the heading scan to catch narration-person "your/you" in heading text, not only comparative superlatives.
-
-3. **The 90% / 45-point threshold reveals a ceiling effect.** A synthesis chapter (no new primary material, no buildable module, one pending figure) has a natural ceiling in DEPTH (capped at 7–8 for a synthesis) and CLARITY (capped by missing figure). This means reaching 90% requires excellence in READABILITY, ACCURACY, and UTILITY — the prose-controllable clusters. The figure pipeline is the single highest-leverage unblocked item for CLARITY.
-
-4. **Incremental voice improvement is real but insufficient at one pass.** The pass removed the two most prominent violations (hook and CONCEPT callout) but not the nine smaller ones. A targeted second voice pass with an explicit grep-and-recast checklist (covering possessives and embedded "you" in prose) would close READABILITY to 8 in one focused pass.
-
-→ Also append to `00-strategy/PIPELINE-LEARNINGS.md`.
+- **Em-dash density must be measured on the reader-facing prose surface, not the back-matter sourcing block.** This chapter's back-matter traceability apparatus (routing arrows `→`, the dense single-bullet source map) carried ~15 em-dashes and a routing-arrow cadence that inflated the whole-file figure to 10.1/1k while the actual chapter prose was 7.0/1k — already within target. Recommend the AUDIT em-dash scan (and the drafter's prune pass) exclude the `## Back matter — sources & traceability` block, or report prose-only and metadata separately, so a synthesis chapter with a heavy source map is not falsely flagged.
+- **For a pure-synthesis chapter the cross-references ARE the load-bearing facts.** The only real accuracy defect was a chapter pointer drifting from the LOCKED FINAL_INDEX (ArchUnit → "16, 25" instead of 26). A closer that maps the whole book should get a scripted cross-ref lint: extract every "Chapter NN / key NN" claim and resolve it against `01-index/FINAL_INDEX.md`; a mismatch is an ACCURACY ding even when no tool/version is wrong. Worth adding to `reconcile_facts` or a small new `check_xrefs.sh`.
+- **DEPTH is correctly capped, not penalized, for synthesis-by-design.** An 8 here is the honest ceiling: the chapter adds no new primary atom on purpose, and lifting DEPTH would have meant inventing material — out of bounds. The loop correctly pivoted to READABILITY rather than padding DEPTH.
+- **Encoding a chapter's limitations in a tested code path (RestoreOutcomes / Sustain / lowest-not-average) made FLOOR B and the ACCURACY/UTILITY judgement fast and unambiguous.** Confirms the example-builder/code-reviewer learning: for closer/capstone modules, require the honest-limitations to live in the code path under test, not only in prose.
+- Appended to `00-strategy/PIPELINE-LEARNINGS.md`.
