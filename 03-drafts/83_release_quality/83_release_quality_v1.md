@@ -26,9 +26,9 @@ The assumption does not hold, and this closing chapter of Part IX is the layer t
 
 **What this chapter covers**
 
-- **Release gates**: the final checks on the release artifact — all CI green, SBOM, signing/attestation, semver, smoke tests.
+- **Release gates**: the final checks on the release artifact: all CI green, SBOM, signing/attestation, *semantic versioning* (semver), smoke tests.
 - **Progressive delivery**: canary, blue-green, and feature flags that limit the blast radius of a bad release and decouple deploy from release.
-- **The post-release feedback loop**: error tracking, SLOs, and turning a production regression into a fix + a test + sometimes a new gate — shift-right closing the loop with shift-left.
+- **The post-release feedback loop**: error tracking, SLOs, and turning a production regression into a fix + a test + sometimes a new gate. This is shift-right closing the loop with shift-left.
 - The honest limits: progressive delivery needs observability, flags become debt, rollback is not always clean, and a safe release process is not good code.
 
 **What this chapter does NOT cover.** The build-time gates and pipeline themselves (Chapters 33–35, which produce the green `main`). SBOM, signing, and SLSA mechanics (Part VII). Observability, error tracking, and SLOs in depth (Part XIII). DORA metrics in depth (Part X). Human code review (Chapter 37, the catch for the logic flaws that slip the gates). Progressive-delivery *tooling* is kept general; DORA bands and signing specifics are verified at the pin.
@@ -36,6 +36,8 @@ The assumption does not hold, and this closing chapter of Part IX is the layer t
 **The one idea to hold**: *some defect will slip every gate, so release quality assumes it and limits the blast radius (canary, flags, rollback) while learning from production (fix + test + new gate) — shift-right, the complement to shift-left, and the proof that safe and frequent releasing is one thing, not a trade-off.*
 
 ## How it works
+
+Release quality is one loop with three moving parts. Figure 36.1 traces it: the shift-left gates of the prior chapters reduce what reaches production, progressive delivery limits the blast radius of whatever slips, and the feedback loop turns each escape back into a stronger gate. Read it as a cycle, not two phases.
 
 ![Fig 36.1 &mdash; The release-quality loop: shift-left gates &harr; shift-right release quality — Every gate lowers the odds a defect ships; none reaches zero. Release quality assumes one slips, limits its
     blast radius, and feeds the lesson back into the gates &mdash; one continuous cycle, not two phases.](../../05-figures/83_release_quality/fig83_1.png)
@@ -56,7 +58,7 @@ The verdict is a sealed type, so a release either passes every required check or
 
 <!-- include: 83_release_quality/src/main/java/org/acme/release/ReleaseDecision.java#release-decision -->
 
-Two of those preconditions are the version and the changelog. A release carries a release version, never a development `-SNAPSHOT` (the semver contract of Chapter 26):
+Two of those preconditions are the version and the changelog. A release carries a release version, never a development `-SNAPSHOT` (Maven's pre-release suffix, a build-in-progress that is not a shippable release — the semver contract of Chapter 26):
 
 <!-- include: 83_release_quality/src/main/java/org/acme/release/SemanticVersion.java#semver-release -->
 
@@ -74,9 +76,9 @@ Snippet tags: `release-readiness`, `release-decision`, `semver-release`, `change
 
 The core insight of release quality is that *some defect will slip the gates*, so the release mechanism itself should limit how much damage one can do. **Progressive delivery** is the set of techniques that do this:
 
-- **Canary** — release to a small percentage of traffic, watch error and latency metrics, and promote or roll back based on what the metrics show. A bad change hits 1% of users for a few minutes, not everyone.
-- **Blue-green** — run two production environments and switch traffic between them, so rollback is an instant traffic switch rather than a redeploy.
-- **Feature flags** — decouple *deploy* from *release*: the code ships dark, and a flag turns the feature on gradually, with a kill-switch if it misbehaves. This is the trunk-based companion from Chapter 35 (incomplete work merges to `main` behind a flag), extended to the release itself.
+- **Canary:** release to a small percentage of traffic, watch error and latency metrics, and promote or roll back based on what the metrics show. A bad change hits 1% of users for a few minutes, not everyone.
+- **Blue-green:** run two production environments and switch traffic between them, so rollback is an instant traffic switch rather than a redeploy.
+- **Feature flags:** decouple *deploy* from *release*. The code ships dark, and a flag turns the feature on gradually, with a kill-switch if it misbehaves. This is the trunk-based companion from Chapter 35 (incomplete work merges to `main` behind a flag), extended to the release itself.
 
 > **CONCEPT** *Decouple deploy from release.* The deepest idea here is that *deploying* code (putting the binary in production) and *releasing* a feature (turning it on for users) are separate acts, and separating them is what makes shipping both safe and frequent. Code can deploy continuously, dark behind flags; features release gradually via canary or flag rollout; and a problem is a flag flip or a traffic switch away from contained — not a panicked redeploy. This is the release-time resolution of the speed-versus-stability tension that has run through the book: progressive delivery makes a bad release a *small, fast-rolled-back incident* instead of an outage, which is exactly what lets a team release *often* without fear.
 
@@ -88,7 +90,7 @@ Snippet tags: `feature-flag` (companion module `08-companion-code/83_release_qua
 
 ### The post-release feedback loop: shift-right closes the loop
 
-The gates are shift-left: catch defects before merge. Release quality adds the missing half, **shift-right**: production reveals what the gates missed, and that lesson feeds back into them. The loop has a definite shape. **Error tracking** (Sentry-class) and **metrics/alerts** with **SLOs** (Part XIII) surface a production regression; the response is not just to fix it, but to turn it into durable knowledge:
+The gates are shift-left: catch defects before merge. Release quality adds the missing half, **shift-right**: production reveals what the gates missed, and that lesson feeds back into them. The loop has a definite shape. **Error tracking** (Sentry-class) and **metrics/alerts** with **SLOs** (Part XIII) surface a production regression; the response is not only to fix it, but to turn it into durable knowledge:
 
 > **CONCEPT** *A production regression becomes a fix, a test, and sometimes a new gate.* When a defect reaches production, the disciplined response is threefold: **fix** the bug, **add a test** that would have caught it (so it can never regress — Chapter 20), and where the class of defect warrants it, **add a new gate** — a fitness function (Chapter 26) that catches that whole class in CI going forward. This is how shift-right feeds shift-left: every production incident strengthens the gates, so the pipeline gets better at exactly the failures that actually happen, not the ones someone imagined. The quality cycle closes — the gates catch what they can before merge, production catches what slips, and what production catches becomes a gate.
 
@@ -96,7 +98,7 @@ The DORA stability metrics (Part X) make this measurable: **change-failure rate*
 
 ## Deep dive: shift-right, and the limit of limiting damage
 
-This chapter completes a frame the whole book has been building toward: **shift-left and shift-right are one cycle, not two phases.** Everything before Part IX, and the gates of Parts IX's first three chapters, push quality *earlier*: catch the defect at the IDE, the commit, the PR, the merge. Release quality pushes the *other* direction, accepting that some defects escape, limiting their damage in production, and learning from them. Drawn as a loop, the cycle is continuous: shift-left gates reduce what reaches production, progressive delivery limits the blast radius of what does, the feedback loop turns each escape into a fix and a test and a gate, and that new gate is itself shift-left for the next change. The two directions are not competitors or alternatives; they are the two arcs of a single cycle, and a team that runs only one is incomplete. Shift-left without shift-right ships defects big-bang and never learns why; shift-right without shift-left drowns in production incidents the gates should have caught. The mature posture runs both, and treats every production failure as a gap in the gates to be closed, not just a fire to put out.
+This chapter completes a frame the whole book has been building toward: **shift-left and shift-right are one cycle, not two phases.** Everything before Part IX, and the gates of Parts IX's first three chapters, push quality *earlier*: catch the defect at the IDE, the commit, the PR, the merge. Release quality pushes the *other* direction, accepting that some defects escape, limiting their damage in production, and learning from them. Drawn as a loop, the cycle is continuous: shift-left gates reduce what reaches production, progressive delivery limits the blast radius of what does, the feedback loop turns each escape into a fix and a test and a gate, and that new gate is itself shift-left for the next change. The two directions are not competitors or alternatives; they are the two arcs of a single cycle, and a team that runs only one is incomplete. Shift-left without shift-right ships defects big-bang and never learns why; shift-right without shift-left drowns in production incidents the gates should have caught. The mature posture runs both, and treats every production failure as a gap in the gates to be closed, not only a fire to put out.
 
 The reframe that makes this practical is the deploy/release decoupling, because it dissolves the last form of the speed-versus-stability tension. Earlier chapters resolved it for *merging* (a fast, trustworthy, required gate enables merging small changes often); this chapter resolves it for *shipping* (decoupling deploy from release puts code in production continuously and turns it on gradually). The DORA evidence that speed and stability correlate reaches its conclusion here: the same practices that make releases *frequent* (canary, flags, fast rollback) are the ones that make them *safe*, because they shrink the blast radius and recovery time of the inevitable bad change. Frequent and safe are not traded off; they are produced by the same mechanism. A team releasing quarterly out of fear has it exactly backwards. The fear comes from big-bang releases with no blast-radius control, and the cure is to release *more* often in *smaller*, *reversible* increments.
 
@@ -104,7 +106,7 @@ Release quality has a hard ceiling that must close the chapter honestly, carryin
 
 ## Limitations & when NOT to reach for it
 
-- **A safe release process is not good code.** Progressive delivery limits the *damage* of defects; it does not prevent them — the prevention is the rest of the book (types, tests, analysis, secure coding, review). A team investing here while neglecting the gates has built a way to roll back defects it should have prevented.
+- **A safe release process is not good code.** Progressive delivery limits the *damage* of defects; it does not prevent them. The prevention is the rest of the book (types, tests, analysis, secure coding, review). A team investing here while neglecting the gates has built a way to roll back defects it should have prevented.
 - **Progressive delivery needs infrastructure and good metrics.** Canary analysis is only as good as the signals it watches; without solid observability (Part XIII) it is blind. Real setup cost is involved; a small internal app may not need canary at all.
 - **Feature flags become debt if not cleaned up.** Stale flags accumulate complexity and explode the test matrix; flags need a removal discipline after rollout, like any debt.
 - **Rollback is not always clean.** Database migrations and stateful changes cannot reverse cleanly; release quality includes designing *backward-compatible* migrations, not assuming rollback is free.
@@ -114,11 +116,11 @@ Release quality has a hard ceiling that must close the chapter honestly, carryin
 
 ## Alternatives & adjacent approaches
 
-- **Canary vs blue-green vs flags** — gradual-traffic vs environment-switch vs feature-toggle; complementary techniques (often combined), chosen by infrastructure and the granularity of control needed.
-- **Feature flags vs long-lived branches** (Chapter 35) — flags decouple deploy from release so incomplete work ships dark; the trunk-based alternative to holding work on a branch.
-- **Backward-compatible migrations / expand-contract** — the discipline that makes stateful rollback possible, where a raw rollback cannot reverse a schema change.
-- **Observability and SLOs** (Part XIII) — the signals canary analysis and the feedback loop depend on; release quality is blind without them.
-- **Human code review** (Chapter 37) — the upstream catch for the logic flaws that slip every gate and only surface in production; the prevention to release quality's damage-control.
+- **Canary vs blue-green vs flags:** gradual-traffic vs environment-switch vs feature-toggle; complementary techniques (often combined), chosen by infrastructure and the granularity of control needed.
+- **Feature flags vs long-lived branches** (Chapter 35): flags decouple deploy from release so incomplete work ships dark; the trunk-based alternative to holding work on a branch.
+- **Backward-compatible migrations / expand-contract:** the discipline that makes stateful rollback possible, where a raw rollback cannot reverse a schema change.
+- **Observability and SLOs** (Part XIII): the signals canary analysis and the feedback loop depend on; release quality is blind without them.
+- **Human code review** (Chapter 37): the upstream catch for the logic flaws that slip every gate and only surface in production; the prevention to release quality's damage-control.
 
 These compose into release resilience: green, signed, inventoried artifacts; progressive rollout with observability-driven promotion; fast, clean rollback; and a feedback loop that turns every escape into a stronger gate.
 
@@ -130,7 +132,7 @@ These compose into release resilience: green, signed, inventoried artifacts; pro
 - **For stateful changes:** backward-compatible (expand-contract) migrations, because raw rollback cannot reverse a schema change.
 - **When production reveals a defect:** fix it, add the test that would have caught it (Chapter 20), and where the class warrants it, add a new gate (Chapter 26).
 - **To know if release quality is improving:** the DORA stability metrics — change-failure rate and recovery time (Part X).
-- **Not as a substitute for prevention:** progressive delivery is the safety net, not the defect prevention — keep investing in the gates and review.
+- **Not as a substitute for prevention:** progressive delivery is the safety net, not the defect prevention. Keep investing in the gates and review.
 
 ## Hand-off to the next part
 

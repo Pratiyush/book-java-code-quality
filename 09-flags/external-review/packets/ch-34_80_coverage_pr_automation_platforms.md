@@ -120,6 +120,8 @@ The last chapter set the pipeline's shape and left two things as promises: clean
 
 ## How it works
 
+One discipline runs through all three sections, and Figure 34.1 shows it in one frame: the same diff-scoping focus applied to the coverage metric, the platform's required check, and the PR feedback alike, each narrowed to the code this change actually touches.
+
 ![Fig 34.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback — Focus everything on the code this change](../../05-figures/80_coverage_pr_automation_platforms/fig80_1.png)
 
 *Fig 34.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback — Focus everything on the code this change*
@@ -194,8 +196,8 @@ The same caution generalizes across all three. Coverage stated it most sharply: 
 ## Limitations & when NOT to reach for it
 
 - **Gating on coverage percentage incentivizes bad tests.** A whole-repo or absolute coverage target gets gamed with assertion-free tests (Goodhart); coverage is a floor, not a goal. Gate *new code*, ratchet, and back it with mutation and review. Never chase a higher number.
-- **New-code coverage can be gamed too.** Trivial tests on new code still hit the line; coverage remains necessary, not sufficient. The mutation backstop and human review close the gap.
-- **The coverage threshold is arbitrary.** There's no universally right percentage; avoid false precision, and exclude generated code or the signal distorts.
+- **New-code coverage can be gamed too.** A degenerate test on new code still hits the line without asserting anything; coverage remains necessary, not sufficient. The mutation backstop and human review close the gap.
+- **The coverage threshold is arbitrary.** No universally right percentage exists; avoid false precision, and exclude generated code or the signal distorts.
 - **Platform config is non-portable and rots.** Moving platforms means rewriting the pipeline (lock-in is real), and the config is code that needs ownership and *pinned* action/plugin versions. A compromised CI action is a supply-chain attack (Part VII). Treat CI config as code that requires ownership, not a set-and-forget artifact.
 - **Platform choice is usually dictated, not free.** Teams run CI where the code lives; the book crowns none, and a migration is rarely worth it on its own. Jenkins's flexibility costs ops burden; hosted platforms cost money and control.
 - **PR comment overload gets bots muted.** Un-scoped or over-eager automation spams the PR and is tuned out; diff-scoping and severity-filtering are mandatory, and overlapping tools must de-dupe their responsibilities.

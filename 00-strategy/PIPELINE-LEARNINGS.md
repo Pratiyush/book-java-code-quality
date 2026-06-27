@@ -2750,3 +2750,45 @@ Levers (a) em-dash density, (b) hype-word removal, (c) gloss-before-first-use, (
   but …" intensifier (here "unifies not just architecture rules but every gate"); `not just` → `not only`
   is the clean fix. A quoted "just this once" (a developer's rationalization in dialogue) is **not** filler
   and stays — the ban is on narration filler, not quoted human speech.
+
+## 2026-06-27 — Ch 44 (key 105) voice/readability/clarity LIFT (chapter-scorer, self-score → independent)
+
+- **Measure the em-dash lever on the PROSE BODY, not the raw file.** Ch 44 read 9.53 em-dash/1000 over the
+  whole file but only **6.45/1000** in the prose body (hook → hand-off, excluding the HTML metadata comment,
+  the `<!-- include -->` directives, the figure caption, and the back-matter sources/companion machinery).
+  The "convert only if above ~8" instruction is a prose-cadence rule; the whole-file count is inflated by
+  reference density. Mass-converting on the raw number would churn on-voice prose against a passing measure.
+  Suggest the AUDIT/EXAMPLES em-dash scan strip metadata + includes + back matter before computing density.
+- **Readability defects cluster in the back matter.** Ch 44's only narration contraction ("doesn't") and its
+  only defensive "not just" both sat in the Companion-module paragraph — prose discipline slips there because
+  it reads as a record. The back-matter sources + companion paragraphs are graded prose under the locked
+  voice; sweep them for contractions and "is not just"/"is not merely" the same as the body.
+- **A figure opening a `## How it works` section is the recurring drop-cold spot.** When the diagram is the
+  first element under a fresh section heading, the figure-intro sentence is easy to omit (VOICE-GUIDE: place
+  the prose immediately before the listing, naming what it shows). Have the figure-designer/drafter hand-off
+  leave the one-sentence intro in place so the scorer is not adding it at lift time.
+- **`'s` is overwhelmingly possessive, not a contraction — classify before acting.** A contraction grep on
+  Ch 44 surfaced 9 `'s` tokens; all 9 were possessives (reviewer's, microbenchmark's, gate's, …) and correct.
+  Only `doesn't` was a real narration contraction. Same lesson as Ch 55's `lets`/`let's`: classify first.
+- **Self-score cannot close the last 2 points to the 88% bar.** Ch 44 self-scores 42/50 with floors green —
+  clears the legacy ≥35 inclusion bar, sits 2 under the active ≥44/50 *independent* auto-approval bar. The
+  honest route is the independent re-score, never nudging the self-score by 2 to "pass" it.
+- **Measure em-dash density on the PROSE BODY only, before converting (Ch 37/key 84 lift).** The raw file
+  measured ~13.8/1000, but figure-caption alt-text (`&mdash;` entities) and the metadata comment inflate any
+  whole-file count. Stripping HTML comments + figure `![...]`/`*Figure*` caption lines first gave the true
+  prose-body figure (13.83/1000 here), and converting ~26 flowing-prose appositives to periods/colons/commas
+  brought it to 6.76/1000. Leave the remaining em-dashes that are **bullet-label separators** (the
+  doc-types / Alternatives / When-to-use lists), the **back-matter reference apparatus**, and the **sanctioned
+  posed-question beat** (`the question no analyzer asks — *is this even the right change?*`) — those are a
+  different register, not the over-used appositive cadence. Converting them would be churn with no density win.
+- **A contraction in an H1 chapter TITLE is an established house pattern; a contraction in an H3 body heading
+  is not.** Ch 84's title "The Part the Machine Can't Do" matches keys 101 ("Measure, Don't Guess") and 11
+  ("The Value That Isn't There") — titles are the one register where the snap VOICE praises is sanctioned, so
+  it was kept. The H3 subheading ("record the why the code can't say") and a back-matter line were narration
+  and were converted to "cannot". Classify the heading level before touching a title contraction; do not
+  "fix" one chapter's title in isolation and break cross-book consistency.
+- **Two figures dropped back-to-back under a heading need a naming intro each (house convention).** Ch 84
+  had both figures cold under `## How it works`; siblings (keys 26, 33, 06) all introduce a figure with a
+  running-prose sentence that names it ("Figure N.x ...") and says what it shows, placed immediately before
+  the image. Added one intro sentence per figure (no em-dashes) — also nudged density down by adding clean
+  prose. Worth a FIGURE-GUIDE line: every image carries a naming intro sentence in the body before it.
