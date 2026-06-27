@@ -113,11 +113,13 @@ This chapter, the last in Part II, turns the whole part into a vocabulary. It ca
 - **Canon-dating the patterns:** which classic GoF patterns modern Java now serves with a language feature — and which still earn their keep.
 - The **contested core** (key 61): when a pattern helps and when "patternitis" hurts — presented two-schools, neither crowned.
 
-**What this chapter does NOT cover.** The analyzer internals and how to tune their rulesets (Part IV — this chapter cites rule keys, those chapters configure them), the *automated* application of refactorings at scale (Chapter 39, OpenRewrite), SOLID and architectural design (Chapter 25), and the modern features themselves in depth (Chapter 5). 
+**What this chapter does NOT cover.** The analyzer internals and how to tune their rulesets (Part IV — this chapter cites rule keys, those chapters configure them), the *automated* application of refactorings at scale (Chapter 39, OpenRewrite), SOLID and architectural design (Chapter 25), and the modern features themselves in depth (Chapter 5).
 
 **One idea to hold:** *a smell is a hint to investigate, never a verdict to obey — and the same is true of a design pattern: it is justified by the problem it solves, not by its name.*
 
 ## How it works
+
+The catalogue is built from one repeating unit, shown in Figure 12.1: every smell pairs with the named refactoring that resolves it and, for many, the analyzer rule that catches it. Reading the unit left to right answers a second question the figure makes explicit. Does a linter find the smell, or does a human reviewer have to?
 
 ![Fig 12.1 — The smell-triple: smell → refactoring → detecting rule — Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it](../../05-figures/19_code_smells_antipatterns/fig19_1.png)
 
@@ -197,21 +199,21 @@ The honest resolution is not a winner but a rule both schools accept: **a patter
 
 This is also where the catalogue's honesty about *detection* matters most. The smells that bite hardest at design time (Feature Envy, Primitive Obsession, Speculative Generality, the misapplied pattern) have **no reliable automated detector**. A linter catches a Long Method by counting lines and a God Class by counting methods, but no rule reliably catches "this abstraction earns nothing." Those are review-found, not tool-found, and a chapter that implied the whole catalogue is gate-able would be lying. The tools handle the metric and structural smells; human judgment (Chapter 4's review culture) handles the rest, and the anti-pattern *labels* are there to make that judgment concrete, not to weaponize it in review.
 
-One worked smell shows why even the tool-found ones deserve respect rather than reflexive obedience. The hook's leaking getter trips SpotBugs `EI_EXPOSE_REP`, and it is not merely stylistic: a caller who mutates the returned `List<LineItem>` silently corrupts the order's internal state. That smell *bites at runtime*. The fix (a defensive copy or `List.copyOf`, Chapter 8) closes a real bug. Contrast a sixty-line method that reads as one linear recipe: Sonar may flag its length, but extracting it into five tiny methods can scatter a story that was clearer whole (the *Clean Code* vs *A Philosophy of Software Design* tension from Chapter 2). Same catalogue, opposite verdicts. Which is exactly why a smell is a hint to investigate, not a verdict to obey.
+One worked smell shows why even the tool-found ones deserve respect rather than reflexive obedience. The hook's leaking getter trips SpotBugs `EI_EXPOSE_REP`, and it reaches past style into correctness: a caller who mutates the returned `List<LineItem>` silently corrupts the order's internal state. That smell *bites at runtime*. The fix (a defensive copy or `List.copyOf`, Chapter 8) closes a real bug. Contrast a sixty-line method that reads as one linear recipe: Sonar may flag its length, but extracting it into five tiny methods can scatter a story that was clearer whole (the *Clean Code* vs *A Philosophy of Software Design* tension from Chapter 2). Same catalogue, opposite verdicts. Which is exactly why a smell is a hint to investigate, not a verdict to obey.
 
 The companion module makes both verdicts concrete. The leaking getter is the half that bites: the order hands its internal list straight back, so a caller mutates the order through the returned reference.
 
 <!-- include: 19_code_smells_antipatterns/src/main/java/org/acme/smells/OrderLeaky.java#smell-expose-rep -->
 
-The refactoring is the defensive copy — one line in the compact constructor that snapshots the list, so neither the caller's reference nor the accessor's result can reach the order's state.
+The refactoring is the defensive copy. One line in the record's *compact constructor* (the validate-and-normalize block a record runs before its fields are assigned) snapshots the list, so neither the caller's reference nor the accessor's result can reach the order's state.
 
 <!-- include: 19_code_smells_antipatterns/src/main/java/org/acme/smells/Order.java#refactor-defensive-copy -->
 
-The Long Method is the half that may not. Its smelly form runs long and nests a type-code branch deep inside the body, the shape `java:S3776` measures.
+The Long Method is the half that may not. Its smelly form runs long and nests a *type-code branch* deep inside the body: a `switch` on a value that stands in for a real type, the shape `java:S3776` measures.
 
 <!-- include: 19_code_smells_antipatterns/src/main/java/org/acme/smells/OrderServiceSmelly.java#smell-long-method -->
 
-Extract Function resolves it: the public method becomes a short recipe of named steps, each holding one whole idea — though pushed too far the same move yields the opposite Middle Man smell, which is the judgment the catalogue only names.
+Extract Function resolves it: the public method becomes a short recipe of named steps, each holding one whole idea. Pushed too far, the same move yields the opposite Middle Man smell, the judgment the catalogue only names.
 
 <!-- include: 19_code_smells_antipatterns/src/main/java/org/acme/smells/OrderService.java#refactor-extract -->
 
@@ -220,7 +222,7 @@ A behaviour-preservation test in the module proves the refactored service return
 ## Limitations & when NOT to reach for it
 
 - **A smell is a hint, and false positives are inherent.** Fowler says smells "suggest"; not every Long Method or `switch` is wrong. Treating every linter flag as a defect produces churn and trains developers to ignore the tool.
-- **Thresholds are conventions and they disagree.** "Long Method" is 60 NCSS in PMD but a different default in Sonar and Checkstyle; complexity is 10 (cyclomatic) versus 15 (cognitive). There is no universal number; chasing a threshold is the vanity-metric trap (Chapter 2, Goodhart). Do not block a build on a borderline metric in untested legacy code; characterize it with tests first, then refactor.
+- **Thresholds are conventions and they disagree.** "Long Method" is 60 *NCSS* (non-commenting source statements, the lines that actually do work) in PMD but a different default in Sonar and Checkstyle; "too complex" is 10 by *cyclomatic complexity* (a count of the independent branches through a method) versus 15 by *cognitive complexity* (a count that weights nested and tangled control flow more heavily than flat branches). There is no universal number; chasing a threshold is the vanity-metric trap (Chapter 2, Goodhart). Do not block a build on a borderline metric in untested legacy code; characterize it with tests first, then refactor.
 - **Some smells have no reliable detector.** Feature Envy, Primitive Obsession, Telescoping Constructor, Speculative Generality, and Middle Man are judgment calls. Label each entry tool-found vs review-found; do not imply the catalogue is fully gate-able.
 - **Refactoring is not free or automatically safe.** Every refactoring needs a test safety net (Fowler's precondition). Refactoring untested legacy code can introduce regressions. The when-NOT condition for aggressive smell removal is "no characterization tests yet."
 - **Over-applying a fix re-introduces the opposite smell.** Too much Extract Function yields Middle Man and shotgun navigation; an over-built Builder yields ceremony where a `record` fits. Refactoring *toward* a smell is real.
@@ -234,7 +236,7 @@ A behaviour-preservation test in the module proves the refactored service return
 - **Automated remediation (OpenRewrite):** beyond *flagging* a smell, recipes like `common-static-analysis` *apply* the refactoring across a whole codebase, bridging this catalogue to large-scale modernization (Chapter 39). It hands the smell→recipe map to the automation.
 - **IDE refactorings:** IntelliJ and Eclipse implement most of Fowler's catalogue as safe, mechanical transforms: the lowest-friction way to apply a single refactoring with the test net the IDE preserves.
 - **Architecture fitness functions** (Chapter 26): for design-level smells a linter cannot see (layering violations, cyclic dependencies), an ArchUnit test encodes the rule structurally.
-- **Code review** (Chapter 4): the only reliable detector for the judgment-only smells and for misapplied patterns — the human layer the tools cannot replace.
+- **Code review** (Chapter 4): the only reliable detector for the judgment-only smells and for misapplied patterns. It is the human layer the tools cannot replace.
 
 These layer rather than compete: the metric and bug-overlap smells go to the linters in CI, the mechanical refactorings to the IDE or OpenRewrite, the design-level and judgment smells to review and fitness functions.
 

@@ -19,7 +19,7 @@
 | 12 | 19 | 40/50 | 80% | PASS | PASS | PASS | PENDING | no | **LIFT** | 80% self-score — lift + independent-score toward the 88% bar |
 | 13 | 20 | 43/50 | 86% | PASS | PASS | PASS | PENDING | no | **LIFT** | 86% self-score — lift + independent-score toward the 88% bar |
 | 14 | 22 | 43/50 | 86% | PASS | PASS | PASS | PENDING | no | **LIFT** | 86% self-score — lift + independent-score toward the 88% bar |
-| 15 | 26 | 41/50 | 82% | PASS | PASS | PASS | PENDING | no | **LIFT** | 82% self-score — lift + independent-score toward the 88% bar |
+| 15 | 26 | 42/50 | 84% | PASS | PASS | PASS | PASS | no | **LIFT** | 84% self-score — lift + independent-score toward the 88% bar |
 | 16 | 27 | 42/50 | 84% | PASS | PASS | PASS | PENDING | no | **LIFT** | 84% self-score — lift + independent-score toward the 88% bar |
 | 17 | 35 | 43/50 | 86% | PASS | PASS | PASS | PENDING | no | **LIFT** | 86% self-score — lift + independent-score toward the 88% bar |
 | 18 | 38 | 43/50 | 86% | PASS | PASS | PASS | PENDING | no | **LIFT** | 86% self-score — lift + independent-score toward the 88% bar |

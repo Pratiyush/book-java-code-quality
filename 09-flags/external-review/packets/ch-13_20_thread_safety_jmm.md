@@ -108,7 +108,7 @@ This chapter teaches that reasoning. It defines what "correct" even means when t
 **What this chapter covers**
 
 - The **Java Memory Model** (JLS ch.17): *happens-before*, the definition of a **data race**, and what "correctly synchronized" means — the spine of the whole part.
-- The happens-before **edges you can rely on** (`synchronized`, `volatile`, `final`, thread start/join, `java.util.concurrent`).
+- The happens-before **edges to rely on** (`synchronized`, `volatile`, `final`, thread start/join, `java.util.concurrent`).
 - **Safe publication**: the four idioms for making a shared object visible fully-constructed — and the `this`-escape trap that breaks them.
 - **`java.util.concurrent`**: preferring tested building blocks (atomics, concurrent collections, executors, explicit locks) to hand-rolled `synchronized`/`wait`/`notify`.
 - How the race that cannot be tested for *is* caught — by static analysis (`@GuardedBy`, SpotBugs MT) and by a runtime stress harness (JCStress).
@@ -118,6 +118,8 @@ This chapter teaches that reasoning. It defines what "correct" even means when t
 **The one idea to hold** is the epigraph: *a program is correctly synchronized if and only if all its sequentially-consistent executions are data-race-free; get it there, and the spec guarantees the intuitive reading.* Everything else is technique for establishing enough happens-before edges to make that true.
 
 ## How it works
+
+The whole chapter rests on two structures, and Figure 13.1 lays them side by side: on the left, the six happens-before edges that establish cross-thread visibility; on the right, the four idioms that publish an object reference so a second thread sees it fully built. Every technique in the sections that follow is one edge or one idiom from this figure.
 
 ![Fig 13.1 — Java Memory Model: happens-before edges and safe publication — JLS SE 21 §17.4.5 · six edges that establish cross-thread visibility · four idioms for safely publishing an object reference](../../05-figures/20_thread_safety_jmm/fig20_1.png)
 
@@ -134,7 +136,7 @@ The JLS defines it precisely (SE 21 §17.4.5, verbatim): "Two actions can be ord
 
 A crucial subtlety: happens-before constrains *visibility and ordering*, not literal execution order. The spec is explicit (§17.4.5, verbatim): "the presence of a happens-before relationship between two actions does not necessarily imply that they have to take place in that order in an implementation. If the reordering produces results consistent with a legal execution, it is not illegal." The JVM may reorder freely, as long as the happens-before contract is honored.
 
-### The edges you can rely on
+### The edges to rely on
 
 A developer establishes happens-before through a fixed set of guaranteed edges (JLS §17.4.5; the `java.util.concurrent` package summary restates them as "Memory Consistency Properties"). These are the entire toolkit:
 
@@ -155,7 +157,7 @@ Every safe-sharing technique in the rest of the chapter is one of these edges in
 The language gives three constructs, and the quality skill is knowing exactly what each one buys.
 
 - **`synchronized`** establishes the monitor edge: it provides *both* mutual exclusion (one thread at a time) *and* visibility (everything the previous holder did is visible to the next). It is the heavyweight, complete tool.
-- **`volatile`** establishes the volatile edge: *visibility and ordering without mutual exclusion*. This is the one most often misunderstood. `volatile` does **not** make compound actions atomic. `count++` on a `volatile` field is a read-modify-write and can still lose updates; SpotBugs flags it as `VO_VOLATILE_INCREMENT`. Use `volatile` for a flag or a published reference, never for a counter.
+- **`volatile`** establishes the volatile edge: *visibility and ordering without mutual exclusion*. This is the one most often misunderstood. `volatile` does **not** make compound actions *atomic* — happen all-at-once, with no other thread able to observe a half-done state. `count++` on a `volatile` field is a read-modify-write and can still lose updates; SpotBugs flags it as `VO_VOLATILE_INCREMENT`. Use `volatile` for a flag or a published reference, never for a counter.
 - **`final`** establishes a *special publication guarantee* (the safe-publication section below), the backbone of immutable-object thread-safety.
 
 > **CONCEPT** *Visibility is not atomicity.* `volatile` guarantees that a read sees the latest write (visibility); it does *not* guarantee that read-modify-write happens as one indivisible step (atomicity). The most common concurrency bug after "no edge at all" is reaching for `volatile` where an atomic or a lock was needed.
@@ -170,7 +172,7 @@ And one hardware-level trap the JMM exposes explicitly (§17.7, verbatim): "a si
 
 Most thread-safety defects are not about *who runs first*; they are about **visibility**: one thread constructs an object, another reads the reference and sees *partially-constructed* or *stale* fields because no happens-before edge connects the write to the read. The danger has a name, **unsafe publication**, and the JMM genuinely permits it: handing a reference through an ordinary, non-`final`, non-`volatile`, non-locked field lets a reader observe the object's fields at their *default* (zero/null) values, even though the constructor "finished."
 
-Two design moves make this class of bug *structurally impossible*. The first is **immutability**: an object whose state never changes after construction has no stale read or torn update to suffer. The second is the disciplined act of **safe publication**. There are exactly four idioms, each mapping to one of the happens-before edges above:
+Two design moves make this class of bug *structurally impossible*. The first is **immutability**: an object whose state never changes after construction has no stale read or torn update to suffer. The second is **safe publication** — handing a reference to another thread through a channel that carries a happens-before edge, so the reader is guaranteed to see the object fully constructed. There are exactly four idioms, each mapping to one of the happens-before edges above:
 
 | Idiom | What to write | The edge that makes it safe |
 |---|---|---|
@@ -191,7 +193,7 @@ One misconception is worth naming explicitly: *"the constructor returned, so the
 
 Raw assembly of these edges by hand is rarely necessary, because `java.util.concurrent` (the JSR-166 library, since Java 5) ships tested building blocks that encode them, and *every utility documents which happens-before edge it provides*. The quality stance is "reach for a j.u.c construct first; drop to raw `synchronized`/`wait`/`notify` only with a reason":
 
-- **Atomics** (`AtomicInteger`, `AtomicReference`, since 1.5) give lock-free single-variable updates via hardware compare-and-swap; `incrementAndGet()` replaces the `volatile++` bug. `LongAdder` (1.8) trades space for throughput under high contention (its own Javadoc: "significantly higher [throughput]… at the expense of higher space consumption").
+- **Atomics** (`AtomicInteger`, `AtomicReference`, since 1.5) give lock-free single-variable updates via *compare-and-swap* (CAS): a hardware instruction that updates a value only if it still holds the expected one, retrying on a miss, so the read-modify-write lands as one indivisible step without a lock. `incrementAndGet()` replaces the `volatile++` bug. `LongAdder` (1.8) trades space for throughput under high contention (its own Javadoc: "significantly higher [throughput]… at the expense of higher space consumption").
 - **Concurrent collections** (`ConcurrentHashMap`, `CopyOnWriteArrayList`, `BlockingQueue`, since 1.5) are designed for sharing. The central lesson: `ConcurrentHashMap`'s *individual* methods are atomic, but a `get` then a separate `put` is *not*. Use the atomic compound operations `computeIfAbsent` / `merge` / `compute` to close the check-then-act race.
 - **Explicit locks** (`ReentrantLock`, `ReadWriteLock`, since 1.5) do what `synchronized` does plus timed/interruptible/`tryLock` acquisition and fairness, at the cost of a mandatory `lock(); try { … } finally { unlock(); }` idiom (the JVM does not release it automatically).
 - **Synchronizers** (`CountDownLatch`, `Semaphore`) and **executors/futures** (`ExecutorService`, `CompletableFuture`) replace hand-written coordination and `new Thread()` with tested abstractions; graceful `shutdown()` + `awaitTermination()` is the lifecycle to get right.
@@ -212,7 +214,7 @@ But static analysis is necessarily incomplete: race detection is undecidable in 
 
 <!-- include: 20_thread_safety_jmm/src/test/java/org/acme/concurrency/ThreadSafetyContractTest.java#jcstress-test -->
 
-**The version-bound complication.** Here is a concurrency recommendation that *flips* across the JDK levels this book spans, and it is the cleanest example of why advice must be dated. At **Java 21**, a virtual thread that holds a `synchronized` monitor across a blocking call **pins** its carrier platform thread — JEP 444's own words: "Pinning does not make an application incorrect, but it might hinder its scalability." So the Java-21 advice for virtual-thread-heavy code is: prefer `ReentrantLock` over `synchronized` around blocking operations. But **JEP 491 (Java 24)** removes that pinning. So on Java 24 and 25 the workaround is unnecessary, and a book that stated "always prefer `ReentrantLock` for virtual threads" as a timeless rule would be wrong by the forward LTS. State the advice bound to the JDK level (true at 21, narrowed at 24), never as a permanent law. (Virtual threads themselves are Chapter 14; the point here is the *dating discipline*.)
+**The version-bound complication.** One concurrency recommendation *flips* across the JDK levels this book spans, and it is the cleanest example of why advice must be dated. At **Java 21**, a virtual thread that holds a `synchronized` monitor across a blocking call **pins** its carrier platform thread — JEP 444's own words: "Pinning does not make an application incorrect, but it might hinder its scalability." So the Java-21 advice for virtual-thread-heavy code is: prefer `ReentrantLock` over `synchronized` around blocking operations. But **JEP 491 (Java 24)** removes that pinning. So on Java 24 and 25 the workaround is unnecessary, and a book that stated "always prefer `ReentrantLock` for virtual threads" as a timeless rule would be wrong by the forward LTS. State the advice bound to the JDK level (true at 21, narrowed at 24), never as a permanent law. (Virtual threads themselves are Chapter 14; the point here is the *dating discipline*.)
 
 Thread-safety is the one quality dimension developers reason about rather than test for, and the reasoning is always the same: *which happens-before edge makes this write visible to that read?* The tools help find the missing edge; the JMM tells which edges exist; immutability and safe publication reduce how many are needed.
 
@@ -241,7 +243,7 @@ Thread-safety is the one quality dimension developers reason about rather than t
 - **`VarHandle` / atomics for lock-free code:** for measured hotspots where a lock's contention is the bottleneck. Expert territory; verify with JCStress.
 - **Scoped values** (JEP 506, GA at 25): a safer, immutable alternative to `ThreadLocal` for read-only context shared with callees and child threads. A forward option, not anchor fact.
 
-These are different shapes of the same goal: confinement removes the sharing, immutability removes the mutation, locks serialize the access, and the library encodes the common patterns. Crown none; pick by the shape of what's shared.
+These are different shapes of the same goal: confinement removes the sharing, immutability removes the mutation, locks serialize the access, and the library encodes the common patterns. Crown none; pick by the shape of the shared state.
 
 ## When to use what
 

@@ -2620,3 +2620,38 @@ A no-prior-independent-score LIFT toward the locked voice. Findings worth promot
    `"minorUnits must not be negative: …"`) was explicitly referred to the drafter/CLARITY gate. The lift
    aligned the illustrative fence's string to the verified companion literal (the real `include:` tag
    region was untouched), resolving the finding as a pure prose-fidelity fix with zero invention.
+
+### Lift pass — Ch 15 (How static analysis works, key 26), voice/readability/clarity lift (2026-06-27)
+
+Bounded in-bounds lift toward the locked voice + readability + clarity bar (no prior independent score).
+Levers (a) em-dash density, (b) hype-word removal, (c) gloss-before-first-use, (d) figure-intro,
+(e) third-person/no-contraction, (f) trim throat-clearing. READABILITY 8→9, CLARITY held 9; subtotal
+41→42. All atoms/snippets/tag-regions preserved (`check_snippets` 6/6); floors A/B/C all PASS.
+
+1. **Partition em-dashes into "convertible running-prose appositive" vs "protected structural" BEFORE
+   converting — the headline whole-file number lies.** Ch 15's raw density was 13.40/1000, but the pool
+   that actually carries the AI-tell appositive cadence was 22 *running-prose* dashes; the other 27 were
+   section-heading separators (6), the source-traced figure caption/alt-text (6, must match the rendered
+   PNG), and the back-matter traceability ledger (15, `**Tool** — quote` citation format). Converting only
+   the 22 body appositives took **total** density to 7.13/1000 and running-prose appositive density to
+   ~1, with zero atoms touched. Same lesson as the Ch 12/Ch 75 lifts: the AUDIT em-dash scan should report
+   the prose-only subset alongside the raw count.
+2. **Over-conversion is its own failure mode — keep a few deliberate appositives.** Body appositives went
+   22→1, which is at the low edge of healthy; the prose only holds because the chapter already had
+   VOICE-GUIDE short-sentence beats ("It is mathematics.", "It is a theorem.", "No tool is crowned here.")
+   to carry the rhythm. Future lifts should leave 2–4 appositives and read aloud for monotone rather than
+   zeroing the cadence lever.
+3. **"powerful" is the easy hype-word miss in technique chapters.** It reads as neutral "capable" but is on
+   the vendor-language ban; here "far more powerful and far more expensive" (the intraprocedural-vs-
+   interprocedural CONCEPT) reworded to "reaches defects the local view cannot, at a far higher cost." A
+   greppable hype-set pre-pass (`powerful`/`amazing`/`blazing`/`effortless`/`game-changing`) would catch
+   this class before AUDIT.
+4. **A FLOOR-C source-trace gap can pin a cluster below the bar where the lift loop is the wrong tool.**
+   ACCURACY held at 8 by the single ⚠ UNVERIFIED undecidability citation (Rice's theorem / halting problem
+   needs a primary PL/compilers text, not a blog). The bounded lift loop forbids new unverified facts, so
+   it cannot raise this — it is a SOURCE-VERIFY fix, not a prose lift. Recording the distinction on the
+   scorecard prevents spending a lift pass on an un-liftable cluster.
+5. **`non-trivial` is a false positive for the "trivial" difficulty-word ban.** "Non-trivial semantic
+   property" is the precise computability term (Rice's theorem) and must stay; the banned sense is
+   "trivial/trivially" as a difficulty dismissal. A naive grep flags both — the filler scan should match
+   `trivial` only when not preceded by `non-`.

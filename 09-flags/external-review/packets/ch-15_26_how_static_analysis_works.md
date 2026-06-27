@@ -91,13 +91,13 @@ DRAFT v1 — gates manual; technique-ladder + soundness-quadrant + illustrate-he
 
 # Wrong in Both Directions
 
-*How a linter actually reads your code — AST, data-flow, taint — and why no tool can be perfect · 26 · Part IV*
+*How a linter actually reads a program (AST, data-flow, taint), and why no tool can be perfect · 26 · Part IV*
 
-> A static analyzer is a machine that approximates an unanswerable question. Its false alarms and its blind spots are not bugs in the tool — they are mathematics.
+> A static analyzer is a machine that approximates an unanswerable question. Its false alarms and its blind spots are not bugs in the tool. They are mathematics.
 
 ## Hook
 
-A developer dismisses the linter: it flagged a "null dereference" on a line that is provably safe, the third false alarm this week, so they stop reading its output. Two sprints later a real null bug ships — on a path the *same* linter never flagged. Both reactions feel like the tool failed. Neither is the tool's fault.
+A developer dismisses the linter: it flagged a "null dereference" on a line that is provably safe, the third false alarm this week, so they stop reading its output. Two sprints later a real null bug ships, on a path the *same* linter never flagged. Both reactions feel like the tool failed. Neither is the tool's fault.
 
 A static analyzer reasons about a program **without running it**, and the questions worth asking (*can this ever be null here? is this resource always closed? can attacker input reach this query?*) are, in the general case, **undecidable**. No terminating analysis can answer them exactly. Every tool must *approximate*, and there are exactly two ways to be wrong: cry wolf (a **false positive**) or miss a real bug (a **false negative**). A tool can be tuned to avoid one only by accepting more of the other. Being wrong in both directions is not a defect to be patched out. It is the permanent condition of the technique.
 
@@ -107,10 +107,10 @@ Part IV opens here by lifting the hood. The chapter has two jobs: show *how* ana
 
 **What this chapter covers**
 
-- The four moves every Java analyzer is built from: **parse to an AST**, **resolve symbols and types**, **model control- and data-flow**, **track taint** — in rising order of power and cost.
+- The four moves every Java analyzer is built from, in rising order of power and cost: **parse to an AST** (an *abstract syntax tree*, the program rendered as a tree of language constructs), **resolve symbols and types**, **model control- and data-flow** (how values move through the code), and **track taint** (follow attacker-controlled values to dangerous operations).
 - Where each move runs (source, compiler AST, bytecode, whole-program graph) and what it can and cannot see.
 - The **false-positive problem**: why undecidability (Rice's theorem) makes false positives and false negatives unavoidable, and the **soundness vs completeness** trade-off every tool chooses a point on.
-- The **controls** that make an imperfect tool usable — suppression with justification, and baselines that gate only new code.
+- The **controls** that make an imperfect tool usable: suppression with justification, and baselines that gate only new code.
 
 **What this chapter does NOT cover.** The per-tool depth (Checkstyle, PMD, SpotBugs, Error Prone, SonarQube, IDE inspections, and the layered stack) is Chapter 16 and Chapter 17. The cross-tool "which to choose" verdict is Chapter 17. False-positive *policy* (baselines, ratcheting, what breaks the build) is Chapter 19. Writing custom rules is Chapter 18. Here, each tool appears only to *illustrate a technique*, cited to its own docs; the verdicts live downstream.
 
@@ -118,12 +118,13 @@ Part IV opens here by lifting the hood. The chapter has two jobs: show *how* ana
 
 ## How it works
 
+Static analysis is four moves, layered. Figure 15.1 sets them out as a ladder, from parsing source into a tree at the bottom to following tainted input to a dangerous sink at the top, with the cost and the characteristic blind spot of each rung.
+
 ![Fig 15.1 — Static-analysis technique ladder — Four moves, each seeing more than the one below — at rising power and cost.](../../05-figures/26_how_static_analysis_works/fig26_1.png)
 
 *Fig 15.1 — Static-analysis technique ladder — Four moves, each seeing more than the one below — at rising power and cost.*
 
-
-Static analysis is four moves, layered. Each rung sees more than the one below it, and costs more to climb.
+Each rung sees more than the one below it, and costs more to climb.
 
 ### Move 1 — Parse to an AST (matching shapes)
 
@@ -148,11 +149,11 @@ To answer "can this be null *here*?" or "is this resource always closed?", the a
 Where the flow runs matters:
 
 - **SpotBugs** runs data-flow over compiled **bytecode** (`.class` files), via detectors like `OpcodeStackDetector` that "scan the bytecode of a method and use an operand stack." Analyzing bytecode sees what the compiler actually emitted after desugaring, catching defects invisible in source, at the cost of source-distance in its messages. (SpotBugs is the maintained successor to the dead FindBugs; never cite FindBugs as current.)
-- **CodeQL** builds a **data-flow graph** that, in its own words, "does not reflect the syntactic structure of the program, but models the way data flows through the program at runtime." It distinguishes **local data flow** (within one function) from **global data flow** (between functions) — the **intraprocedural vs interprocedural** axis.
+- **CodeQL** builds a **data-flow graph** that, in its own words, "does not reflect the syntactic structure of the program, but models the way data flows through the program at runtime." It distinguishes **local data flow** (within one function) from **global data flow** (between functions). That distinction is the **intraprocedural vs interprocedural** axis.
 
-> **CONCEPT** *Intraprocedural vs interprocedural — the power/cost axis.* Reasoning *within* a method is fast and precise; reasoning *across* methods (global flow) is far more powerful and far more expensive, and must approximate aliasing, reflection, and dynamic dispatch. Most behavioral findings that emerge day-to-day are intraprocedural; whole-program leaks and injection need global flow, which is why those analyses run in CI or nightly, not on every keystroke.
+> **CONCEPT** *Intraprocedural vs interprocedural: the reach/cost axis.* Reasoning *within* a method is fast and precise. Reasoning *across* methods (global flow) reaches defects the local view cannot, at a far higher cost, and must approximate aliasing, reflection, and dynamic dispatch. Most behavioral findings that emerge day-to-day are intraprocedural; whole-program leaks and injection need global flow, which is why those analyses run in CI or nightly, not on every keystroke.
 
-The module plants the resource question this move answers — a reader opened and read but never closed on any path, the leak SpotBugs reports from the bytecode (`OS_OPEN_STREAM`).
+The module plants the resource question this move answers: a reader opened and read but never closed on any path, the leak SpotBugs reports from the bytecode (`OS_OPEN_STREAM`).
 
 <!-- include: 26_how_static_analysis_works/src/main/java/org/acme/staticanalysis/ResourceLeakDemo.java#dataflow-leak -->
 
@@ -166,7 +167,7 @@ The module carries the four roles as a before/after. The tainted form takes an u
 
 <!-- include: 26_how_static_analysis_works/src/main/java/org/acme/staticanalysis/TaintFlowDemo.java#taint-flow -->
 
-The sanitized counterpart binds the same value as a parameter, so it stays data rather than command text — the barrier that breaks the source-to-sink path and clears the finding.
+The sanitized counterpart binds the same value as a parameter, so it stays data rather than command text. That binding is the barrier that breaks the source-to-sink path and clears the finding.
 
 <!-- include: 26_how_static_analysis_works/src/main/java/org/acme/staticanalysis/TaintFlowDemo.java#taint-fixed -->
 
@@ -180,23 +181,23 @@ The sanitized counterpart binds the same value as a parameter, so it stays data 
 | interprocedural / global flow | whole-program value flow | high | leaks/injection spanning methods | scalability; aliasing; reflection |
 | taint tracking | attacker-controlled source → sink | high | injection (SQLi, XSS, command) | unmodeled sources/sanitizers |
 
-No tool is crowned here — each later chapter is one or two rungs of this table, and the "compose which of these for which team" verdict is Chapter 17's.
+No tool is crowned here. Each later chapter is one or two rungs of this table, and the "compose which of these for which team" verdict is Chapter 17's.
 
 ## Deep dive: why no analyzer can be perfect
 
-This is the second spine of the chapter, and the one that decides how every tool in Part IV is read and used. It is not an engineering limitation that better tools will fix — it is a theorem.
+Why every tool in Part IV is read and used the way it is comes down to one fact. The imperfection is not an engineering limitation that better tools will fix. It is a theorem.
 
 ### Undecidability, soundness, and completeness
 
-For any non-trivial *semantic* property of programs — "does this ever dereference null?", "does this always terminate?", "can tainted data reach this sink?" — deciding it in general is **undecidable** (Rice's theorem; the property reduces to the halting problem). A terminating analyzer that must give an answer for every program is therefore forced to *approximate*. There are precisely two directions of error:
+Take any non-trivial *semantic* property of programs ("does this ever dereference null?", "does this always terminate?", "can tainted data reach this sink?"). Deciding it in general is **undecidable** (Rice's theorem; the property reduces to the halting problem). A terminating analyzer that must give an answer for every program is therefore forced to *approximate*. There are precisely two directions of error:
 
-- A **false positive** — the tool reports a problem that is not real.
-- A **false negative** — a real problem the tool fails to report.
+- A **false positive**: the tool reports a problem that is not real.
+- A **false negative**: a real problem the tool fails to report.
 
 And two ideals, which cannot be combined:
 
-- A **sound** analysis has *no false negatives* — it catches every real instance of the property, at the cost of false positives.
-- A **complete** analysis has *no false positives* — every report is real, at the cost of false negatives.
+- A **sound** analysis has *no false negatives*. It catches every real instance of the property, at the cost of false positives.
+- A **complete** analysis has *no false positives*. Every report is real, at the cost of false negatives.
 
 > **CONCEPT** *No analyzer is both sound and complete for a non-trivial property.* Every tool picks a point on the spectrum, and that point *is* its character. A tool tuned toward soundness (catch everything) will cry wolf more; a tool tuned toward completeness (only report real bugs) will stay quiet about more real bugs. The hook's two failures, a false alarm and a missed bug, are not contradictions. They are the same tool sitting at one point on this spectrum.
 
@@ -206,12 +207,12 @@ This is a deliberate, documented design choice, not folklore. The Checker Framew
 
 Because false positives are inevitable, the worst outcome is a *noisy gate*: developers learn to ignore it, disable it, or rubber-stamp its output, and real findings drown with the false ones (the culture cost from Chapter 4). The controls for handling false positives are *part of the technique*, not an afterthought. The discipline is to *suppress with a reason*, never to disable a whole rule:
 
-- **Per-site suppression with justification.** SpotBugs' `@SuppressFBWarnings` takes both a `value` (which pattern) and a **`justification`** (why this instance is safe) — the annotation records the human judgment next to the code.
+- **Per-site suppression with justification.** SpotBugs' `@SuppressFBWarnings` takes both a `value` (which pattern) and a **`justification`** (why this instance is safe), so the annotation records the human judgment next to the code.
 - **Filter files.** SpotBugs filter XML (`Match` elements) excludes patterns or locations centrally, for findings that do not fit a per-site annotation.
 - **Triage states.** SonarQube lets a reviewer resolve an issue as "False positive" or "Won't fix" (relabeled "Accept" in newer versions; verify at the installed version) rather than deleting the rule, keeping the rule live for future code.
 - **Baselines.** The standard way to adopt a tool on a large legacy codebase: accept the existing backlog and gate only *new* code (Sonar's "new code" period, SpotBugs baseline filters), so a first run does not produce a flood that gets ignored. The *policy* (what breaks the build, baseline versus full-gate) is Chapter 19's.
 
-The companion module shows the per-site form on a finding that is genuinely safe in context — the annotation names the pattern and records *why*, next to the code, instead of silencing the rule.
+The companion module shows the per-site form on a finding that is genuinely safe in context. The annotation names the pattern and records *why*, next to the code, instead of silencing the rule.
 
 <!-- include: 26_how_static_analysis_works/src/main/java/org/acme/staticanalysis/SuppressionDemo.java#justified-suppression -->
 
@@ -219,7 +220,7 @@ Static analysis is *necessary but not sufficient*. It reasons over all paths but
 
 ## Limitations & when NOT to reach for it
 
-- **AST/pattern rules see shape, not behavior.** They flag a shape that's fine in context (false positive) and miss a bug in a different shape (false negative). Do not use pattern lint for null-safety, resource leaks, or injection; those need flow analysis.
+- **AST/pattern rules see shape, not behavior.** They flag a shape that is fine in context (false positive) and miss a bug in a different shape (false negative). Do not use pattern lint for null-safety, resource leaks, or injection; those need flow analysis.
 - **Intraprocedural data-flow stops at the method boundary.** Facts that cross methods are invisible (Semgrep's engine is explicitly intraprocedural with "No soundness guarantees"). For whole-program leaks/injection, use a global engine and accept its cost.
 - **Interprocedural/global flow and taint trade precision and time for power.** They must approximate aliasing, reflection, and dynamic dispatch, producing both false positives (an unseen sanitizer) and false negatives (an unrecognized source), and they are the slowest layer (minutes, not seconds). Run them in CI/nightly, not pre-commit; they degrade on reflection-heavy code.
 - **Sound checkers carry an annotation/false-positive tax.** Choosing soundness means more false positives unless the code is annotated to the checker's satisfaction, and the guarantee evaporates if suppression is misused. They pay off on long-lived critical libraries, not prototypes.
@@ -232,7 +233,7 @@ Static analysis is *necessary but not sufficient*. It reasons over all paths but
 - **Dynamic analysis** (tests, fuzzing, runtime instrumentation; Part V): runs the program, sees real values, but only on executed paths. It complements static's all-paths-but-approximate reasoning.
 - **Compiler warnings** (`javac -Xlint`): the lowest-friction static analysis, already in the build. Turn it on before adding any tool.
 - **Type systems as analysis** (generics, sealed types, JSpecify nullness; Chapters 9, 11): the strongest *sound* checks are the ones the language enforces at compile time. Pushing properties into the type system is static analysis that cannot be suppressed or ignored.
-- **LLM-assisted review and triage:** an emerging layer for ranking or explaining findings — not a pinned technique here, and not a substitute for the deterministic analyses above.
+- **LLM-assisted review and triage:** an emerging layer for ranking or explaining findings. It is not a pinned technique here, and not a substitute for the deterministic analyses above.
 
 These layer rather than compete: compiler warnings as the floor, pattern lint for style, flow analysis for behavior, taint for security, dynamic tests for the rest, each seeing what the others cannot.
 

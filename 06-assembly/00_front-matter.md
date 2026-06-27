@@ -204,9 +204,11 @@ The mechanics, for the reader who wants them:
   self-contained and listings stay short.
 
 > **IMPORTANT** A reader-facing public repository for the companion code, and the open-source license it
-> would carry, are not yet finalized. The published companion-code location and its license are
-> `[TO BE SET BY HUMAN]`. Until that is set, this book does not point to a clone-and-run URL; the
-> conventions above describe how the code is built and verified, not a download.
+> would carry, are not yet finalized. The companion code is intended to be released under the
+> **Apache License 2.0 (proposed — draft, confirm at release)**, and its publication as a public
+> repository is **gated on the public-push sign-off (`COMPANION-REPO.md` §5) — draft, confirm at
+> release**. Until that gate clears, this book does not point to a clone-and-run URL; the conventions
+> above describe how the code is built and verified, not a download.
 
 ## The version anchor and how facts are pinned
 
@@ -254,26 +256,30 @@ runtime below it is out of scope.
 
 **Java Code Quality**
 
-Copyright © `[TO BE SET BY HUMAN — YEAR]` `[TO BE SET BY HUMAN — AUTHOR / RIGHTS HOLDER]`.
+Copyright © **2026** **[Author — draft: Pratiyush]** *(draft, confirm at release)*.
 All rights reserved.
 
-Published by `[TO BE SET BY HUMAN — PUBLISHER]`.
-ISBN `[TO BE SET BY HUMAN — ISBN]`. Edition `[TO BE SET BY HUMAN — EDITION]`.
+Published by **Self-published (draft)** *(draft, confirm at release)*.
+ISBN: **[pending]** *(draft, confirm at release)*. Edition: **First edition (draft)**
+*(draft, confirm at release)*.
 
 ## License of the book text
 
 The prose, figures, and structure of this book are the copyrighted work of the rights holder and are
-**not** placed under an open-source license. No part of the book text may be reproduced without
-permission, except for brief quotations in a review or as permitted by applicable copyright law.
+**not** placed under an open-source license: **© 2026; all rights reserved (draft — confirm at
+release)**. No part of the book text may be reproduced without permission, except for brief quotations
+in a review or as permitted by applicable copyright law.
 
 ## License of the companion code
 
 The runnable companion modules are a separate work from the book text and are intended to be released
 under a permissive open-source license so that readers can reuse the samples inside their own
-applications without a license mismatch. The specific license, and whether and where the companion code
-is published as a public repository, are **`[TO BE SET BY HUMAN]`** — both are gated on legal and
-editorial sign-off and are not finalized in this edition. The book text remains under its own copyright
-regardless of the companion-code license; the code license never relicenses the prose. Short code
+applications without a license mismatch. The proposed license is the **Apache License 2.0 (proposed —
+draft, confirm at release)**; whether and where the companion code is published as a public repository
+is **gated on the public-push sign-off (`COMPANION-REPO.md` §5) — draft, confirm at release**. Both
+remain subject to legal and editorial sign-off and are not finalized in this edition. The book text
+remains under its own copyright regardless of the companion-code license; the code license never
+relicenses the prose. Short code
 excerpts reproduced from third-party tools in the book remain covered by those tools' own licenses
 (a mix of open-source licenses across the tools — for example Apache-2.0, LGPL, EPL, and MIT — varying
 by tool) and are used as brief illustrative excerpts under fair use; no third-party license or notice
@@ -307,10 +313,10 @@ verified is in **`06-assembly/AI-DISCLOSURE.md`**.
 
 ## Colophon
 
-`[TO BE SET BY HUMAN — typeface, production notes, and any acknowledgements.]` Figures in this book are
-original diagrams authored as source text and rendered to image, and screenshots of tool surfaces
-captured from the book's own running companion code; no figure is image-generated and no third-party
-tool UI is reproduced.
+*Typeface, production notes, and acknowledgements: to be set at release (draft — confirm at release).*
+Figures in this book are original diagrams authored as source text and rendered to image, and
+screenshots of tool surfaces captured from the book's own running companion code; no figure is
+image-generated and no third-party tool UI is reproduced.
 
 ---
 
@@ -348,13 +354,31 @@ tool UI is reproduced.
   `COMPANION-REPO.md` §3, §5 (license + public-push gated, not committed).
 - **AI-DISCLOSURE.md pointer** → per task brief; the file does not yet exist on disk (see open items).
 
-### `[TO BE SET BY HUMAN]` placeholders left open
+### `[TO BE SET BY HUMAN]` placeholders — now filled with DRAFT defaults (human confirms at release)
 
-- Copyright year; author / rights holder; publisher; ISBN; edition.
-- Companion-code open-source license (specific license) and whether/where the public companion repo is
-  published — both gated on `COMPANION-REPO.md` §5 sign-off (the public-push box is unchecked; the OSS
-  license is "proposed, not committed").
-- Colophon production details (typeface, production notes, acknowledgements).
+Per the pre-final-review pass, every `[TO BE SET BY HUMAN]` field is now populated with a clearly
+marked **DRAFT default** (each tagged "draft, confirm at release") so the pre-final review copy reads
+complete. None of these is final; the human finalizes each at release. Fields set:
+
+- Copyright year → **2026** (draft). Source: pre-final-review task brief; no year locked in a law file.
+- Author / rights holder → **[Author — draft: Pratiyush]** (draft). Source: task brief + `LEDGER.md` §1
+  git user; no rights-holder locked in a law file.
+- Publisher → **Self-published (draft)** (draft). Source: task brief; no publisher locked in a law file.
+- ISBN → **[pending]** (draft). Source: task brief; genuinely undecided — no ISBN exists.
+- Edition → **First edition (draft)** (draft). Source: task brief.
+- Companion-code license → **Apache License 2.0 (proposed — draft)** (draft). Source: task brief;
+  remains gated on `COMPANION-REPO.md` §5 sign-off (the OSS license is "proposed, not committed").
+- Book-prose license → **© 2026; all rights reserved (draft)** (draft). Source: task brief +
+  `LEGAL-IP-RULES.md` (prose kept under its own copyright, separate from the code license).
+- Public companion repo → noted as **gated on the public-push sign-off (`COMPANION-REPO.md` §5)**
+  (draft). Source: task brief; the public-push box is unchecked, so no clone-and-run URL is implied.
+- Colophon production details (typeface, production notes, acknowledgements) → marked **to be set at
+  release (draft)**. Source: task brief; genuinely undecided.
+
+> These are pre-final-review DRAFT defaults, not law-file facts. They were inserted only so the review
+> copy reads as a complete book; the human must confirm or replace each before release. The working
+> title "Java Code Quality" is unchanged (working title from `BOOK-STRATEGY.md` / `FINAL_INDEX.md`; no
+> locked title in any law file).
 
 ### Open items to hand off
 
@@ -383,3 +407,11 @@ tool UI is reproduced.
   seeding note to point at the charter and reconcile (charter wins on premise/audience/promise/scope).
 - **A back-matter author (Step 14b, if split out) should mirror this file's traceability block** so the
   appendix/glossary/colophon-continuation stay sourced the same way.
+- **DRAFT-default pass (2026-06-27).** For the pre-final review copy, the seven `[TO BE SET BY HUMAN]`
+  fields were filled with clearly marked draft defaults (each tagged "draft, confirm at release") rather
+  than left blank, so the review copy reads as a finished book without ever presenting an undecided fact
+  as final. Pattern worth promoting: front/back matter should support two render states — a *blank-slot*
+  state (placeholders visible, for the human to fill) and a *draft-default* state (defaults visible,
+  tagged "draft") — so the same file can serve both an editor filling slots and a reviewer reading flow.
+  The genuinely-unknowable fields (ISBN, publisher, typeface) stay as `[pending]`/"to be set" inside the
+  draft default rather than being invented.
