@@ -1,5 +1,5 @@
 {
- "generated": "2026-06-27 11:20",
+ "generated": "2026-06-27 20:36",
  "count": 67,
  "results": [
   {
@@ -266,7 +266,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 729 KB"
+     "valid PNG, 730 KB"
     ],
     "sidecar": [
      "PASS",
@@ -286,7 +286,7 @@
     ],
     "alt_text": [
      "PASS",
-     "201 chars"
+     "198 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -372,7 +372,7 @@
     ],
     "alt_text": [
      "PASS",
-     "186 chars"
+     "199 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -438,7 +438,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 652 KB"
+     "valid PNG, 650 KB"
     ],
     "sidecar": [
      "PASS",
@@ -458,7 +458,7 @@
     ],
     "alt_text": [
      "PASS",
-     "143 chars"
+     "142 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -524,7 +524,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 672 KB"
+     "valid PNG, 671 KB"
     ],
     "sidecar": [
      "PASS",
@@ -544,7 +544,7 @@
     ],
     "alt_text": [
      "PASS",
-     "139 chars"
+     "138 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -630,7 +630,7 @@
     ],
     "alt_text": [
      "PASS",
-     "202 chars"
+     "201 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -716,7 +716,7 @@
     ],
     "alt_text": [
      "PASS",
-     "172 chars"
+     "171 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -802,7 +802,7 @@
     ],
     "alt_text": [
      "PASS",
-     "184 chars"
+     "183 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -888,7 +888,7 @@
     ],
     "alt_text": [
      "PASS",
-     "149 chars"
+     "146 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -954,7 +954,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 930 KB"
+     "valid PNG, 928 KB"
     ],
     "sidecar": [
      "PASS",
@@ -974,7 +974,7 @@
     ],
     "alt_text": [
      "PASS",
-     "195 chars"
+     "197 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -1040,7 +1040,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 507 KB"
+     "valid PNG, 506 KB"
     ],
     "sidecar": [
      "PASS",
@@ -1060,7 +1060,7 @@
     ],
     "alt_text": [
      "PASS",
-     "175 chars"
+     "151 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -1126,7 +1126,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 1198 KB"
+     "valid PNG, 1197 KB"
     ],
     "sidecar": [
      "PASS",
@@ -1146,7 +1146,7 @@
     ],
     "alt_text": [
      "PASS",
-     "178 chars"
+     "177 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -1298,7 +1298,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 868 KB"
+     "valid PNG, 869 KB"
     ],
     "sidecar": [
      "PASS",
@@ -1318,7 +1318,7 @@
     ],
     "alt_text": [
      "PASS",
-     "167 chars"
+     "165 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -1814,7 +1814,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 896 KB"
+     "valid PNG, 895 KB"
     ],
     "sidecar": [
      "PASS",
@@ -1900,7 +1900,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 537 KB"
+     "valid PNG, 536 KB"
     ],
     "sidecar": [
      "PASS",
@@ -1986,7 +1986,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 1225 KB"
+     "valid PNG, 1224 KB"
     ],
     "sidecar": [
      "PASS",
@@ -2244,7 +2244,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 1210 KB"
+     "valid PNG, 1209 KB"
     ],
     "sidecar": [
      "PASS",
@@ -2330,7 +2330,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 923 KB"
+     "valid PNG, 922 KB"
     ],
     "sidecar": [
      "PASS",
@@ -2416,7 +2416,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 1142 KB"
+     "valid PNG, 1141 KB"
     ],
     "sidecar": [
      "PASS",
@@ -2502,7 +2502,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 1533 KB"
+     "valid PNG, 1532 KB"
     ],
     "sidecar": [
      "PASS",
@@ -2588,7 +2588,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 696 KB"
+     "valid PNG, 697 KB"
     ],
     "sidecar": [
      "PASS",
@@ -2674,7 +2674,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 995 KB"
+     "valid PNG, 996 KB"
     ],
     "sidecar": [
      "PASS",
@@ -5274,7 +5274,7 @@
     ],
     "alt_text": [
      "PASS",
-     "163 chars"
+     "158 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -5360,7 +5360,7 @@
     ],
     "alt_text": [
      "PASS",
-     "135 chars"
+     "134 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -5532,7 +5532,7 @@
     ],
     "alt_text": [
      "PASS",
-     "98 chars"
+     "97 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -5618,7 +5618,7 @@
     ],
     "alt_text": [
      "PASS",
-     "71 chars"
+     "68 chars"
     ],
     "no_placeholder": [
      "PASS",
@@ -5704,7 +5704,7 @@
     ],
     "alt_text": [
      "PASS",
-     "207 chars"
+     "206 chars"
     ],
     "no_placeholder": [
      "PASS",
