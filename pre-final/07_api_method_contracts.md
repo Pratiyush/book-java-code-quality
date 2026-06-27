@@ -28,9 +28,9 @@ The one idea worth holding: *push as much of the contract into the type system a
 
 Figure 7.1 lays the contract out as two columns: the type-carried half the compiler enforces, and the doc/runtime-carried half a Javadoc clause states and a fail-fast check defends. Read it left to right; it is the map the rest of the chapter fills in.
 
-![Fig 7.1 — The two halves of a method contract — Push as much of the contract into the type system as possible — the cheapest feedback on a broken contract is "it didn't compile"](figures/fig09_1.png)
+![Figure 7.1 — The two halves of a method contract — Push as much of the contract into the type system as possible — the cheapest feedback on a broken contract is "it didn't compile"](figures/fig09_1.png)
 
-*Fig 7.1 — The two halves of a method contract — Push as much of the contract into the type system as possible — the cheapest feedback on a broken contract is "it didn't compile"*
+*Figure 7.1 — The two halves of a method contract — Push as much of the contract into the type system as possible — the cheapest feedback on a broken contract is "it didn't compile"*
 
 ### The two halves of a contract
 

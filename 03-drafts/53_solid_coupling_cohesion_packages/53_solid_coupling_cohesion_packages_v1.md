@@ -42,13 +42,13 @@ Hitting the middle is the subject of Part VI, and this opening chapter lays its 
 
 Two figures anchor the chapter. Figure 25.1 lays out the five SOLID principles side by side, each with its intent and the over-application trap that follows from pushing it too far, and crowns none of them. Figure 25.2 draws the module-strength ladder taken up later in this section: the rungs of increasing enforcement, from a naming convention to a separate build module, each trading ceremony for a stronger guarantee.
 
-![Fig 25.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.](../../05-figures/53_solid_coupling_cohesion_packages/fig53_1.png)
+![Figure 25.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.](../../05-figures/53_solid_coupling_cohesion_packages/fig53_1.png)
 
-*Fig 25.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.*
+*Figure 25.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.*
 
-![Fig 25.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.](../../05-figures/53_solid_coupling_cohesion_packages/fig53_2.png)
+![Figure 25.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.](../../05-figures/53_solid_coupling_cohesion_packages/fig53_2.png)
 
-*Fig 25.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.*
+*Figure 25.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.*
 
 
 ### SOLID: useful vocabulary, not a law to maximize

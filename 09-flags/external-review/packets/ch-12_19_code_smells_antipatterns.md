@@ -121,9 +121,9 @@ This chapter, the last in Part II, turns the whole part into a vocabulary. It ca
 
 The catalogue is built from one repeating unit, shown in Figure 12.1: every smell pairs with the named refactoring that resolves it and, for many, the analyzer rule that catches it. Reading the unit left to right answers a second question the figure makes explicit. Does a linter find the smell, or does a human reviewer have to?
 
-![Fig 12.1 — The smell-triple: smell → refactoring → detecting rule — Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it](../../05-figures/19_code_smells_antipatterns/fig19_1.png)
+![Figure 12.1 — The smell-triple: smell → refactoring → detecting rule — Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it](../../05-figures/19_code_smells_antipatterns/fig19_1.png)
 
-*Fig 12.1 — The smell-triple: smell → refactoring → detecting rule — Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it*
+*Figure 12.1 — The smell-triple: smell → refactoring → detecting rule — Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it*
 
 
 ### A smell is a symptom, not a defect

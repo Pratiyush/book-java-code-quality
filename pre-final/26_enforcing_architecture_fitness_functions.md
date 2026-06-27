@@ -27,9 +27,9 @@ That erosion is inevitable for any architecture a team merely *agrees* to, and t
 
 The enforcement mechanisms line up on a single axis, and Figure 26.1 sets them out: from a naming convention through an ArchUnit rule to a JPMS compiler boundary, enforcement strength rises and so does the cost of adoption. The figure frames the choice as a trade-off across that axis, not a ladder a team is meant to climb to the top of.
 
-![Fig 26.1 &mdash; Architecture-enforcement spectrum — Convention &rarr; ArchUnit rule &rarr; JPMS compiler boundary: enforcement strength rises with adoption cost. Choice is a trade-off, not an upgrade path.](figures/fig55_1.png)
+![Figure 26.1 &mdash; Architecture-enforcement spectrum — Convention &rarr; ArchUnit rule &rarr; JPMS compiler boundary: enforcement strength rises with adoption cost. Choice is a trade-off, not an upgrade path.](figures/fig55_1.png)
 
-*Fig 26.1 &mdash; Architecture-enforcement spectrum — Convention &rarr; ArchUnit rule &rarr; JPMS compiler boundary: enforcement strength rises with adoption cost. Choice is a trade-off, not an upgrade path.*
+*Figure 26.1 &mdash; Architecture-enforcement spectrum — Convention &rarr; ArchUnit rule &rarr; JPMS compiler boundary: enforcement strength rises with adoption cost. Choice is a trade-off, not an upgrade path.*
 
 ### Enforcement: from documented to executable
 

@@ -40,15 +40,15 @@ That is the first of two ways a build can betray a project even when the code is
 
 The chapter has two mechanisms, and two figures map them. Figure 29.1 traces the reproducibility chain: the five sources of Java build non-determinism, the fix for each, and the verify step that closes the loop.
 
-![Fig 29.1 &mdash; The reproducibility chain — Five sources of Java build non-determinism, their fixes, and the verify step that closes the chain.](../../05-figures/67_reproducible_builds_license_compliance/fig67_1.png)
+![Figure 29.1 &mdash; The reproducibility chain — Five sources of Java build non-determinism, their fixes, and the verify step that closes the chain.](../../05-figures/67_reproducible_builds_license_compliance/fig67_1.png)
 
-*Fig 29.1 &mdash; The reproducibility chain — Five sources of Java build non-determinism, their fixes, and the verify step that closes the chain.*
+*Figure 29.1 &mdash; The reproducibility chain — Five sources of Java build non-determinism, their fixes, and the verify step that closes the chain.*
 
 Figure 29.2 maps the second mechanism: the license-obligation spectrum read against distribution mode, showing how the same SPDX license carries a different obligation depending on how the artifact ships.
 
-![Fig 29.2 &mdash; The license-obligation spectrum, by distribution mode — The same SPDX license carries a different obligation depending on how the artifact is distributed &mdash; tune the policy gate to the distribution mode. Categories are factual; tools report declared](../../05-figures/67_reproducible_builds_license_compliance/fig67_2.png)
+![Figure 29.2 &mdash; The license-obligation spectrum, by distribution mode — The same SPDX license carries a different obligation depending on how the artifact is distributed &mdash; tune the policy gate to the distribution mode. Categories are factual; tools report declared](../../05-figures/67_reproducible_builds_license_compliance/fig67_2.png)
 
-*Fig 29.2 &mdash; The license-obligation spectrum, by distribution mode — The same SPDX license carries a different obligation depending on how the artifact is distributed &mdash; tune the policy gate to the distribution mode. Categories are factual; tools report declared*
+*Figure 29.2 &mdash; The license-obligation spectrum, by distribution mode — The same SPDX license carries a different obligation depending on how the artifact is distributed &mdash; tune the policy gate to the distribution mode. Categories are factual; tools report declared*
 
 
 ### Reproducible builds: the artifact as a pure function of source

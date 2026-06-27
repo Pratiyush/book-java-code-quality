@@ -121,9 +121,9 @@ But a performance gate is uniquely treacherous to build, and the reason is the l
 
 Figure 44.1 traces a measurement through the gate: a fresh run is compared against the stored baseline, and the relative move decides one of three verdicts. The pieces that follow — the load-and-macro measurement, the baseline, the relative comparison, and the three-way verdict that fails safe under noise — are the moving parts the figure lays out.
 
-![Fig 44.1 — The performance-regression gate: a fitness function that knows its own noise — Measure against a baseline, compare relative](../../05-figures/105_performance_regression_gates/fig105_1.png)
+![Figure 44.1 — The performance-regression gate: a fitness function that knows its own noise — Measure against a baseline, compare relative](../../05-figures/105_performance_regression_gates/fig105_1.png)
 
-*Fig 44.1 — The performance-regression gate: a fitness function that knows its own noise — Measure against a baseline, compare relative*
+*Figure 44.1 — The performance-regression gate: a fitness function that knows its own noise — Measure against a baseline, compare relative*
 
 
 ### Load and macro testing: the system-level truth

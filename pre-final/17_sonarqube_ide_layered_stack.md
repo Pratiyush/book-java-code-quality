@@ -27,9 +27,9 @@ Both are right, and the resolution is neither "more tools" nor "fewer tools" but
 
 One picture carries the chapter's whole argument: which tool reads which substrate, at which moment, and the single cell each one covers that no other tool reaches. Figure 17.1 lays that grid out before the prose walks each cell.
 
-![Fig 17.1 &mdash; The substrate &times; moment matrix: one owner per concern — Each tool reads one substrate at one moment &mdash; covering a cell no other tool reaches. Compose by assigning each concern exactly once.](figures/fig35_1.png)
+![Figure 17.1 &mdash; The substrate &times; moment matrix: one owner per concern — Each tool reads one substrate at one moment &mdash; covering a cell no other tool reaches. Compose by assigning each concern exactly once.](figures/fig35_1.png)
 
-*Fig 17.1 &mdash; The substrate &times; moment matrix: one owner per concern — Each tool reads one substrate at one moment &mdash; covering a cell no other tool reaches. Compose by assigning each concern exactly once.*
+*Figure 17.1 &mdash; The substrate &times; moment matrix: one owner per concern — Each tool reads one substrate at one moment &mdash; covering a cell no other tool reaches. Compose by assigning each concern exactly once.*
 
 ### The substrate × moment matrix
 

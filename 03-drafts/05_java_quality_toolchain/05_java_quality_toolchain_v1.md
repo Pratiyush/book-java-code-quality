@@ -34,13 +34,13 @@ This chapter is the map. It does not cover configuring any single tool; that is 
 
 Two figures carry the territory before the prose unpacks it. Figure 3.1 lays the toolchain over the development lifecycle, placing each category of tool at the moment it runs, from the IDE through to production feedback.
 
-![Fig 3.1 — The Java quality toolchain: lifecycle map — Seven moments · tool categories placed at the moment they run · earlier = cheaper to fix](../../05-figures/05_java_quality_toolchain/fig05_1.png)
+![Figure 3.1 — The Java quality toolchain: lifecycle map — Seven moments · tool categories placed at the moment they run · earlier = cheaper to fix](../../05-figures/05_java_quality_toolchain/fig05_1.png)
 
 *Figure 3.1 — The Java quality toolchain lifecycle map. Seven moments, with each tool category placed at the moment it runs; earlier is cheaper to fix.*
 
 Figure 3.2 turns the same landscape sideways into a lookup: a routing matrix from any quality concern to the kind of tool that addresses it, the moment it runs, and the chapter that goes deep.
 
-![Fig 3.2 — Concern × tool routing matrix — Any quality concern → which tool kind → when it runs → deep chapter · (not the order — the menu)](../../05-figures/05_java_quality_toolchain/fig05_2.png)
+![Figure 3.2 — Concern × tool routing matrix — Any quality concern → which tool kind → when it runs → deep chapter · (not the order — the menu)](../../05-figures/05_java_quality_toolchain/fig05_2.png)
 
 *Figure 3.2 — The concern-by-tool routing matrix. Any quality concern maps to a tool kind, the moment it runs, and the deep chapter. The matrix is the menu, not the order.*
 
@@ -199,6 +199,6 @@ RUNNABLE EXAMPLE SPEC (seeded Step 4b; EXAMPLE-BUILD GREEN — built at JDK 21.0
 - BUILD STATUS: GREEN — built at JDK 21.0.11 / Maven 3.9.16, `mvn -B -Pquality verify` SUCCESS (4 tests pass, 0 Checkstyle, 0 SpotBugs, JaCoCo report written; see _EXAMPLE.md). This is the reusable reference-project base, not a throwaway.
 
 FIGURE PLAN (Step 9)
-- Fig 05.1 (THE chapter figure) — the lifecycle map: IDE → compile → build → pre-commit → PR/CI → platform → production, each tool category placed at its moment, arrows = feedback latency. Reused as the book's reference figure. Trace each placement to tool docs.
-- Fig 05.2 — concern × tool matrix (the routing table as a shaded grid): the reader's "which tool for which problem" lookup.
+- Figure 05.1 (THE chapter figure) — the lifecycle map: IDE → compile → build → pre-commit → PR/CI → platform → production, each tool category placed at its moment, arrows = feedback latency. Reused as the book's reference figure. Trace each placement to tool docs.
+- Figure 05.2 — concern × tool matrix (the routing table as a shaded grid): the reader's "which tool for which problem" lookup.
 -->

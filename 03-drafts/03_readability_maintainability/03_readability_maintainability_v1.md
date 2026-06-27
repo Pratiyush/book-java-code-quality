@@ -37,13 +37,13 @@ The dashboard was not lying about coverage. It was lying about *quality*, becaus
 
 Two figures anchor this chapter. Figure 2.1 sets two methods side by side: the same branch count, opposite nesting, an equal cyclomatic score, and a very different cognitive one. It is the measurement distinction the chapter turns on.
 
-![Fig 2.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting. Two methods, identical branch count, opposite nesting structure, equal cyclomatic score, very different cognitive score.](../../05-figures/03_readability_maintainability/fig03_1.png)
+![Figure 2.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting. Two methods, identical branch count, opposite nesting structure, equal cyclomatic score, very different cognitive score.](../../05-figures/03_readability_maintainability/fig03_1.png)
 
 *Figure 2.1 — Cyclomatic vs. cognitive complexity: same paths, different nesting. Two methods, identical branch count, opposite nesting structure, equal cyclomatic score, very different cognitive score.*
 
 Figure 2.2 maps the contested zone the chapter closes on: two reputable schools holding opposed positions on function size and comments, with the trade-off axis between them and no winner marked.
 
-![Fig 2.2 — Contested prescriptions: function size &amp; comments. Two reputable schools hold opposed positions; neither is universally correct, so a team chooses deliberately and applies consistently.](../../05-figures/03_readability_maintainability/fig03_2.png)
+![Figure 2.2 — Contested prescriptions: function size &amp; comments. Two reputable schools hold opposed positions; neither is universally correct, so a team chooses deliberately and applies consistently.](../../05-figures/03_readability_maintainability/fig03_2.png)
 
 *Figure 2.2 — Contested prescriptions: function size and comments. Two reputable schools hold opposed positions; neither is universally correct, so a team chooses deliberately and applies consistently.*
 
@@ -225,6 +225,6 @@ RUNNABLE EXAMPLE SPEC (seeds Step 4b; EXAMPLE-BUILD = GREEN — see _EXAMPLE.md)
 - BUILD STATUS: GREEN — `mvn -B -Pquality -f 08-companion-code/03_readability_maintainability/pom.xml clean verify` on JDK 21.0.11 / Maven 3.9.16: BUILD SUCCESS, Tests run: 43 (0 failures), 0 Checkstyle violations, 0 SpotBugs findings (see _EXAMPLE.md).
 
 FIGURE PLAN (Step 9)
-- Fig 03.1 — cyclomatic vs cognitive on the same code: two snippets, same paths, different nesting → equal cyclomatic, very different cognitive. Trace to SonarSource white paper.
-- Fig 03.2 — the contested map: Clean Code vs A Philosophy of Software Design on function size & comments, as opposed positions with the trade-off axis between them (no winner). Trace to each book.
+- Figure 03.1 — cyclomatic vs cognitive on the same code: two snippets, same paths, different nesting → equal cyclomatic, very different cognitive. Trace to SonarSource white paper.
+- Figure 03.2 — the contested map: Clean Code vs A Philosophy of Software Design on function size & comments, as opposed positions with the trade-off axis between them (no winner). Trace to each book.
 -->

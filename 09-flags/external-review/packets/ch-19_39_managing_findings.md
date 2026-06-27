@@ -125,9 +125,9 @@ The stack was not wrong. The mistake was treating its output as a binary (green 
 
 Two pieces govern everything that follows: the one triage decision a finding forces, and the four levers that act on it, ordered narrowest to broadest. Figure 19.1 lays both out on a single ladder — the decision on the left, the lever it maps to on the right, breadth increasing downward.
 
-![Fig 19.1 — Finding triage and the four-lever scope ladder — Every finding demands one triage decision; each decision maps to exactly one lever ordered narrow&rarr;broad. Breadth is always a smell.](../../05-figures/39_managing_findings/fig39_1.png)
+![Figure 19.1 — Finding triage and the four-lever scope ladder — Every finding demands one triage decision; each decision maps to exactly one lever ordered narrow&rarr;broad. Breadth is always a smell.](../../05-figures/39_managing_findings/fig39_1.png)
 
-*Fig 19.1 — Finding triage and the four-lever scope ladder — Every finding demands one triage decision; each decision maps to exactly one lever ordered narrow&rarr;broad. Breadth is always a smell.*
+*Figure 19.1 — Finding triage and the four-lever scope ladder — Every finding demands one triage decision; each decision maps to exactly one lever ordered narrow&rarr;broad. Breadth is always a smell.*
 
 
 ### The triage tree: what a finding actually is

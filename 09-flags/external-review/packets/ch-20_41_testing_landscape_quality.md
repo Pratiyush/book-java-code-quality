@@ -128,10 +128,10 @@ The two axes split the chapter. The first half maps the *how much* axis with the
 
 The **test pyramid** (Mike Cohn, *Succeeding with Agile*, 2009; restated by Ham Vocke in "The Practical Test Pyramid" on Martin Fowler's site) is the model for the *how much* axis. It rests on two rules, verbatim: *"Write tests with different granularity"* and *"The more high-level you get the fewer tests you should have."* Figure 20.1 shows the shape those two rules produce: many fast tests at the bottom, few slow ones at the top, with the two rules named on it. That shape encodes a cost/speed/confidence trade-off across three layers:
 
-![Fig 20.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
+![Figure 20.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
     &ldquo;The more high-level you get the fewer tests you should have.&rdquo;](../../05-figures/41_testing_landscape_quality/fig41_1.png)
 
-*Fig 20.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
+*Figure 20.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
     &ldquo;The more high-level you get the fewer tests you should have.&rdquo;*
 
 - **Unit tests** — *"focused, isolated tests of individual code components with the narrowest scope."* Fast, cheap, plentiful; the base.
@@ -148,10 +148,10 @@ Two of Vocke's framings carry into the rest of Part V. **Solitary versus sociabl
 
 Granularity is the *how much*. The harder, more valuable axis is *how good*, and it has two distinct measurements that teams routinely conflate. Figure 20.2 sets them side by side: coverage on one axis, mutation score on the other, with the corner that exposes the gap marked — full coverage, zero mutants killed.
 
-![Fig 20.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
+![Figure 20.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
     A suite can reach 100% coverage and kill zero mutants.](../../05-figures/41_testing_landscape_quality/fig41_2.png)
 
-*Fig 20.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
+*Figure 20.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
     A suite can reach 100% coverage and kill zero mutants.*
 
 **Coverage** measures *execution*: which instructions, branches, and lines ran while the tests executed. JaCoCo, the standard Java coverage tool, reports six counters (instructions, branches, lines, methods, classes, and cyclomatic complexity), and branch coverage (every `if` and `switch` arm) is a stronger floor than line coverage. Coverage is precise, reproducible, and genuinely useful as a *floor*: code that never runs under test is code whose behaviour is entirely unknown.

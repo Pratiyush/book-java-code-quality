@@ -27,9 +27,9 @@ Designing the pipeline so the team *keeps it on* is the subject of Part IX, and 
 
 The shape of the whole pipeline fits one picture. Figure 33.1 lays the stages out as a fail-fast portfolio split by feedback latency, with the cheap blocking checks on the pull request and the slow, expensive ones deferred to main and nightly.
 
-![Fig 33.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by feedback latency — Each stage is one fitness function; the pipeline is the portfolio. Order cheap → expensive so the most-likely-to-fail checks fail first. Keep the blocking PR path short; defer the slow, expensive checks to main and nightly so they never fall on a developer waiting to merge.](figures/fig75_1.png)
+![Figure 33.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by feedback latency — Each stage is one fitness function; the pipeline is the portfolio. Order cheap → expensive so the most-likely-to-fail checks fail first. Keep the blocking PR path short; defer the slow, expensive checks to main and nightly so they never fall on a developer waiting to merge.](figures/fig75_1.png)
 
-*Fig 33.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by feedback latency — Each stage is one fitness function; the pipeline is the portfolio. Order cheap → expensive so the most-likely-to-fail checks fail first. Keep the blocking PR path short; defer the slow, expensive checks to main and nightly so they never fall on a developer waiting to merge.*
+*Figure 33.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by feedback latency — Each stage is one fitness function; the pipeline is the portfolio. Order cheap → expensive so the most-likely-to-fail checks fail first. Keep the blocking PR path short; defer the slow, expensive checks to main and nightly so they never fall on a developer waiting to merge.*
 
 ### Pipeline design: order for fast feedback
 
