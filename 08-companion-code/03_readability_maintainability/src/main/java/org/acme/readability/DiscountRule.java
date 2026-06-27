@@ -12,8 +12,9 @@ package org.acme.readability;
  *
  * <p>Cyclomatic complexity (McCabe, 1976) counts a method's independent execution paths and answers
  * "how many tests do I need?"; cognitive complexity answers "how hard is this to read?" and increments
- * more for nesting. The three forms here have the same conditions — so a similar path count — but very
- * different nesting, which is exactly where the two metrics part company.
+ * more for nesting. That increment for nesting is exactly where the two metrics part company: the deeply
+ * nested form scores far higher on cognitive complexity than the balanced one, the divergence this module
+ * is built to make visible.
  */
 public interface DiscountRule {
 

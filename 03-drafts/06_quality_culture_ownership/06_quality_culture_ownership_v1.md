@@ -172,7 +172,7 @@ Part I has built the foundation: quality is a nameable, priceable set of attribu
 *Tier 1 — Primary / official*
 - DORA, *Generative organizational culture* capability + *State of DevOps* (dora.dev); Forsgren/Humble/Kim, *Accelerate* (2018).
 - Ron Westrum, organizational-culture typology (1988).
-- Larry Smith, "Shift-Left Testing," *Dr. Dobb's* (2001).
+- Larry Smith, "Shift-Left Testing," *Dr. Dobb's* (2001) — *attributed; ⚠ verify-at-pin (no SOURCE-PIN row yet — to be added as a named-article source at `/pin-source`; see `09-flags/06_culture_named_source_verbatims_verify_at_pin.md` atom 4).*
 - Martin Fowler, *CodeOwnership* (bliki).
 
 *Tier 2 — Accessible / further reading*

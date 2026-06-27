@@ -14,11 +14,13 @@ public enum PricingPolicy {
 
     // tag::enum-singleton[]
     INSTANCE;
-
-    /** Rounds a price in minor units up to the nearest whole major unit (cents to dollars, say). */
+    /** Rounds a non-negative price (minor units) up to the next whole major unit; Item 49: check params. */
     public long roundUpToMajorUnit(long minorUnits, int minorUnitsPerMajor) {
+        if (minorUnits < 0 || minorUnitsPerMajor <= 0) {
+            throw new IllegalArgumentException("minorUnits >= 0 and minorUnitsPerMajor > 0 required");
+        }
         long remainder = minorUnits % minorUnitsPerMajor;
-        return remainder == 0 ? minorUnits : minorUnits + (minorUnitsPerMajor - remainder);
+        return remainder == 0 ? minorUnits : Math.addExact(minorUnits, minorUnitsPerMajor - remainder);
     }
     // end::enum-singleton[]
 }

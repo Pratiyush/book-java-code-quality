@@ -1,6 +1,6 @@
 # FLAG — key 01: named-canon verbatim quotes + CISQ cost statistic verify-at-pin
 
-- **Chapter / key:** 01 — "Quality Is a Word You Can't Manage" (owner key 01; folds 02, 59 per `01-index/FINAL_INDEX.md` Ch 1)
+- **Chapter / key:** 01 — "Quality Is a Word No Team Can Manage" (owner key 01; folds 02, 59 per `01-index/FINAL_INDEX.md` Ch 1)
 - **Draft:** `03-drafts/01_what_is_code_quality/01_what_is_code_quality_v1.md`
 - **Companion module:** EXAMPLE-BUILD = N/A (pure-concept chapter; no module — see `01_what_is_code_quality_EXAMPLE.md`).
 - **Type:** ⚠ verify-at-pin (named-secondary verbatim wording) + ⚠ verify-at-pin (empirical statistic, no pinned row)

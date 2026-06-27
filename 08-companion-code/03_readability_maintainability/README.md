@@ -12,7 +12,7 @@ identical `Money` for every input. They differ only in shape.
 
 | Form | Class | The shape, and what it costs |
 |---|---|---|
-| Deeply nested | `DiscountRulesNested` | One body, the branches several levels deep — the shape Sonar `java:S3776` scores high, because cognitive complexity increments more for nesting (its path count, McCabe's cyclomatic measure, matches the balanced form). |
+| Deeply nested | `DiscountRulesNested` | One body, the branches several levels deep — the shape Sonar `java:S3776` scores high, because cognitive complexity increments more for nesting. It also spells the loyalty tier out as a branch ladder, so its cyclomatic count (McCabe's path count) runs higher than the balanced form's, which reads the tier as data. |
 | Over-fragmented | `DiscountRulesFragmented` | The same logic split across a dozen one-line methods — low per-method score, but following one idea means hopping between fragments. |
 | Balanced | `DiscountRules` | Nesting flattened into guard clauses, the logic in one readable body, the tier carrying its own discount. |
 

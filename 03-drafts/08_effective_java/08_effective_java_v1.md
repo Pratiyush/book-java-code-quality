@@ -97,7 +97,7 @@ The modern features above are the quality story of Java 21/25, and they earn the
   <!-- include: 08_effective_java/src/main/java/org/acme/canon/Areas.java#pattern-switch -->
 
 - **Text blocks** are multi-line strings (SQL, JSON) that read as themselves.
-- **`var`** is local type inference that cuts redundant noise (used judiciously; Chapter 2's caveat).
+- **`var`** is local type inference that cuts redundant noise (used judiciously; Chapter 6's caveat).
 
 *(Every JEP number and since-version here is confirmed against the pinned JDK (dossier 13 VERIFY checked them against the JEP head tables; the companion module compiles each idiom green on JDK 21.0.11); preview/exploratory features are flagged AHEAD-OF-PIN below.)*
 

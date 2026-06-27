@@ -91,7 +91,7 @@ Three distinctions explain the apparent redundancy, and a senior reader should h
 
 ### How they compose in a real build
 
-The map becomes a build through Maven or Gradle plugins (`maven-checkstyle-plugin`, `spotbugs-maven-plugin`, `spotless-maven-plugin`, `jacoco-maven-plugin`, and Gradle equivalents). **Ordering matters:** fast, cheap checks first (format, fast linters to fail fast), heavier analysis (SpotBugs, Sonar) later, coverage and mutation gates near the end (Chapters 33, 34). The same checks run at pre-commit (Chapter 35) and in CI (Chapter 34) so developers are not surprised at the gate.
+The map becomes a build through Maven or Gradle plugins (`maven-checkstyle-plugin`, `spotbugs-maven-plugin`, `spotless-maven-plugin`, `jacoco-maven-plugin`, and Gradle equivalents). **Ordering matters:** fast, cheap checks first (format, fast linters to fail fast), heavier analysis (SpotBugs, Sonar) later, coverage and mutation gates near the end (Chapter 23). The same checks run at pre-commit (Chapter 35) and in CI (Chapter 34) so developers are not surprised at the gate.
 
 The companion module assembles that order in one build. The cheapest layer is the compiler itself, held to every warning and made fatal:
 
@@ -119,7 +119,7 @@ And coverage over the test run, last:
 
 ### The menu is not the order
 
-The critical caveat: the map is the *menu*, not the *order*, and running everything is not the goal. Running every tool maximizes noise and build time and produces overlapping findings; Checkstyle, PMD, and SonarQube will all flag some of the same things. Independent studies of Java static-analysis tools find their findings *overlap surprisingly little*, which is the empirical case for layering a few complementary tools, and also the warning that piling on redundant ones multiplies noise.
+The critical caveat: the map is the *menu*, not the *order*, and running everything is not the goal. Running every tool maximizes noise and build time and produces overlapping findings; Checkstyle, PMD, and SonarQube will all flag some of the same things. The case for layering is the mechanism already established above, not a count: because a source linter, a bytecode analyzer, and a compile-integrated checker reason over different artefacts, a few *complementary* tools each catch what the others structurally cannot — while piling on tools that share a vantage mostly multiplies redundant findings and noise.
 
 **Chapter 17** covers combining and de-duplicating the analyzers into a coherent layered stack; **Chapter 46** builds one concrete reference stack end to end.
 
@@ -181,7 +181,7 @@ The territory is mapped. Tools only stick in a team that wants them, and quality
 - The Checkstyle wiki's curated "Java static code analysis tools" list.
 
 *Tier 2 — Accessible / further reading*
-- "A critical comparison on six static analysis tools" (ScienceDirect). Finding-overlap and precision evidence for layering.
+- "A critical comparison on six static analysis tools" (ScienceDirect). Further reading on how analyzers differ in what they catch (not pinned; read as background, not as a cited figure).
 - Maven / Gradle plugin references for build integration.
 
 ## Next chapter teaser

@@ -65,7 +65,7 @@ The bolded row is the one this book lives in. **Maintainability**, with its five
 
 > **NOTE** ISO/IEC 25010 was revised in **2023** (the current edition). It adds **Safety** as a ninth top-level characteristic and renames Usability to *Interaction Capability* and Portability to *Flexibility*. The 2023 edition also reworks several sub-characteristic names. Secondary summaries describe Reliability's *maturity* being renamed to *faultlessness*, for example. The complete 2023 sub-characteristic tree is confirmed against the standard's own text at the pin, not asserted here from a secondary (verify-at-pin; tracked in `09-flags/01_iso25010_2023_subtree_unverified.md`). A caution that this book practises and preaches: many articles titled "ISO 25010:2023" actually print the 2011 model. Edition-specific names trace to the standard's own text, never to a blog (see *Sources*).
 
-The point is not to memorize the tree. It is that "improve quality" decomposes into nameable, separable targets. A lead who says "our **analysability** and **testability** are below bar, and here are the two gates that move them" has a program. A lead who says "improve quality" has a wish.
+Memorizing the tree is beside the point; what matters is that "improve quality" decomposes into nameable, separable targets. A lead who says "our **analysability** and **testability** are below bar, and here are the two gates that move them" has a program. A lead who says "improve quality" has a wish.
 
 ### The half users see and the half they cannot
 
@@ -105,7 +105,7 @@ This inverts the instinct that quality is something a team buys with time. For i
 
 ### Why readability is the highest-leverage internal attribute
 
-Of the five Maintainability sub-characteristics, **analysability** (can a developer understand and locate things?) carries the most weight, because reading dominates how developers spend their time. *Clean Code* puts the reading-to-writing ratio at "well over **10 to 1**," and draws the conclusion that follows: optimize code for reading even when that makes it harder to write. Optimize the operation performed ten times, not the one performed once. That is why Chapters 2, 3, 6, and 17 keep returning to readability.
+Of the five Maintainability sub-characteristics, **analysability** (can a developer understand and locate things?) carries the most weight, because reading dominates how developers spend their time. *Clean Code* puts the reading-to-writing ratio at "well over **10 to 1**," and draws the conclusion that follows: optimize code for reading even when that makes it harder to write. Optimize the operation performed ten times, not the one performed once. That is why Chapters 2 and 6 keep returning to readability.
 
 ### What poor quality costs: technical debt
 
@@ -131,7 +131,7 @@ The quadrant matters because "technical debt" is routinely used to launder reckl
 A metaphor that cannot be measured stays an argument. The **SQALE** method (Software Quality Assessment based on Lifecycle Expectations), defined by Jean-Louis Letouzey and implemented directly by **SonarQube**, is how most Java teams actually *see* their debt:
 
 - Each rule carries an estimated **remediation cost in minutes**. A project's **technical debt** is the sum of those costs across all maintainability issues.
-- The **Technical Debt Ratio** is `remediation effort ÷ development effort × 100`, where development effort is `lines of code × cost-to-develop-one-line` (SonarQube documents a configurable default of **30 minutes per line**; verify the exact figure against the pinned SonarQube release; the model is owned in Chapter 38).
+- The **Technical Debt Ratio** is `remediation effort ÷ development effort × 100`, where development effort is `lines of code × cost-to-develop-one-line` (SonarQube documents a configurable default of **30 minutes per line**; verify the exact figure against the pinned SonarQube release; the model is owned in Chapter 17).
 - A **Maintainability Rating** (A–E) is derived from that ratio.
 
 > **WARNING** A SQALE debt number is a *model output*, not ground truth. The "30 minutes per line" default and the per-rule estimates are heuristics; two teams' debt numbers are not comparable unless their model configuration matches. Treat the ratio as a **trend** to watch, never a target to hit. Chapter 2 explains why a metric that becomes a target stops measuring anything.
@@ -142,7 +142,7 @@ At national scale, the cost is real enough to quote, with one caveat. The Consor
 
 The intuition behind "skip quality to ship faster" is contradicted by the strongest dataset in the field. The **DORA** research program (the *State of DevOps* reports, and the book *Accelerate*) finds, across more than six years, that **throughput** (deployment frequency, lead time for changes) and **stability** (change-failure rate, failed-deployment recovery time) are **not a trade-off**: they correlate and reinforce each other. Elite teams are fast *and* stable.
 
-The mechanism is exactly the one from §Why internal quality has negative cost: high internal quality is what *lets* a team move fast without breaking things. So "skip quality to go faster" buys a brief speed-up and sells the team's future velocity, the opposite of the stated goal.
+The mechanism is the cruft tax again: high internal quality is what *lets* a team move fast without breaking things, because there is no accumulated cruft to slow each change down. So "skip quality to go faster" buys a brief speed-up and sells the team's future velocity, the opposite of the stated goal.
 
 > **Trace it back.** Every load-bearing fact above resolves to a pinned source in `00-strategy/SOURCE-PIN.md`: ISO/IEC 25010:2023; Fowler's *Is High Quality Software Worth the Cost?*; *Clean Code* (2008); Cunningham's debt metaphor; SonarQube's SQALE docs; the CISQ 2022 report; and the 2025 DORA report. (This book carries no companion build for this concept chapter. EXAMPLE-BUILD is N/A, the chapter shows no code, so the do-and-verify beat points to the sources, not a `./mvnw` run.)
 
@@ -154,7 +154,7 @@ The abstraction earns its keep only when it maps to things a developer can chang
 
 | Maintainability sub-characteristic | In Java, it means… | A signal of *low* quality | Where the book moves it |
 |---|---|---|---|
-| **Analysability** | readable names, small methods, low nesting | a 300-line method nested six deep with `tmp2` variables | Ch 2, 3, 6 (Cognitive Complexity, Checkstyle) |
+| **Analysability** | readable names, small methods, low nesting | a 300-line method nested six deep with `tmp2` variables | Ch 2, 6, 16 (Cognitive Complexity, Checkstyle) |
 | **Modifiability** | low coupling, single-responsibility classes | one config change forces edits in twelve files | Ch 25 (coupling, ArchUnit) |
 | **Testability** | dependency injection over `new`, seams | a class that `new`s a database connection in its constructor | Ch 21, 23, 39 (JUnit, coverage, seams) |
 | **Modularity** | clean package/module boundaries, no cycles | a dependency cycle between `service` and `repository` | Ch 25, 26 (ArchUnit, JPMS) |
@@ -222,7 +222,7 @@ The vocabulary is now in place: quality decomposes into ISO characteristics; the
 **Reference (exact, traced to the pin)**
 
 - ISO/IEC 25010 Maintainability sub-characteristics: modularity, reusability, analysability, modifiability, testability.
-- SonarQube SQALE defaults: cost-to-develop = 30 min/line; 8-hour day for debt-in-days; Maintainability Rating A–E from the debt ratio. *(These SQALE defaults and the exact rating thresholds are configurable conventions; verify each against the pinned SonarQube 2026.1 LTA; the model is owned in Chapter 38. Tracked in `09-flags/01_named_canon_verbatims_and_cisq_stat_verify_at_pin.md`.)*
+- SonarQube SQALE defaults: cost-to-develop = 30 min/line; 8-hour day for debt-in-days; Maintainability Rating A–E from the debt ratio. *(These SQALE defaults and the exact rating thresholds are configurable conventions; verify each against the pinned SonarQube 2026.1 LTA; the model is owned in Chapter 17. Tracked in `09-flags/01_named_canon_verbatims_and_cisq_stat_verify_at_pin.md`.)*
 
 **Sources and further reading**
 

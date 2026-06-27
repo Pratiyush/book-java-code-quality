@@ -9,9 +9,12 @@ import java.util.Objects;
  * <p>{@link #discountFor} computes the correct discount, but it does so in a single body that nests the
  * floor check, the seasonal-sale check, the loyalty tier, and the coupon several levels deep. Cognitive
  * complexity (Sonar {@code java:S3776}) increments more for each level of nesting, so this form scores
- * high even though its branch count — and therefore its cyclomatic complexity, McCabe's path count — is
- * the same as the balanced form's. That gap is the chapter's measurement point: the two metrics answer
- * different questions, and nesting is where they diverge. It compiles, it passes its tests, and it
+ * higher than the balanced form on that measure. Its cyclomatic complexity (McCabe's path count) is
+ * higher too: this form spells the loyalty tier out as a branch ladder and repeats the sale-and-coupon
+ * decisions inside each arm, where {@link DiscountRules} reads the tier as data and so carries fewer
+ * decision points. The chapter's measurement point is that cognitive complexity climbs with nesting while
+ * cyclomatic complexity counts paths regardless of how hard they are to follow, so the two metrics answer
+ * different questions and nesting is where they diverge most. It compiles, it passes its tests, and it
  * returns exactly the same {@link Money} as the other two forms for every input — a high score is a
  * reading cost, not a wrong answer. The house Checkstyle and SpotBugs gate does not measure method
  * length or complexity, so this method is not flagged here; a different tool measures a different thing.
