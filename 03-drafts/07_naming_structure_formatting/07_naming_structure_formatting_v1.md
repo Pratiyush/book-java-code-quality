@@ -6,7 +6,7 @@ Companion module: 08-companion-code/07_naming_structure_formatting/ — EXAMPLE-
 Verified against SOURCE-PIN: 2026-06-27. Sources: Google Java Style Guide (§3 structure, §4 formatting, §5 naming); Effective Java 3e (2018) Item 56, Item 68; JLS SE 21/25 §6.1 (verify wording @pin); Checkstyle 13.6.0; PMD 7.25.0; SonarQube 2026.1 LTA (java:S100/S101/S115/S116/S117, java:S125); Spotless spotless-maven-plugin 3.6.0; google-java-format 1.35.0; palantir-java-format; EditorConfig spec; JDK 21 doc-comment spec; JEP 413 ({@snippet}, JDK 18); JEP 467 (/// Markdown comments, JDK 23 — past the Java 21 anchor); Clean Code (2008); A Philosophy of Software Design (2018).
 ⚠ contested practice: the comments debate (Clean Code vs APoSD) is presented two-schools, no crown.
 ⚠ verify-at-pin: exact default regexes for several Checkstyle/PMD/Sonar naming rules; JLS §6.1 wording; JEP numbers; verbatim book quotes.
-DRAFT v1 — gates manual; format/lint split + convention-vs-meaning shape; EXAMPLE-BUILD pending JDK.
+DRAFT v1 — gates manual; format/lint split + convention-vs-meaning shape; EXAMPLE-BUILD GREEN (built — see _EXAMPLE.md).
 -->
 
 # Three Things You Should Never Argue About Twice

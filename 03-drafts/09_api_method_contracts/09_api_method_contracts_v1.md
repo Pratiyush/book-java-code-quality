@@ -5,7 +5,7 @@ Part / arc position: Part II — Writing Quality Java, Chapter 7
 Companion module: 08-companion-code/09_api_method_contracts/ — EXAMPLE-BUILD = BUILT GREEN (Checkstyle + SpotBugs under -Pquality; 11 tests pass; empirically confirms the JDK API surfaces used). Spec at foot.
 Verified against SOURCE-PIN: 2026-06-27. Sources: JDK 21 API (java.util.Objects requireNonNull/checkIndex family — signatures+since verified, and exercised green in the companion module; java.util.Optional); Effective Java 3e (2018) Items 15–17, 49–56; JLS SE 21 §6.6/§8.4.1/§15.12.2 + ch.13 binary compat (exact §§ verify @pin — primary-text discipline); JEP 395/409/441 (records/sealed/pattern-switch, GA at 21); JEP 467 (/// Markdown, JDK 23 — ⚠ AHEAD-OF-PIN, flagged 09_jep467_markdown_doccomments_ahead_of_pin.md); Error Prone (CheckReturnValue/CanIgnoreReturnValue/MissingOverride); SpotBugs (EI_EXPOSE_REP(2)/RV_RETURN_VALUE_IGNORED); PMD (MethodReturnsInternalArray/ArrayIsStoredDirectly/AvoidReassigningParameters/UseVarargs); SonarQube java:S2201 (scoped — flagged 09_s2201_scope_limit_unverified.md)/java:S1226; JSpecify 1.0.0 (@Nullable/@NonNull/@NullMarked); SemVer (semver.org); revapi; japicmp.
 ⚠ comparison-sensitive (revapi vs japicmp) — each its own case+limit, no crown. ⚠ verify-at-pin (primary-text items only, not fetchable in-repo): EJ 3e verbatim item titles + any page ref; JLS SE 21 exact §§; revapi/japicmp exact option names (versions now pinned, SOURCE-PIN §6).
-DRAFT v1 — gates manual; contract-card + two-halves shape; EXAMPLE-BUILD pending JDK.
+DRAFT v1 — gates manual; contract-card + two-halves shape; EXAMPLE-BUILD GREEN (built — see _EXAMPLE.md).
 -->
 
 # A Method Is a Promise
