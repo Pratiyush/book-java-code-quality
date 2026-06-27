@@ -40,6 +40,8 @@ Both failures live in the **build**, and the build is the subject of this openin
 
 ## How it works
 
+Every quality gate runs inside the build, so the shape of the build decides the shape of the gating. Figure 27.1 lays out that shape: the build lifecycle as the host the gates hang off, with Maven's phases on one side and Gradle's `check` task on the other, and the checks bound cheapest-first so the build fails on the smallest offense before it spends time on the expensive ones. The diagram crowns neither tool; it shows the same gate-host role expressed two ways.
+
 ![Fig 27.1 — The build lifecycle as quality-gate host — Maven phases and Gradle check task · bind checks cheapest-first · no winner between the two tools](../../05-figures/62_build_dependency_hygiene/fig62_1.png)
 
 *Fig 27.1 — The build lifecycle as quality-gate host — Maven phases and Gradle check task · bind checks cheapest-first · no winner between the two tools*
@@ -57,7 +59,7 @@ The two tools embody different philosophies, and the book crowns neither. **Mave
 
 Dependencies are most of a modern Java application, and an unmanaged dependency tree is both a quality and a security liability: version conflicts, transitive surprises, and the "works on my machine" non-determinism from the hook. **Hygiene** is the discipline that makes the graph deterministic and reviewable, and it has four parts.
 
-- **A single source of version truth.** Declare each version once: in Maven, `<dependencyManagement>` plus imported **BOMs** (bill-of-materials POMs); in Gradle, **version catalogs** (`gradle/libs.versions.toml`) plus platforms. Child modules then omit versions entirely, so one bump updates everywhere consistently and no module can drift to an ad-hoc version. Importing a BOM looks like this:
+- **A single source of version truth.** Declare each version once: in Maven, `<dependencyManagement>` plus imported **BOMs** (bill-of-materials POMs, files that fix a coherent set of versions for a whole library family); in Gradle, **version catalogs** (a central list of dependencies and their versions, kept in `gradle/libs.versions.toml`) plus platforms. Child modules then omit versions entirely, so one bump updates everywhere consistently and no module can drift to an ad-hoc version. Importing a BOM looks like this:
 
 <!-- include: 62_build_dependency_hygiene/pom.xml#dep-management-bom -->
 
