@@ -19,6 +19,12 @@
     (`build-and-lint`, `test-and-coverage`, `static-and-security`, `quality-gate`) are this book's
     illustrative CI job names (consistent with the peer Chapter 33 `ci/quality-gates.yml`), not GitHub
     facts.
+  - In the chapter **prose** (`03-drafts/81_branch_protection_precommit_parity/.../v1.md`): the
+    statement that **GitHub offers a merge queue** ("How it works" §, dated in-prose "as of mid-2026") is a
+    rolling hosted-platform feature, not a timeless fact — re-confirm availability/behaviour at adoption.
+    The **trunk-based development** capability is attributed to the pinned *Accelerate* (2018, SOURCE-PIN §7)
+    + the **2025 DORA report** (`dora.dev`, §5); the prose **paraphrases** the capability and crowns no
+    branching model — the exact `dora.dev` wording is a rolling surface, so it is paraphrased, never quoted.
   - In `08-companion-code/81_branch_protection_precommit_parity/.pre-commit-config.yaml`: the gitleaks
     hook `rev:` is a **`VERSION_PINNED_AT_ADOPTION` placeholder** (dated-at-use 2026-06), not an asserted
     gitleaks version — gitleaks itself has no pinned SOURCE-PIN row (the §2 SAST rows mark scanner

@@ -44,8 +44,8 @@
 
   <properties>
     <!--
-      JaCoCo coverage plugin version. SOURCE-PIN.md §3 pins JaCoCo 0.8.15, but that artifact is not
-      published (Maven Central returns 404 for 0.8.15); the reactor builds against 0.8.15, the real
+      JaCoCo coverage plugin version. SOURCE-PIN.md §3 pins JaCoCo 0.8.15; 0.8.16 is not
+      published (Maven Central returns 404 for 0.8.16); the reactor builds against 0.8.15, the real
       latest, which covers the anchor JDK 21 (since 0.8.11) and the forward JDK 25 (since 0.8.14). This
       matches the key-48 / key-80 modules and is recorded for a deliberate re-pin in
       09-flags/48_jacoco_pin_0816_unpublished.md.

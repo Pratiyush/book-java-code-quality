@@ -34,7 +34,7 @@ unpinned coordinate; `google-java-format` is pinned to the resolvable `1.35.0`.
 
 **Version notes (each a recorded deviation from a SOURCE-PIN top-line, forced by artifact availability,
 not invented):** Checkstyle engine **10.26.1** and SpotBugs **4.9.3.0** match the values the whole
-reactor builds green against; JaCoCo **0.8.15** (SOURCE-PIN pins 0.8.15, which is unpublished — see
+reactor builds green against; JaCoCo **0.8.15** (SOURCE-PIN pins 0.8.15 (0.8.16 was the unpublished snapshot) — see
 `09-flags/48_jacoco_pin_0816_unpublished.md`). The full-stack tools the chapter also names (Error Prone,
 NullAway, ArchUnit, PITest, OWASP Dependency-Check, gitleaks, CycloneDX, SonarQube) are surveyed in
 their own chapters' modules and prose; this module assembles the build-side core that builds green

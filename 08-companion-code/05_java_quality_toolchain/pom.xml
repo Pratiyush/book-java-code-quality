@@ -27,7 +27,7 @@
         on the cached toolchain — recorded in 09-flags/05_toolchain_plugin_versions.md.
       - SpotBugs: SOURCE-PIN §2 pins the SpotBugs line at 4.10.2; this module builds against the
         spotbugs-maven-plugin 4.9.3.0 + engine 4.9.3 its peers are pinned to — same flag.
-      - JaCoCo: SOURCE-PIN §3 pins 0.8.15, which is unpublished on Maven Central (404). This module
+      - JaCoCo: SOURCE-PIN §3 pins 0.8.15 (0.8.16 was the unpublished snapshot) on Maven Central (404). This module
         builds against 0.8.15, the real latest, exactly as the Chapter 48 module does — see the existing
         09-flags/48_jacoco_pin_0816_unpublished.md.
       - The maven-*-plugin version literals for the analyzers are NOT pinned as separate rows in

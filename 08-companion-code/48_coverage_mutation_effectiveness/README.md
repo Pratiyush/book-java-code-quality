@@ -39,7 +39,7 @@ orders of magnitude slower than a unit-test run, so the stage is opt-in and belo
 run, never the inner loop. The `pitest-junit5-plugin` is required for PITest to run JUnit Jupiter
 tests; without it the tests silently report no coverage.
 
-> **Version note.** `SOURCE-PIN.md` §3 pins JaCoCo **0.8.15**, but that artifact is not published on
+> **Version note.** `SOURCE-PIN.md` §3 pins JaCoCo **0.8.15**; 0.8.16 is not published on
 > Maven Central (the real latest is **0.8.15**). This module builds against **0.8.15**, which covers
 > the anchor JDK 21 (JaCoCo support since 0.8.11) and the forward JDK 25 (since 0.8.14). The deviation
 > is recorded in `09-flags/48_jacoco_pin_0816_unpublished.md` for a deliberate re-pin. PITest is on
