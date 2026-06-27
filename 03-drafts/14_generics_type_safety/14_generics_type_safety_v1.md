@@ -25,7 +25,7 @@ String s = strings.get(0);   // ClassCastException — and the 42 is nowhere in 
 
 The exception is thrown on the last line, at a cast the compiler inserted when it expanded `strings.get(0)`. But the *bug* is on the third line, where an `Integer` entered a `List<String>` through a raw reference. And the compiler flagged it: line two raised an unchecked warning, the one most teams have trained their eyes to skip. The crash is far from its cause, the value that broke it is invisible at the crash site, and the warning that would have stopped it was discarded.
 
-Generics encode element and parameter types in the type system, so the compiler inserts and *verifies* the casts that hand-written code placed by convention — moving a `ClassCastException` from run time, where it surfaces far from its cause, to compile time, where it sits on the offending line. The discipline, in one sentence from the canon: use generics so the compiler is a collaborator, and treat every unchecked warning as an unproven obligation still outstanding.
+Generics encode element and parameter types in the type system, so the compiler inserts and *verifies* the casts that hand-written code placed by convention. That moves a `ClassCastException` from run time, where it surfaces far from its cause, to compile time, where it sits on the offending line. The discipline, in one sentence from the canon: use generics so the compiler is a collaborator, and treat every unchecked warning as an unproven obligation still outstanding.
 
 ## Overview
 
@@ -40,9 +40,11 @@ Generics encode element and parameter types in the type system, so the compiler 
 
 **What this chapter does NOT cover.** Null-safety annotations and pluggable checkers in depth (Chapter 9), the modern features (`var`, record patterns) that interact with generics in their own right (Chapter 5), and the analyzer internals (Part IV). This chapter owns the *type-safety craft*; it cites the rules but configures none of them.
 
-**The one idea to hold**: *generic type information exists only at compile time, so type-safety is a debt paid to the compiler before the program runs — and an unchecked warning is the compiler reporting that debt as unpaid.*
+**The one idea to hold**: *generic type information exists only at compile time, so type-safety is a debt paid to the compiler before the program runs, and an unchecked warning is the compiler reporting that debt as unpaid.*
 
 ## How it works
+
+Two diagrams carry the shape of this chapter. The first, the PECS variance ladder in Figure 11.1, shows where Java generics are invariant by default at the declaration and where a wildcard restores controlled flexibility at the use site. Figure 11.2 then traces the single fact the rest of the chapter follows from: type information is a compile-time artifact, so what the JVM sees at run time is only the raw type and the casts the compiler inserted.
 
 ![Fig 11.1 — PECS Variance Ladder — Java generics are invariant at declaration; wildcards restore controlled flexibility at the use site.](../../05-figures/14_generics_type_safety/fig14_1.png)
 
@@ -55,23 +57,23 @@ Generics encode element and parameter types in the type system, so the compiler 
 
 ### Erasure: the one fact everything follows from
 
-Generics are a *compile-time* mechanism. At run time, `List<String>` and `List<Integer>` are the same class — plain `List`. This is **type erasure** (JLS §4.6): the compiler maps a parameterized type `G<T>` to its raw form, and a type variable to the erasure of its leftmost bound (an unbounded `<T>` erases to `Object`). The generic information is checked, used to insert casts, and then thrown away.
+Generics are a *compile-time* mechanism. At run time, `List<String>` and `List<Integer>` are the same class, plain `List`. This is **type erasure** (JLS §4.6): the compiler maps a parameterized type `G<T>` to its raw form, and a type variable to the erasure of its leftmost bound (an unbounded `<T>` erases to `Object`). The generic information is checked, used to insert casts, and then thrown away.
 
 That single design choice (chosen so generics add *no* runtime overhead and stay backward-compatible with pre-2004 code) is the source of every sharp edge in the chapter. Because the type argument is gone at run time:
 
 - `List<String>` and `List<Integer>` are **non-reifiable**: the JVM cannot tell them apart.
 - `new T[]`, `new List<String>[]`, `T.class`, and `instanceof List<String>` are illegal or limited (only the unbounded `instanceof List<?>` is allowed).
-- A bad value can be smuggled into a collection through a raw reference and the JVM does not notice until a cast fails somewhere else — the hook.
+- A bad value can be smuggled into a collection through a raw reference, and the JVM does not notice until a cast fails somewhere else. That is the hook.
 
-> **CONCEPT** *Reifiable vs non-reifiable (JLS §4.7).* A type is *reifiable* if its full type information survives to run time: non-generic types, primitives, raw types, an unbounded-wildcard parameterized type (`List<?>`), and arrays of reifiable types. Everything with a concrete type argument (`List<String>`, `List<? extends Number>`) is *non-reifiable*. This line governs what `instanceof`, casts, arrays, and varargs are allowed to do — every restriction below traces back to it.
+> **CONCEPT** *Reifiable vs non-reifiable (JLS §4.7).* A type is *reifiable* if its full type information survives to run time: non-generic types, primitives, raw types, an unbounded-wildcard parameterized type (`List<?>`), and arrays of reifiable types. Everything with a concrete type argument (`List<String>`, `List<? extends Number>`) is *non-reifiable*. This line governs what `instanceof`, casts, arrays, and varargs are allowed to do; every restriction below traces back to it.
 
 ### Raw types and the unchecked warning
 
 A **raw type** (JLS §4.8) is a generic type used with no type argument (`List` instead of `List<E>`). On a raw reference, the compiler can no longer prove that what goes in matches what comes out, so it emits an **unchecked warning** (JLS §5.1.9): a precise message that it has done what it can, and that erasure has left a gap it cannot close, where a runtime failure is possible. The hook's `raw.add(42)` is exactly that gap.
 
-The rule the canon draws here is unambiguous: *Effective Java* Item 26, "Don't use raw types," and Item 27, "Eliminate every unchecked warning." A warning that cannot be eliminated by fixing the code is suppressed with `@SuppressWarnings("unchecked")` at the **narrowest possible scope** (a single local, never a whole method or class) and accompanied by a comment that proves why the operation is in fact type-safe. The suppression discharges the obligation the compiler could not close: the warning said "I can't prove this," and the comment says "here is the proof."
+The rule the canon draws here is unambiguous: *Effective Java* Item 26, "Don't use raw types," and Item 27, "Eliminate every unchecked warning." A warning that cannot be eliminated by fixing the code is suppressed with `@SuppressWarnings("unchecked")` at the **narrowest possible scope** (a single local, never a whole method or class) and accompanied by a comment that proves why the operation is in fact type-safe. The suppression discharges the obligation the compiler could not close: the warning reports an unprovable cast, and the comment supplies the proof the compiler lacked.
 
-The companion module's generic `Stack<E>` hits this exactly once — at the unavoidable `(E[]) new Object[…]` that erasure leaves no way around — and discharges it on the single local:
+The companion module's generic `Stack<E>` hits this exactly once, at the unavoidable `(E[]) new Object[…]` that erasure leaves no way around, and discharges it on the single local:
 
 <!-- include: 14_generics_type_safety/src/main/java/org/acme/generics/Stack.java#suppress-justified -->
 
@@ -82,9 +84,10 @@ Two distinctions matter and are often missed:
 
 The compiler makes this enforceable today with `-Xlint:unchecked,rawtypes`, which surfaces every warning; a quality build treats those as errors. Sonar `java:S3740` flags raw types as well.
 
+
 ### Variance: invariance, wildcards, and PECS
 
-Java generics are **invariant**: `List<String>` is *not* a subtype of `List<Object>`, even though `String` is a subtype of `Object`. The invariance is what keeps the type system sound — if `List<String>` *were* a `List<Object>`, an `Integer` could be added through the wider reference (exactly the array bug below). Flexibility is added deliberately at the *use site* with a bounded wildcard:
+Java generics are **invariant**: `List<String>` is *not* a subtype of `List<Object>`, even though `String` is a subtype of `Object`. The invariance is what keeps the type system sound. If `List<String>` *were* a `List<Object>`, an `Integer` could be added through the wider reference (exactly the array bug below). Flexibility is added deliberately at the *use site* with a bounded wildcard:
 
 | Wildcard | Variance | Role | Operations permitted |
 |---|---|---|---|
@@ -94,15 +97,15 @@ Java generics are **invariant**: `List<String>` is *not* a subtype of `List<Obje
 
 The mnemonic is **PECS: Producer-Extends, Consumer-Super** (Item 31): if a parameter *produces* `T` values, type it `<? extends T>`; if it *consumes* `T` values, type it `<? super T>`. A method that copies from a source to a destination wants both, as in `copy(List<? extends T> src, List<? super T> dst)`, and the wildcards make it accept the widest possible range of caller types without ever permitting an unsound write.
 
-The companion module's `Stack<E>` shows the pair on a single type. The producer end reads elements *in* — so its source is `Iterable<? extends E>`, and a `Stack<Number>` accepts a `List<Integer>`:
+The companion module's `Stack<E>` shows the pair on a single type. The producer end reads elements *in*, so its source is `Iterable<? extends E>`, and a `Stack<Number>` accepts a `List<Integer>`:
 
 <!-- include: 14_generics_type_safety/src/main/java/org/acme/generics/Stack.java#pecs-pushall -->
 
-The consumer end writes elements *out* — so its destination is `Collection<? super E>`, and a `Stack<Integer>` drains into a `List<Object>`:
+The consumer end writes elements *out*, so its destination is `Collection<? super E>`, and a `Stack<Integer>` drains into a `List<Object>`:
 
 <!-- include: 14_generics_type_safety/src/main/java/org/acme/generics/Stack.java#pecs-popall -->
 
-> **CONCEPT** *PECS has a hard exception: not on return types.* Item 31's own caveat: *do not* use a bounded wildcard as a method's return type. A `List<? extends Number>` return forces every caller to deal with a wildcard in their own code, propagating the awkwardness outward instead of containing it. Sonar `java:S1452` flags exactly this (and is itself contested, because interface contracts sometimes mandate a wildcard return, which makes the rule a strong default rather than a law).
+> **CONCEPT** *PECS has a hard exception: not on return types.* Item 31's own caveat: *do not* use a bounded wildcard as a method's return type. A `List<? extends Number>` return forces every caller to deal with a wildcard in their own code, propagating the awkwardness outward instead of containing it. Sonar `java:S1452` flags exactly this. The rule is itself contested, because interface contracts sometimes mandate a wildcard return, which makes it a strong default rather than a law.
 
 ### Bounds and generic methods
 
@@ -110,7 +113,7 @@ A **bounded type parameter** constrains the argument and unlocks the bound's mem
 
 ### The diamond and `var`
 
-Type inference removes most of the boilerplate. The **diamond** `<>` (Java 7) infers a constructor's type arguments: `List<String> l = new ArrayList<>();`. JEP 213 (Java 9) extended it to anonymous classes. PMD `UseDiamondOperator` flags redundant explicit type arguments. And `var` (Java 10) interacts with generics in one trap worth naming: `var l = new ArrayList<String>()` keeps the full type, but `var l = new ArrayList<>()` infers `ArrayList<Object>` because the diamond has nothing on the left to infer from, so it widens silently (Chapter 5).
+Type inference removes most of the boilerplate. The **diamond** `<>` (Java 7) infers a constructor's type arguments: `List<String> l = new ArrayList<>();`. JEP 213 (Java 9) extended it to anonymous classes. PMD `UseDiamondOperator` flags redundant explicit type arguments. And `var` (Java 10) interacts with generics in one trap worth naming: `var l = new ArrayList<String>()` keeps the full type, but `var l = new ArrayList<>()` infers `ArrayList<Object>`, because the diamond has nothing on the left to infer from, so it widens silently (Chapter 5).
 
 ## Deep dive: where generics meet arrays and varargs
 
@@ -123,13 +126,13 @@ Object[] objects = new Long[1];
 objects[0] = "I am not a Long";   // compiles fine; throws ArrayStoreException at run time
 ```
 
-Generics are the opposite — **invariant and erased**: `List<String>` is not a `List<Object>`, and the element type is gone at run time. Because the two models cannot coexist, `new List<String>[]` is a compile error: an array of a non-reifiable type cannot keep the promise arrays make. *Effective Java* Item 28 — "prefer lists to arrays" — follows directly: lists surface the compile-time failure (the type error appears where the bad code is); arrays surface the run-time failure (`ArrayStoreException`, far away).
+Generics are the opposite, **invariant and erased**: `List<String>` is not a `List<Object>`, and the element type is gone at run time. Because the two models cannot coexist, `new List<String>[]` is a compile error: an array of a non-reifiable type cannot keep the promise arrays make. *Effective Java* Item 28, "prefer lists to arrays," follows directly: lists surface the compile-time failure (the type error appears where the bad code is); arrays surface the run-time failure (`ArrayStoreException`, far away).
 
-Where this turns subtle is **varargs**, because a varargs parameter is an array under the hood. A method like `static <T> List<T> asList(T... elements)` secretly creates a `T[]` — a generic array, which the language otherwise forbids. So the compiler allows it but warns: the method can leak that array or store into it, producing **heap pollution** (JLS §4.12.2) — a variable of a parameterized type pointing at an object that is not of that type, the same corruption as the hook, now arising from an array the compiler generated.
+Where this turns subtle is **varargs**, because a varargs parameter is an array under the hood. A method like `static <T> List<T> asList(T... elements)` secretly creates a `T[]`, a generic array the language otherwise forbids. So the compiler allows it but warns: the method can leak that array or store into it, producing **heap pollution** (JLS §4.12.2). Heap pollution is a variable of a parameterized type pointing at an object that is not of that type, the same corruption as the hook, now arising from an array the compiler generated.
 
-`@SafeVarargs` is best understood as an **earned assertion**. The annotation (Java 7; extended to private instance methods by JEP 213 in Java 9) suppresses the warning by promising that the method body does nothing unsafe with the array — it never stores into it and never lets a reference to it escape. *Effective Java* Item 32 is precise: apply `@SafeVarargs` *only* when that promise actually holds. A method that returns the varargs array, or stashes it in a field, is genuinely unsafe, and the warning is correct. Silencing it with `@SafeVarargs` ships the heap pollution to a caller. The annotation is not "make the warning go away"; it is "I have personally verified this is safe" — and that verification must be done before the annotation goes on.
+`@SafeVarargs` is best understood as an **earned assertion**. The annotation (Java 7; extended to private instance methods by JEP 213 in Java 9) suppresses the warning by promising that the method body does nothing unsafe with the array: it never stores into it and never lets a reference to it escape. *Effective Java* Item 32 is precise: apply `@SafeVarargs` *only* when that promise actually holds. A method that returns the varargs array, or stashes it in a field, is genuinely unsafe, and the warning is correct. Silencing it with `@SafeVarargs` ships the heap pollution to a caller. The annotation does not make the warning go away; it asserts that the body has been verified safe, and that verification must be done before the annotation goes on.
 
-The companion module keeps a deliberately unsafe method as a counter-example: it aliases its own generic array as `Object[]` and writes a foreign element into it, so reading the slot back throws. It carries *no* `@SafeVarargs` — the warning is correct, and a test proves the `ClassCastException` rather than describing it:
+The companion module keeps a deliberately unsafe method as a counter-example: it aliases its own generic array as `Object[]` and writes a foreign element into it, so reading the slot back throws. It carries *no* `@SafeVarargs`, because the warning is correct, and a test proves the `ClassCastException` rather than describing it:
 
 <!-- include: 14_generics_type_safety/src/main/java/org/acme/generics/VarargsHeapPollution.java#unsafe-varargs -->
 
@@ -138,14 +141,14 @@ At every turn (the raw type, the wildcard, the generic array) the compiler is wi
 ## Limitations & when NOT to reach for it
 
 - **Erasure is permanent, not a bug to be fixed.** `new T[n]`, `T.class`, `instanceof List<String>`, and overloading on `List<String>` versus `List<Integer>` (which erase to the same signature) are all unavailable. These are accepted constraints; the craft is the workaround: a `Class<T>` type token (the typesafe heterogeneous container, Item 33) when the runtime type is genuinely needed, and a justified `@SuppressWarnings` otherwise.
-- **Wildcards cost readability.** PECS makes APIs flexible but signatures harder to read; a deeply nested `Map<? extends K, ? super List<? extends V>>` actively hurts comprehension (Chapter 2). And the firm rule: never put a wildcard in a return type — it leaks outward to every caller.
-- **Do not over-genericize.** A type parameter that appears *only* in the return position — `<T> T get()` — is an Error Prone bug (`TypeParameterUnusedInFormals`): the compiler cannot infer `T` from any argument, so it silently inserts an unchecked cast at every call site. If the compiler cannot constrain `<T>` from the arguments, it does not belong.
-- **`@SafeVarargs` is an earned assertion.** Applying it to a method that stores or leaks the varargs array hides a real heap-pollution risk. When the body is genuinely unsafe, the warning is right — fix the method, do not annotate over it.
+- **Wildcards cost readability.** PECS makes APIs flexible but signatures harder to read; a deeply nested `Map<? extends K, ? super List<? extends V>>` actively hurts comprehension (Chapter 2). And the firm rule: never put a wildcard in a return type, because it leaks outward to every caller.
+- **Do not over-genericize.** A type parameter that appears *only* in the return position, such as `<T> T get()`, is an Error Prone bug (`TypeParameterUnusedInFormals`): the compiler cannot infer `T` from any argument, so it silently inserts an unchecked cast at every call site. If the compiler cannot constrain `<T>` from the arguments, it does not belong.
+- **`@SafeVarargs` is an earned assertion.** Applying it to a method that stores or leaks the varargs array hides a real heap-pollution risk. When the body is genuinely unsafe, the warning is right: fix the method, do not annotate over it.
 - **Raw types are correct in two places.** Class literals and `instanceof` legitimately use the bare name; a "no raw types ever" lint configured without those exceptions produces false positives.
 - **The analyzers disagree by design.** PMD's pattern-matching rules catch raw types and missing diamonds cheaply but carry false positives (`UseDiamondOperator` has had Java-21 inference false positives; `LooseCoupling` a generics one). Error Prone runs *inside* the compiler and can auto-fix. The Checker Framework offers a soundness guarantee for annotated code at the cost of annotation effort and build time. Sonar `java:S1452` is community-contested for firing on interface-mandated wildcard returns. Each fits a different point on the cost/coverage curve; none is the answer for every team (Chapter 17 owns the layering choice).
 - **Legacy boundaries force unchecked conversions.** Pre-generics libraries return raw types; the discipline is to wrap and adapt at the seam, confining the suppression to the boundary class, rather than let raw types spread inward.
 
-> **AHEAD-OF-PIN** Reified or specialized generics (Project Valhalla) are *not* in Java 21 or 25. "Java is getting reified generics" is a recurring claim stated as imminent fact; it is exploratory work, not a shipped feature — treat it as direction, never as anchor reality.
+> **AHEAD-OF-PIN** Reified or specialized generics (Project Valhalla) are *not* in Java 21 or 25. "Java is getting reified generics" is a recurring claim stated as imminent fact; it is exploratory work, not a shipped feature. Treat it as direction, never as anchor reality.
 
 ## Alternatives & adjacent approaches
 
@@ -154,7 +157,7 @@ At every turn (the raw type, the wildcard, the generic array) the compiler is wi
 - **Record patterns and pattern matching for `switch`** (Java 21): deconstructing a generic record with a pattern infers its type arguments and removes the unchecked cast that would otherwise be written by hand, improving type-safety *without* touching erasure (Chapter 5).
 - **Sealed hierarchies** (Chapter 10's `Result` model): sometimes a closed set of concrete types is clearer than a single generic one, trading parametric flexibility for exhaustiveness.
 
-These layer rather than compete: write generic APIs with PECS and bounds, let the diamond and inference remove the noise, reach for a type token only where erasure genuinely blocks you, and add a sound checker if the codebase warrants the investment.
+These layer rather than compete: write generic APIs with PECS and bounds, let the diamond and inference remove the noise, reach for a type token only where erasure genuinely blocks the code, and add a sound checker if the codebase warrants the investment.
 
 ## When to use what
 
@@ -162,7 +165,7 @@ These layer rather than compete: write generic APIs with PECS and bounds, let th
 - **On a parameter that produces values:** `<? extends T>` (producer). **On a parameter that consumes values:** `<? super T>` (consumer). **On a return type:** a concrete type, never a wildcard.
 - **On a method whose type is independent of the class:** a generic method (`<E>`), letting inference fill in `E` at the call.
 - **When the compiler warns:** fix the code first; suppress only at the narrowest scope with a proof comment; turn `-Xlint:unchecked,rawtypes` on so none slips by.
-- **On a generic varargs method:** apply `@SafeVarargs` only after verifying the body neither stores nor leaks the array — otherwise leave the warning and reconsider the design.
+- **On a generic varargs method:** apply `@SafeVarargs` only after verifying the body neither stores nor leaks the array; otherwise leave the warning and reconsider the design.
 - **When the runtime type is needed:** a `Class<T>` token (Item 33), not a cast asserted by convention.
 
 ## Hand-off to the next chapter
