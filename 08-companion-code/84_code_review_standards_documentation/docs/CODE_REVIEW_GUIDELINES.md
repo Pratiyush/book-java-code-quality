@@ -2,7 +2,7 @@
 
 The team's shared agreement on how review is done here. It is kept in the repository, versioned with the
 code, and changed by pull request like anything else — the same docs-as-code discipline the documentation
-standard asks for. It is deliberately short: a checklist a team will actually keep is better than an
+standard asks for. It is deliberately short: a checklist a team will actually keep, rather than an
 exhaustive one it ignores.
 
 The one organizing idea: **automate the mechanical, reserve human attention for the substantive.** The
