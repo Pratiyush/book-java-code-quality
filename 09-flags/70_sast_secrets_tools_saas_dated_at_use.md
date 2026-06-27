@@ -49,6 +49,16 @@
   `precommit-hook`) display only the illustrative configuration; the 2 Java tags (`sql-sink`, `fail-closed`)
   realize the runnable core. The displayed config snippets carry inline comments marking the SaaS/unpinned
   atoms as dated-at-use.
+- **OWASP Top 10:2025 category ordinal (⚠ verify-at-pin — added 2026-06-27, marker-resolution pass):** the
+  injection sink is CWE-89 (stable, verified) and falls under the OWASP Top 10:2025 **Injection** category.
+  The **exact A0x ordinal** for Injection in the 2025 edition is NOT asserted in the chapter prose — the
+  `SOURCE-PIN.md` OWASP row (§1) names only **A01 = Broken Access Control** for 2025, and the 2025 edition
+  reshuffled categories from 2021 (where Injection was A03), so the specific number is unconfirmed against the
+  pinned source text. The companion code's Javadoc/comments and the SpotBugs/Semgrep config currently write
+  "A03"; the *prose* now says "Injection category (exact A0x ordinal verify-at-pin)" and does not assert the
+  number. **Action:** confirm the Injection category's A0x ordinal against `owasp.org/Top10/2025` at
+  SOURCE-VERIFY; if it is not A03 in the 2025 edition, correct the companion-code comments (code-adjacent, not
+  shipped prose) at the next module touch.
 - **Required action:** at `/pin-source` / SOURCE-VERIFY (Step 5) and before any public push (COMPANION-REPO §5),
   re-confirm the Semgrep rule schema/version, decide whether to add gitleaks/TruffleHog SOURCE-PIN rows and pin
   the gitleaks `rev` + the GitHub Actions / CodeQL bundle to commit-sha digests, and re-confirm the AWS key-id
