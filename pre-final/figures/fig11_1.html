@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 9 — The Value That Isn't There (dossier key 11, folds 31+32)
+  Figure:  Fig 11.1 — Null-safety: four levers of layered defense
+  Family:  Flow / layered architecture (detection-point axis, top = earliest)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"How it works" → > CONCEPT "Layered defense" callout (after the lever table)
+  One idea: Null-safety is four complementary levers — each catching the null the earlier
+            levers could not reach, from design-time (Optional) to a better runtime message
+            (JEP 358) — applied at different points in the development lifecycle.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 9.1 — Null-safety: four levers of layered defense</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 24px;
+      width: 840px;
+    }
+
+    /* ── Detection-point axis label on left ── */
+    .axis-wrap {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+    }
+
+    .axis-label-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      width: 24px;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+    .axis-arrow-line {
+      width: 2px;
+      flex: 1;
+      background: var(--line);
+      margin: 0 auto;
+      position: relative;
+    }
+    .axis-text {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      white-space: nowrap;
+      padding: 4px 0;
+    }
+    .axis-cap-top {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ok);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      white-space: nowrap;
+    }
+    .axis-cap-bot {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      white-space: nowrap;
+    }
+
+    /* ── Main levers column ── */
+    .levers-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ── Individual lever row ── */
+    .lever-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    /* Lever number badge */
+    .lever-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--ink);
+      background: var(--tint-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 10px;
+    }
+    .lever-num.is-accent {
+      background: var(--accent-bar);
+      border-color: var(--accent-bar);
+      color: var(--paper);
+    }
+
+    /* Lever card body */
+    .lever-card {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--tint-1);
+      overflow: hidden;
+    }
+    .lever-card.is-strong { background: var(--tint-2); }
+    .lever-card.is-accent-left {
+      border-color: var(--accent-bar);
+      box-shadow: inset 4px 0 0 var(--accent-bar);
+    }
+
+    .lever-hd {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 9px 12px 6px;
+      border-bottom: 1px solid var(--line);
+      gap: 8px;
+    }
+    .lever-hd-left {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .lever-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .lever-api {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--ink);
+      background: var(--tint-2);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 5px;
+    }
+    .lever-when {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .lever-bd {
+      padding: 7px 12px 9px;
+      display: flex;
+      gap: 20px;
+    }
+    .lever-does {
+      flex: 1;
+    }
+    .lever-does p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    .lever-limit {
+      flex: 1;
+      border-left: 1px solid var(--line);
+      padding-left: 14px;
+    }
+    .lever-limit p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--ink-soft);
+      line-height: 1.45;
+    }
+    .lbl {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      display: block;
+      margin-bottom: 3px;
+    }
+    .lbl.does { color: var(--ok); }
+    .lbl.limit { color: var(--warn); }
+
+    /* Chevron connectors between levers */
+    .lever-connector {
+      display: flex;
+      align-items: center;
+      padding-left: 38px;
+      color: var(--line);
+      font-size: 16px;
+      line-height: 1;
+      height: 12px;
+    }
+    .lever-connector span {
+      font-size: 11px;
+      font-style: italic;
+      color: var(--ink-soft);
+      margin-left: 6px;
+    }
+
+    /* Tool tags row */
+    .tool-tags {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-top: 5px;
+    }
+    .ttag {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: var(--ink-soft);
+      background: var(--tint-0);
+    }
+    .ttag.tool-id {
+      border-color: var(--ink);
+      color: var(--ink);
+      background: var(--tint-1);
+    }
+
+    /* Legend / caption row */
+    .fig-footer {
+      display: flex;
+      gap: 18px;
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--ink-soft);
+    }
+    .l-swatch {
+      width: 16px; height: 13px;
+      border-radius: 3px;
+      border: 1.5px solid var(--ink);
+      flex-shrink: 0;
+    }
+    .l-swatch.s1 { background: var(--tint-1); }
+    .l-swatch.s2 { background: var(--tint-2); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 9.1 — Null-safety: four levers of layered defense</p>
+  <p class="fig-subtitle">Each lever catches the null the earlier one cannot reach. Detection moves left (earlier) across the lifecycle.</p>
+
+  <div class="axis-wrap">
+
+    <!-- Left axis: detection-point arrow -->
+    <div class="axis-label-col">
+      <div class="axis-cap-top">Earlier</div>
+      <div class="axis-arrow-line"></div>
+      <div class="axis-text">Detection point</div>
+      <div class="axis-arrow-line"></div>
+      <div class="axis-cap-bot">Later</div>
+    </div>
+
+    <!-- Levers stack -->
+    <div class="levers-col">
+
+      <!-- Lever 1: Optional / design-time -->
+      <div class="lever-row">
+        <div class="lever-num is-accent">1</div>
+        <div class="lever-card is-strong is-accent-left">
+          <div class="lever-hd">
+            <div class="lever-hd-left">
+              <span class="lever-name">Optional — absence as a type</span>
+              <span class="lever-api">Optional.of(v) / .ofNullable(v)</span>
+            </div>
+            <span class="lever-when">design-time</span>
+          </div>
+          <div class="lever-bd">
+            <div class="lever-does">
+              <span class="lbl does">What it does</span>
+              <p>Models "no result" in the return type; the caller cannot ignore the absent case.
+                 <code style="font-family:var(--mono);font-size:11px;">Optional.of(v)</code> throws if null;
+                 <code style="font-family:var(--mono);font-size:11px;">.ofNullable(v)</code> yields empty.
+                 <em>Effective Java</em> Items 54–55: return empty collections / Optional, never null.</p>
+              <div class="tool-tags" style="margin-top:6px;">
+                <span class="ttag tool-id">java:S2789</span>
+                <span class="ttag tool-id">OptionalNotPresent</span>
+                <span class="ttag tool-id">java:S3655</span>
+              </div>
+            </div>
+            <div class="lever-limit">
+              <span class="lbl limit">Hardest limit</span>
+              <p>Allocates; unsuited to hot paths (Item 55). Anti-pattern: Optional fields,
+                 parameters, collection elements, <code style="font-family:var(--mono);font-size:11px;">Optional&lt;List&lt;T&gt;&gt;</code>,
+                 <code style="font-family:var(--mono);font-size:11px;">.get()</code> without a guard.
+                 Never nest Optional in a container or use as a map key.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lever-connector">↓ <span>null that slips past design passes to the boundary</span></div>
+
+      <!-- Lever 2: requireNonNull / boundary -->
+      <div class="lever-row">
+        <div class="lever-num">2</div>
+        <div class="lever-card">
+          <div class="lever-hd">
+            <div class="lever-hd-left">
+              <span class="lever-name">requireNonNull — fail fast at the boundary</span>
+              <span class="lever-api">Objects.requireNonNull(obj, "msg")</span>
+            </div>
+            <span class="lever-when">boundary (runtime)</span>
+          </div>
+          <div class="lever-bd">
+            <div class="lever-does">
+              <span class="lbl does">What it does</span>
+              <p>Converts a silent later NPE into a loud, immediate failure at the entry point,
+                 naming the offending argument.
+                 <code style="font-family:var(--mono);font-size:11px;">requireNonNullElse(obj, default)</code>
+                 returns a non-null fallback. <code style="font-family:var(--mono);font-size:11px;">java.util.Objects</code> — in Java since Java 7 / Java 9.</p>
+            </div>
+            <div class="lever-limit">
+              <span class="lbl limit">Hardest limit</span>
+              <p>Still throws; shifts failure earlier, not absent. Invisible to the compiler
+                 (no type guarantee). Do not reflexively guard every private/internal method
+                 where the invariant already holds.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lever-connector">↓ <span>null that passes the boundary reaches the build — annotations + checker catch it here</span></div>
+
+      <!-- Lever 3: annotations + checker / build-time -->
+      <div class="lever-row">
+        <div class="lever-num">3</div>
+        <div class="lever-card is-strong">
+          <div class="lever-hd">
+            <div class="lever-hd-left">
+              <span class="lever-name">Annotations + checker — "might NPE" becomes a build error</span>
+            </div>
+            <span class="lever-when">build-time</span>
+          </div>
+          <div class="lever-bd">
+            <div class="lever-does">
+              <span class="lbl does">What it does</span>
+              <p>Annotation vocabulary (JSpecify 1.0.0:
+                 <code style="font-family:var(--mono);font-size:11px;">@Nullable</code> /
+                 <code style="font-family:var(--mono);font-size:11px;">@NonNull</code> /
+                 <code style="font-family:var(--mono);font-size:11px;">@NullMarked</code> /
+                 <code style="font-family:var(--mono);font-size:11px;">@NullUnmarked</code>) +
+                 a checker (NullAway: fast, deliberately unsound, ~1.15× build cost;
+                 Checker Framework Nullness Checker: sound, ~5.1× build cost).
+                 <code style="font-family:var(--mono);font-size:11px;">@NullMarked</code> on
+                 <code style="font-family:var(--mono);font-size:11px;">package-info.java</code>
+                 = everything non-null by default.</p>
+              <div class="tool-tags" style="margin-top:6px;">
+                <span class="ttag tool-id">-Xep:NullAway:ERROR</span>
+                <span class="ttag tool-id">@NullMarked</span>
+                <span class="ttag tool-id">ReturnMissingNullable</span>
+              </div>
+            </div>
+            <div class="lever-limit">
+              <span class="lbl limit">Hardest limit</span>
+              <p>Annotations alone are inert without a wired checker. No checker catches
+                 reflection, deserialization, or JNI nulls. NullAway is unsound
+                 (deliberate false negatives). Checker Framework soundness carries
+                 annotation effort + build cost. Field-init strictness surprises DI code.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lever-connector">↓ <span>null that escapes all static reasoning reaches the JVM — JEP 358 makes it diagnosable</span></div>
+
+      <!-- Lever 4: JEP 358 / runtime -->
+      <div class="lever-row">
+        <div class="lever-num">4</div>
+        <div class="lever-card">
+          <div class="lever-hd">
+            <div class="lever-hd-left">
+              <span class="lever-name">JEP 358 — helpful NPE messages</span>
+              <span class="lever-api">on by default since JDK 15</span>
+            </div>
+            <span class="lever-when">runtime</span>
+          </div>
+          <div class="lever-bd">
+            <div class="lever-does">
+              <span class="lbl does">What it does</span>
+              <p>JVM analyzes the bytecode at the throw site and names the exact null expression
+                 (<em>"Cannot invoke &#x22;String.toLowerCase()&#x22; because the return value of
+                 &#x22;Customer.getEmail()&#x22; is null"</em>).
+                 Active at Java 21/25 with no flag. Makes the surviving NPE diagnosable
+                 in one read.</p>
+            </div>
+            <div class="lever-limit">
+              <span class="lbl limit">Hardest limit</span>
+              <p>Diagnoses; prevents nothing. Names exposed in the message may appear in
+                 logs (minor information-disclosure consideration). The latest line of
+                 defense — the honest counterpoint to "every null can be designed out."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- .levers-col -->
+  </div><!-- .axis-wrap -->
+
+  <!-- Footer legend + caption -->
+  <div class="fig-footer">
+    <div class="legend-item">
+      <div class="l-swatch s2"></div>
+      <span>Higher design reach (design-time / build-time)</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-swatch s1"></div>
+      <span>Boundary + runtime levers</span>
+    </div>
+    <p class="fig-caption" style="margin:0;border:none;padding:0;max-width:none;">
+      Sources: JDK 21 API — <b>java.util.Optional</b> (design-intent + value-based class);
+      <b>java.util.Objects</b> (requireNonNull family, Java 7/9);
+      <b>JEP 358</b> Helpful NullPointerExceptions (on by default since JDK 15);
+      <b>JSpecify 1.0.0</b> org.jspecify:jspecify — @Nullable/@NonNull/@NullMarked/@NullUnmarked;
+      <b>NullAway</b> (FSE&#x27;19 arXiv:1907.02127 — 1.15× / 5.1× build-cost figures);
+      <b>Checker Framework</b> Nullness Checker soundness guarantee;
+      <em>Effective Java</em> 3e Items 54–55;
+      Sonar java:S2789, S3655, S2259; Error Prone OptionalNotPresent, ReturnMissingNullable.
+    </p>
+  </div>
+
+</div><!-- #figure -->
+</body>
+</html>

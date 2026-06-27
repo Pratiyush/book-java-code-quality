@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 4 (dossier key 06) — Whose Job Is Quality? Culture, Ownership, Shift-Left
+  Figure:  Fig 06.1 — Westrum's three organizational culture types
+  Family:  Concept-map / side-by-side comparison (three columns: pathological, bureaucratic, generative)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Culture is causal" — immediately after the Westrum typology is introduced
+  One idea: The three Westrum culture types differ on information flow and response to failure;
+             the generative type — the one DORA associates with improved delivery performance —
+             treats failure as an inquiry opportunity, not a blame event.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 06.1 — Westrum's three organizational culture types</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + shared components from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 22px;
+      max-width: 980px;
+    }
+
+    /* Three-column grid */
+    .culture-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    /* Each column is a .fig-stage variant */
+    .culture-col {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .culture-col.is-generative {
+      border-width: 2.5px;
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .culture-hd {
+      padding: 9px 13px;
+      border-bottom: 1.5px solid var(--ink);
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+    .culture-col:nth-child(1) .culture-hd { background: var(--tint-2); }
+    .culture-col:nth-child(2) .culture-hd { background: var(--tint-2); }
+    .culture-col.is-generative .culture-hd { background: var(--tint-3); }
+
+    .culture-sub {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .culture-bd {
+      padding: 11px 13px;
+    }
+
+    /* Dimension rows */
+    .dim-row {
+      margin-bottom: 10px;
+    }
+    .dim-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--ink-soft);
+      margin-bottom: 3px;
+    }
+    .dim-value {
+      font-size: 12.5px;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+    hr.dim-hr {
+      border: 0;
+      border-top: 1px solid var(--tint-3);
+      margin: 8px 0;
+    }
+
+    /* Failure response — the most important row; visually flagged */
+    .dim-row.failure-row .dim-value {
+      font-weight: 600;
+    }
+    .dim-row.failure-row .dim-value.is-bad   { color: var(--stop); }
+    .dim-row.failure-row .dim-value.is-mid   { color: var(--warn); }
+    .dim-row.failure-row .dim-value.is-good  { color: var(--ok); }
+
+    /* DORA outcome badge on generative column */
+    .dora-outcome {
+      margin-top: 11px;
+      background: var(--tint-1);
+      border: 1px solid var(--tint-3);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 7px 10px;
+      font-size: 11.5px;
+    }
+    .dora-outcome b { color: var(--ink); }
+
+    /* Caption */
+    .fig-caption { margin-top: 14px; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 06.1 — Westrum's three organizational culture types</p>
+  <p class="fig-subtitle">
+    Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.
+  </p>
+
+  <div class="culture-grid">
+
+    <!-- ── Column 1: Pathological ── -->
+    <div class="culture-col">
+      <div class="culture-hd">
+        Pathological
+        <span class="culture-sub">Power-oriented</span>
+      </div>
+      <div class="culture-bd">
+
+        <div class="dim-row">
+          <div class="dim-label">Information flow</div>
+          <div class="dim-value">Hoarded; shared only when it serves the holder's power</div>
+        </div>
+        <hr class="dim-hr">
+
+        <div class="dim-row">
+          <div class="dim-label">Cooperation level</div>
+          <div class="dim-value">Low; personal survival over team goals</div>
+        </div>
+        <hr class="dim-hr">
+
+        <div class="dim-row">
+          <div class="dim-label">Cross-team bridging</div>
+          <div class="dim-value">Discouraged; turf protection is the norm</div>
+        </div>
+        <hr class="dim-hr">
+
+        <div class="dim-row failure-row">
+          <div class="dim-label">Response to failure</div>
+          <div class="dim-value is-bad">Blame and scapegoating; messenger punished</div>
+        </div>
+        <hr class="dim-hr">
+
+        <div class="dim-row">
+          <div class="dim-label">New ideas</div>
+          <div class="dim-value">Crushed if they threaten existing power</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Column 2: Bureaucratic ── -->
+    <div class="culture-col">
+      <div class="culture-hd">
+        Bureaucratic
+        <span class="culture-sub">Rule-oriented</span>
+      </div>
+      <div class="culture-bd">
+
+        <div class="dim-row">
+          <div class="dim-label">Information flow</div>
+          <div class="dim-value">Channelled through established silos and procedures</div>
+        </div>
+        <hr class="dim-hr">
+
+        <div class="dim-row">
+          <div class="dim-label">Cooperation level</div>
+          <div class="dim-value">Modest; departments protect their turf</div>
+        </div>
+        <hr class="dim-hr">
+
+        <div class="dim-row">
+          <div class="dim-label">Cross-team bridging</div>
+          <div class="dim-value">Tolerated but requires formal approval paths</div>
+        </div>
+        <hr class="dim-hr">
+
+        <div class="dim-row failure-row">
+          <div class="dim-label">Response to failure</div>
+          <div class="dim-value is-mid">Justice sought; rule adherence investigated</div>
+        </div>
+        <hr class="dim-hr">
+
+        <div class="dim-row">
+          <div class="dim-label">New ideas</div>
+          <div class="dim-value">Creates problems if they threaten existing process</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Column 3: Generative ── -->
+    <div class="culture-col is-generative">
+      <div class="culture-hd">
+        Generative
+        <span class="culture-sub">Performance-oriented</span>
+      </div>
+      <div class="culture-bd">
+
+        <div class="dim-row">
+          <div class="dim-label">Information flow</div>
+          <div class="dim-value">Actively sought; good news and bad news shared freely</div>
+        </div>
+        <hr class="dim-hr">
+
+        <div class="dim-row">
+          <div class="dim-label">Cooperation level</div>
+          <div class="dim-value">High; team mission over personal status</div>
+        </div>
+        <hr class="dim-hr">
+
+        <div class="dim-row">
+          <div class="dim-label">Cross-team bridging</div>
+          <div class="dim-value">Actively encouraged; knowledge flows across boundaries</div>
+        </div>
+        <hr class="dim-hr">
+
+        <div class="dim-row failure-row">
+          <div class="dim-label">Response to failure</div>
+          <div class="dim-value is-good">Inquiry, not blame; failure surfaces systemic causes</div>
+        </div>
+        <hr class="dim-hr">
+
+        <div class="dim-row">
+          <div class="dim-label">New ideas</div>
+          <div class="dim-value">Implemented; conscious inquiry is the norm</div>
+        </div>
+
+        <div class="dora-outcome">
+          <b>DORA finding:</b> generative culture is associated with improved software-delivery
+          performance (DORA four keys) and organizational outcomes.
+          Psychological safety — the generative hallmark — was found predictive of delivery
+          performance, organizational performance, and productivity.
+          <br><span style="font-size:11px;color:var(--ink-soft);">Source: dora.dev / 2019 State of DevOps; <em>Accelerate</em> (2018)</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- .culture-grid -->
+
+  <p class="fig-caption">
+    <b>Westrum typology</b> (Ron Westrum, 1988) as described in <em>Accelerate</em> (Forsgren/Humble/Kim, 2018)
+    and the DORA generative organizational culture capability page (dora.dev).
+    DORA generative-culture and psychological-safety findings: 2019 State of DevOps report / dora.dev.
+    Full source trace in <b>fig06_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

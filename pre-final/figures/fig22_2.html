@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 14 — Cheap Threads, Same Rules (dossier key 22)
+  Figure:  Fig 22.2 — Three-layer concurrency verification stack
+  Family:  Architecture / layered stack
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Deep dive: verifying concurrent code" — bridges static + dynamic layers
+  One idea: Static analysis (build time), stress sampling (verify time), and deterministic
+            reproduction (regression time) are three complementary detection layers;
+            each catches what the others miss, and none is a substitute for the others.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 14.2 — Three-layer concurrency verification stack</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 920px;
+    }
+
+    /* ── Three-column tool grid ── */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    .layer-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Layer header band */
+    .layer-hd {
+      border: 1.5px solid var(--ink);
+      border-radius: 8px 8px 0 0;
+      background: var(--tint-3);
+      padding: 9px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .layer-when {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-top: 2px;
+    }
+
+    .layer-hd.static-hd  { background: var(--tint-2); }
+    .layer-hd.stress-hd  { background: var(--tint-3); }
+    .layer-hd.determ-hd  { background: var(--tint-1); }
+
+    /* Tool cards within each column */
+    .tool-card {
+      border: 1.5px solid var(--ink);
+      border-radius: 0;
+      padding: 10px 12px;
+      background: var(--paper);
+      font-size: 12px;
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .tool-card:last-child {
+      border-radius: 0 0 8px 8px;
+    }
+
+    .tool-name {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .approach-tag {
+      font-size: 10px;
+      font-weight: 600;
+      border: 1px solid var(--ink-soft);
+      border-radius: 3px;
+      padding: 1px 5px;
+      background: var(--tint-1);
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .tool-detail {
+      margin: 0;
+      color: var(--ink);
+      font-size: 12px;
+    }
+
+    .tool-gives, .tool-limit {
+      margin-top: 5px;
+      font-size: 11.5px;
+      line-height: 1.4;
+    }
+
+    .tool-gives::before { content: "Gives: "; font-weight: 700; color: var(--ok); }
+    .tool-limit::before { content: "Cannot: "; font-weight: 700; color: var(--stop); }
+
+    .mono-sm {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--tint-1);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      padding: 0 4px;
+    }
+
+    /* Divider within a column between tools */
+    .tool-divider {
+      height: 1px;
+      background: var(--line);
+      margin: 0;
+    }
+
+    /* Bottom shared note */
+    .shared-note {
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .note-item {
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      background: var(--tint-1);
+    }
+
+    .note-item strong { color: var(--ink); }
+
+    .column-connector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-align: center;
+      padding: 4px 0;
+    }
+
+    /* The anti-pattern callout */
+    .antipattern {
+      margin-top: 12px;
+      border-left: 3px solid var(--stop);
+      background: #fff0f0;
+      border-radius: 0 8px 8px 0;
+      padding: 8px 12px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .antipattern b { color: var(--stop); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 14.2 — Three-layer concurrency verification stack</p>
+  <p class="fig-subtitle">Static detection (build time) + stress sampling (verify time) + deterministic reproduction (regression time) — complementary, not substitutes</p>
+
+  <div class="stack-grid">
+
+    <!-- ── COLUMN 1: Static analysis (build time) ── -->
+    <div class="layer-col">
+      <div class="layer-hd static-hd">
+        Layer 1 — Static Analysis
+        <div class="layer-when">Build time</div>
+      </div>
+
+      <!-- Error Prone -->
+      <div class="tool-card">
+        <div class="tool-name">
+          Error Prone <span class="approach-tag">Source AST</span>
+        </div>
+        <p class="tool-detail">
+          <span class="mono-sm">@GuardedBy("lock")</span> — machine-readable claim on which
+          lock guards each field. Checker enforces at every access. Severity: <strong>ON_BY_DEFAULT ERROR</strong>.
+        </p>
+        <p class="tool-gives">build-failing check on annotated fields; lock-discipline at every access site</p>
+        <p class="tool-limit">races on un-annotated fields; non-lock visibility races</p>
+      </div>
+      <div class="tool-divider"></div>
+
+      <!-- SpotBugs -->
+      <div class="tool-card">
+        <div class="tool-name">
+          SpotBugs MT_CORRECTNESS <span class="approach-tag">Bytecode / Heuristic</span>
+        </div>
+        <p class="tool-detail">
+          Recognizes dangerous shapes: <span class="mono-sm">IS2_INCONSISTENT_SYNC</span>,
+          <span class="mono-sm">DC_DOUBLECHECK</span>,
+          <span class="mono-sm">VO_VOLATILE_INCREMENT</span>,
+          <span class="mono-sm">AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION</span>. No annotation required.
+        </p>
+        <p class="tool-gives">annotation-free catch of known anti-patterns from bytecode</p>
+        <p class="tool-limit">heuristic FPs/FNs; docs note "inaccuracy"</p>
+      </div>
+      <div class="tool-divider"></div>
+
+      <!-- Checker Framework -->
+      <div class="tool-card" style="border-radius: 0 0 8px 8px;">
+        <div class="tool-name">
+          Checker Framework Lock Checker <span class="approach-tool" style="font-size:10px;font-weight:600;border:1px solid var(--ink-soft);border-radius:3px;padding:1px 5px;background:var(--tint-1);color:var(--ink-soft);">Pluggable Types / Sound</span>
+        </div>
+        <p class="tool-detail">
+          Full lock type system: <span class="mono-sm">@GuardedBy</span>, <span class="mono-sm">@Holding</span>,
+          <span class="mono-sm">@EnsuresLockHeld</span>, <span class="mono-sm">@GuardSatisfied</span>.
+          Sound: if it type-checks without error, no data races on typed fields.
+        </p>
+        <p class="tool-gives">a <em>guarantee</em> for the checked lock-race property</p>
+        <p class="tool-limit">annotation effort; scoped to lock races only</p>
+      </div>
+    </div>
+
+    <!-- ── COLUMN 2: Stress testing (verify time) ── -->
+    <div class="layer-col">
+      <div class="layer-hd stress-hd">
+        Layer 2 — Stress Sampling
+        <div class="layer-when">Verify time (separate build target)</div>
+      </div>
+
+      <!-- JCStress -->
+      <div class="tool-card" style="border-radius: 0 0 8px 8px; flex: 1;">
+        <div class="tool-name">
+          JCStress <span class="approach-tag">OpenJDK / Probabilistic</span>
+        </div>
+        <p class="tool-detail">
+          Declares shared state in <span class="mono-sm">@State</span>; racing actions as
+          <span class="mono-sm">@Actor</span> methods (order deliberately unspecified);
+          observed values in <span class="mono-sm">@Result</span>;
+          each outcome graded with <span class="mono-sm">@Outcome(expect=…)</span>:
+        </p>
+        <p class="tool-detail" style="margin-top:6px;">
+          <span class="mono-sm">ACCEPTABLE</span> — legal outcome<br>
+          <span class="mono-sm">ACCEPTABLE_INTERESTING</span> — legal reordering worth surfacing<br>
+          <span class="mono-sm">FORBIDDEN</span> — must never appear; if observed, defect confirmed<br>
+          <span class="mono-sm">UNKNOWN</span> — un-graded (test-completeness gap)
+        </p>
+        <p class="tool-detail" style="margin-top:6px;">
+          Run with <span class="mono-sm">-m quick</span> for a reduced pipeline pass.
+          GAV: <span class="mono-sm">org.openjdk.jcstress:jcstress-core:0.16</span>
+        </p>
+        <p class="tool-gives">can <em>prove a bug exists</em> — observe FORBIDDEN = real defect</p>
+        <p class="tool-limit">probabilistic; green run ≠ proof of absence; hardware-dependent; slow</p>
+        <p class="tool-detail" style="margin-top:5px; font-style:italic; font-size:11px; color:var(--ink-soft);">
+          "experimental" per its own README. Not a merge-blocking CI gate. Reserve for genuinely subtle lock-free / publication code.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── COLUMN 3: Deterministic reproduction (regression time) ── -->
+    <div class="layer-col">
+      <div class="layer-hd determ-hd">
+        Layer 3 — Deterministic Reproduction
+        <div class="layer-when">Regression time (once bug understood)</div>
+      </div>
+
+      <!-- Deterministic tools -->
+      <div class="tool-card" style="border-radius: 0 0 8px 8px; flex: 1;">
+        <div class="tool-name">
+          java.util.concurrent primitives <span class="approach-tag">Forces one interleaving</span>
+        </div>
+        <p class="tool-detail">
+          <span class="mono-sm">CountDownLatch</span> — release all threads at the same instant; maximize overlap<br>
+          <span class="mono-sm">CyclicBarrier</span> / <span class="mono-sm">Phaser</span> — rendezvous at the exact check-then-act window<br>
+          Single-thread executor — pin a specific ordering<br>
+          <span class="mono-sm">Clock.fixed</span> — make time-dependent logic deterministic
+        </p>
+        <p class="tool-gives">forces one interleaving; bug becomes a repeatable regression test</p>
+        <p class="tool-limit">proves only the engineered schedule; says nothing about other interleavings</p>
+        <p class="tool-detail" style="margin-top:8px; font-weight:600; font-size:12px;">Best as:</p>
+        <p class="tool-detail">Regression lock once a bug is found and understood via stress sampling. Pair with Layer 2.</p>
+
+        <hr class="fig-divider">
+
+        <div class="tool-name" style="margin-top:8px;">
+          Alternatives: jqwik / Lincheck <span class="approach-tag">Other methods</span>
+        </div>
+        <p class="tool-detail">
+          <strong>jqwik</strong> — property-based; checks operation sequences against a sequential spec; linearizability-style.<br>
+          <strong>Lincheck</strong> — model-checks / enumerates interleavings (vs. sampling real hardware). Different method, different trade-offs.
+        </p>
+      </div>
+    </div>
+
+  </div><!-- .stack-grid -->
+
+  <!-- Shared bottom notes -->
+  <div class="shared-note">
+    <div class="note-item">
+      <strong>The spec property all three approximate:</strong> JLS §17.4.5 "correctly synchronized" / data-race-free.
+      This property is undecidable in general — each layer checks a decidable proxy.
+      Static checks lock discipline; stress samples real interleavings; deterministic forces one.
+      Layers are complementary: static at build catches a different subset than runtime sampling.
+    </div>
+    <div class="note-item">
+      <strong>What none of them catches:</strong> arbitrary races outside annotated/shaped patterns;
+      deadlock (structural); liveness (scheduler-dependent). A green scan at any layer is
+      <em>necessary but not sufficient</em>. The three layers together raise confidence; they do not
+      prove race-freedom.
+    </div>
+  </div>
+
+  <!-- Anti-pattern callout -->
+  <div class="antipattern">
+    <b>Anti-pattern to retire:</b> <span style="font-family:var(--mono); font-size:12px;">Thread.sleep(100)</span>-timed "concurrency tests"
+    — neither force a specific interleaving nor sample the space. Replace with latches/barriers (Layer 3, deterministic)
+    or JCStress (Layer 2, stress). Flaky and slow; retire them.
+  </div>
+
+  <p class="fig-caption">
+    Sources: <b>JCStress README</b> (OpenJDK, org.openjdk.jcstress:jcstress-core 0.16) — @JCStressTest/@State/@Actor/@Outcome/Expect taxonomy/probabilistic/experimental verbatim.
+    <b>Error Prone</b> — GuardedBy ON_BY_DEFAULT ERROR; GuardedBy annotation packages.
+    <b>SpotBugs</b> — IS2_INCONSISTENT_SYNC/DC_DOUBLECHECK/VO_VOLATILE_INCREMENT/AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION + "inaccuracy" note.
+    <b>Checker Framework Lock Checker</b> — @GuardedBy/@Holding/@EnsuresLockHeld/@GuardSatisfied; soundness statement.
+    <b>JLS SE 21 §17.4.5</b> — "correctly synchronized"/data-race-free (spec property all three approximate).
+    <b>Draft §22</b> — CountDownLatch/CyclicBarrier/Phaser/Clock.fixed deterministic primitives; jqwik/Lincheck alternatives.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

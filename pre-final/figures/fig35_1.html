@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 17 — Composition, Not Accumulation (dossier key 35, folds 36+37; Ch 17 in FINAL_INDEX, Part IV)
+  Figure:  Fig 35.1 — The substrate × moment matrix: one owner per concern
+  Family:  Architecture / concept-map (matrix + layered platform diagram)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"The substrate × moment matrix" — the load-bearing table turned into a spatial diagram,
+             followed by the "one owner per concern" coherent-stack verdict
+  One idea: A tool's substrate and moment decide what it can see; compose a coherent stack by covering
+            each substrate×moment cell exactly once — one owner per concern, ordered cheap-first —
+            with SonarQube as the platform above (not just another linter) and the IDE as the first line.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 17.1 — The substrate &times; moment matrix: one owner per concern</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 1020px;
+    }
+
+    /* ── Overall layout: matrix on top, coherent-stack below ── */
+    .outer { display: flex; flex-direction: column; gap: 18px; }
+
+    /* ─── MATRIX SECTION ─── */
+    .matrix-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .matrix-header-row {
+      display: flex;
+      gap: 0;
+      margin-bottom: 4px;
+    }
+    .col-label-stub {
+      width: 200px;
+      flex-shrink: 0;
+    }
+    .moment-headers {
+      display: flex;
+      flex: 1;
+      gap: 4px;
+    }
+    .moment-head {
+      flex: 1;
+      background: var(--tint-3);
+      border: 1.5px solid var(--ink);
+      border-radius: 6px 6px 0 0;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      color: var(--ink);
+    }
+    .moment-head.active {
+      background: var(--accent);
+      color: var(--paper);
+    }
+
+    .matrix-body {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .matrix-row {
+      display: flex;
+      gap: 4px;
+      align-items: stretch;
+    }
+
+    .substrate-label {
+      width: 200px;
+      flex-shrink: 0;
+      background: var(--tint-2);
+      border: 1.5px solid var(--ink);
+      border-radius: 6px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .substrate-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .substrate-desc {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      font-family: var(--mono);
+    }
+
+    .matrix-cells {
+      display: flex;
+      flex: 1;
+      gap: 4px;
+    }
+
+    .cell {
+      flex: 1;
+      border: 1.5px solid var(--line);
+      border-radius: 6px;
+      padding: 7px 10px;
+      background: var(--tint-0);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 64px;
+    }
+    .cell.occupied {
+      background: var(--tint-1);
+      border-color: var(--ink);
+    }
+    .cell.occupied-strong {
+      background: var(--tint-2);
+      border-color: var(--ink);
+      border-width: 2px;
+    }
+    .cell.empty {
+      background: var(--tint-0);
+      border-style: dashed;
+      border-color: var(--line);
+    }
+    .cell-tool {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 2px;
+      font-family: var(--mono);
+    }
+    .cell-sees {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      line-height: 1.3;
+    }
+    .cell-dash {
+      font-size: 11px;
+      color: var(--line);
+      text-align: center;
+    }
+
+    /* Owner badge on matrix cells */
+    .owner-badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--ok);
+      color: var(--ok);
+      background: var(--tint-0);
+      margin-top: 3px;
+      align-self: flex-start;
+    }
+
+    /* ─── COHERENT STACK SECTION ─── */
+    .stack-section {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stack-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+
+    .stack-lanes {
+      display: flex;
+      gap: 4px;
+      align-items: stretch;
+    }
+
+    /* Timeline axis on the left */
+    .timeline-axis {
+      width: 88px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .timeline-head {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      text-align: center;
+      padding: 6px 4px;
+      border: 1.5px solid var(--line);
+      border-radius: 6px;
+      background: var(--tint-0);
+    }
+
+    .moment-tick {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-align: center;
+      line-height: 1.3;
+      padding: 4px;
+      border-left: 3px solid var(--tint-3);
+    }
+    .moment-tick.tick-start {
+      border-left-color: var(--accent-bar);
+    }
+
+    /* Stack tool cards */
+    .stack-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .stack-col-head {
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      padding: 5px 8px;
+      border: 1.5px solid var(--ink);
+      border-radius: 6px 6px 0 0;
+      background: var(--tint-3);
+      color: var(--ink);
+    }
+
+    .tool-card {
+      border: 1.5px solid var(--ink);
+      border-radius: 6px;
+      padding: 8px 10px;
+      background: var(--tint-1);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .tool-card.platform {
+      background: var(--tint-2);
+      border-width: 2px;
+    }
+    .tool-card.first-line {
+      border-left: 4px solid var(--accent-bar);
+    }
+    .tool-card.empty-slot {
+      background: var(--tint-0);
+      border-style: dashed;
+      border-color: var(--line);
+    }
+    .tool-name {
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--mono);
+      color: var(--ink);
+    }
+    .tool-concern {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      line-height: 1.3;
+    }
+    .tool-limit {
+      font-size: 9.5px;
+      color: var(--warn);
+      margin-top: 2px;
+    }
+
+    /* Platform "above the engine" separator */
+    .platform-sep {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 2px 0;
+    }
+    .platform-sep-line {
+      flex: 1;
+      height: 2px;
+      background: repeating-linear-gradient(90deg, var(--ink) 0 6px, transparent 6px 10px);
+      opacity: .35;
+    }
+    .platform-sep-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      white-space: nowrap;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+
+    /* ─── BOTTOM NOTES ─── */
+    .bottom-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .note-card {
+      flex: 1;
+      min-width: 200px;
+      background: var(--tint-1);
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+    .note-card b { color: var(--ink); }
+
+    .caution-card {
+      flex: 1;
+      min-width: 200px;
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      padding: 8px 12px;
+      border-radius: 0 8px 8px 0;
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+    .caution-card b { color: var(--ink); }
+
+    /* ─── LEGEND ─── */
+    .legend-row {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      align-items: center;
+      font-size: 10.5px;
+      color: var(--ink-soft);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .l-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1.5px solid var(--ink);
+      flex-shrink: 0;
+    }
+    .l-swatch.tint1 { background: var(--tint-1); }
+    .l-swatch.tint2 { background: var(--tint-2); }
+    .l-swatch.empty { background: var(--tint-0); border-style: dashed; border-color: var(--line); }
+    .l-swatch.accent-bar { background: var(--accent-bar); border-color: var(--accent-bar); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 17.1 &mdash; The substrate &times; moment matrix: one owner per concern</p>
+  <p class="fig-subtitle">Each tool reads one substrate at one moment &mdash; covering a cell no other tool reaches. Compose by assigning each concern exactly once.</p>
+
+  <div class="outer">
+
+    <!-- ═══════════════════════════════════════════════════════════
+         PART 1: SUBSTRATE × MOMENT MATRIX
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="matrix-section">
+
+      <!-- Column headers: moments -->
+      <div class="matrix-header-row">
+        <div class="col-label-stub"></div>
+        <div class="moment-headers">
+          <div class="moment-head">Author-time<br><span style="font-size:10px;font-weight:400;">(keystroke)</span></div>
+          <div class="moment-head">Compile<br><span style="font-size:10px;font-weight:400;">(javac runs)</span></div>
+          <div class="moment-head">Post-compile<br><span style="font-size:10px;font-weight:400;">(after .class)</span></div>
+          <div class="moment-head">CI / platform<br><span style="font-size:10px;font-weight:400;">(server-side)</span></div>
+        </div>
+      </div>
+
+      <!-- Matrix body -->
+      <div class="matrix-body">
+
+        <!-- Row 1: Source text / source AST -->
+        <div class="matrix-row">
+          <div class="substrate-label">
+            <div class="substrate-name">Source text / source AST</div>
+            <div class="substrate-desc">.java tokens &amp; parse tree</div>
+          </div>
+          <div class="matrix-cells">
+            <!-- Author-time: IDE inspections on source AST -->
+            <div class="cell occupied first-line" style="border-left-color:var(--accent-bar);border-left-width:4px;">
+              <div class="cell-tool">IDE inspections</div>
+              <div class="cell-sees">On-the-fly squiggles; first line, not the gate</div>
+              <span class="owner-badge">OWNER: style / first-line feedback</span>
+            </div>
+            <!-- Compile: no source-text tool here -->
+            <div class="cell empty">
+              <div class="cell-dash">&mdash;</div>
+            </div>
+            <!-- Post-compile: Checkstyle / PMD source pass -->
+            <div class="cell occupied">
+              <div class="cell-tool">Checkstyle / PMD</div>
+              <div class="cell-sees">Layout, naming, smells, duplication (CPD)</div>
+              <span class="owner-badge">OWNER: style &amp; convention</span>
+            </div>
+            <!-- CI/platform: SonarQube ingests source -->
+            <div class="cell occupied-strong">
+              <div class="cell-tool">SonarQube</div>
+              <div class="cell-sees">Trend, gate, PR decoration (platform above)</div>
+              <span class="owner-badge">OWNER: trend / gate</span>
+            </div>
+          </div>
+        </div><!-- row 1 -->
+
+        <!-- Row 2: javac AST during compilation -->
+        <div class="matrix-row">
+          <div class="substrate-label">
+            <div class="substrate-name">javac AST<br>during compilation</div>
+            <div class="substrate-desc">compiler&rsquo;s resolved types &amp; symbols</div>
+          </div>
+          <div class="matrix-cells">
+            <!-- Author-time: nothing runs on javac AST here -->
+            <div class="cell empty">
+              <div class="cell-dash">&mdash;</div>
+            </div>
+            <!-- Compile: Error Prone -->
+            <div class="cell occupied-strong">
+              <div class="cell-tool">Error Prone</div>
+              <div class="cell-sees">Type-aware bugs; fails the build; offers auto-fix</div>
+              <span class="owner-badge">OWNER: compile-time correctness</span>
+            </div>
+            <!-- Post-compile: nothing reads the javac AST post-compile -->
+            <div class="cell empty">
+              <div class="cell-dash">&mdash;</div>
+            </div>
+            <!-- CI/platform -->
+            <div class="cell empty">
+              <div class="cell-dash">&mdash;</div>
+            </div>
+          </div>
+        </div><!-- row 2 -->
+
+        <!-- Row 3: Compiled bytecode (.class) -->
+        <div class="matrix-row">
+          <div class="substrate-label">
+            <div class="substrate-name">Compiled bytecode</div>
+            <div class="substrate-desc">.class files + classpath</div>
+          </div>
+          <div class="matrix-cells">
+            <!-- Author-time -->
+            <div class="cell empty">
+              <div class="cell-dash">&mdash;</div>
+            </div>
+            <!-- Compile -->
+            <div class="cell empty">
+              <div class="cell-dash">&mdash;</div>
+            </div>
+            <!-- Post-compile: SpotBugs -->
+            <div class="cell occupied-strong">
+              <div class="cell-tool">SpotBugs</div>
+              <div class="cell-sees">Impossible casts, volatile++, null-on-exception-path</div>
+              <span class="owner-badge">OWNER: bytecode bug patterns</span>
+            </div>
+            <!-- CI/platform: SonarQube sonar-java reads bytecode too -->
+            <div class="cell occupied">
+              <div class="cell-tool">SonarQube</div>
+              <div class="cell-sees">sonar-java reads source+bytecode; sonar.java.binaries required</div>
+            </div>
+          </div>
+        </div><!-- row 3 -->
+
+        <!-- Row 4: Platform (aggregator / server) -->
+        <div class="matrix-row">
+          <div class="substrate-label" style="background:var(--tint-2);">
+            <div class="substrate-name">Platform</div>
+            <div class="substrate-desc">rule engine + layer above (profiles, gate, trend)</div>
+          </div>
+          <div class="matrix-cells">
+            <!-- Author-time: SonarQube for IDE (Connected Mode) -->
+            <div class="cell occupied" style="border-left:4px solid var(--accent-bar);">
+              <div class="cell-tool">SonarQube for IDE</div>
+              <div class="cell-sees">Connected Mode: pulls team profile + gate to IDE</div>
+            </div>
+            <!-- Compile -->
+            <div class="cell empty">
+              <div class="cell-dash">&mdash;</div>
+            </div>
+            <!-- Post-compile -->
+            <div class="cell empty">
+              <div class="cell-dash">&mdash;</div>
+            </div>
+            <!-- CI/platform: The full platform -->
+            <div class="cell occupied-strong">
+              <div class="cell-tool">SonarQube Server</div>
+              <div class="cell-sees">Quality profile, quality gate, trend over time, PR decoration; &ldquo;Clean as You Code&rdquo; gates new code only</div>
+              <span class="owner-badge">OWNER: platform / gate</span>
+            </div>
+          </div>
+        </div><!-- row 4 -->
+
+      </div><!-- .matrix-body -->
+    </div><!-- .matrix-section -->
+
+    <!-- ═══════════════════════════════════════════════════════════
+         PART 2: COHERENT STACK — one owner per concern, cheap-first
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="stack-section">
+      <div class="stack-title">Coherent stack: one owner per concern, ordered cheap-first</div>
+
+      <div class="stack-lanes">
+
+        <!-- Moment axis -->
+        <div class="timeline-axis">
+          <div class="timeline-head">Moment</div>
+          <div class="moment-tick tick-start" style="border-left-color:var(--accent-bar);">Author-time<br>(keystroke)</div>
+          <div class="moment-tick">Compile<br>(javac)</div>
+          <div class="moment-tick">Post-compile<br>(.class ready)</div>
+          <div class="moment-tick">CI full build</div>
+          <div class="moment-tick" style="border-left-color:var(--ink);">CI / platform</div>
+        </div>
+
+        <!-- Formatting concern column -->
+        <div class="stack-col">
+          <div class="stack-col-head">Formatting</div>
+          <div class="tool-card first-line">
+            <div class="tool-name">EditorConfig</div>
+            <div class="tool-concern">Shared indent/charset truth in IDE + build</div>
+          </div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-name">Spotless</div>
+            <div class="tool-concern">google-java-format; fails build if diff</div>
+          </div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+        </div>
+
+        <!-- Style & smells concern column -->
+        <div class="stack-col">
+          <div class="stack-col-head">Style &amp; smells</div>
+          <div class="tool-card first-line">
+            <div class="tool-name">IDE inspections</div>
+            <div class="tool-concern">On-the-fly squiggles; first line, not the gate</div>
+            <div class="tool-limit">Not a gate &mdash; local &amp; settings-dependent</div>
+          </div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-name">Checkstyle / PMD</div>
+            <div class="tool-concern">One owner per concern &mdash; turn off overlapping style rules in the other tool</div>
+          </div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+        </div>
+
+        <!-- Compile-time correctness column -->
+        <div class="stack-col">
+          <div class="stack-col-head">Compile-time correctness</div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-name">Error Prone</div>
+            <div class="tool-concern">Hooks into javac; type-aware bugs; auto-fixes; unique substrate</div>
+          </div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+        </div>
+
+        <!-- Bytecode bug patterns column -->
+        <div class="stack-col">
+          <div class="stack-col-head">Bytecode bugs</div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-name">SpotBugs</div>
+            <div class="tool-concern">Only substrate that shows impossible casts, volatile++, null-on-exception-path</div>
+          </div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+        </div>
+
+        <!-- Trend / gate / platform column -->
+        <div class="stack-col">
+          <div class="stack-col-head">Trend / gate / platform</div>
+          <div class="tool-card first-line">
+            <div class="tool-name">SonarQube for IDE</div>
+            <div class="tool-concern">Connected Mode pulls team quality profile to IDE</div>
+          </div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+          <div class="tool-card empty-slot">
+            <div class="tool-concern" style="font-size:9.5px;color:var(--line);">—</div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-name">Scanner</div>
+            <div class="tool-concern">sonar-maven-plugin (sonar:sonar) / org.sonarqube Gradle; sonar.java.binaries required</div>
+          </div>
+          <div class="tool-card platform">
+            <div class="tool-name">SonarQube Server</div>
+            <div class="tool-concern">&ldquo;Platform = rule engine + a layer above&rdquo;: quality profile, quality gate, trend over time, PR decoration. &ldquo;Clean as You Code&rdquo;: gate on new code only (issues &gt; 0 fails; hotspots reviewed 100%).</div>
+            <div class="tool-limit">Community Build: rule engine only &mdash; taint SAST needs Developer Edition 9.9 LTS+ / Cloud</div>
+          </div>
+        </div>
+
+      </div><!-- .stack-lanes -->
+    </div><!-- .stack-section -->
+
+    <!-- ═══════════════════════════════════════════════════════════
+         BOTTOM NOTES
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="bottom-row">
+      <div class="note-card">
+        <b>Why low agreement is good news.</b> Lenarduzzi et al. (2021, arXiv:2101.08832) found &ldquo;little to no agreement among the tools and a low degree of precision&rdquo; studying six tools across 47 Java projects. Low cross-tool agreement means coverage is <em>additive</em>, not redundant &mdash; each tool flags mostly different things because each reads a different substrate.
+      </div>
+      <div class="note-card">
+        <b>Three failure modes of the naive stack.</b> (1) <b>Overlap:</b> Checkstyle, PMD, and SonarQube each ship line-length, naming, and empty-block rules &mdash; running all three for the same concern multiplies noise. (2) <b>Redundancy:</b> two source-AST style checkers for the same concern cost build time with no coverage gain. (3) <b>Noise:</b> every tool has false positives; an un-tuned full stack as a build-breaker trains developers to ignore the gate.
+      </div>
+      <div class="caution-card">
+        <b>SonarQube for IDE / Connected Mode</b> (formerly SonarLint; renamed Oct 2024). Connected Mode pulls the team&rsquo;s quality profile and gate down to the IDE so local findings match CI. Without a committed inspection profile + <code style="font-family:var(--mono);font-size:10px;">.editorconfig</code>, &ldquo;it&rsquo;s clean in my IDE&rdquo; is not a contract. Tune and baseline the full stack before gating it (Ch 19).
+      </div>
+    </div>
+
+  </div><!-- .outer -->
+
+  <!-- Legend -->
+  <div class="legend-row">
+    <div class="legend-item">
+      <div class="l-swatch tint2"></div>
+      <span>Primary owner of concern</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-swatch tint1"></div>
+      <span>Occupies cell (secondary)</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-swatch empty"></div>
+      <span>Cell not reached by this tool</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-swatch accent-bar" style="border-width:4px 1.5px 1.5px 4px;"></div>
+      <span>Author-time first line</span>
+    </div>
+    <div class="legend-item" style="margin-left:auto;">
+      <span class="fig-mono fig-muted">Per-tool depth &rarr; Ch 15/16 &nbsp;|&nbsp; Custom rules &rarr; Ch 18 &nbsp;|&nbsp; FP policy / baselines &rarr; Ch 19 &nbsp;|&nbsp; SAST/taint depth &rarr; security part</span>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Sources: Substrate &times; moment matrix, one-owner-per-concern composition rule, overlap/redundancy/noise failure modes, cheap-first/fail-fast ordering &mdash; draft v1 §&ldquo;The substrate &times; moment matrix&rdquo; and §&ldquo;The coherent stack.&rdquo; SonarQube: &ldquo;sonar.java.binaries&rdquo; requirement (verbatim), &ldquo;Clean as You Code,&rdquo; &ldquo;Sonar way&rdquo; profile, Connected Mode, Oct-2024 product rename (SonarQube Server/Cloud/for IDE/Community Build), taint-SAST = Developer Edition 9.9 LTS+/Cloud &mdash; docs.sonarsource.com (Server 2026.1 LTA). Error Prone: &ldquo;hooks into your standard build&rdquo; &mdash; errorprone.info. SpotBugs: bytecode substrate &mdash; spotbugs.github.io (4.10.2). Lenarduzzi et al. (2021): arXiv:2101.08832, &ldquo;little to no agreement among the tools and a low degree of precision&rdquo; (verbatim abstract; DATED &mdash; includes FindBugs; cite for low-agreement=additive only, not per-tool benchmark). Draft v1: dossier key 35, 36, 37, Ch 17 Part IV.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

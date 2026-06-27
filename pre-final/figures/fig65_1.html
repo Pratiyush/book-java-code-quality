@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   28 — Knowing What You Ship (dossier key 65, folds 66) · Part VII — Build, Dependencies & Supply Chain
+  Figure:    Fig 65.1 — The supply-chain pipeline: three questions, one chain
+  Family:    Flow-sequence / architecture
+  Method:    Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: Load-bearing conceptual figure — the spatial companion to §"Deep dive: three questions,
+             one chain, on a deterministic foundation". Shows build → SBOM → SCA scan → sign/attest
+             → publish → continuous re-scan as a single connected pipeline, each stage annotated with
+             the question it answers and the tool roles involved.
+  One idea:  SCA, the SBOM, and provenance form a chain — each stage enables the next — and only
+             together can a team answer the three Log4Shell questions: is anything known-vulnerable?
+             do I know what ships? can I trust how it was built?
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 65.1 — Supply-chain pipeline: three questions, one chain</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + shared components come from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 26px;
+      width: 980px;
+    }
+
+    /* ── Foundation bar ── */
+    .foundation-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--tint-2);
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      padding: 8px 14px;
+      margin-bottom: 18px;
+      font-size: 12.5px;
+    }
+    .foundation-bar .fb-label {
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .foundation-bar .fb-desc {
+      color: var(--ink-soft);
+    }
+    .foundation-bar .fb-arrow {
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0 4px;
+    }
+
+    /* ── Pipeline row ── */
+    .pipeline {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      margin-bottom: 16px;
+    }
+
+    /* Each stage */
+    .stage-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex: 1;
+    }
+
+    .stage {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: 10px;
+      background: var(--tint-1);
+      overflow: hidden;
+      min-width: 0;
+    }
+    .stage > .s-hd {
+      background: var(--tint-2);
+      border-bottom: 1.5px solid var(--ink);
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      text-align: center;
+      line-height: 1.25;
+    }
+    .stage > .s-bd {
+      padding: 8px 10px;
+      font-size: 11px;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    .stage > .s-bd .s-role {
+      color: var(--ink-soft);
+      font-size: 10.5px;
+      margin-top: 4px;
+    }
+    .stage > .s-bd ul {
+      margin: 0;
+      padding-left: 14px;
+    }
+    .stage > .s-bd li {
+      margin: 2px 0;
+      font-size: 10.5px;
+      color: var(--ink);
+    }
+
+    /* Accent the start stage */
+    .stage.is-start {
+      border-color: var(--accent-bar);
+      box-shadow: inset 0 3px 0 var(--accent-bar);
+    }
+    .stage.is-start > .s-hd {
+      background: var(--tint-2);
+    }
+
+    /* Strong border for key pivot stages */
+    .stage.is-strong {
+      background: var(--tint-2);
+    }
+    .stage.is-strong > .s-hd {
+      background: var(--tint-3);
+    }
+
+    /* Arrow between stages */
+    .pipe-arrow {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 20px;
+      color: var(--ink);
+      font-size: 18px;
+      font-weight: 700;
+      width: 22px;
+    }
+
+    /* ── Three-question annotation row ── */
+    .question-row {
+      display: flex;
+      gap: 0;
+      margin-bottom: 16px;
+    }
+
+    .q-spacer {
+      flex: 1;
+    }
+
+    /* Question bracket spanning multiple stages */
+    .q-bracket {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .q-bracket .q-line {
+      width: 100%;
+      height: 2px;
+      background: var(--ink);
+      position: relative;
+    }
+    .q-bracket .q-line::before,
+    .q-bracket .q-line::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      width: 2px;
+      height: 8px;
+      background: var(--ink);
+    }
+    .q-bracket .q-line::before { left: 0; }
+    .q-bracket .q-line::after  { right: 0; }
+    .q-bracket .q-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+    .q-bracket .q-sub {
+      font-size: 10px;
+      color: var(--ink-soft);
+      text-align: center;
+    }
+
+    /* ── Limits panel ── */
+    .limits-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .limit-cell {
+      flex: 1;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: var(--tint-0);
+    }
+    .limit-cell .lc-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+    .limit-cell p {
+      margin: 0;
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+    .limit-cell .lc-title .warn-mark {
+      color: var(--warn);
+    }
+
+    /* ── Continuous monitoring loop ── */
+    .loop-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      border: 1.5px dashed var(--ink);
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: var(--tint-0);
+      margin-bottom: 14px;
+      font-size: 11px;
+    }
+    .loop-note .ln-label {
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+      font-size: 11.5px;
+    }
+    .loop-note .ln-desc {
+      color: var(--ink-soft);
+      font-size: 11px;
+    }
+    .loop-arrow {
+      font-size: 18px;
+      color: var(--ink);
+      font-weight: 700;
+      line-height: 1;
+      margin-top: 1px;
+    }
+
+    /* ── DBs sidebar panel ── */
+    .db-panel {
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: var(--tint-0);
+      font-size: 11px;
+      color: var(--ink);
+    }
+    .db-panel .dp-title {
+      font-weight: 700;
+      font-size: 11.5px;
+      margin-bottom: 5px;
+      color: var(--ink);
+    }
+    .db-panel .dp-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .db-panel .dp-db {
+      flex: 1;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 5px 8px;
+      background: var(--tint-1);
+    }
+    .db-panel .dp-db strong {
+      display: block;
+      font-size: 10.5px;
+      color: var(--ink);
+    }
+    .db-panel .dp-db span {
+      font-size: 10px;
+      color: var(--ink-soft);
+    }
+
+    .top-section {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 0;
+    }
+    .top-main {
+      flex: 1;
+      min-width: 0;
+    }
+    .top-sidebar {
+      width: 200px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 65.1 — Supply-chain pipeline: three questions, one chain</p>
+  <p class="fig-subtitle">Ch 28 · dossier key 65 (folds 66) · Part VII · each stage answers one question and enables the next</p>
+
+  <!-- Foundation prerequisite -->
+  <div class="foundation-bar">
+    <span class="fb-label">Precondition (Ch 27):</span>
+    <span class="fb-desc">Deterministic build — pinned, converged, reproducible dependency graph</span>
+    <span class="fb-arrow">&#8594;</span>
+    <span class="fb-desc">A scan or SBOM is only as trustworthy as the build that produced it</span>
+  </div>
+
+  <div class="top-section">
+    <div class="top-main">
+      <!-- Pipeline stages -->
+      <div class="pipeline">
+
+        <!-- Stage 1: Build -->
+        <div class="stage-wrap">
+          <div class="stage is-start">
+            <div class="s-hd">Build</div>
+            <div class="s-bd">
+              Maven / Gradle<br>
+              <span class="s-role">Resolves direct +<br>transitive deps</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pipe-arrow">&#8594;</div>
+
+        <!-- Stage 2: Generate SBOM -->
+        <div class="stage-wrap">
+          <div class="stage is-strong">
+            <div class="s-hd">Generate SBOM</div>
+            <div class="s-bd">
+              CycloneDX 1.6 or SPDX (ISO/IEC 5962:2021)<br>
+              <span class="s-role">cyclonedx-maven-plugin · Syft<br>All components, transitive incl.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pipe-arrow">&#8594;</div>
+
+        <!-- Stage 3: SCA Scan -->
+        <div class="stage-wrap">
+          <div class="stage is-strong">
+            <div class="s-hd">SCA Scan (CI gate)</div>
+            <div class="s-bd">
+              Match vs NVD / OSV / GitHub Advisory<br>
+              <span class="s-role">Dep-Check 12.2.2 · Grype ~0.108 · Trivy 0.71.0 · Snyk<br>Fail on CVSS threshold</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pipe-arrow">&#8594;</div>
+
+        <!-- Stage 4: Sign + Attest -->
+        <div class="stage-wrap">
+          <div class="stage">
+            <div class="s-hd">Sign + Attest</div>
+            <div class="s-bd">
+              in-toto attestation<br>
+              Sigstore cosign<br>
+              <span class="s-role">CI OIDC keyless identity<br>Verify at deploy</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pipe-arrow">&#8594;</div>
+
+        <!-- Stage 5: Publish -->
+        <div class="stage-wrap">
+          <div class="stage">
+            <div class="s-hd">Publish</div>
+            <div class="s-bd">
+              Artifact + SBOM<br>published with release<br>
+              <span class="s-role">Key 83 (release gate)</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- .pipeline -->
+
+      <!-- Three-question annotation row -->
+      <div style="display:flex; gap:0; align-items:flex-start; margin-bottom: 14px;">
+
+        <!-- Q1 spans: Build + Generate SBOM + SCA Scan -->
+        <div style="flex:3.5; display:flex; flex-direction:column; align-items:center; gap:4px; padding: 0 2px;">
+          <div style="width:100%; height:2px; background:var(--ink); position:relative;">
+            <div style="position:absolute;top:0;left:0;width:2px;height:8px;background:var(--ink);"></div>
+            <div style="position:absolute;top:0;right:0;width:2px;height:8px;background:var(--ink);"></div>
+          </div>
+          <div style="font-size:11px; font-weight:700; text-align:center; color:var(--ink); line-height:1.3;">
+            Q1: Is anything known-vulnerable?
+          </div>
+          <div style="font-size:10px; text-align:center; color:var(--ink-soft);">SCA answers this</div>
+        </div>
+
+        <!-- gap for arrows -->
+        <div style="width:22px;"></div>
+
+        <!-- Q2 spans: Generate SBOM -->
+        <div style="flex:1.2; display:flex; flex-direction:column; align-items:center; gap:4px; padding: 0 2px;">
+          <div style="width:100%; height:2px; background:var(--ink); position:relative;">
+            <div style="position:absolute;top:0;left:0;width:2px;height:8px;background:var(--ink);"></div>
+            <div style="position:absolute;top:0;right:0;width:2px;height:8px;background:var(--ink);"></div>
+          </div>
+          <div style="font-size:11px; font-weight:700; text-align:center; color:var(--ink); line-height:1.3;">
+            Q2: What ships?
+          </div>
+          <div style="font-size:10px; text-align:center; color:var(--ink-soft);">SBOM answers this</div>
+        </div>
+
+        <!-- gap for arrows -->
+        <div style="width:22px;"></div>
+
+        <!-- Q3 spans: Sign+Attest + Publish -->
+        <div style="flex:2.1; display:flex; flex-direction:column; align-items:center; gap:4px; padding: 0 2px;">
+          <div style="width:100%; height:2px; background:var(--ink); position:relative;">
+            <div style="position:absolute;top:0;left:0;width:2px;height:8px;background:var(--ink);"></div>
+            <div style="position:absolute;top:0;right:0;width:2px;height:8px;background:var(--ink);"></div>
+          </div>
+          <div style="font-size:11px; font-weight:700; text-align:center; color:var(--ink); line-height:1.3;">
+            Q3: Can I trust how it was built?
+          </div>
+          <div style="font-size:10px; text-align:center; color:var(--ink-soft);">Provenance / SLSA v1.0</div>
+        </div>
+
+      </div><!-- question row -->
+
+      <!-- Continuous re-scan loop -->
+      <div class="loop-note">
+        <span class="loop-arrow">&#8635;</span>
+        <div>
+          <div class="ln-label">Continuous monitoring (Dependency-Track):</div>
+          <div class="ln-desc">
+            New CVEs land after ship — re-scan published SBOMs continuously against NVD / OSV.
+            Update bots (Ch 27) raise fix PRs. A one-time CI gate is not enough.
+          </div>
+        </div>
+        <span class="loop-arrow" style="margin-left:auto;">&#8594; fix PR</span>
+      </div>
+
+    </div><!-- .top-main -->
+
+    <!-- Sidebar: vuln DBs -->
+    <div class="top-sidebar">
+      <div class="db-panel">
+        <div class="dp-title">Vulnerability DBs (SCA sources)</div>
+        <div class="dp-row">
+          <div class="dp-db">
+            <strong>NVD</strong>
+            <span>CVEs; CPE-matched by Dep-Check</span>
+          </div>
+        </div>
+        <div class="dp-row">
+          <div class="dp-db">
+            <strong>OSV</strong>
+            <span>Open-source focused; ecosystem-aware</span>
+          </div>
+        </div>
+        <div class="dp-row">
+          <div class="dp-db">
+            <strong>GitHub Advisory</strong>
+            <span>Curated; package-ecosystem coverage</span>
+          </div>
+        </div>
+        <div style="font-size:10px; color:var(--ink-soft); margin-top:6px;">
+          Coverage + lag differ across DBs.
+          Some teams run two scanners.
+          CVE not yet in DB = invisible to SCA.
+        </div>
+      </div>
+
+      <!-- SLSA levels -->
+      <div class="db-panel" style="margin-top:10px;">
+        <div class="dp-title">SLSA v1.0 — build integrity levels</div>
+        <div style="font-size:10.5px; color:var(--ink); margin-bottom:4px;">
+          <strong>L1</strong> — provenance exists (signed)
+        </div>
+        <div style="font-size:10.5px; color:var(--ink); margin-bottom:4px;">
+          <strong>L2</strong> — hosted build service; non-falsifiable
+        </div>
+        <div style="font-size:10.5px; color:var(--ink); margin-bottom:4px;">
+          <strong>L3</strong> — hardened, hermetic build platform
+        </div>
+        <div style="font-size:10px; color:var(--ink-soft); margin-top:4px;">
+          A roadmap, not a single tool. Higher levels = real investment. Most teams start at L1.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .top-section -->
+
+  <!-- Honest limits strip -->
+  <div class="limits-row">
+    <div class="limit-cell">
+      <div class="lc-title"><span class="warn-mark">&#9888;</span> SCA: known vulns only</div>
+      <p>Zero-days and first-party bugs are out of scope. A clean scan is not a clean bill of health. That gap is SAST + secure coding (Part VIII).</p>
+    </div>
+    <div class="limit-cell">
+      <div class="lc-title"><span class="warn-mark">&#9888;</span> Vulnerable ≠ exploitable</div>
+      <p>CPE matching is fuzzy — flags CVEs in paths your app never calls. Reachability analysis (some commercial tiers) narrows this. Suppression + justification required (Ch 19).</p>
+    </div>
+    <div class="limit-cell">
+      <div class="lc-title"><span class="warn-mark">&#9888;</span> SBOM: inventory, not defense</div>
+      <p>Enables a fast response; fixes nothing. Generated and ignored = theatre. Accuracy gaps: misses shaded, dynamically-loaded, or vendored components.</p>
+    </div>
+    <div class="limit-cell">
+      <div class="lc-title"><span class="warn-mark">&#9888;</span> Compliance driver</div>
+      <p>US EO 14028 and EU Cyber Resilience Act make SBOMs mandatory in many sectors. Supply-chain hygiene is becoming a legal obligation, not only best practice.</p>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    <b>Fig 65.1</b> — Draft <code>65_dependency_scanning_sbom_supply_chain_v1.md</code>
+    §§"How it works", "Deep dive: three questions, one chain".
+    SCA tools (Dep-Check 12.2.2 / Grype ~0.108 / Trivy 0.71.0) and SBOM formats (CycloneDX 1.6 / SPDX = ISO/IEC 5962:2021)
+    cited to own pinned sources; SLSA v1.0 (slsa.dev/spec/v1.0); in-toto attestation + Sigstore cosign;
+    NVD / OSV / GitHub Advisory as vuln DBs; EO 14028 and EU CRA as compliance drivers.
+    All versions from <code>00-strategy/SOURCE-PIN.md</code> (pin 2026-06-20). Crown none.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

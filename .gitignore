@@ -23,3 +23,4 @@ tmp/
 # Copyrighted reference corpus — NEVER commit (CLAUDE.md / LEGAL-IP-RULES.md):
 # close-paraphrase-avoidance checks only; never quoted into the manuscript.
 _ref/
+pre-final/figures/*.png

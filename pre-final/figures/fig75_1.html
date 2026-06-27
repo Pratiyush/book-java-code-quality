@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 33 — A Gate the Team Keeps On (dossier key 75, folds 76 + 79; OPENS Part IX)
+  Figure:  Fig 75.1 — The quality pipeline: a fail-fast fitness-function portfolio,
+           ordered cheap→expensive and split across PR / main / nightly by feedback latency
+  Family:  Flow / pipeline (left-to-right ordered stages, with three feedback-latency
+           lanes — PR-fast blocking, main, nightly — and a block-vs-warn policy strip)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: § "Pipeline design: order for fast feedback" (draft v1, stage table lines 46–53;
+             PR/main/nightly CONCEPT box line 55) + the unifying frame (Deep dive, lines 81–85)
+  One idea: A quality CI pipeline is a fail-fast portfolio of fitness functions, ordered
+            cheap→expensive and split across PR / main / nightly so the cheap, most-likely-
+            to-fail gates give a BLOCKING verdict in minutes on the pull request while the
+            slow, expensive gates run off the critical path — kept fast and scoped
+            (clean-as-you-code) enough that the team never routes around it.
+  NEUTRALITY: Co-listed Java tools shown on equal footing, each named with its own pinned
+              version (sources sidecar); no tool crowned, no banned comparative wording.
+              Every stage carries its purpose AND the honest center (green ≠ good code).
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 75.1 — The quality pipeline: fail-fast, ordered cheap→expensive, split by feedback latency</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout ─────────────────────────────────────────────── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure { padding: 28px 32px 24px; width: 1180px; }
+
+    /* ── Lane scaffold (left rail = where it runs; right = the ordered track) ── */
+    .lane {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 14px;
+    }
+    .lane + .lane { margin-top: 12px; }
+
+    /* The "where it runs" rail down the left of each lane */
+    .lane-rail {
+      flex: 0 0 158px;
+      background: var(--tint-2);
+      border-right: 1.5px solid var(--ink);
+      padding: 12px 13px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .lane-rail .rail-trigger {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .lane-rail .rail-latency {
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+    .lane-rail .rail-verdict {
+      margin-top: 8px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+    .rail-verdict.is-block { color: var(--stop); }
+    .rail-verdict.is-async { color: var(--warn); }
+
+    /* The accent (PR-fast) lane — the blocking, fast-feedback critical path */
+    .lane.is-accent .lane-rail {
+      background: #fff8ee;
+      border-right: 1.5px solid var(--ink);
+      box-shadow: inset 5px 0 0 var(--accent-bar);
+    }
+
+    /* Track that holds the ordered stage cards */
+    .lane-track {
+      flex: 1;
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      padding: 11px 12px;
+      min-width: 0;
+    }
+    /* main / nightly lanes hold fewer, wider cards */
+    .lane-track.is-sparse { gap: 10px; }
+
+    /* ── Stage card ──────────────────────────────────────────────────────── */
+    .stage {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--paper);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .stage-hd {
+      background: var(--tint-1);
+      border-bottom: 1px solid var(--line);
+      padding: 6px 9px;
+    }
+    .stage-hd .stage-num {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+    }
+    .stage-hd .stage-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-top: 1px;
+    }
+    .stage-bd {
+      padding: 7px 9px 8px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.35;
+      flex: 1;
+    }
+    .stage-bd .tools {
+      display: block;
+      font-family: var(--mono);
+      font-size: 9.5px;
+      color: var(--ink);
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+    .stage-bd .ch {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--ink-soft);
+    }
+
+    /* Arrow between ordered stages on the PR lane */
+    .step-arrow {
+      display: flex;
+      align-items: center;
+      align-self: center;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 700;
+      padding: 0 3px;
+      flex-shrink: 0;
+    }
+
+    /* ── Cost axis caption above the PR lane ─────────────────────────────── */
+    .cost-axis {
+      display: flex;
+      align-items: center;
+      margin: 2px 0 0 170px;
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      font-weight: 600;
+    }
+    .cost-axis .axis-line {
+      flex: 1;
+      height: 0;
+      border-top: 1.5px solid var(--line);
+      margin: 0 8px;
+      position: relative;
+    }
+    .cost-axis .axis-line::after {
+      content: "▸";
+      position: absolute;
+      right: -2px;
+      top: -8px;
+      color: var(--line);
+      font-size: 11px;
+    }
+
+    /* ── Policy strip across the bottom ──────────────────────────────────── */
+    .policy {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .policy-card {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      padding: 9px 12px;
+      background: var(--tint-1);
+    }
+    .policy-card.is-warn { border-style: dashed; background: var(--paper); }
+    .policy-card .pc-head {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      margin-bottom: 3px;
+    }
+    .pc-head.is-block { color: var(--stop); }
+    .pc-head.is-warn  { color: var(--warn); }
+    .pc-head.is-scope { color: var(--ink); }
+    .policy-card p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+    .policy-card p b { color: var(--ink); }
+
+    /* ── Legend ──────────────────────────────────────────────────────────── */
+    .legend {
+      display: flex;
+      gap: 22px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      color: var(--ink-soft);
+    }
+    .legend-swatch { width: 15px; height: 15px; border-radius: 3px; flex-shrink: 0; }
+    .swatch-accent {
+      background: #fff8ee;
+      box-shadow: inset 5px 0 0 var(--accent-bar);
+      border: 1.5px solid var(--ink);
+    }
+    .swatch-rail { background: var(--tint-2); border: 1.5px solid var(--ink); }
+    .swatch-block { background: var(--paper); border: 1.5px solid var(--ink); }
+    .swatch-warn  { background: var(--paper); border: 1.5px dashed var(--ink); }
+
+    .limit-note { margin-top: 15px; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 75.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by feedback latency</p>
+  <p class="fig-subtitle">Each stage is one fitness function; the pipeline is the portfolio. Order cheap → expensive so the most-likely-to-fail checks fail first. Keep the blocking PR path short; defer the slow, expensive checks to main and nightly so they never fall on a developer waiting to merge.</p>
+
+  <!-- cost axis label sitting over the PR track -->
+  <div class="cost-axis">
+    <span>cheapest · most likely to fail first</span>
+    <span class="axis-line"></span>
+    <span>slower · more expensive</span>
+  </div>
+
+  <!-- ── LANE 1: Pull Request — fast, blocking, the critical path ───────── -->
+  <div class="lane is-accent">
+    <div class="lane-rail">
+      <div class="rail-trigger">On every Pull Request</div>
+      <div class="rail-latency">Fast feedback — minutes. The short, blocking critical path a developer waits on.</div>
+      <div class="rail-verdict is-block">Required status check · blocks merge</div>
+    </div>
+    <div class="lane-track">
+
+      <div class="stage">
+        <div class="stage-hd">
+          <div class="stage-num">Stage 1</div>
+          <div class="stage-name">Compile + format + fast lint</div>
+        </div>
+        <div class="stage-bd">
+          Seconds; catches the cheapest, commonest failures first.
+          <span class="tools">javac · format-check<br>Checkstyle 13.6.0 · PMD 7.25.0</span>
+          <span class="ch">Ch 16</span>
+        </div>
+      </div>
+
+      <div class="step-arrow">→</div>
+
+      <div class="stage">
+        <div class="stage-hd">
+          <div class="stage-num">Stage 2</div>
+          <div class="stage-name">Unit tests + coverage</div>
+        </div>
+        <div class="stage-bd">
+          Fast feedback on behaviour.
+          <span class="tools">JUnit 6.1.0<br>JaCoCo 0.8.15</span>
+          <span class="ch">Ch 21 · Ch 23</span>
+        </div>
+      </div>
+
+      <div class="step-arrow">→</div>
+
+      <div class="stage">
+        <div class="stage-hd">
+          <div class="stage-num">Stage 3</div>
+          <div class="stage-name">Heavier static + security</div>
+        </div>
+        <div class="stage-bd">
+          Slower analysis, still on the PR.
+          <span class="tools">SpotBugs 4.10.2 · Error Prone · Sonar<br>SAST · SCA · secrets</span>
+          <span class="ch">Ch 16–17 · 28 · 31</span>
+        </div>
+      </div>
+
+      <div class="step-arrow">→</div>
+
+      <div class="stage">
+        <div class="stage-hd">
+          <div class="stage-num">Stage 4</div>
+          <div class="stage-name">Integration tests</div>
+        </div>
+        <div class="stage-bd">
+          Needs Docker; minutes.
+          <span class="tools">Testcontainers 2.0.5</span>
+          <span class="ch">Ch 22</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── LANE 2: main ───────────────────────────────────────────────────── -->
+  <div class="lane">
+    <div class="lane-rail">
+      <div class="rail-trigger">On merge to main</div>
+      <div class="rail-latency">Off the PR critical path — verdict does not block a waiting developer.</div>
+      <div class="rail-verdict is-block">Blocks the release line</div>
+    </div>
+    <div class="lane-track is-sparse">
+
+      <div class="stage">
+        <div class="stage-hd">
+          <div class="stage-num">Stage 5</div>
+          <div class="stage-name">Mutation / performance</div>
+        </div>
+        <div class="stage-bd">
+          Expensive; deeper effectiveness and regression checks.
+          <span class="tools">PITest 1.25.3 · JMH 1.37</span>
+          <span class="ch">Ch 23 · JMH</span>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="stage-hd">
+          <div class="stage-num">Stage 6</div>
+          <div class="stage-name">Package + SBOM + sign</div>
+        </div>
+        <div class="stage-bd">
+          Reproducible build of release artifacts.
+          <span class="tools">CycloneDX 1.6 SBOM · signing</span>
+          <span class="ch">Ch 28–29</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── LANE 3: nightly ────────────────────────────────────────────────── -->
+  <div class="lane">
+    <div class="lane-rail">
+      <div class="rail-trigger">Nightly / scheduled</div>
+      <div class="rail-latency">Slowest checks, run when latency costs nothing.</div>
+      <div class="rail-verdict is-async">Warn → triage</div>
+    </div>
+    <div class="lane-track is-sparse">
+
+      <div class="stage">
+        <div class="stage-hd">
+          <div class="stage-num">Deferred</div>
+          <div class="stage-name">Full DAST · deep mutation · long performance suites</div>
+        </div>
+        <div class="stage-bd">
+          The deepest questions, out of the critical path. Periodic full scans also backstop incremental analysis, which can miss cross-module effects.
+          <span class="ch">Ch 23 · 28 · 31</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Policy strip: what blocks, on whose code, what merely warns ─────── -->
+  <div class="policy">
+    <div class="policy-card">
+      <div class="pc-head is-scope">Scope — clean as you code</div>
+      <p>Gate <b>new and changed code</b>, not whole-repo absolutes. A "zero findings / 80% coverage" rule on a legacy codebase blocks every PR on debt it did not create; new-code scope makes the gate adoptable and assigns ownership to what a developer touches. <span class="fig-mono">(Ch 19, Ch 34)</span></p>
+    </div>
+    <div class="policy-card">
+      <div class="pc-head is-block">Block</div>
+      <p>Objective, low-false-positive, <b>high-severity new</b> findings — compile, failing tests, new-code coverage, new high-severity static/security, new secrets. Enforced as a <b>required status check</b> in branch protection, with a documented, tracked override path. <span class="fig-mono">(Ch 35)</span></p>
+    </div>
+    <div class="policy-card is-warn">
+      <div class="pc-head is-warn">Warn → triage</div>
+      <p>Subjective or noisy findings (so red always means something real); newly disclosed CVEs in unchanged code; security routed to a reviewer for an exploitability judgment. <span class="fig-mono">(Ch 19, Ch 32)</span></p>
+    </div>
+  </div>
+
+  <!-- legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-swatch swatch-accent"></div>PR-fast lane — short, blocking, runs every PR</div>
+    <div class="legend-item"><div class="legend-swatch swatch-rail"></div>Where the stage runs (trigger + latency)</div>
+    <div class="legend-item"><div class="legend-swatch swatch-block"></div>Blocks the build / merge / release</div>
+    <div class="legend-item"><div class="legend-swatch swatch-warn"></div>Warns &amp; is triaged — does not block</div>
+  </div>
+
+  <!-- the honest center -->
+  <div class="fig-note limit-note">
+    <b>The pipeline enforces policy; it does not create quality.</b>
+    A green pipeline means "no detected policy violations on new code" — design, logic, and authorization flaws pass every automated gate and still need human review (Ch 84). The two ways every gate dies: <b>too slow</b>, so it is bypassed, and <b>too strict</b>, so it is disabled. A gate the team routes around is a net negative. Run the same build developers run locally (<span class="fig-mono">./mvnw -B verify</span>) with pinned tool versions so it cannot drift, and beware false greens from a bad cache key (clean build on main backstops).
+  </div>
+
+  <p class="fig-caption">
+    Pipeline ordering and the PR / main / nightly split: key 75 (Ch 33) draft v1 §"Pipeline design: order for fast feedback" (stage table) and the unifying frame ("three decisions, one goal — a gate nobody routes around").
+    Clean-as-you-code and block-vs-warn: key 76. Speed levers and false-green caveat: key 79.
+    Tool versions from <b>00-strategy/SOURCE-PIN.md</b> (pinned 2026-06-20).
+    Every label traced in <b>fig75_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

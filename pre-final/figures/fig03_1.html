@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 2 — The Number That Lies (dossier key 03, folds 04, 58)
+  Figure:  Fig 03.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting
+  Family:  Concept-map (side-by-side code structure comparison + scoring table)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Measuring readability: two metrics, two questions" (CONCEPT callout)
+  One idea: Cyclomatic complexity and cognitive complexity ask different questions —
+            same number of branches can produce equal cyclomatic scores but very
+            different cognitive scores when nesting depth increases; use cyclomatic
+            for testability, cognitive for readability.
+  Sources:  McCabe 1976 (cyclomatic); SonarSource Cognitive Complexity white paper
+            (cognitive, nesting penalty, java:S3776); draft §"Measuring readability".
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 2.1 — Cyclomatic vs. Cognitive Complexity</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + shared components from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure { padding: 28px 30px 22px; max-width: 940px; }
+
+    /* Two-column layout for the two variants */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 18px;
+    }
+
+    /* Column header */
+    .col-hd {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .col-label {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+    .col-desc {
+      font-size: 12px;
+      color: var(--ink-soft);
+      margin: 0 0 12px;
+    }
+
+    /* Pseudo-code block */
+    .code-block {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      background: var(--tint-1);
+      border: 1.5px solid var(--tint-3);
+      border-radius: 8px;
+      padding: 12px 14px;
+      line-height: 1.7;
+      color: var(--ink);
+      margin-bottom: 12px;
+      white-space: pre;
+    }
+    /* Nesting depth tints — grayscale-safe (border weight + fill) */
+    .d0 { color: var(--ink); }
+    .d1 { color: var(--ink); font-weight: 600; }   /* first branch */
+    .d2 { color: var(--ink-soft); }                  /* nested once */
+    .d3 { color: var(--ink-soft); font-style: italic; } /* nested twice */
+
+    /* Score chips */
+    .score-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: flex-start;
+    }
+    .score-chip {
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      padding: 8px 12px;
+      min-width: 110px;
+      flex: 1;
+      text-align: center;
+    }
+    .score-chip .sc-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--ink-soft);
+      margin-bottom: 4px;
+    }
+    .score-chip .sc-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      font-family: var(--mono);
+      line-height: 1;
+    }
+    .score-chip .sc-note {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      margin-top: 4px;
+    }
+    /* Highlight the cognitive chip for variant B */
+    .score-chip.is-accent {
+      background: var(--tint-3);
+      border-color: var(--ink);
+    }
+    .score-chip.is-accent .sc-value {
+      color: var(--stop);
+    }
+
+    /* Annotation on the code block */
+    .annot {
+      font-size: 11px;
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 6px;
+      padding-left: 2px;
+    }
+
+    /* Verdict row at bottom */
+    .verdict-row {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .verdict-chip {
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-size: 12.5px;
+    }
+    .verdict-chip.v-cyclo {
+      background: var(--tint-1);
+      border: 1.5px solid var(--ink);
+    }
+    .verdict-chip.v-cog {
+      background: var(--tint-2);
+      border: 1.5px solid var(--ink);
+    }
+    .verdict-chip b { display: block; margin-bottom: 3px; font-size: 13px; }
+
+    /* Key principle note */
+    .principle-note {
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 2.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting</p>
+  <p class="fig-subtitle">
+    Two methods, identical branch count, opposite nesting structure — equal cyclomatic score, very different cognitive score.
+  </p>
+
+  <div class="compare-grid">
+
+    <!-- ── Variant A: flat branches ── -->
+    <div>
+      <div class="col-hd">Variant A — flat branches</div>
+      <p class="col-label">Three branches, no nesting</p>
+      <p class="col-desc">Guard-clause style: each condition is independent and returns immediately.</p>
+
+      <p class="annot">Method structure (pseudocode):</p>
+      <div class="code-block"><span class="d0">processOrder(order) {</span>
+<span class="d1">  if (!order.isValid())    // +1 branch</span>
+<span class="d2">    return INVALID;</span>
+<span class="d1">  if (order.isPriority())  // +1 branch</span>
+<span class="d2">    return EXPEDITE;</span>
+<span class="d1">  if (order.isBackordered()) // +1 branch</span>
+<span class="d2">    return DEFER;</span>
+<span class="d0">  return NORMAL;
+}</span></div>
+
+      <div class="score-row">
+        <div class="score-chip">
+          <div class="sc-label">Cyclomatic</div>
+          <div class="sc-value">4</div>
+          <div class="sc-note">3 branches + 1</div>
+        </div>
+        <div class="score-chip">
+          <div class="sc-label">Cognitive</div>
+          <div class="sc-value">3</div>
+          <div class="sc-note">3 × (nesting 0) = 3</div>
+        </div>
+      </div>
+
+      <div class="fig-note" style="font-size:11.5px;">
+        Flat branches each cost <b>+1</b> to cognitive score — no nesting penalty. Easy to read: one condition, one exit.
+      </div>
+    </div>
+
+    <!-- ── Variant B: deeply nested ── -->
+    <div>
+      <div class="col-hd">Variant B — deep nesting</div>
+      <p class="col-label">Three branches, nested three deep</p>
+      <p class="col-desc">Same logical paths as Variant A — nested inside each other instead of side-by-side.</p>
+
+      <p class="annot">Method structure (pseudocode):</p>
+      <div class="code-block"><span class="d0">processOrder(order) {</span>
+<span class="d1">  if (order.isValid()) {       // +1 branch</span>
+<span class="d2">    if (order.isPriority()) { // +1 + nesting(1)=+2</span>
+<span class="d3">      if (!order.isBackordered()) {</span>
+<span class="d3">                            // +1 + nesting(2)=+3</span>
+<span class="d3">        return EXPEDITE;</span>
+<span class="d2">      } else { return DEFER; }</span>
+<span class="d1">    } else { return NORMAL; }</span>
+<span class="d0">  }
+  return INVALID;
+}</span></div>
+
+      <div class="score-row">
+        <div class="score-chip">
+          <div class="sc-label">Cyclomatic</div>
+          <div class="sc-value">4</div>
+          <div class="sc-note">3 branches + 1</div>
+        </div>
+        <div class="score-chip is-accent">
+          <div class="sc-label">Cognitive</div>
+          <div class="sc-value">6</div>
+          <div class="sc-note">1 + 2 + 3 = 6 (nesting penalty)</div>
+        </div>
+      </div>
+
+      <div class="fig-note" style="font-size:11.5px;">
+        Nesting increments <b>increase</b> with depth: branch at depth 0 = +1, depth 1 = +2, depth 2 = +3.
+        Reader must hold the outer context while reading inner branches.
+      </div>
+    </div>
+
+  </div><!-- .compare-grid -->
+
+  <!-- Verdict row -->
+  <div class="verdict-row">
+    <div class="verdict-chip v-cyclo">
+      <b>Cyclomatic complexity = 4 (both variants)</b>
+      Counts independent execution paths (McCabe, 1976). Approximates minimum
+      test cases needed. <em>Does not penalize nesting</em> — same score for flat or deeply-nested code.
+      <br><span style="font-size:11px;color:var(--ink-soft);margin-top:4px;display:block;">Question answered: <b>"How many tests do I need?"</b></span>
+    </div>
+    <div class="verdict-chip v-cog">
+      <b>Cognitive complexity: A = 3, B = 6 (different)</b>
+      Assigns incremental costs for structures that break linear reading flow,
+      with nesting multipliers (Campbell / SonarSource). Captures the extra mental
+      load of Variant B that cyclomatic misses.
+      <br><span style="font-size:11px;color:var(--ink-soft);margin-top:4px;display:block;">Question answered: <b>"How hard is this to read?"</b></span>
+    </div>
+  </div>
+
+  <!-- Key principle -->
+  <div class="principle-note">
+    <div class="fig-note">
+      <b>Rule (SonarQube java:S3776):</b> gate on <b>cognitive complexity</b> for readability;
+      gate on <b>cyclomatic</b> for test-coverage planning. Using the wrong metric misleads —
+      Variant B passes a cyclomatic gate of 5 but is measurably harder to read.
+      Refactor trigger: extract method, replace nested conditionals with guard clauses,
+      or model branches with sealed types + pattern matching (Java 21, JEP 441).
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    <b>Cyclomatic complexity:</b> McCabe, T.J. (1976). "A Complexity Measure." <em>IEEE Transactions on Software
+    Engineering</em>, 2(4), 308–320.
+    <b>Cognitive complexity + nesting penalty + java:S3776:</b> Campbell, G.A. / SonarSource,
+    <em>Cognitive Complexity — a new way of measuring understandability</em> (sonarsource.com, 2016–2021).
+    Scoring examples verified against the white paper's worked examples.
+    Full source trace in <b>fig03_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

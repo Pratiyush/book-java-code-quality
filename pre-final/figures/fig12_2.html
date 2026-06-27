@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   10 (dossier key 12) — When Things Go Wrong
+  Figure:    Fig 12.2 — try-with-resources lifecycle: suppressed vs masked exceptions
+  Family:    Flow-sequence (two-column contrast: old finally vs try-with-resources)
+  Method:    Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Resource management: deterministic cleanup" — after the TWR code snippet
+  One idea:  try-with-resources (JLS §14.20.3) closes resources in LIFO order on every path
+             and SUPPRESSES a close() exception rather than MASKING the original — the exact
+             bug the old try/finally idiom silently commits (Effective Java Item 9).
+  Sources:   JLS SE 21 §14.20.3 (TWR semantics, reverse-order close, suppressed);
+             JDK 21 API Throwable.addSuppressed/getSuppressed;
+             Effective Java 3e Item 9 (masking bug in try/finally);
+             Sonar java:S2095; PMD CloseResource; SpotBugs OS_OPEN_STREAM; Error Prone MustBeClosed.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 10.2 — try-with-resources lifecycle</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure { width: 860px; padding: 26px 30px 24px; }
+
+    /* ── two-column contrast layout ── */
+    .contrast-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .col-panel {
+      border: 2px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .col-panel .cp-head {
+      padding: 9px 14px;
+      font-weight: 700;
+      font-size: 13px;
+      border-bottom: 2px solid var(--ink);
+    }
+    .col-panel.old-way .cp-head { background: var(--tint-3); }
+    .col-panel.new-way .cp-head { background: var(--tint-2); }
+    .col-panel .cp-body {
+      padding: 12px 14px;
+    }
+
+    /* flow steps */
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .flow-step:last-child { margin-bottom: 0; }
+    .step-num {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      background: var(--tint-0);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-num.bad { border-color: var(--stop); color: var(--stop); background: #fdf2f2; }
+    .step-num.ok  { border-color: var(--ok);   color: var(--ok);   background: #f0faf4; }
+    .step-text {
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+    .step-text code {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      background: var(--tint-1);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+    .step-text .muted { color: var(--ink-soft); }
+
+    .flow-divider {
+      height: 1px;
+      background: var(--line);
+      margin: 10px 0;
+    }
+
+    /* outcome box */
+    .outcome {
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+    .outcome.bad { background: #fdf2f2; border: 1.5px solid var(--stop); color: var(--stop); }
+    .outcome.good { background: #f0faf4; border: 1.5px solid var(--ok); color: var(--ok); }
+    .outcome small { display: block; font-weight: 400; font-size: 11px; margin-top: 3px; color: var(--ink); }
+
+    /* ── semantics strip ── */
+    .semantics-strip {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    .sem-card {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      background: var(--tint-1);
+    }
+    .sem-card .sc-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      margin-bottom: 5px;
+    }
+    .sem-card .sc-body {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+    .sem-card .sc-body code {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--tint-2);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    /* ── linter row ── */
+    .linter-row {
+      margin-top: 14px;
+      background: var(--tint-1);
+      border-left: 3px solid var(--accent-bar);
+      border-radius: 0 8px 8px 0;
+      padding: 8px 12px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .linter-row code {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--tint-2);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    .col-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 3px;
+      border: 1.5px solid;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .col-badge.bad { border-color: var(--stop); color: var(--stop); }
+    .col-badge.good { border-color: var(--ok); color: var(--ok); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 10.2 — try-with-resources: suppressed vs masked exceptions</p>
+  <p class="fig-subtitle">JLS SE 21 §14.20.3 · <em>Effective Java</em> 3e Item 9 · <code>Throwable.addSuppressed</code>/<code>getSuppressed</code> (JDK 21 API)</p>
+
+  <div class="contrast-row">
+
+    <!-- LEFT: old try/finally -->
+    <div class="col-panel old-way">
+      <div class="cp-head">
+        Old pattern: <code style="font-family:var(--mono)">try/finally</code>
+        <span class="col-badge bad">BUG: masks original exception</span>
+      </div>
+      <div class="cp-body">
+
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-text">Body executes — throws <strong>E1</strong> (the real failure)<br><span class="muted">e.g. read error on the stream</span></div>
+        </div>
+
+        <div class="flow-step">
+          <div class="step-num bad">2</div>
+          <div class="step-text"><code>finally { resource.close(); }</code> runs — <code>close()</code> throws <strong>E2</strong></div>
+        </div>
+
+        <div class="flow-step">
+          <div class="step-num bad">3</div>
+          <div class="step-text"><strong>E2 propagates; E1 is silently discarded.</strong><br><span class="muted">The real failure disappears. Stack trace is gone.</span></div>
+        </div>
+
+        <div class="flow-divider"></div>
+
+        <div class="flow-step">
+          <div class="step-num bad">✕</div>
+          <div class="step-text">With multiple resources and nested <code>finally</code>: each additional close can mask the previous exception. "The code is even more inscrutable." — <em>EJ</em> Item 9</div>
+        </div>
+
+        <div class="outcome bad">
+          E1 (root cause) lost forever
+          <small>No way to recover or even log the original failure.</small>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: try-with-resources -->
+    <div class="col-panel new-way">
+      <div class="cp-head">
+        <code style="font-family:var(--mono)">try</code>-with-resources
+        <span class="col-badge good">CORRECT: suppresses, never masks</span>
+      </div>
+      <div class="cp-body">
+
+        <div class="flow-step">
+          <div class="step-num ok">1</div>
+          <div class="step-text">Body executes — throws <strong>E1</strong> (the real failure)</div>
+        </div>
+
+        <div class="flow-step">
+          <div class="step-num ok">2</div>
+          <div class="step-text">Resources close in <strong>reverse order</strong> (LIFO) — JLS §14.20.3.<br><span class="muted">Last opened closes first; each close runs on every path.</span></div>
+        </div>
+
+        <div class="flow-step">
+          <div class="step-num ok">3</div>
+          <div class="step-text">If <code>close()</code> throws <strong>E2</strong>: <code>E1.addSuppressed(E2)</code> is called automatically.<br><strong>E1 propagates</strong>; E2 is attached, not lost.</div>
+        </div>
+
+        <div class="flow-divider"></div>
+
+        <div class="flow-step">
+          <div class="step-num ok">✓</div>
+          <div class="step-text">Retrieve via <code>e.getSuppressed()</code> — the close exception is still accessible for diagnostics.</div>
+        </div>
+
+        <div class="outcome good">
+          E1 propagates · E2 attached as suppressed
+          <small>Root cause preserved. Caller can inspect both. JDK 21 API: <code>Throwable.getSuppressed()</code></small>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- .contrast-row -->
+
+  <!-- ── three semantics ── -->
+  <div class="semantics-strip">
+    <div class="sem-card">
+      <div class="sc-label">Close order</div>
+      <div class="sc-body">LIFO (reverse of declaration). In <code>try (A a = …; B b = …)</code>, <code>b.close()</code> runs before <code>a.close()</code>. JLS §14.20.3.</div>
+    </div>
+    <div class="sem-card">
+      <div class="sc-label">Every path</div>
+      <div class="sc-body"><code>close()</code> runs on normal completion, on a body throw, and even if a later resource's <em>initialization</em> fails. JLS §14.20.3.</div>
+    </div>
+    <div class="sem-card">
+      <div class="sc-label">AutoCloseable contract</div>
+      <div class="sc-body"><code>AutoCloseable.close()</code> — not required idempotent. <code>Closeable</code> (its subtype) — required idempotent. Write custom implementations idempotent anyway. JDK 21 API.</div>
+    </div>
+  </div>
+
+  <div class="linter-row">
+    <strong>Linter enforcement — resource leaks trigger:</strong>
+    <code>Sonar java:S2095</code> · <code>PMD CloseResource</code> · <code>SpotBugs OS_OPEN_STREAM</code> / <code>OBL_UNSATISFIED_OBLIGATION</code> · <code>Error Prone MustBeClosed</code> / <code>StreamResourceLeak</code>.
+    These fire when a resource escapes the try-with-resources header (created in the body, returned from a factory, or stored in a field).
+  </div>
+
+  <p class="fig-caption">
+    <b>Sources:</b> JLS SE 21 §14.20.3 (try-with-resources semantics: basic §14.20.3.1, extended §14.20.3.2, reverse-order close, suppressed propagation);
+    JDK 21 API <code>Throwable.addSuppressed</code>/<code>getSuppressed</code>; <code>AutoCloseable</code> (not-idempotent); <code>Closeable</code> (idempotent);
+    <em>Effective Java</em>, 3rd ed. (Bloch, 2018), Item 9 — "prefer try-with-resources to try-finally" (masking bug and scalability);
+    Sonar <code>java:S2095</code>; PMD <code>CloseResource</code>; SpotBugs <code>OS_OPEN_STREAM</code>/<code>OBL_UNSATISFIED_OBLIGATION</code>; Error Prone <code>MustBeClosed</code>/<code>StreamResourceLeak</code>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

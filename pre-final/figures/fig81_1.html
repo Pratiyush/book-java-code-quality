@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 35 — Teeth and Speed (keys 81 + folds 82, Part IX)
+  Figure:  Fig 81.1 — The feedback-latency ladder: fast skippable feedback at the
+           keyboard, slow unbypassable enforcement at the merge
+  Family:  Flow-sequence (five rungs left → right, fastest/cheapest at the left;
+           a labelled boundary divides the feedback rungs from the enforcement rungs)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: § "Pre-commit hooks and local↔CI parity" → the two CONCEPT callouts
+             "The feedback-latency ladder" and "Hooks are feedback, not enforcement"
+             (draft v1, lines 55 & 59); unifying figure named at draft line 111 +
+             dossier 82 §6 (Fig 82.1 spec) — folds the teeth/speed deep dive (lines 63–69).
+  One idea: Push each check to the leftmost rung that can catch it — IDE → pre-commit →
+            pre-push are fast, SKIPPABLE feedback (git commit --no-verify, install-dependent);
+            PR CI → main are slow, UN-bypassable enforcement (required status check +
+            branch protection + merge queue). Feedback makes enforcement painless;
+            enforcement makes feedback safe to skip.
+  NEUTRALITY: No tool crowned; trunk-based reported as DORA-evidenced for delivery,
+              not decreed; branching strategy noted context-dependent. Each rung names
+              fast-checks-only / bypassable limits. No banned comparative wording.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 81.1 — The feedback-latency ladder: feedback at the keyboard, enforcement at the merge</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + components come from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 24px;
+      width: 1180px;
+    }
+
+    /* ── Cost gradient strip above the rungs ─────────────────────────────── */
+    .cost-axis {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 16px 0 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .cost-axis .bar {
+      flex: 1;
+      height: 8px;
+      margin: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      /* grayscale-safe: light → dark left-to-right = cheap → expensive */
+      background: linear-gradient(to right, var(--tint-0), var(--tint-1), var(--tint-2), var(--tint-3), var(--accent));
+    }
+
+    /* ── Ladder track ────────────────────────────────────────────────────── */
+    .ladder {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    /* Each rung card */
+    .rung {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--paper);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* FEEDBACK rungs: lighter, dashed sides = deliberately skippable */
+    .rung.is-feedback { border-style: dashed; }
+    .rung.is-feedback > .rung-hd { background: var(--tint-1); }
+
+    /* ENFORCEMENT rungs: heavy solid border + strong header = the wall */
+    .rung.is-enforce { border-width: 2px; }
+    .rung.is-enforce > .rung-hd { background: var(--tint-3); }
+
+    /* leftmost rung (IDE) — accent-bar "start here / fastest" marker */
+    .rung.is-start {
+      box-shadow: inset 4px 0 0 var(--accent-bar);
+      border-left-color: var(--accent-bar);
+    }
+    .rung.is-start > .rung-hd { background: #fff3e0; border-bottom-color: var(--accent-bar); }
+
+    .rung-hd {
+      border-bottom: 1.5px solid var(--ink);
+      padding: 9px 12px 8px;
+      line-height: 1.3;
+    }
+    .rung-num {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 2px;
+    }
+    .rung.is-start .rung-num { color: var(--accent-bar); }
+    .rung-name {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .rung-latency {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      margin-top: 2px;
+    }
+    .rung-where {
+      display: block;
+      font-size: 10px;
+      font-style: italic;
+      color: var(--ink-soft);
+      margin-top: 1px;
+    }
+
+    .rung-bd {
+      padding: 10px 12px 11px;
+      flex: 1;
+    }
+    .rung-bd ul {
+      margin: 0;
+      padding-left: 15px;
+      list-style: disc;
+    }
+    .rung-bd li {
+      margin: 3px 0;
+      font-size: 11px;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+    .rung-bd .mono { font-family: var(--mono); font-size: 10.5px; }
+
+    /* outcome strip at the foot of each rung */
+    .rung-foot {
+      margin-top: 9px;
+      padding-top: 7px;
+      border-top: 1px solid var(--tint-2);
+      font-size: 10.5px;
+      line-height: 1.35;
+    }
+    .rung-foot .tag {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 9.5px;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--ink);
+      margin-bottom: 3px;
+    }
+    .tag.skip { border-style: dashed; color: var(--ink-soft); }
+    .tag.block { border-color: var(--stop); color: var(--stop); }
+
+    /* arrow connector between rungs */
+    .rung-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 26px;
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    /* ── The feedback ↔ enforcement boundary band ────────────────────────── */
+    .boundary {
+      display: flex;
+      margin-top: 14px;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .boundary-half {
+      padding: 9px 13px;
+      font-size: 11.5px;
+      line-height: 1.4;
+    }
+    .boundary-half h5 {
+      margin: 0 0 3px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .boundary-half .lead {
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .boundary-half.feedback {
+      flex: 3;
+      background: var(--tint-1);
+      border-right: 1.5px dashed var(--ink);
+    }
+    .boundary-half.enforce {
+      flex: 2;
+      background: var(--tint-3);
+    }
+    .boundary-half .mono { font-family: var(--mono); font-size: 11px; }
+
+    /* chapter ref tag */
+    .ch-ref {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--ink-soft);
+      margin-left: 3px;
+      white-space: nowrap;
+    }
+
+    .ladder-note { margin-top: 14px; }
+    .ladder-caption { margin-top: 10px; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 81.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable enforcement at the merge</p>
+  <p class="fig-subtitle">Push each check to the leftmost rung that can catch it. The left rungs are deliberately skippable feedback; the right rungs are the enforcement that re-runs everything regardless.</p>
+
+  <!-- cost gradient axis -->
+  <div class="cost-axis">
+    <span>Cheap · seconds</span>
+    <span class="bar" aria-hidden="true"></span>
+    <span>Expensive · the last line</span>
+  </div>
+
+  <!-- five-rung ladder -->
+  <div class="ladder">
+
+    <!-- Rung 1 — IDE (leftmost, fastest, accent start-here) -->
+    <div class="rung is-feedback is-start">
+      <div class="rung-hd">
+        <span class="rung-num">Rung 1 · fastest</span>
+        <span class="rung-name">IDE</span>
+        <span class="rung-latency">As you type</span>
+        <span class="rung-where">Developer's editor<span class="ch-ref">Ch 17</span></span>
+      </div>
+      <div class="rung-bd">
+        <ul>
+          <li>In-editor inspections flag issues as the code is written</li>
+        </ul>
+        <div class="rung-foot">
+          <span class="tag skip">Feedback</span><br>
+          Leftmost, fastest signal — never a gate (same principle as the hooks)
+        </div>
+      </div>
+    </div>
+
+    <div class="rung-arrow">&#8594;</div>
+
+    <!-- Rung 2 — Pre-commit -->
+    <div class="rung is-feedback">
+      <div class="rung-hd">
+        <span class="rung-num">Rung 2</span>
+        <span class="rung-name">Pre-commit hook</span>
+        <span class="rung-latency">Seconds — on <span class="mono">git commit</span></span>
+        <span class="rung-where">Developer's machine</span>
+      </div>
+      <div class="rung-bd">
+        <ul>
+          <li>Spotless format<span class="ch-ref">Ch 6</span></li>
+          <li>Quick Checkstyle / PMD subset<span class="ch-ref">Ch 16</span></li>
+          <li>gitleaks secrets scan<span class="ch-ref">Ch 31</span></li>
+          <li>Trailing-whitespace / large-file</li>
+        </ul>
+        <div class="rung-foot">
+          <span class="tag skip">Feedback · fast checks only</span><br>
+          Managed by the pre-commit framework (<span class="mono">.pre-commit-config.yaml</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="rung-arrow">&#8594;</div>
+
+    <!-- Rung 3 — Pre-push -->
+    <div class="rung is-feedback">
+      <div class="rung-hd">
+        <span class="rung-num">Rung 3</span>
+        <span class="rung-name">Pre-push hook</span>
+        <span class="rung-latency">Heavier — before sharing</span>
+        <span class="rung-where">Developer's machine</span>
+      </div>
+      <div class="rung-bd">
+        <ul>
+          <li>Fast unit tests<span class="ch-ref">Part V</span></li>
+        </ul>
+        <div class="rung-foot">
+          <span class="tag skip">Feedback</span><br>
+          A middle rung — heavier than commit, lighter than CI
+        </div>
+      </div>
+    </div>
+
+    <div class="rung-arrow">&#8594;</div>
+
+    <!-- Rung 4 — PR CI (enforcement begins) -->
+    <div class="rung is-enforce">
+      <div class="rung-hd">
+        <span class="rung-num">Rung 4 · required check</span>
+        <span class="rung-name">PR&apos;s CI</span>
+        <span class="rung-latency">Minutes — the full gate</span>
+        <span class="rung-where">CI — every pull request<span class="ch-ref">Ch 33</span></span>
+      </div>
+      <div class="rung-bd">
+        <ul>
+          <li>The full quality gate re-runs <em>everything</em>: compile, full SpotBugs, the test suite, Sonar<span class="ch-ref">Ch 33</span></li>
+          <li>Required status check + required review<span class="ch-ref">Ch 37</span></li>
+        </ul>
+        <div class="rung-foot">
+          <span class="tag block">Enforcement · blocks merge</span><br>
+          Parity: same <span class="mono">./mvnw -B verify</span> + pinned versions as local<span class="ch-ref">Ch 27, 29</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rung-arrow">&#8594;</div>
+
+    <!-- Rung 5 — main (last line) -->
+    <div class="rung is-enforce">
+      <div class="rung-hd">
+        <span class="rung-num">Rung 5 · last line</span>
+        <span class="rung-name">main</span>
+        <span class="rung-latency">Kept always-green</span>
+        <span class="rung-where">Protected trunk</span>
+      </div>
+      <div class="rung-bd">
+        <ul>
+          <li>Branch protection: gate is a required check; restrict force-push / deletion</li>
+          <li>Merge queue: re-validate each PR vs the latest base + preceding queued PRs</li>
+          <li>Trunk-based: small frequent merges; incomplete work behind feature flags<span class="ch-ref">Ch 36</span></li>
+        </ul>
+        <div class="rung-foot">
+          <span class="tag block">Enforcement · unbypassable</span><br>
+          No path to main that skips the gate
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .ladder -->
+
+  <!-- the feedback ↔ enforcement boundary, the chapter's honest center -->
+  <div class="boundary">
+    <div class="boundary-half feedback">
+      <span class="lead">Rungs 1–3 · SPEED</span>
+      <h5>Feedback — deliberately skippable</h5>
+      Fast checks on the developer's machine. Bypassable on purpose: <span class="mono">git commit --no-verify</span> skips a hook,
+      and hooks run <em>only</em> where installed. So they are feedback, never the gate. Slow checks here get disabled — keep them fast.
+    </div>
+    <div class="boundary-half enforce">
+      <span class="lead">Rungs 4–5 · TEETH</span>
+      <h5>Enforcement — deliberately unbypassable</h5>
+      The required CI check + branch protection + merge queue re-run everything regardless. This is the gate;
+      a hook never is.
+    </div>
+  </div>
+
+  <div class="fig-note ladder-note">
+    <b>Feedback makes enforcement painless; enforcement makes feedback safe to skip.</b>
+    Local↔CI parity — the build wrapper and pinned tool versions — is what lets &ldquo;green locally&rdquo; reliably predict &ldquo;green in CI,&rdquo;
+    so the first time a developer meets the gate is at their keyboard, not in a ten-minute CI round-trip. Trunk-based development is reported
+    by DORA as correlating with delivery performance, <em>given</em> a trustworthy gate, reliable tests, and feature flags — branching strategy
+    stays context-dependent and no single model is crowned.
+    <span class="fig-chapter">Ch 35 · keys 81 + 82 · Part IX</span>
+  </div>
+
+  <p class="fig-caption ladder-caption">
+    Feedback-latency ladder: key 82 dossier §6 (Fig 82.1 spec) + draft v1 § &ldquo;The feedback-latency ladder&rdquo; (line 55) and
+    § &ldquo;Hooks are feedback, not enforcement&rdquo; (line 59); teeth/speed division from the deep dive (lines 63–69).
+    Branch protection / merge queue / trunk-based: key 81 dossier. pre-commit framework: <b>pre-commit.com</b>; DORA: <b>dora.dev</b>
+    (both pinned in <b>00-strategy/SOURCE-PIN.md</b>, 2026-06-20). Every label traced in <b>fig81_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

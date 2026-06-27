@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   7 — A Method Is a Promise (dossier key 09, folds 60) · Part II
+  Figure:    Fig 09.1 — The two halves of a method contract
+  Family:    Concept-map / two-halves architecture with left-shift spectrum
+  Method:    Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: CONCEPT callout "The contract-card" (§ The two halves of a contract); load-bearing
+             because the whole chapter's taxonomy — what each design rule IS for — rests on this
+             split. Every subsequent section maps its rule to one of the two halves.
+  One idea:  A method's contract has a TYPE-CARRIED half (compiler/checker enforces; compile
+             error = cheapest feedback) and a DOC/RUNTIME half (Javadoc + fail-fast guard;
+             runtime exception = later, costlier); the design discipline is moving promises
+             leftward toward the type system wherever possible.
+  Sources:   Draft v1 §"The two halves of a contract"; Effective Java 3e (2018) Items 49,
+             54–55; JDK 21 java.util.Objects; JSpecify 1.0.0; Error Prone CheckReturnValue;
+             SpotBugs EI_EXPOSE_REP; PMD AvoidReassigningParameters; Sonar java:S2201;
+             SOURCE-PIN §1 (JDK 21), §2 (tools), §7 (Effective Java 3e)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 7.1 — The two halves of a method contract</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout only — palette + shared components from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 24px;
+      max-width: 1080px;
+    }
+
+    /* ── Spectrum bar: "Move promises leftward" ── */
+    .spectrum-wrap {
+      margin: 20px 0 22px;
+    }
+    .spectrum-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      margin-bottom: 6px;
+    }
+    .spectrum-bar {
+      display: flex;
+      align-items: stretch;
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      overflow: hidden;
+      height: 36px;
+    }
+    .spectrum-seg {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11.5px;
+      font-weight: 600;
+      border-right: 1.5px solid var(--line);
+    }
+    .spectrum-seg:last-child { border-right: none; }
+    .seg-comment  { background: var(--tint-0); color: var(--ink-soft); font-style: italic; }
+    .seg-runtime  { background: var(--tint-1); color: var(--ink); }
+    .seg-checker  { background: var(--tint-2); color: var(--ink); }
+    .seg-type     { background: var(--tint-3); color: var(--ink); font-weight: 700; }
+
+    .spectrum-arrows {
+      display: flex;
+      align-items: center;
+      margin-top: 5px;
+      gap: 4px;
+    }
+    .arrow-left {
+      font-size: 18px;
+      color: var(--accent-bar);
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .arrow-text {
+      font-size: 11.5px;
+      color: var(--accent-bar);
+      font-weight: 700;
+    }
+    .arrow-right-label {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+
+    /* ── Two-halves main layout ── */
+    .halves-row {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    /* Each half column */
+    .half-col {
+      flex: 1;
+      min-width: 0;
+      border: 2px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .half-col.is-type  { background: var(--paper); }
+    .half-col.is-runtime { background: var(--paper); border-style: dashed; }
+
+    .half-head {
+      padding: 10px 14px 9px;
+      border-bottom: 2px solid var(--ink);
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .half-col.is-type   .half-head { background: var(--tint-3); }
+    .half-col.is-runtime .half-head { background: var(--tint-1); border-bottom-style: dashed; }
+
+    .half-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      flex: 1;
+    }
+    .half-badge {
+      font-size: 11px;
+      font-weight: 600;
+      border: 1.5px solid var(--ink);
+      border-radius: 999px;
+      padding: 2px 8px;
+      background: var(--paper);
+      white-space: nowrap;
+    }
+
+    .half-enforcer {
+      padding: 8px 14px;
+      font-size: 12px;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .enforcer-lbl { font-weight: 700; color: var(--ink); }
+
+    .half-body { padding: 10px 14px 12px; }
+
+    /* Rule rows inside each half */
+    .rule-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .rule-row:last-child { margin-bottom: 0; }
+
+    .rule-dot {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--ink);
+      background: var(--tint-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-top: 1px;
+    }
+    .rule-dot.is-accent { background: var(--tint-3); }
+
+    .rule-detail { flex: 1; min-width: 0; }
+    .rule-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 1px;
+    }
+    .rule-desc {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      display: block;
+      line-height: 1.35;
+    }
+    .rule-desc code {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      background: var(--tint-2);
+      border-radius: 3px;
+      padding: 0 3px;
+      color: var(--ink);
+    }
+    .rule-checker {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--ink-soft);
+      background: var(--tint-1);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 5px;
+      display: inline-block;
+      margin-top: 3px;
+      white-space: nowrap;
+    }
+
+    /* Divider between halves */
+    .halves-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 28px;
+      padding-top: 10px;
+    }
+    .div-line {
+      width: 2px;
+      flex: 1;
+      background: var(--line);
+    }
+    .div-icon {
+      font-size: 18px;
+      color: var(--accent-bar);
+      font-weight: 700;
+      line-height: 1;
+      padding: 4px 0;
+    }
+
+    /* Violation cost comparison row */
+    .cost-row {
+      display: flex;
+      gap: 20px;
+      margin-top: 16px;
+    }
+    .cost-cell {
+      flex: 1;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .cost-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+    .cost-detail { flex: 1; min-width: 0; }
+    .cost-lbl {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .cost-desc {
+      font-size: 11px;
+      color: var(--ink-soft);
+      display: block;
+      line-height: 1.3;
+    }
+
+    .cost-cell.ok-cell   { background: var(--tint-1); border-color: var(--ok); }
+    .cost-cell.warn-cell { background: var(--tint-0); border-color: var(--warn); }
+    .cost-lbl.ok-lbl   { color: var(--ok); }
+    .cost-lbl.warn-lbl { color: var(--warn); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 7.1 — The two halves of a method contract</p>
+  <p class="fig-subtitle">Push as much of the contract into the type system as possible — the cheapest feedback on a broken contract is "it didn't compile"</p>
+
+  <!-- ── Spectrum: move promises leftward ── -->
+  <div class="spectrum-wrap">
+    <div class="spectrum-label">The left-shift spectrum — move promises leftward</div>
+    <div class="spectrum-bar">
+      <div class="spectrum-seg seg-comment">Comment / doc only</div>
+      <div class="spectrum-seg seg-runtime">Fail-fast runtime check</div>
+      <div class="spectrum-seg seg-checker">Static analyzer</div>
+      <div class="spectrum-seg seg-type">Type system</div>
+    </div>
+    <div class="spectrum-arrows">
+      <span class="arrow-left">&#8592;&#8592;&#8592;</span>
+      <span class="arrow-text">design goal: shift leftward</span>
+      <span class="arrow-right-label">later / costlier feedback &rarr;</span>
+    </div>
+  </div>
+
+  <!-- ── Two halves ── -->
+  <div class="halves-row">
+
+    <!-- LEFT: Type-carried half -->
+    <div class="half-col is-type">
+      <div class="half-head">
+        <span class="half-title">Type-carried half</span>
+        <span class="half-badge">compile error — cheapest</span>
+      </div>
+      <div class="half-enforcer">
+        <span class="enforcer-lbl">Enforced by:</span> compiler · static checker · IDE
+      </div>
+      <div class="half-body">
+
+        <div class="rule-row">
+          <div class="rule-dot is-accent">1</div>
+          <div class="rule-detail">
+            <span class="rule-name">Return <code>Optional&lt;T&gt;</code>, not null (Item 55)</span>
+            <span class="rule-desc">"May be absent" becomes a type fact; caller is forced to handle the empty case before touching the value. Never <code>Optional</code> for parameters, fields, or boxed primitives (<code>OptionalInt</code>/<code>OptionalLong</code>/<code>OptionalDouble</code> instead).</span>
+          </div>
+        </div>
+
+        <div class="rule-row">
+          <div class="rule-dot">2</div>
+          <div class="rule-detail">
+            <span class="rule-name">Nullness as a signature fact — JSpecify 1.0.0</span>
+            <span class="rule-desc"><code>@Nullable</code> / <code>@NonNull</code> / <code>@NullMarked</code> put the null contract into the signature. JSpecify is a specification, not a checker — any conforming checker (NullAway, Checker Framework) verifies it.</span>
+            <span class="rule-checker">JSpecify 1.0.0 &nbsp;·&nbsp; NullAway 0.13.4</span>
+          </div>
+        </div>
+
+        <div class="rule-row">
+          <div class="rule-dot">3</div>
+          <div class="rule-detail">
+            <span class="rule-name">Minimize accessibility (Items 15–17)</span>
+            <span class="rule-desc">Every <code>public</code> / <code>protected</code> member is a promise kept forever (binary-compat burden). Make each as inaccessible as possible; prefer immutable types (smallest contract of all).</span>
+          </div>
+        </div>
+
+        <div class="rule-row">
+          <div class="rule-dot">4</div>
+          <div class="rule-detail">
+            <span class="rule-name">Real override — <code>@Override</code></span>
+            <span class="rule-desc">Compiler verifies the override is genuine; catches signature drift silently.</span>
+            <span class="rule-checker">EP MissingOverride</span>
+          </div>
+        </div>
+
+        <div class="rule-row">
+          <div class="rule-dot">5</div>
+          <div class="rule-detail">
+            <span class="rule-name">Un-ignorable return values — <code>@CheckReturnValue</code></span>
+            <span class="rule-desc">When the return value <em>is</em> the result, dropping it is a bug. <code>@CanIgnoreReturnValue</code> exempts builders that return <code>this</code>.</span>
+            <span class="rule-checker">EP CheckReturnValue &nbsp;·&nbsp; SpotBugs RV_RETURN_VALUE_IGNORED &nbsp;·&nbsp; Sonar java:S2201</span>
+          </div>
+        </div>
+
+        <div class="rule-row">
+          <div class="rule-dot">6</div>
+          <div class="rule-detail">
+            <span class="rule-name">No parameter reassignment — <code>final</code> params</span>
+            <span class="rule-desc"><code>final</code> makes overwriting a parameter before reading it a compile error; analyzers flag the rest.</span>
+            <span class="rule-checker">PMD AvoidReassigningParameters &nbsp;·&nbsp; Sonar java:S1226</span>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- .half-col.is-type -->
+
+    <!-- Divider -->
+    <div class="halves-divider">
+      <div class="div-line"></div>
+      <div class="div-icon">&#8644;</div>
+      <div class="div-line"></div>
+    </div>
+
+    <!-- RIGHT: Doc/runtime-carried half -->
+    <div class="half-col is-runtime">
+      <div class="half-head">
+        <span class="half-title">Doc / runtime-carried half</span>
+        <span class="half-badge">runtime exception — later, costlier</span>
+      </div>
+      <div class="half-enforcer">
+        <span class="enforcer-lbl">Enforced by:</span> Javadoc (states it) · fail-fast check (enforces it)
+      </div>
+      <div class="half-body">
+
+        <div class="rule-row">
+          <div class="rule-dot is-accent">A</div>
+          <div class="rule-detail">
+            <span class="rule-name">Fail fast on bad input (Item 49)</span>
+            <span class="rule-desc">Check parameters at the top of the method; throw immediately. Converts a wrong result far away into a clear exception at the call site. <code>java.util.Objects</code> vocabulary (JDK 21):</span>
+            <div style="margin-top:5px; display:flex; flex-direction:column; gap:3px;">
+              <span class="rule-checker"><code>requireNonNull(T)</code> · <code>requireNonNull(T, String)</code> · <code>requireNonNull(T, Supplier&lt;String&gt;)</code> — since 1.7 / 1.7 / 1.8</span>
+              <span class="rule-checker"><code>checkIndex(int, int)</code> — since 9 &nbsp;|&nbsp; <code>checkIndex(long, long)</code> — since 16</span>
+              <span class="rule-checker"><code>checkFromToIndex</code> · <code>checkFromIndexSize</code> — since 9</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rule-row">
+          <div class="rule-dot">B</div>
+          <div class="rule-detail">
+            <span class="rule-name">Document what the type cannot carry (Item 56)</span>
+            <span class="rule-desc"><code>@param</code> per parameter (preconditions), <code>@return</code> for every non-void method, <code>@throws</code> per exception with its triggering condition, first sentence as standalone summary. <code>@implSpec</code> for the contract a subclass may rely on.</span>
+          </div>
+        </div>
+
+        <div class="rule-row">
+          <div class="rule-dot">C</div>
+          <div class="rule-detail">
+            <span class="rule-name">Defend against representation exposure (Item 50)</span>
+            <span class="rule-desc">Copy mutable objects on the way IN (constructor / setter) and on the way OUT (getter). When the stored type is already immutable, skip the copy — copies are pure overhead then.</span>
+            <span class="rule-checker">SpotBugs EI_EXPOSE_REP / EI_EXPOSE_REP2 &nbsp;·&nbsp; PMD MethodReturnsInternalArray / ArrayIsStoredDirectly</span>
+          </div>
+        </div>
+
+        <div class="rule-row">
+          <div class="rule-dot">D</div>
+          <div class="rule-detail">
+            <span class="rule-name">Exception conventions</span>
+            <span class="rule-desc"><code>NullPointerException</code> for null · <code>IndexOutOfBoundsException</code> for a bad index · <code>IllegalArgumentException</code> for other bad values · <code>IllegalStateException</code> for bad object state</span>
+          </div>
+        </div>
+
+        <div class="rule-row">
+          <div class="rule-dot">E</div>
+          <div class="rule-detail">
+            <span class="rule-name">Return empty, not null — collections &amp; arrays (Item 54)</span>
+            <span class="rule-desc">A method that can return "no elements" returns an empty collection or array, never <code>null</code> — so callers need no null guard. (Distinct from <code>Optional</code>, which is for a single absent value.)</span>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- .half-col.is-runtime -->
+
+  </div><!-- .halves-row -->
+
+  <!-- ── Violation cost comparison ── -->
+  <div class="cost-row">
+    <div class="cost-cell ok-cell">
+      <span class="cost-icon">&#10003;</span>
+      <div class="cost-detail">
+        <span class="cost-lbl ok-lbl">Type-carried violation → compile error</span>
+        <span class="cost-desc">Caught at build time. No test run needed. Cheapest possible feedback. The compiler / static checker is the gate.</span>
+      </div>
+    </div>
+    <div class="cost-cell warn-cell">
+      <span class="cost-icon">&#9651;</span>
+      <div class="cost-detail">
+        <span class="cost-lbl warn-lbl">Doc/runtime-carried violation → runtime exception</span>
+        <span class="cost-desc">Caught at runtime — in a test, in staging, or in production. Fail-fast (top of method) moves the exception earlier; without it the failure surfaces far from the cause.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Version contract note ── -->
+  <div class="fig-note" style="margin-top:16px;">
+    <b>Contract across versions:</b> every <code>public</code> / <code>protected</code> member is a promise kept across releases. Use <b>japicmp 0.25.6</b> or <b>revapi 0.15.1</b> in CI to compute the required semver bump (<code>MAJOR.MINOR.PATCH</code>). <code>@Deprecated(forRemoval=true, since="…")</code> signals removal with a migration path; deletion without deprecation is a binary-incompatible break (JLS ch.&nbsp;13).
+  </div>
+
+  <p class="fig-caption">
+    Two-halves framing: draft v1 §"The two halves of a contract" (Ch 7). <b>Items 15–17, 49–56:</b> <em>Effective Java</em> 3e (Bloch, 2018), SOURCE-PIN §7.
+    <b>java.util.Objects</b> signatures (requireNonNull since 1.7/1.8; checkIndex since 9; long overload since 16): JDK 21, SOURCE-PIN §1.
+    <b>JSpecify 1.0.0</b> (@Nullable/@NonNull/@NullMarked): SOURCE-PIN §2.
+    <b>Error Prone</b> (CheckReturnValue / CanIgnoreReturnValue / MissingOverride), <b>SpotBugs 4.10.2</b> (EI_EXPOSE_REP/EI_EXPOSE_REP2 / RV_RETURN_VALUE_IGNORED),
+    <b>PMD 7.25.0</b> (MethodReturnsInternalArray / ArrayIsStoredDirectly / AvoidReassigningParameters),
+    <b>Sonar 2026.1 LTA</b> (java:S2201 / java:S1226): SOURCE-PIN §2.
+    <b>japicmp 0.25.6 / revapi 0.15.1 / semver.org</b>: SOURCE-PIN §6. JLS binary compat ch.&nbsp;13: SOURCE-PIN §1.
+    Every label traces to <b>fig09_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>
