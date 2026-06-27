@@ -119,7 +119,7 @@ The deepest supply-chain question is not what ships but whether the artifact tha
           path: target/bom.json
 ```
 
-And increasingly this is not optional: the US Executive Order 14028 and the EU Cyber Resilience Act make SBOMs a *compliance requirement* in many sectors, turning supply-chain hygiene from best practice into a legal obligation.
+And increasingly this is not only an engineering concern. As of 2026, regulatory drivers such as the US Executive Order 14028 and the EU Cyber Resilience Act have pushed SBOMs toward a *compliance expectation* in some sectors, moving supply-chain hygiene from a purely voluntary practice toward a regulated one. Which sectors are covered, which obligations attach, and on what timeline all vary by jurisdiction and are still settling. Treat this as a factual signal of direction, not legal advice, and confirm the requirements that currently apply with counsel.
 
 ## Deep dive: three questions, one chain, on a deterministic foundation
 

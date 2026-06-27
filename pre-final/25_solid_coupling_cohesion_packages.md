@@ -6,7 +6,7 @@
 
 ## Hook
 
-Two codebases, two ways to fail. The first took SOLID as gospel: an interface for every class, a factory for every interface, dependency injection wiring five layers deep, and adding one field means touching seven files. It is "well-designed" by the letter of every principle and impossible to read. The second has no structure at all: two hundred classes in a single `com.acme.service` package, a three-thousand-line `OrderService`, and every change ripples into three unrelated features because everything can reach everything. Both codebases fail the same goal — *safe, cheap change* — from opposite directions: one over-engineered, one under-structured.
+Two codebases, two ways to fail. The first took SOLID as gospel: an interface for every class, a factory for every interface, dependency injection wiring five layers deep, and adding one field means touching seven files. It is "well-designed" by the letter of every principle and impossible to read. The second has no structure at all: two hundred classes in a single `com.acme.service` package, a three-thousand-line `OrderService`, and every change ripples into three unrelated features because everything can reach everything. Both codebases fail the same goal, *safe, cheap change*, from opposite directions: one over-engineered, one under-structured.
 
 ## Overview
 
@@ -17,9 +17,9 @@ Two codebases, two ways to fail. The first took SOLID as gospel: an interface fo
 - **Package structure**: by-layer versus by-feature, the principles of a healthy dependency graph, and the module-strength ladder.
 - The through-line: these are heuristics and proxies, not gates. Judgment applies, with a small enforceable subset.
 
-**What this chapter does NOT cover.** The metric *definitions* (the exact CBO/RFC/LCOM and Ca/Ce/Instability/Abstractness formulas), which the metrics chapter owns. *Enforcing* structure — ArchUnit, JPMS, fitness functions — which is the very next chapter. Dependency-injection framework mechanics, safe large-scale restructuring, and multi-module builds (later). SOLID is **contested**, so it is presented as a debate with named alternatives; by-layer and by-feature are presented as trade-offs. **No principle, lens, or structure is crowned.**
+**What this chapter does NOT cover.** The metric *definitions* (the exact CBO/RFC/LCOM and Ca/Ce/Instability/Abstractness formulas), which the metrics chapter (Chapter 2) owns. *Enforcing* structure (ArchUnit, JPMS, fitness functions), which is the very next chapter (Chapter 26). Dependency-injection framework mechanics, safe large-scale restructuring, and multi-module builds (later). SOLID is **contested**, so it is presented as a debate with named alternatives; by-layer and by-feature are presented as trade-offs. **No principle, lens, or structure is crowned.**
 
-**One idea worth holding:** *SOLID tells a team how to shape a unit, coupling and cohesion tell whether the shape is working, and package structure decides what is possible — all three serve safe change, none is a target to maximize, and dogma in either direction (over-abstraction or no structure) defeats the goal.*
+**One idea worth holding:** *SOLID tells a team how to shape a unit, coupling and cohesion tell whether the shape is working, and package structure decides what is possible. All three serve safe change, none is a target to maximize, and dogma in either direction (over-abstraction or no structure) defeats the goal.*
 
 ## How it works
 
@@ -27,19 +27,19 @@ Two figures anchor the chapter. Figure 25.1 lays out the five SOLID principles s
 
 ![Figure 25.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.](figures/fig53_1.png)
 
-*Figure 25.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.*
+*Figure 25.1 — SOLID: intent and over-application trap. Five heuristics for low coupling and high cohesion: useful vocabulary, not a law to maximize. No principle is crowned.*
 
 ![Figure 25.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.](figures/fig53_2.png)
 
-*Figure 25.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.*
+*Figure 25.2 — The module-strength ladder. Encapsulation is not binary: climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.*
 
 ### SOLID: useful vocabulary, not a law to maximize
 
-SOLID is five object-oriented design principles popularized by Robert C. Martin, aimed at the same target as maintainability: low coupling, high cohesion, and safe change. The book's stance is that they are a useful *vocabulary and set of heuristics* — not a law to push to its limit, because applied dogmatically they produce the over-abstracted maze from the hook.
+SOLID is five object-oriented design principles popularized by Robert C. Martin, aimed at the same target as maintainability: low coupling, high cohesion, and safe change. The book's stance is that they are a useful *vocabulary and set of heuristics*, not a law to push to its limit, because applied dogmatically they produce the over-abstracted maze from the hook.
 
 - **SRP — Single Responsibility.** A class should have one reason to change. It fights the God service, the 2,000-line class that does everything (Chapter 12). The trap: taken too far, it explodes into a cloud of one-method classes that scatter a single behaviour across a dozen files, the over-decomposition that hurts readability (Chapter 2).
-- **OCP — Open/Closed.** Open for extension, closed for modification — in Java, via interfaces, polymorphism, or the strategy pattern, so new behaviour is a new class rather than an edit to a tested one. The trap: speculative abstraction for a change that never comes (the YAGNI tension); every premature extension point is indirection that costs maintenance and may never be used.
-- **LSP — Liskov Substitution.** A subtype must be substitutable for its supertype without breaking callers' expectations. This is the one principle closest to a hard *correctness* rule: a subclass that strengthens preconditions or weakens the contract is a latent bug, tied directly to the `equals`/`hashCode` contract (Chapter 8) and well served by sealed types that make the permitted subtypes explicit (Chapter 5).
+- **OCP — Open/Closed.** Open for extension, closed for modification: in Java, via interfaces, polymorphism, or the strategy pattern, so new behaviour is a new class rather than an edit to a tested one. The trap: speculative abstraction for a change that never comes (the YAGNI tension); every premature extension point is indirection that costs maintenance and may never be used.
+- **LSP — Liskov Substitution.** A subtype must be substitutable for its supertype without breaking callers' expectations. This is the one principle closest to a hard *correctness* rule. A subclass that strengthens preconditions or weakens the contract is a latent bug, tied directly to the `equals`/`hashCode` contract (Chapter 8) and well served by sealed types that make the permitted subtypes explicit (Chapter 5).
 - **ISP — Interface Segregation.** Many focused role interfaces over one fat interface, so a client depends only on the methods it uses. Records and sealed interfaces make small, focused types cheap (Chapter 5).
 - **DIP — Dependency Inversion.** Depend on abstractions, not concretions. In Java: program to interfaces and inject implementations. This is the principle that *enables* the testability of Part V (a collaborator declared by interface is one that can be substituted) and the module boundaries of the rest of Part VI.
 
@@ -47,7 +47,7 @@ SOLID is five object-oriented design principles popularized by Robert C. Martin,
 
 The deeper honesty: SOLID is principles, not metrics. Gating "SOLID-ness" as a score is the vanity trap. SRP's "one reason to change" is genuinely subjective; reasonable engineers draw responsibility boundaries differently. The parts of this domain that *can* be measured and enforced are coupling, cohesion, and cycles, the subject of the next two sections.
 
-The companion module makes the cost concrete with the same pricing outcome written two ways. The over-abstracted variant satisfies OCP and DIP on paper — an interface and a factory for one implementation — so the wiring threads through three types to reach one calculation:
+The companion module makes the cost concrete with the same pricing outcome written two ways. The over-abstracted variant satisfies OCP and DIP on paper, with an interface and a factory for one implementation, so the wiring threads through three types to reach one calculation:
 
 ```java
     /** Wiring an order price: a factory builds the one policy, which the service then depends on. */
@@ -79,7 +79,7 @@ Beneath the principles lie the two oldest, most durable structural concepts in s
 
 > **CONCEPT** *Dependency direction and the main sequence.* Coupling is a quantity, and its *direction* matters just as much. Martin's **Stable Dependencies Principle** says depend in the direction of stability: volatile things may depend on stable things, never the reverse, because a change to something many others depend on is expensive. Stability is captured as **Instability** (`I = Ce/(Ca+Ce)`: 0 = maximally depended-on, 1 = depends-on-everything-nothing-depends-on-it), and plotted against **Abstractness** it gives the *main sequence*, with a **zone of pain** (stable *and* concrete: hard to change, much depends on it) and a **zone of uselessness** (abstract *and* unused). DIP from the last section is precisely the tool for inverting a dependency that points the wrong way: introduce an interface so the stable side owns the abstraction and the volatile side depends on it.
 
-And the cardinal sin: **cycles.** A dependency cycle couples an entire cluster of classes or packages into one indivisible blob: no member can be understood, tested, or changed in isolation, because all depend on each other. Cycles are detectable and gateable (ArchUnit's `slices().should().beFreeOfCycles()`, or JDepend), which is what makes "no cycles" one of the few structural rules worth enforcing as a hard gate (next chapter). The honest limits: these metrics are *proxies*: a class with low CBO and terrible names is still unreadable, so do not optimize the number. And *some* coupling is necessary, because zero coupling means nothing talks to anything. The goal is appropriate, directed coupling, not minimum coupling.
+And the cardinal sin: **cycles.** A dependency cycle couples an entire cluster of classes or packages into one indivisible blob: no member can be understood, tested, or changed in isolation, because all depend on each other. Cycles are detectable and gateable (ArchUnit's `slices().should().beFreeOfCycles()`, or JDepend), which is what makes "no cycles" one of the few structural rules worth enforcing as a hard gate (Chapter 26). The honest limits: these metrics are *proxies*: a class with low CBO and terrible names is still unreadable, so do not optimize the number. And *some* coupling is necessary, because zero coupling means nothing talks to anything. The goal is appropriate, directed coupling, not minimum coupling.
 
 The companion module holds a two-package cycle to make the blob concrete: an `orders` package depends on `notify` to announce a placed order, and `notify` reaches back into `orders` to read the order's summary, so neither can be built apart from the other:
 
@@ -106,7 +106,7 @@ public interface OrderEvents {        // owned by the stable side; notify implem
 
 ### Package structure: where the lines fall
 
-Principles and metrics operate on a structure, and that structure is a design decision: **how a codebase is sliced into packages decides which dependencies are even possible.** Good structure makes the right thing easy and the wrong dependency awkward; bad structure — everything in one `com.acme.service` package — lets coupling metastasize because anything can reach anything. Two dominant strategies, each a trade-off:
+Principles and metrics operate on a structure, and that structure is a design decision: **how a codebase is sliced into packages decides which dependencies are even possible.** Good structure makes the right thing easy and the wrong dependency awkward; bad structure (everything in one `com.acme.service` package) lets coupling metastasize because anything can reach anything. Two dominant strategies, each a trade-off:
 
 | Strategy | Organizes by | Strength | Risk |
 |---|---|---|---|
@@ -125,7 +125,7 @@ public final class OrderController {
     private final OrderService service;
 ```
 
-Under by-feature, the data type, service, and storage sit together in one `orders` package, so the same change stays local — at the cost that another feature reaches it only through a published type:
+Under by-feature, the data type, service, and storage sit together in one `orders` package, so the same change stays local, at the cost that another feature reaches it only through a published type:
 
 ```java
     // orders feature kept whole: data type, service, and storage in one package
@@ -138,9 +138,9 @@ Under by-feature, the data type, service, and storage sit together in one `order
     }
 ```
 
-Neither is crowned — by-feature is increasingly favoured for modular monoliths and microservices, but by-layer remains reasonable for small apps, and the right answer depends on team size, domain, and whether the project is an app or a library. What *is* general is the set of healthy-graph principles: keep the graph **acyclic**, depend in the direction of **stability**, give each module a **clear public API** (Java's package-private default is an under-used encapsulation tool, and using it keeps internals internal), and group classes that change and release together.
+Neither is crowned. By-feature is increasingly favoured for modular monoliths and microservices, but by-layer remains reasonable for small apps, and the right answer depends on team size, domain, and whether the project is an app or a library. What *is* general is the set of healthy-graph principles: keep the graph **acyclic**, depend in the direction of **stability**, give each module a **clear public API** (Java's package-private default is an under-used encapsulation tool, and using it keeps internals internal), and group classes that change and release together.
 
-> **CONCEPT** *The module-strength ladder.* Encapsulation is not binary; it is a ladder of increasing enforcement, and teams climb it as a boundary matters more: a *package convention* (names only — discipline) → *package-private* access (the compiler hides internals within a package) → *ArchUnit-enforced slices* (a test fails on a forbidden dependency) → *JPMS `module-info`* (the compiler itself forbids access across module boundaries) → *separate build modules* (depending on an undeclared dependency is physically impossible). Each rung trades ceremony for stronger guarantees; the right choice is the lowest rung that actually holds the boundary in question.
+> **CONCEPT** *The module-strength ladder.* Encapsulation is not binary; it is a ladder of increasing enforcement, and teams climb it as a boundary matters more: a *package convention* (names only, by discipline) → *package-private* access (the compiler hides internals within a package) → *ArchUnit-enforced slices* (a test fails on a forbidden dependency) → *JPMS `module-info`* (the compiler itself forbids access across module boundaries) → *separate build modules* (depending on an undeclared dependency is physically impossible). Each rung trades ceremony for stronger guarantees; the right choice is the lowest rung that actually holds the boundary in question.
 
 The reason structure is worth getting right early is that it is the *cheapest* lever on coupling: a good package graph prevents whole classes of bad dependency before any rule fires. But the limits are real: no universally correct structure exists, restructuring is invasive (moving packages churns imports and history, so do it incrementally with tests as a net), and structure is not design. Neat packages can still hold terrible code. Structure is one lever, not the whole game.
 
@@ -148,9 +148,9 @@ The reason structure is worth getting right early is that it is the *cheapest* l
 
 The reason to hold these three together is that they are the same concern at three heights, and seeing the connection is what turns them from slogans into a working method.
 
-Start at the bottom. The *goal* is safe, cheap change — the maintainability that opened the book. The *measurable proxy* for that goal is low coupling and high cohesion with dependencies pointing toward stability: when those hold, a change stays local; when they do not, it ripples. SOLID is the set of *heuristics* that, applied with judgment, tend to produce that structure (DIP inverts a bad-direction dependency, SRP raises cohesion, ISP lowers coupling to unused methods). And package structure is the *substrate* the whole thing operates on: the package lines drawn determine which dependencies are possible, so a good package graph makes high cohesion and directed coupling the path of least resistance rather than a constant fight. Principle, measure, place — why, whether, where.
+Start at the bottom. The *goal* is safe, cheap change: the maintainability that opened the book. The *measurable proxy* for that goal is low coupling and high cohesion with dependencies pointing toward stability: when those hold, a change stays local; when they do not, it ripples. SOLID is the set of *heuristics* that, applied with judgment, tend to produce that structure (DIP inverts a bad-direction dependency, SRP raises cohesion, ISP lowers coupling to unused methods). And package structure is the *substrate* the whole thing operates on: the package lines drawn determine which dependencies are possible, so a good package graph makes high cohesion and directed coupling the path of least resistance rather than a constant fight. Principle, measure, place: why, whether, where.
 
-That layering also explains a division of labour this book holds deliberately, to avoid teaching the same thing three times. **This chapter owns the concepts**: what coupling, cohesion, SOLID, and package strategies *are*, and the judgment of applying them. **The metrics chapter owns the definitions**: the exact formulas for CBO, RFC, LCOM, Instability, Abstractness, and the main-sequence distance. **The next chapter owns enforcement**: turning the enforceable subset (no cycles, correct layer direction, module boundaries) into ArchUnit rules, JPMS modules, and fitness functions that fail the build when structure erodes. The split matters because the three altitudes have different *natures*: the concepts are judgment, the metrics are proxies, and only a thin slice (cycles, direction, declared boundaries) is hard enough to gate.
+That layering also explains a division of labour this book holds deliberately, to avoid teaching the same thing three times. **This chapter owns the concepts**: what coupling, cohesion, SOLID, and package strategies *are*, and the judgment of applying them. **The metrics chapter (Chapter 2) owns the definitions**: the exact formulas for CBO, RFC, LCOM, Instability, Abstractness, and the main-sequence distance. **The next chapter (Chapter 26) owns enforcement**: turning the enforceable subset (no cycles, correct layer direction, module boundaries) into ArchUnit rules, JPMS modules, and fitness functions that fail the build when structure erodes. The split matters because the three altitudes have different *natures*: the concepts are judgment, the metrics are proxies, and only a thin slice (cycles, direction, declared boundaries) is hard enough to gate.
 
 Which is the unifying caution of Part VI, and the answer to the hook's two failures. The over-abstracted codebase cranked the *principles* to maximum and ignored the *goal*: every interface-with-one-implementation satisfies DIP on paper while adding indirection that makes change harder, not easier. The unstructured codebase ignored the *substrate*: with no package lines, no metric and no principle had anything to hold. Both treated a heuristic as a target. The working method is the opposite: keep the goal (safe change) in view, use the metrics as a proxy to detect structural drift, apply the principles as direction rather than dogma, and draw package lines that make the good structure the natural one, enforce only the thin hard subset, and leave the rest to judgment. That is design governance: not a score to maximize, but a direction held honest by a few gates and a lot of taste.
 
@@ -159,7 +159,7 @@ Which is the unifying caution of Part VI, and the answer to the hook's two failu
 - **SOLID applied dogmatically over-engineers.** An interface for every class and a factory for every interface satisfies the letter and defeats the goal; CUPID and "simple design" are legitimate alternative lenses. When NOT: do not add an abstraction for a variation that does not exist yet (YAGNI), and do not decompose a cohesive class into a cloud of one-method classes.
 - **"SOLID-ness" cannot be gated.** The principles are heuristics, not metrics; chasing a SOLID score is the vanity trap. Gate the enforceable subset (cycles, layering, direction); leave the principles to review and judgment.
 - **SRP's "one reason to change" is subjective.** Reasonable engineers disagree on responsibility boundaries; treat it as a conversation starter, not a settled rule.
-- **Structural metrics are proxies.** Low CBO with terrible names is still unreadable; high cohesion by LCOM can still be the wrong abstraction. Do not optimize the number — read the code.
+- **Structural metrics are proxies.** Low CBO with terrible names is still unreadable; high cohesion by LCOM can still be the wrong abstraction. Do not optimize the number; read the code.
 - **Some coupling is necessary.** Zero coupling means nothing collaborates; the goal is appropriate, *directed* coupling, not minimum. LCOM in particular is contested; use cohesion qualitatively, not as a hard gate.
 - **Metrics need a sensible structure first.** They measure the package graph as it exists, not the graph it should be; a bad package design produces meaningless-but-green numbers.
 - **No universally correct package structure.** By-layer versus by-feature is context-dependent; dogma either way hurts. And over-modularization (premature JPMS, too many build modules) adds ceremony with little payoff for a small app.
