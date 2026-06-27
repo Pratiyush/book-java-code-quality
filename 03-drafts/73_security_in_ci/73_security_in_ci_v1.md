@@ -37,6 +37,8 @@ That failure, and how to avoid it, is this closing chapter of Part VIII. The too
 
 ## How it works
 
+The whole gate fits one picture: the five testing types laid out left-to-right in the order they run, the fast static checks at pre-commit and the pull request, the slow dynamic checks deferred to a stage against staging, and one block-versus-warn line drawn through all of them. Figure 32.1 is that map; the sections below walk it lens by lens.
+
 ![Fig 32.1 — The security gate: five testing types ordered fast-to-slow — Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.](../../05-figures/73_security_in_ci/fig73_1.png)
 
 *Fig 32.1 — The security gate: five testing types ordered fast-to-slow — Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.*
@@ -48,11 +50,11 @@ A security gate layers complementary lenses, because each is blind to what the o
 
 | Type | What it analyzes | When it runs | Catches |
 |---|---|---|---|
-| **SAST** (static) | the application's own code (Chapter 31) | PR / build | injection, crypto misuse, unsafe deserialization — early |
-| **SCA** (composition) | the project's dependencies (Part VII) | build + continuous | known CVEs in libraries; license issues |
+| **SAST** — static application security testing | the application's own code (Chapter 31) | PR / build | injection, crypto misuse, unsafe deserialization — early |
+| **SCA** — software composition analysis | the project's dependencies (Part VII) | build + continuous | known CVEs in libraries; license issues |
 | **Secrets scanning** | code, diffs, history (Chapter 31) | pre-commit + CI + push protection | leaked credentials |
-| **DAST** (dynamic) | the *running* app (e.g. OWASP ZAP) | later stage, vs staging | runtime and configuration flaws static tools cannot see |
-| **IAST** (interactive) | the running app, *instrumented during tests* | test stage | vulnerabilities with runtime context — a SAST/DAST hybrid |
+| **DAST** — dynamic application security testing | the *running* app (e.g. OWASP ZAP) | later stage, vs staging | runtime and configuration flaws static tools cannot see |
+| **IAST** — interactive application security testing | the running app, *instrumented during tests* | test stage | vulnerabilities with runtime context — a SAST/DAST hybrid |
 
 The static trio (SAST, SCA, secrets) analyzes artifacts without running them and is fast enough for the pull request. The dynamic pair (DAST, IAST) needs a deployed, running application: DAST probes it black-box from outside, catching the runtime misconfiguration and the environment-specific flaw that no static tool can reach; IAST instruments the app while its tests run, adding runtime context to reduce the false positives static analysis suffers. Static analysis misses what only happens at runtime; dynamic analysis misses code paths the tests never exercise. A thorough program layers them rather than picking one.
 
