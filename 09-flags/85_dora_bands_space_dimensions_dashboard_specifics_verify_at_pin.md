@@ -58,3 +58,37 @@ DORA bands + key labels + SPACE dimensions against those pinned editions; date-a
 `80_coverage_pr_platforms_saas_dated_at_use.md` (new-code/clean-as-you-code lens, SaaS-dated).
 
 **Filed by:** source-verifier, Chapter 38 (key 85) VERIFY / deferred-marker resolution (2026-06-27).
+
+---
+
+## Cross-reference — Chapter 47 / key 110 (`maturity_model_roadmap`, THE FINAL CHAPTER) also depends on atom 1's framing
+
+**Added 2026-06-27 (source-verifier, key 110 deferred-marker resolution).** The book's closer (FINAL_INDEX
+Ch 47, key 110 `110_maturity_model_roadmap`) is built on the **same unconfirmable DORA framing guarded above**:
+its single new primary atom is **"DORA deliberately moved from rigid maturity *levels* to *capabilities* and
+*continuous improvement*"** (the chapter's stated "single most important framing"). This is the same atom as
+**atom 1 / atom's-companion** here — it cannot be diffed character-for-character against the multi-authority pin
+(DORA is web-hosted, SOURCE-PIN §5, pinned by date 2026-06-27, no local clone), so it **STAYS `⚠ verify-at-pin`**
+in the key-110 draft (front-matter + back-matter `⚠ @pin` markers, both updated 2026-06-27) and is **not promoted
+to fact** by the key-110 VERIFY pass.
+
+- **What is confirmed for key 110 (markers removed):** the companion module
+  `08-companion-code/110_maturity_model_roadmap/` (`org.acme.maturity`) is **BUILT GREEN** (`mvn -B -Pquality
+  verify` BUILD SUCCESS, 12 tests / 0 Checkstyle / 0 SpotBugs, Java 21.0.11 — see the chapter `_EXAMPLE.md`);
+  all five displayed snippet markers resolve to real ≤9-line tag regions; the chapter's structural claims
+  (overall level = the LOWEST dimension never an average; a stalled-outcome dimension is discounted →
+  `RestoreOutcomes`; `Sustain` past the policy threshold; `CULTURE_KNOWLEDGE` first-class) are verified in the
+  source. The stale "EXAMPLE-BUILD = N/A / gates manual / SOURCE-PIN 2026-06-20" strings were corrected to the
+  built-green / corrected-pin reality.
+- **What STAYS flagged for key 110:** the DORA capabilities-over-levels **wording** (atom 1 above). Per HARD
+  rule 3 and instruction, **no DORA performance band or statistic is asserted** anywhere in the key-110 body —
+  the chapter states the capabilities-over-levels *framing* only, self-flagged, never a numeric cohort threshold.
+- **Named maturity-model canon (CMMI / SaaS maturity ladders):** key 110 critiques "maturity levels" generically
+  (the Goodhart vanity-ladder argument) and names **no** specific external maturity-model source (no CMMI level
+  definitions, no vendor SaaS maturity model) as a pinned fact — so there is no separate named-source atom to
+  verify; had one been asserted it would stay `⚠ verify-at-pin` here too. Recorded so a later edit that *does*
+  name CMMI/SaaS levels must take it from a pinned source, dated + attributed.
+
+**At `/pin-source`:** the same DORA/SPACE re-pin action above closes the key-110 atom; re-confirm the
+capabilities-over-levels wording against the pinned DORA edition and append a VERIFIED/UNVERIFIED line to **both**
+this flag and the key-110 `_VERIFY.md`.
