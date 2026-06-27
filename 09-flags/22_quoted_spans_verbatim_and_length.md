@@ -55,3 +55,40 @@ range; `lint_citations.sh` snippet-length check OK.)
 2. Editor: bring the §B quotes under the <15-word ceiling and collapse JEP 444 to one quote per chapter (the
    rest become attributed paraphrase — must be true rewrites, not close mirrors, per §2/§8).
 3. **Status:** OPEN — blocks a clean VERIFY PASS for key 22 until §A re-confirmed and §B reconciled.
+
+---
+
+## RESOLUTION — §B (length/count) reconciled — 2026-06-27
+
+**§B (LEGAL-IP §2 prose-quote length + one-quote-per-source) is now RESOLVED in `…_v1.md`.** No
+verified technical fact was changed — only the *quoting* of facts (every JEP number, API name, package,
+flag, rule ID, and stated behavior is byte-for-byte intact). The draft's body now holds **8 source-
+attributed prose quotes, all ≤14 words, ≤1 per source except JEP 444 (kept at 2 short load-bearing
+quotes per the editorial brief)** — down from 12 attributed spans (6 of them JEP 444) before.
+
+**JEP 444 — reduced from 6 quotes → 2** (the only source the one-per-source rule was carved for here):
+- KEPT (short, load-bearing, distinctive):
+  - L53 — "a work-stealing `ForkJoinPool` that operates in FIFO mode" (8 words) — attribution made explicit ("JEP 444 describes the scheduler as …").
+  - L84 — "does not increase the total number of threads" (8 words) — the no-pooling fact, attribution intact ("per JEP 444").
+- PARAPHRASED into the book's locked third-person voice (fact preserved, verbatim dropped — true rewrites, not close mirrors):
+  - L53 #1 (was ~17w) → "JEP 444 frames them as lightweight threads that cut the cost of writing, maintaining, and observing high-throughput concurrent applications."
+  - L55 readability quote (was ~12w) → "the simple style JEP 444 sets out to recover — one that stays straightforward to understand, program, debug, and profile."
+  - L61 pinning definition (was ~21w, over ceiling) → "while it runs code inside a `synchronized` block or method, or while it runs a native method or a foreign function" (both pinning cases preserved as fact).
+  - L61 blocked-carrier (was ~14w) → "the carrier and the OS thread under it stay blocked for the length of that operation."
+
+**Other over-ceiling quotes — trimmed to a short (<15w) load-bearing fragment, attribution intact (each source stays at 1 body quote):**
+- L66 JEP 491 (was ~16w) → "no longer pins virtual threads" (5w); the retain-for-other-situations clause is now book-voice prose.
+- L93 JEP 453 (was ~26w) → "as a single unit of work" (6w); the streamlining/reliability/observability tail is now paraphrase.
+- L143/144 Checker Framework (was ~25w) → "will not have data races" (5w), attributed to the Lock Checker manual; the rest is book-voice.
+
+**Within-ceiling, one-per-source quotes left intact (verified ≤15w, 1 per source):** L65 Sonar `java:S6906`
+(10w), L87 JEP 506 (14w), L120 jcstress README "usual suspects" (2w). Short attributed terms-of-art
+(JLS "correctly synchronized", SpotBugs "inaccuracy") are 1–2 words, one occurrence each — within §2.
+
+**Snippet ceiling untouched:** `check_snippets.sh …_v1.md` → 7 markers, 7 pass, 0 fail (re-run 2026-06-27).
+No `<!-- include: -->` marker or `// tag` region was modified. No other chapter touched.
+
+**Status update:** §B **RESOLVED**. §A (verbatim re-confirm at the pin) remains **OPEN** — the kept/trimmed
+spans above must still be re-checked character-for-character + in context once the pin is fetchable at
+`/pin-source` (the §A table still applies to the surviving short quotes; trimmed spans are now shorter
+fragments of the originally-listed text). The flag stays OPEN overall until §A clears.
