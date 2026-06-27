@@ -1,6 +1,6 @@
 # Making the Security Gate Stick
 
-*Assembling SAST, SCA, secrets, and DAST into one automated gate — and the block-versus-warn policy that keeps it from being disabled · Part VIII (closer)*
+*Assembling SAST, SCA, secrets, and DAST into one automated gate, and the block-versus-warn policy that keeps it from being disabled · Part VIII (closer)*
 
 > Turn every security tool on as a hard blocker and within two weeks the build is permanently red and someone has added `continue-on-error: true`. A security gate the team routes around protects nothing.
 
@@ -14,12 +14,12 @@ That failure, and how to avoid it, is this closing chapter of Part VIII. The too
 
 **What this chapter covers**
 
-- The **five testing types** — SAST, SCA, secrets, DAST, IAST — what each covers and where it runs.
+- The **five testing types** (SAST, SCA, secrets, DAST, IAST): what each covers and where it runs.
 - **Gate ordering**: fast checks at the pull request, slow dynamic scans later against staging.
 - The **block-versus-warn policy**: blocking high-severity new findings while triaging the rest, the discipline that prevents gate fatigue.
 - The **DevSecOps** frame, and the honest limits: a green gate is not "secure."
 
-**What this chapter does NOT cover.** The individual tools in depth — SAST and secrets (Chapter 31), SCA and the supply chain (Part VII). The secure-coding classes the tools detect (Chapter 30). The *general* quality-gate machinery — pipeline design, gate policy, and gate performance — which Part IX owns (this is its security instance). New-code/clean-as-you-code gating mechanics (Part IX). DAST/IAST tool specifics are named, with details verified at the pin; the tools are presented neutrally.
+**What this chapter does NOT cover.** The individual tools in depth: SAST and secrets (Chapter 31), SCA and the supply chain (Part VII). The secure-coding classes the tools detect (Chapter 30). The *general* quality-gate machinery — pipeline design, gate policy, and gate performance — which Part IX owns (this is its security instance). New-code/clean-as-you-code gating mechanics (Part IX). DAST/IAST tool specifics are named, with details verified at the pin; the tools are presented neutrally.
 
 **One idea to hold:** *assembling the security tools is the straightforward part; making the gate stick is the discipline. Order them fast-to-slow, block only high-severity new findings and triage the rest, route real findings to a reviewer, and keep in mind that a green gate means "no detected known issues," not "secure."*
 
@@ -27,9 +27,9 @@ That failure, and how to avoid it, is this closing chapter of Part VIII. The too
 
 The whole gate fits one picture: the five testing types laid out left-to-right in the order they run, the fast static checks at pre-commit and the pull request, the slow dynamic checks deferred to a stage against staging, and one block-versus-warn line drawn through all of them. Figure 32.1 is that map; the sections below walk it lens by lens.
 
-![Figure 32.1 — The security gate: five testing types ordered fast-to-slow — Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.](figures/fig73_1.png)
+![Figure 32.1 — The security gate: five testing types ordered fast-to-slow. Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.](figures/fig73_1.png)
 
-*Figure 32.1 — The security gate: five testing types ordered fast-to-slow — Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.*
+*Figure 32.1 — The security gate: five testing types ordered fast-to-slow. Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.*
 
 ### The five testing types
 
@@ -81,7 +81,7 @@ The dynamic pair runs last, against staging, gating the release rather than the 
         run: zap-baseline.py -t "$STAGING_URL"   # OWASP ZAP; dated-at-use 2026-06; gates the release, not the PR
 ```
 
-This is the **DevSecOps** frame: security is not a separate team's late-stage audit but everyone's responsibility, shifted left (Chapter 1) and automated as gates in the same pipeline as every other quality check, with the SBOM and provenance layer (Part VII) covering the supply side. The security gate is, in the language of Chapter 26, a *portfolio of security fitness functions* — each testing type an automated, continuous assessment of one security characteristic.
+This is the **DevSecOps** frame: security is not a separate team's late-stage audit but everyone's responsibility, shifted left (Chapter 4) and automated as gates in the same pipeline as every other quality check, with the SBOM and provenance layer (Part VII) covering the supply side. The security gate is, in the language of Chapter 26, a *portfolio of security fitness functions* — each testing type an automated, continuous assessment of one security characteristic.
 
 ### The policy that makes it stick: block vs warn
 
@@ -89,7 +89,7 @@ Whether the gate survives is a *policy* decision, not a tool decision. Turn ever
 
 > **CONCEPT** *Block high-severity new findings; triage the rest.* The gate should **fail the build only on high-severity findings in new or changed code**, applying the clean-as-you-code scoping from Chapter 19 to security: a pull request does not get blocked on a thousand pre-existing low-severity findings it did not introduce. Everything else **warns** and is **triaged**, routed to a backlog or to a security reviewer who decides. Security findings in particular often go to a human reviewer rather than pure auto-block, because exploitability is a judgment (an unreachable sink, a non-security `MD5`) that a severity number alone does not capture. The trusted gate fails *only* when something genuinely new and serious is wrong; that precision is what keeps it from being disabled.
 
-That policy is externalized per profile rather than compiled in, so the feature-branch gate and the release gate can differ:
+The policy is a record whose profile a system property selects at load time, so the feature-branch gate and the release gate read different files rather than sharing one compiled-in threshold (the loading itself lives in `SecurityGatePolicy.load`):
 
 ```java
 public record SecurityGatePolicy(
