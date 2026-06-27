@@ -5,14 +5,14 @@
 
 | Ch | Key | Score | % | A | B | C-src | C-compile | C-review | Indep? | Decision | Why |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 01 | 39/50 | 78% | PASS | PASS | PASS | NA | NA | yes | **LIFT** | 78% (independent) <88% → lift loop (≤3) toward the bar |
-| 2 | 03 | 39/50 | 78% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 78% (independent) <88% → lift loop (≤3) toward the bar |
-| 3 | 05 | 37/50 | 74% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 74% (independent) <88% → lift loop (≤3) toward the bar |
-| 4 | 06 | 37/50 | 74% | PASS | PASS | PASS | NA | NA | yes | **LIFT** | 74% (independent) <88% → lift loop (≤3) toward the bar |
-| 5 | 08 | 40/50 | 80% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 80% (independent) <88% → lift loop (≤3) toward the bar |
-| 6 | 07 | 37/50 | 74% | PASS | PASS | FAIL | FAIL | PASS | yes | **LIFT** | 74% (independent) but a content floor is not PASS (A/B/C-src) → fix |
-| 7 | 09 | 38/50 | 76% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 76% (independent) <88% → lift loop (≤3) toward the bar |
-| 8 | 10 | 36/50 | 72% | PASS | PASS | FAIL | FAIL | PASS | yes | **LIFT** | 72% (independent) but a content floor is not PASS (A/B/C-src) → fix |
+| 1 | 01 | 42/50 | 84% | PASS | PASS | PASS | NA | NA | yes | **LIFT** | 84% (independent) <88% → lift loop (≤3) toward the bar |
+| 2 | 03 | 41/50 | 82% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 82% (independent) <88% → lift loop (≤3) toward the bar |
+| 3 | 05 | 41/50 | 82% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 82% (independent) <88% → lift loop (≤3) toward the bar |
+| 4 | 06 | 38/50 | 76% | PASS | PASS | PASS | NA | NA | yes | **LIFT** | 76% (independent) <88% → lift loop (≤3) toward the bar |
+| 5 | 08 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 84% (independent) <88% → lift loop (≤3) toward the bar |
+| 6 | 07 | 40/50 | 80% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 80% (independent) <88% → lift loop (≤3) toward the bar |
+| 7 | 09 | 40/50 | 80% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 80% (independent) <88% → lift loop (≤3) toward the bar |
+| 8 | 10 | 39/50 | 78% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 78% (independent) <88% → lift loop (≤3) toward the bar |
 | 9 | 11 | 40/50 | 80% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 80% self-score — lift + independent-score toward the 88% bar |
 | 10 | 12 | 40/50 | 80% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 80% self-score — lift + independent-score toward the 88% bar |
 | 11 | 14 | 40/50 | 80% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 80% self-score — lift + independent-score toward the 88% bar |

@@ -2811,3 +2811,46 @@ Levers (a) em-dash density, (b) hype-word removal, (c) gloss-before-first-use, (
   §5 predicted this exact miss ("JEP 456? … 21?/22? UNVERIFIED") and the draft shipped to scoring with it
   unresolved. The chapter also had **no `_VERIFY.md`/`_CLARITY.md`/`_AUDIT.md`** (gates "manual") — propose a
   chapter cannot reach the scorecard without a `_VERIFY.md` on disk.
+
+## Ch 3 (key 05) — independent re-score after lift (2026-06-28)
+
+- Lift loop worked as designed: naming ACCURACY as the single weakest cluster and handing back one
+  bounded pass lifted THREE clusters (ACCURACY 6→8, UTILITY 8→9, READABILITY 8→9, aggregate 37→41).
+  Highest-leverage lift target is the cluster whose defects are *shared* by others (a wrong cross-ref
+  dents both the fact and the table that depends on it), not necessarily the lowest single score.
+- Map/routing chapters carry a structural DEPTH ceiling (~7) the 88% ship bar does not account for: the
+  chapter is correct as written and still cannot clear 44/50 without padding past what a map should be.
+  Flag such chapters as cut/hold candidates for the human gate rather than inflating DEPTH.
+- Strongly recommend `check_xrefs.sh`: resolve every "Chapter NN" cross-ref against FINAL_INDEX titles
+  and cross-check every concern→chapter mapping between a chapter's table and its prose. Would have caught
+  the Pass-0 line-94 Ch 23/33/34 contradiction automatically.
+- Missing `_VERIFY.md` legitimately caps ACCURACY at 8 (cannot certify full traced-with-recorded-paths
+  confidence from a one-pass re-do). Status tooling should surface "scored but missing upstream gate
+  reports" so the cap is not read as a content weakness — the fix is banking the gate, not editing prose.
+- Gate-report naming gotcha: this chapter's reports are slug-prefixed
+  (`05_java_quality_toolchain_EXAMPLE.md` / `_CODEREVIEW.md`), not bare `_EXAMPLE.md`. Independent scorers
+  should check both conventions before concluding a report is absent.
+
+## Ch 4 (key 06, folds 90) — independent re-score after lift (2026-06-28)
+
+- A targeted citation lift moves ACCURACY exactly ONE band when the residual is "attributed-and-flagged,
+  not clone-verified." Resolving the two *concrete off-pin* attributions (Fig 06.1's unpinned "2019 State
+  of DevOps" → reframed to the pinned DORA source year-free; Smith 2001 → flagged in-body + sidecar, atom 4)
+  was worth +1 (ACCURACY 6→7, aggregate 37→38). It could NOT reach 8: the remaining ceiling is structural —
+  the load-bearing verbatims are `⚠ verify-at-pin` against a multi-authority pin with no clone. "Fixed the
+  off-pin drift" and "diffed the verbatims against the pinned edition" are *different* lifts and score as two
+  separate bands; do not award both for the first.
+- A reframed *sidecar* attribution does not clear the cluster while the *baked PNG* still shows the old
+  edition. `fig06_1.sources.md` is corrected and the body caption is year-free, but `fig06_1.png` still
+  displays "2019 State of DevOps" (un-re-rendered, do-not-re-render constraint). A rendered figure is
+  manuscript-facing, so ACCURACY carries the residual until re-render. The figure-designer gate should treat a
+  caption-citation change as a **re-render trigger** and fail "sidecar corrected, PNG stale" as a drift state,
+  not a clean pass.
+- Report an un-applied in-bounds lift item as "carried forward," not silently dropped. DEPTH's bus-factor-
+  tension fix (lift-list item 4) was available, in-bounds, and not applied this pass, so DEPTH held at 7 and
+  the aggregate gained only the ACCURACY point. Naming the carried-forward item keeps the lift budget honest
+  (pass 1 of ≤3) and points the drafter at the next point.
+- The flag-escape clause (FLOOR C-source PASS) and the ACCURACY cluster correctly pull in opposite
+  directions: flagged-not-invented PASSes the floor, but "honestly flagged" is not "pin-traced," so the
+  cluster stays capped. This designed divergence (floor PASS, cluster 7) must not be "rounded up to match
+  the floor."
