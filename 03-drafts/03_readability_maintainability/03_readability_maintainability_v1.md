@@ -35,13 +35,17 @@ The dashboard was not lying about coverage. It was lying about *quality*, becaus
 
 ## How it works
 
-![Fig 2.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting — Two methods, identical branch count, opposite nesting structure — equal cyclomatic score, very different cognitive score.](../../05-figures/03_readability_maintainability/fig03_1.png)
+Two figures anchor this chapter. Figure 2.1 sets two methods side by side: the same branch count, opposite nesting, an equal cyclomatic score, and a very different cognitive one. It is the measurement distinction the chapter turns on.
 
-*Fig 2.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting — Two methods, identical branch count, opposite nesting structure — equal cyclomatic score, very different cognitive score.*
+![Fig 2.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting. Two methods, identical branch count, opposite nesting structure, equal cyclomatic score, very different cognitive score.](../../05-figures/03_readability_maintainability/fig03_1.png)
 
-![Fig 2.2 — Contested prescriptions: function size &amp; comments — Two reputable schools hold opposed positions. Neither is universally correct — choose deliberately, apply consistently.](../../05-figures/03_readability_maintainability/fig03_2.png)
+*Figure 2.1 — Cyclomatic vs. cognitive complexity: same paths, different nesting. Two methods, identical branch count, opposite nesting structure, equal cyclomatic score, very different cognitive score.*
 
-*Fig 2.2 — Contested prescriptions: function size &amp; comments — Two reputable schools hold opposed positions. Neither is universally correct — choose deliberately, apply consistently.*
+Figure 2.2 maps the contested zone the chapter closes on: two reputable schools holding opposed positions on function size and comments, with the trade-off axis between them and no winner marked.
+
+![Fig 2.2 — Contested prescriptions: function size &amp; comments. Two reputable schools hold opposed positions; neither is universally correct, so a team chooses deliberately and applies consistently.](../../05-figures/03_readability_maintainability/fig03_2.png)
+
+*Figure 2.2 — Contested prescriptions: function size and comments. Two reputable schools hold opposed positions; neither is universally correct, so a team chooses deliberately and applies consistently.*
 
 
 ### Readability is the goal because reading is the cost
@@ -64,46 +68,46 @@ To manage readability, measure it. Two complexity metrics dominate, and the dist
 
 > **CONCEPT** *Cyclomatic complexity* asks "how many tests do I need?" *Cognitive complexity* asks "how hard is this to read?" They are different questions, and a quality program that wants readability should track the second.
 
-In practice, SonarQube enforces cognitive complexity through rule **`java:S3776`** ("Cognitive Complexity of methods should not be too high"), with a configurable threshold. Checkstyle and PMD offer `CyclomaticComplexity`, `NPathComplexity`, and related rules. *(Exact default thresholds verify against the pinned analyzers — Chapters 16, 17.)*
+In practice, SonarQube enforces cognitive complexity through rule **`java:S3776`** ("Cognitive Complexity of methods should not be too high"), with a configurable threshold. Checkstyle and PMD offer `CyclomaticComplexity`, `NPathComplexity`, and related rules. *(Exact default thresholds verify against the pinned analyzers; see Chapters 16, 17.)*
 
 ### Modern Java moves readability too
 
 Readability is partly a *language-version* story, which is why this book anchors on Java 21 and notes 25. Several recent features exist precisely to say intent more directly:
 
-- **Records** collapse a data carrier's constructor, `equals`, `hashCode`, and `toString` into one line — intent is obvious.
+- **Records** collapse a data carrier's constructor, `equals`, `hashCode`, and `toString` into one line, so the intent is obvious.
 - **Pattern matching for `switch`** replaces nested `instanceof`-and-cast ladders with flat, exhaustive cases.
 - **`var`** removes redundant type noise, though it can *hurt* readability when the type is not obvious from the right-hand side (a contested style point).
 - **Text blocks** let multi-line SQL or JSON read as themselves.
 
-*(JEP numbers and exact since-versions verify against the pinned JDK — Chapter 5/13.)* The lesson: "write readable Java in 2026" partly means "use the modern constructs that state intent" — which ties readability to the migration chapters.
+*(JEP numbers and exact since-versions verify against the pinned JDK; see Chapters 5 and 13.)* The lesson holds: "write readable Java in 2026" partly means "use the modern constructs that state intent," which ties readability to the migration chapters.
 
 ### The metrics landscape, and the vanity trap
 
-Complexity is one family. The broader landscape, folded in from the measurement dossier, deserves a map, because choosing the *wrong* metric is the most common failure.
+Complexity is one family. The broader landscape, folded in from the measurement dossier, deserves a map, because choosing the *wrong* metric is the most common failure. A *vanity metric* is a number that looks meaningful but does not change any decision; the rightmost column names where each family tends to mislead.
 
 | Family | Examples | What it signals | The trap |
 |---|---|---|---|
-| Size | lines of code, method/class count | rough scale | the canonical **vanity metric** — more LOC ≠ more value, often the reverse |
+| Size | lines of code, method/class count | rough scale | the canonical **vanity metric**: more LOC ≠ more value, often the reverse |
 | Complexity | cyclomatic, cognitive | testability / understandability | gameable by splitting methods without reducing real complexity |
 | OO design | the CK suite (CBO, RFC, LCOM, …) | coupling, cohesion | proxies; LCOM in particular is contested |
-| Package design | Martin's afferent/efferent coupling, instability | dependency direction | measures the structure you have, not the one you need |
-| Aggregate index | Halstead, Maintainability Index | a single 0–100 "score" | opaque, arbitrary coefficients — false precision |
-| Test adequacy | coverage (lines run), mutation score (faults caught) | are there tests / do they detect bugs | **coverage is the textbook vanity metric** — necessary, not sufficient |
+| Package design | Martin's afferent/efferent coupling, instability | dependency direction | measures the structure that exists, not the one a design needs |
+| Aggregate index | Halstead, Maintainability Index | a single 0–100 "score" | opaque, arbitrary coefficients; false precision |
+| Test adequacy | coverage (lines run), mutation score (faults caught) | are there tests / do they detect bugs | **coverage is the textbook vanity metric**: necessary, not sufficient |
 
 The hook's dashboard failed on the last row: 91% coverage measured *lines executed*, not *faults detected*. Mutation testing (Chapter 23) is the stronger signal, because it checks whether the tests would actually notice a bug.
 
 ### The discipline that keeps a metric honest
 
-The reason "the number lies" is captured by **Goodhart's Law**, in Marilyn Strathern's pithy form: *"When a measure becomes a target, it ceases to be a good measure."* Set coverage as a target and the result is assertion-free tests that touch lines; set lines-of-code as a target and the result is bloated code; set deploy frequency as a target and the result is artificially split deploys. The metric stops measuring the thing the moment the team optimizes the metric.
+The reason "the number lies" is captured by **Goodhart's Law**, in Marilyn Strathern's pithy form: *"When a measure becomes a target, it ceases to be a good measure."* Set coverage as a target and the result is assertion-free tests that touch lines. Set lines-of-code as a target and the result is bloated code. Set deploy frequency as a target and the result is artificially split deploys. The metric stops measuring the thing the moment the team optimizes the metric.
 
 The antidotes, which recur throughout this book:
 
 - **Measure outcomes, not outputs.** Lines, commits, and story points are output; defects-escaped, lead time, and change-failure rate are closer to outcome. DORA's four keys and the SPACE framework (from the same researchers) deliberately span multiple dimensions so no single axis can be gamed.
-- **Never use one metric alone.** Pair every metric with a counter-metric: throughput with stability, coverage with mutation score, velocity with change-failure rate.
+- **Never use one metric alone.** Pair every metric with a *counter-metric*, a second number that exposes gaming of the first: throughput with stability, coverage with mutation score, velocity with change-failure rate.
 - **Prefer trends over absolutes.** A maintainability rating's *direction over time on new code* (Chapter 34's "clean as you code") is more honest than a whole-repo absolute that mixes legacy with new.
 - **Treat a metric as a question, not a verdict.** A spike in coupling is a prompt to look, not a failure to punish, and never a stick to rank individuals (Chapter 38).
 
-> **Trace it back.** Facts above resolve to pinned sources in `SOURCE-PIN.md`: *Clean Code* (read:write ratio); McCabe 1976 and SonarSource's Cognitive Complexity white paper (the two complexity metrics, `java:S3776`); the CK suite and Martin's package metrics; Goodhart (Strathern); DORA/SPACE. (The companion module is built green — `mvn -B -Pquality verify` on JDK 21.0.11; the three discount-rule forms below are the do-and-verify beat.)
+> **Trace it back.** Facts above resolve to pinned sources in `SOURCE-PIN.md`: *Clean Code* (read:write ratio); McCabe 1976 and SonarSource's Cognitive Complexity white paper (the two complexity metrics, `java:S3776`); the CK suite and Martin's package metrics; Goodhart (Strathern); DORA/SPACE. (The companion module is built green via `mvn -B -Pquality verify` on JDK 21.0.11; the three discount-rule forms below are the do-and-verify beat.)
 
 ## Deep dive
 
@@ -111,17 +115,17 @@ The antidotes, which recur throughout this book:
 
 Complexity is the most directly *gate-able* readability proxy, so it is where discipline gets tested. Treat a threshold breach as a **refactor trigger**, not a number to suppress:
 
-- A method over the cognitive-complexity threshold is a prompt to extract a method, replace nested conditionals with guard clauses, or model the branches with sealed types and pattern matching (Chapter 5/13). Splitting it arbitrarily to lower the per-method number while raising overall coupling optimizes the metric and harms the goal.
-- Gate on **new** code, ratcheting, rather than boiling the ocean on a legacy hotspot list (Chapter 34/38).
+- A method over the cognitive-complexity threshold is a prompt to extract a method, replace nested conditionals with guard clauses, or model the branches with sealed types and pattern matching (Chapters 5 and 13). Splitting it arbitrarily to lower the per-method number while raising overall coupling optimizes the metric and harms the goal.
+- Gate on **new** code, ratcheting upward, rather than boiling the ocean on a legacy hotspot list (Chapters 34 and 38).
 - Pick the metric that matches the question: cyclomatic for "how many tests," cognitive for "how readable." Gating the wrong one misleads.
 
 > **WARNING** Splitting a method purely to dodge a complexity threshold can *raise* coupling and *lower* readability. That is Goodhart in miniature. Low cognitive complexity with terrible names is still unreadable.
 
-The companion module makes the gap concrete: one discount rule written three ways, all returning the identical result. The deeply-nested form scores high on cognitive complexity, because the metric increments more for nesting — though its branch count, and so its cyclomatic score, matches the others:
+The companion module makes the gap concrete: one discount rule written three ways, all returning the identical result. The deeply-nested form scores high on cognitive complexity precisely because the metric increments more for nesting, even though the three forms decide the same outcomes:
 
 <!-- include: 03_readability_maintainability/src/main/java/org/acme/readability/DiscountRulesNested.java#smell-nested -->
 
-Splitting the same logic into many one-line methods lowers the per-method number, but following one idea now means hopping between fragments — the cost the second school names:
+Splitting the same logic into many one-line methods lowers the per-method number, but following one idea now means hopping between fragments. That fragmentation cost is exactly what the second school names:
 
 <!-- include: 03_readability_maintainability/src/main/java/org/acme/readability/DiscountRulesFragmented.java#smell-fragmented -->
 
@@ -129,26 +133,26 @@ The balanced form flattens the nesting into guard clauses and keeps the logic in
 
 <!-- include: 03_readability_maintainability/src/main/java/org/acme/readability/DiscountRules.java#refactor-balanced -->
 
-A behaviour-preservation test drives all three across every tier and the floor and cap boundaries and asserts they agree — the cognitive score changed, the result did not. The house Checkstyle/SpotBugs gate measures neither method length nor complexity, so it flags none of the three: different tools measure different things. Snippet tags: `smell-nested`, `smell-fragmented`, `refactor-balanced`.
+A behaviour-preservation test drives all three across every tier and the floor and cap boundaries and asserts they agree: the cognitive score changed, the result did not. The house Checkstyle/SpotBugs gate measures neither method length nor complexity, so it flags none of the three, a reminder that different tools measure different things. Snippet tags: `smell-nested`, `smell-fragmented`, `refactor-balanced`.
 
-### The contested zone — two reputable schools
+### The contested zone: two reputable schools
 
 *That* readability matters is consensus. *How* to achieve it (function size, comments) is genuinely contested among reputable practitioners, and this book presents the disagreement fairly rather than crowning a side.
 
 - **School A — *Clean Code* (Robert C. Martin):** very small functions ("functions should be small… smaller than that"), do-one-thing, and the view that **comments are largely failures**: "a comment is an apology for not making the code self-explanatory."
 - **School B — *A Philosophy of Software Design* (John Ousterhout):** favors **deep modules** (a simple interface over a substantial implementation) over many tiny ones, argues that **excessive decomposition adds cognitive load** (following one idea requires jumping between fragments), and explicitly **values comments** as capturing design intent the code cannot. It contradicts School A on both points.
 
-There is also a vocal critique layer — for example, the essay "It's probably time to stop recommending Clean Code" argues the book is dogmatic and that some of its own example code is poor. Cite these as named positions, not as the field's verdict.
+A vocal critique layer also exists. The essay "It's probably time to stop recommending Clean Code" argues the book is dogmatic and that some of its own example code is poor. Cite these as named positions, not as the field's verdict.
 
-Treat the disagreements as **context-dependent trade-offs**, not winners. Tiny functions aid navigation but can fragment a readable algorithm; comments rot but capture *why*; `var` cuts noise but can hide a type. A team picks a position deliberately and applies it consistently (Chapter 6, 37).
+Treat the disagreements as **context-dependent trade-offs**, not winners. Tiny functions aid navigation but can fragment a readable algorithm; comments rot but capture *why*; `var` cuts noise but can hide a type. A team picks a position deliberately and applies it consistently (Chapters 6 and 37).
 
 ## Limitations
 
 - **Readability is partly subjective and team-relative.** What a team fluent in streams finds readable, another finds opaque. Metrics approximate readability; they do not define it.
 - **Every code metric is a proxy** for an unmeasurable target. High correlation in studies is not causation in a given repo; a clean number can accompany unreadable code.
-- **The prescriptions conflict.** *Clean Code*'s tiny-function rule and *APoSD*'s deep-module rule cannot both be followed; a team must choose, contextually. That is the whole point of the contested zone.
+- **The prescriptions conflict.** *Clean Code*'s tiny-function rule and the deep-module rule from *A Philosophy of Software Design* cannot both be followed; a team must choose, contextually. That is the whole point of the contested zone.
 - **Aggregate indices hide more than they show.** A single 0-100 "maintainability index" invites false confidence; prefer a small panel of metrics with counter-metrics.
-- **Measuring individuals with these metrics is harmful.** It triggers Goodhart gaming and damages morale. They are team/system/codebase signals, never performance reviews.
+- **Measuring individuals with these metrics is harmful.** It triggers Goodhart gaming and damages morale. They are team, system, and codebase signals, never performance reviews.
 
 ## Alternatives
 
@@ -188,7 +192,7 @@ A metric on a dashboard is downstream of a hundred small decisions a developer m
 
 **Reference (exact, traced to the pin)**
 
-- `java:S3776` — SonarQube Cognitive Complexity rule (threshold configurable; default verify @ pinned Sonar 2026.1 LTA — Ch 17).
+- `java:S3776` — SonarQube Cognitive Complexity rule (threshold configurable; default verify @ pinned Sonar 2026.1 LTA, Ch 17).
 - CK suite: WMC, DIT, NOC, CBO, RFC, LCOM (Chidamber & Kemerer, 1994); computed for Java by `ckjm`.
 
 **Sources and further reading**
@@ -207,7 +211,7 @@ A metric on a dashboard is downstream of a hundred small decisions a developer m
 
 ## Next chapter teaser
 
-If readable code is the goal, where do the moves that produce it come from — and which of the old rules has Java itself made obsolete?
+If readable code is the goal, where do the moves that produce it come from, and which of the old rules has Java itself made obsolete?
 
 ---
 

@@ -98,7 +98,7 @@ DRAFT v1 — gates manual; EXAMPLE-BUILD = N/A (culture/process chapter; no comp
 
 Two teams run the identical quality stack from Chapter 3: same Checkstyle ruleset, same coverage gate, same SonarQube quality gate. On one team, a red gate starts a five-minute conversation and a fix. On the other, developers have memorized `// NOSONAR` and `git commit --no-verify`, and the gate is a turnstile they vault. Same tools. Opposite outcomes.
 
-The difference is not tooling. It is culture: who owns quality, when they address it, and whether the environment makes doing the right thing the easy thing. This chapter closes Part I by answering the question every quality program eventually trips over: *whose job is quality?* The honest answer is "the team's, made easy by the tools, protected by the gate, and impossible without the culture."
+The difference is not tooling. It is culture: who owns quality, when they address it, and whether the environment makes doing the right thing the easy thing. This chapter closes Part I by answering the question every quality program eventually trips over. *Whose job is quality?* The honest answer is layered: the team's, made easy by the tools, protected by the gate, and impossible without the culture.
 
 ## Overview
 
@@ -116,40 +116,35 @@ The difference is not tooling. It is culture: who owns quality, when they addres
 
 ## How it works
 
-![Fig 06.1 — Westrum's three organizational culture types — Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.](../../05-figures/06_quality_culture_ownership/fig06_1.png)
-
-*Fig 06.1 — Westrum's three organizational culture types — Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.*
-
-![Fig 06.2 — Shift-left: defect cost rises with lifecycle stage — Catching a defect earlier is cheaper; the Ch 3 tool layers place quality activities as far left as possible.](../../05-figures/06_quality_culture_ownership/fig06_2.png)
-
-*Fig 06.2 — Shift-left: defect cost rises with lifecycle stage — Catching a defect earlier is cheaper; the Ch 3 tool layers place quality activities as far left as possible.*
-
-![Fig 06.3 — The three code-ownership models — Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.](../../05-figures/06_quality_culture_ownership/fig06_3.png)
-
-*Fig 06.3 — The three code-ownership models — Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.*
-
-
 ### Culture is causal
 
-Treating "culture" as the squishy preamble before the real, technical content is tempting. The data says otherwise. Sociologist **Ron Westrum** (1988) classified organizational cultures into three types:
+Culture is treated, too often, as the squishy preamble before the real technical content. The data says otherwise. Sociologist **Ron Westrum** (1988) classified organizational cultures into three types, and Figure 06.1 sets them side by side along the two axes that separate them: how information flows, and what happens when something fails.
+
+![Fig 06.1 — Westrum's three organizational culture types. Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.](../../05-figures/06_quality_culture_ownership/fig06_1.png)
+
+*Fig 06.1 — Westrum's three organizational culture types. Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.*
 
 - **Pathological** — power-oriented; information is hoarded; failure leads to blame and scapegoating.
 - **Bureaucratic** — rule-oriented; information moves through silos.
-- **Generative** — performance-oriented: good information flow, high cooperation and trust, "bridging" across teams, conscious inquiry, and — the hallmark — **failure leads to inquiry, not blame**.
+- **Generative** — performance-oriented: good information flow, high cooperation and trust, "bridging" across teams, conscious inquiry, and the hallmark, **failure leads to inquiry, not blame**.
 
-The **DORA** research program found that a **generative culture is associated with improved software-delivery performance** (the four DORA keys from Chapter 1) and broader organizational outcomes; a later State of DevOps report found **psychological safety predictive** of delivery performance, organizational performance, and productivity. In other words, by the best dataset in the field, generative culture is a *cause* of the outcomes this book optimizes, not the wrapping paper around them.
+The **DORA** research program (the research behind the four delivery keys from Chapter 1) found that a **generative culture is associated with improved software-delivery performance** and broader organizational outcomes. A later State of DevOps report found **psychological safety predictive** of delivery performance, organizational performance, and productivity. By the largest dataset in the field, generative culture is a *cause* of the outcomes this book optimizes, not the wrapping paper around them.
 
-> **IMPORTANT** A generative culture cannot be installed. There is no `mvn` goal for trust. This chapter gives direction, not a switch, and the results arrive over quarters, not a sprint.
+> **IMPORTANT** A generative culture cannot be installed. No `mvn` goal builds trust. This chapter gives direction, not a switch, and the results arrive over quarters, not a sprint.
 
 ### Shift-left: build quality in, not inspect it in
 
 The second idea is *when* quality happens. Its intellectual ancestor is **W. Edwards Deming**'s manufacturing principle: **build quality into the process rather than inspecting it at the end.** A model where a separate QA phase finds defects after the fact catches them when they are most expensive (Chapter 1's economics).
 
-**Larry Smith** named the software version in 2001: **"shift-left testing"** — move testing and quality activities *left*, toward inception, shorten the feedback loop, and have developers and QA collaborate from the start. In this book's terms, shift-left *is* the lifecycle map from Chapter 3: IDE inspections, then pre-commit hooks, then compile-time checks, then fast CI, each layer catching problems earlier and cheaper than the next. Culture decides whether developers *welcome* that feedback or route around it.
+**Larry Smith** named the software version in 2001. *Shift-left testing* moves testing and quality activities *left*, toward inception: it shortens the feedback loop and has developers and QA collaborate from the start. Figure 06.2 plots the reason the direction matters. The cost to fix a defect climbs with each lifecycle stage it survives, so the Ch-3 tool layers sit as far left as they can. In this book's terms, shift-left *is* that lifecycle map from Chapter 3: IDE inspections, then pre-commit hooks, then compile-time checks, then fast CI, each layer catching problems earlier and cheaper than the next. Culture decides whether developers *welcome* that feedback or route around it.
+
+![Fig 06.2 — Shift-left: defect cost rises with lifecycle stage. Catching a defect earlier is cheaper; the Ch 3 tool layers place quality activities as far left as possible.](../../05-figures/06_quality_culture_ownership/fig06_2.png)
+
+*Fig 06.2 — Shift-left: defect cost rises with lifecycle stage. Catching a defect earlier is cheaper; the Ch 3 tool layers place quality activities as far left as possible.*
 
 ### Ownership: who is responsible for a piece of code
 
-Diffuse responsibility kills quality; someone has to own it. Martin Fowler distinguishes three **code-ownership** models, each a legitimate choice with trade-offs:
+Diffuse responsibility kills quality; someone has to own it. *Code ownership* is the policy for who is responsible for a given piece of code. Martin Fowler distinguishes three models, each a legitimate choice with trade-offs, and Figure 06.3 lays them out with the cost each one carries.
 
 | Model | What it is | Strength | Cost |
 |---|---|---|---|
@@ -157,11 +152,15 @@ Diffuse responsibility kills quality; someone has to own it. Martin Fowler disti
 | **Weak** | owners exist, but others may edit with courtesy | balances accountability and flow | ambiguity at the edges |
 | **Collective** | the whole team owns all the code | no bottlenecks; shared knowledge | needs strong shared standards or quality drifts |
 
-There is a direct line from this table to the tools in this book: **collective ownership only works if the automated standards keep everyone honest**. A team can collectively own code only when the gates (Parts IV–IX) hold the line. Mechanisms make ownership concrete: a `CODEOWNERS` file encodes ownership for review routing (Chapter 37); "you build it, you run it" (a practice popularized at Amazon) pushes operational ownership to the team that wrote the code, aligning incentives with quality.
+![Fig 06.3 — The three code-ownership models. Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.](../../05-figures/06_quality_culture_ownership/fig06_3.png)
+
+*Fig 06.3 — The three code-ownership models. Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.*
+
+A direct line runs from this table to the tools in this book: **collective ownership only works if the automated standards keep everyone honest**. A team can collectively own code only when the gates (Parts IV–IX) hold the line. Mechanisms make ownership concrete. A `CODEOWNERS` file encodes ownership for review routing (Chapter 37); "you build it, you run it" (a practice popularized at Amazon) pushes operational ownership to the team that wrote the code, aligning incentives with quality.
 
 ### Knowledge is a quality asset: the bus factor
 
-Ownership raises a risk the dossier folds in here: a codebase only one person understands is a *low-quality asset*, however clean the code. The **bus factor** (or truck factor) is the number of people who would have to be lost before a project stalls. A factor of one (a hero, a silo) is a severe, if invisible, quality risk: when that person leaves, the team's ability to change the code safely collapses (ISO Maintainability, at the *team* level).
+Ownership raises a related risk. A codebase only one person understands is a *low-quality asset*, however clean the code. The **bus factor** (or truck factor) is the number of people who would have to be lost before a project stalls. A factor of one (a hero, a silo) is a severe, if invisible, quality risk: when that person leaves, the team's ability to change the code safely collapses (ISO Maintainability, at the *team* level).
 
 The practices that raise the bus factor are the same ones that build quality culture:
 
@@ -179,7 +178,7 @@ Generative culture is the substrate; the lever a lead actually pulls is **fricti
 - **Automate the boring parts.** Pre-commit hooks and local↔CI parity (Chapter 35) make quality automatic, not heroic; a shared formatter means style is never argued (Chapter 6).
 - **Reward asking.** Psychological safety (the generative hallmark) lets people admit a gap, ask a question, and surface a problem early. That is how knowledge actually spreads.
 
-> **Trace it back.** The claims above are attributed to the pinned canon in `SOURCE-PIN.md` (§5/§7): Westrum's typology and the DORA generative-culture + psychological-safety findings; Deming; Smith's 2001 "shift-left"; Fowler's ownership models; the Boy Scout Rule; bus/truck-factor research. These are named-source attributions whose exact wording and edition are confirmed at `/pin-source`, not against a fetched clone (DORA is web-hosted; the named books are cited, not redistributed) — so the chapter attributes them and crowns nothing. This is a process chapter with no companion build. The do-and-verify beat is to read the DORA generative-culture capability page and map the team onto Westrum's three types.
+> **Trace it back.** The claims above are attributed to the pinned canon in `SOURCE-PIN.md` (§5/§7): Westrum's typology and the DORA generative-culture + psychological-safety findings; Deming; Smith's 2001 "shift-left"; Fowler's ownership models; the Boy Scout Rule; bus/truck-factor research. These are named-source attributions whose exact wording and edition are confirmed at `/pin-source`, not against a fetched clone (DORA is web-hosted; the named books are cited, not redistributed). The chapter therefore attributes them and crowns nothing. The do-and-verify beat for this process chapter is to read the DORA generative-culture capability page and map the team onto Westrum's three types.
 
 ## Deep dive
 
@@ -218,8 +217,8 @@ Two well-known heuristics help, stated as heuristics, not laws:
 
 - **Invest in generative culture + shift-left** for any product with a future and a team larger than one (which is the case this book is written for).
 - **Choose an ownership model deliberately** by context: strong ownership for a small, deep, specialist area; collective for a team that wants flow and has the gates to support it; weak as a pragmatic middle.
-- **Raise the bus factor on purpose** wherever a critical area has a factor of one — through review, docs, pairing, and rotation.
-- **Ease off** forcing process where it does not fit (a solo spike, a throwaway tool); and never weaponize a culture metric to rank an individual.
+- **Raise the bus factor on purpose** wherever a critical area has a factor of one, through review, docs, pairing, and rotation.
+- **Ease off** forcing process where it does not fit (a solo spike, a throwaway tool), and never weaponize a culture metric to rank an individual.
 
 ## Hand-off
 
@@ -231,22 +230,22 @@ Part I has built the foundation: quality is a nameable, priceable set of attribu
 
 - **Culture is causal** (DORA/Westrum): generative, psychologically-safe teams deliver better. The same tools succeed or fail on the culture they land in.
 - **Shift-left** (Deming → Smith): build quality in early; it *is* the lifecycle map of Chapter 3.
-- **Ownership** is strong / weak / collective — each a trade-off; collective ownership needs the automated gates to work.
+- **Ownership** is strong / weak / collective, each a trade-off; collective ownership needs the automated gates to work.
 - **Knowledge is a quality asset**: a bus factor of one is a real risk; review, docs, pairing, and rotation raise it.
-- **Make the right thing easy** — gates as enablers, automation, psychological safety. Whose job is quality? The team's — enabled, automated, and protected.
+- **Make the right thing easy**: gates as enablers, automation, psychological safety. Whose job is quality? The team's, enabled, automated, and protected.
 
 **Key concepts**
 
-- *Westrum typology* — pathological / bureaucratic / generative organizational cultures.
-- *Generative culture* — high trust, good information flow, failure → inquiry not blame.
-- *Shift-left* — move quality activities toward inception (Smith, 2001; Deming lineage).
-- *Code ownership models* — strong / weak / collective (Fowler).
-- *Bus / truck factor* — how many people's loss would stall the project.
+- *Westrum typology*: pathological / bureaucratic / generative organizational cultures.
+- *Generative culture*: high trust, good information flow, failure → inquiry not blame.
+- *Shift-left*: move quality activities toward inception (Smith, 2001; Deming lineage).
+- *Code ownership models*: strong / weak / collective (Fowler).
+- *Bus / truck factor*: how many people's loss would stall the project.
 
 **Reference (traced to the pin)**
 
 - DORA generative-culture capability + psychological-safety finding (dora.dev). Westrum typology (1988, via *Accelerate*).
-- Fowler, *CodeOwnership* (martinfowler.com/bliki/CodeOwnership.html) — the three models.
+- Fowler, *CodeOwnership* (martinfowler.com/bliki/CodeOwnership.html): the three models.
 - Sample `CODEOWNERS` + a one-page team quality charter ship as chapter artifacts (verified for consistency, not compiled).
 
 **Sources and further reading**
@@ -259,7 +258,7 @@ Part I has built the foundation: quality is a nameable, priceable set of attribu
 
 *Tier 2 — Accessible / further reading*
 - W. Edwards Deming on building quality in (manufacturing lineage).
-- Robert C. Martin, the Boy Scout Rule; Hunt & Thomas, *The Pragmatic Programmer* (Broken Windows — note the original theory is contested).
+- Robert C. Martin, the Boy Scout Rule; Hunt & Thomas, *The Pragmatic Programmer* (Broken Windows; note the original theory is contested).
 - Bus/truck-factor research.
 
 ## Next chapter teaser
