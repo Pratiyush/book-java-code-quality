@@ -13,7 +13,7 @@ DRAFT v1 — gates manual; SCA-vs-SAST-distinction + three-questions-about-other
 
 # Knowing What You Ship
 
-*Scanning dependencies for known vulnerabilities, inventorying what you ship with an SBOM, and proving how it was built · 65 (folds 66) · Part VII*
+*Scanning dependencies for known vulnerabilities, inventorying what you ship with an SBOM, and proving how it was built · Part VII*
 
 > When the next Log4Shell drops, the question is not "how do we fix it?" — that is a version bump. It is "where are we even using it?" Most teams cannot answer for days.
 
@@ -40,9 +40,9 @@ That gap is the subject of this chapter, the security half of Part VII. The last
 
 The three questions form a pipeline, not a checklist: each stage answers one of them and feeds the next. Figure 28.1 lays out that chain, from inventorying the components, to scanning the inventory, to attesting how the whole thing was built. The sections that follow walk it one stage at a time.
 
-![Figure 28.1 — Supply-chain pipeline: three questions, one chain — Ch 28 · dossier key 65 (folds 66) · Part VII · each stage answers one question and enables the next](../../05-figures/65_dependency_scanning_sbom_supply_chain/fig65_1.png)
+![Figure 28.1 — Supply-chain pipeline: three questions, one chain — each stage answers one question and enables the next](../../05-figures/65_dependency_scanning_sbom_supply_chain/fig65_1.png)
 
-*Figure 28.1 — Supply-chain pipeline: three questions, one chain — Ch 28 · dossier key 65 (folds 66) · Part VII · each stage answers one question and enables the next*
+*Figure 28.1 — Supply-chain pipeline: three questions, one chain — each stage answers one question and enables the next*
 
 
 ### SCA: is anything known-vulnerable?

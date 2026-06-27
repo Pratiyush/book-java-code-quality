@@ -15,7 +15,7 @@ DRAFT v1 — gates manual; measure-dont-guess(the spine) + the-instruments-that-
 
 # Measure, Don't Guess
 
-*Performance as a quality attribute: setting targets, profiling the real hotspot, allocation hygiene where it matters, and honest benchmarking with JMH · 101 (folds 102, 103, 51, 104) · Part XIII (opener / umbrella)*
+*Performance as a quality attribute: setting targets, profiling the real hotspot, allocation hygiene where it matters, and honest benchmarking with JMH · Part XIII (opener / umbrella)*
 
 > A developer spends a week hand-optimizing the method they were sure was the bottleneck. The latency does not move — the real hotspot was elsewhere, the one a profiler would have found in five minutes. And the benchmark that "proved" the 10× speedup? The JIT had deleted the code being measured.
 

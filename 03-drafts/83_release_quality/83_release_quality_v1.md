@@ -12,7 +12,7 @@ DRAFT v1 — gates manual; release-is-shift-right + a-defect-will-slip-limit-the
 
 # When Quality Meets Reality
 
-*Release gates, progressive delivery that limits the blast radius of a bad change, and the post-release feedback loop that closes the quality cycle · 83 · Part IX (closer)*
+*Release gates, progressive delivery that limits the blast radius of a bad change, and the post-release feedback loop that closes the quality cycle · Part IX (closer)*
 
 > Every gate in this book lowers the odds a defect ships. None lowers them to zero. Release quality is the layer that assumes a defect *will* slip through — and limits what it can do when it does.
 

@@ -13,7 +13,7 @@ DRAFT v1 — gates manual; the-capstone-carve-out(one-defensible-setup-recommend
 
 # So What Do I Actually Set Up?
 
-*One coherent, worked, end-to-end Java quality stack and CI gate — the book's single recommendation, realized as a runnable reference project · 109 · Part XIV (opener / capstone)*
+*One coherent, worked, end-to-end Java quality stack and CI gate — the book's single recommendation, realized as a runnable reference project · Part XIV (opener / capstone)*
 
 > Every tool got its strongest case and its hardest limitation. "Best" never appeared as a verdict. That restraint was the point, and it earned the right to offer, here, once, a starting point a team can trust.
 

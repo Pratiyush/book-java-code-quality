@@ -1,6 +1,6 @@
 # The Number That Lies
 
-*Readability as the primary goal, and why most quality metrics make teams worse · 03 (folds 04, 58) · Part I*
+*Readability as the primary goal, and why most quality metrics make teams worse · Part I*
 
 > "The ratio of time spent reading versus writing is well over 10 to 1." — Robert C. Martin, *Clean Code*
 

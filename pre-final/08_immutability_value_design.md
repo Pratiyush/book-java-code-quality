@@ -1,6 +1,6 @@
 # Objects That Do Not Change Their Mind
 
-*Immutability, records, and the four contracts the language enforces in silence · 10 (folds 15) · Part II*
+*Immutability, records, and the four contracts the language enforces in silence · Part II*
 
 > The compiler makes a record's fields final. It does not make the list inside one stop changing.
 

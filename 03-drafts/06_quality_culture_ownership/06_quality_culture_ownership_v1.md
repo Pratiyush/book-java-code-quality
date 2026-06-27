@@ -9,7 +9,7 @@ DRAFT v1 — gates manual; EXAMPLE-BUILD = N/A (culture/process chapter; no comp
 
 # Whose Job Is Quality?
 
-*Culture, ownership, shift-left, and the knowledge that leaves when people do · 06 (folds 90) · Part I*
+*Culture, ownership, shift-left, and the knowledge that leaves when people do · Part I*
 
 > "A generative culture is a psychologically safe culture." — DORA, on Westrum's typology
 

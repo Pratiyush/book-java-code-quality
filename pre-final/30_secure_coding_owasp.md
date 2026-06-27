@@ -1,6 +1,6 @@
 # The Vulnerabilities You Write Yourself
 
-*Secure coding as designing out vulnerability classes — the OWASP map, injection and deserialization, and cryptographic-API misuse · 69 (folds 72, 74) · Part VIII (opener)*
+*Secure coding as designing out vulnerability classes — the OWASP map, injection and deserialization, and cryptographic-API misuse · Part VIII (opener)*
 
 > The supply chain is pristine: every dependency pinned, scanned, attested. And the endpoint builds a SQL query by string concatenation. The dependency scanner is green and blind. The vulnerability is in the code the team wrote.
 

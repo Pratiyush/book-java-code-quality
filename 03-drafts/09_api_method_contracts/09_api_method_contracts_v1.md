@@ -10,7 +10,7 @@ DRAFT v1 — gates manual; contract-card + two-halves shape; EXAMPLE-BUILD GREEN
 
 # A Method Is a Promise
 
-*Designing contracts that are easy to keep and hard to break — in the small, and across versions · 09 (folds 60) · Part II*
+*Designing contracts that are easy to keep and hard to break — in the small, and across versions · Part II*
 
 > The signature is the part of the promise the compiler enforces. Everything else, the developer enforces.
 

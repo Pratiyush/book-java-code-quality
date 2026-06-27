@@ -9,7 +9,7 @@ DRAFT v1 — gates manual; canon-dating shape; EXAMPLE-BUILD GREEN.
 
 # The Canon, Dated
 
-*Effective Java in practice, read through a language that changed underneath it · 08 (folds 13) · Part II*
+*Effective Java in practice, read through a language that changed underneath it · Part II*
 
 > "Items" are the unit of Effective Java; the language is the unit that keeps moving.
 

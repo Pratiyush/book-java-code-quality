@@ -1,6 +1,6 @@
 # Knowing Whether It Works
 
-*Measuring a quality program so it helps rather than harms — outcome metrics over vanity, a rollout that adoption survives, and dashboards that show trends, not leaderboards · 85 (folds 87, 88) · Part X (closer)*
+*Measuring a quality program so it helps rather than harms — outcome metrics over vanity, a rollout that adoption survives, and dashboards that show trends, not leaderboards · Part X (closer)*
 
 > A VP asks "how do we measure developer productivity?" A lead stands up a dashboard ranking engineers by lines of code and commits. A month later the strongest engineer — who spends her days on architecture and unblocking others — ranks dead last, and the whole team is gaming the number.
 

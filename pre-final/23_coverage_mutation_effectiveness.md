@@ -1,6 +1,6 @@
 # The Number That Feels Like Quality
 
-*Coverage as the necessary floor, mutation testing as the deeper truth, and why only one of them is cheap · 48 (folds 47) · Part V*
+*Coverage as the necessary floor, mutation testing as the deeper truth, and why only one of them is cheap · Part V*
 
 > Coverage reports that a line ran. It cannot report whether a test would have noticed if that line were wrong. Those are different facts, and only one of them has a cheap number.
 

@@ -1,6 +1,6 @@
 # Principles, Measures, and Where the Lines Fall
 
-*SOLID as heuristics, coupling and cohesion as the structure they aim at, and the package design that makes good structure possible · 53 (folds 54, 57) · Part VI (opener)*
+*SOLID as heuristics, coupling and cohesion as the structure they aim at, and the package design that makes good structure possible · Part VI (opener)*
 
 > One codebase has an interface for every class and five layers of indirection to add a field. Another has two hundred classes in one package and a three-thousand-line service. Both are unmaintainable — for opposite reasons.
 

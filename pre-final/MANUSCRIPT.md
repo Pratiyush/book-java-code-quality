@@ -424,7 +424,7 @@ complete. None of these is final; the human finalizes each at release. Fields se
 
 # Quality Is a Word No Team Can Manage
 
-*What code quality is, what poor quality costs, and why "internal quality" is the half no one can see · 01 · Part I*
+*What code quality is, what poor quality costs, and why "internal quality" is the half no one can see · Part I*
 
 > "The 'cost' of high internal quality software is negative." — Martin Fowler, *Is High Quality Software Worth the Cost?*
 
@@ -664,7 +664,7 @@ Once quality can be named, the next temptation is to measure it. So why do most 
 
 # The Number That Lies
 
-*Readability as the primary goal, and why most quality metrics make teams worse · 03 (folds 04, 58) · Part I*
+*Readability as the primary goal, and why most quality metrics make teams worse · Part I*
 
 > "The ratio of time spent reading versus writing is well over 10 to 1." — Robert C. Martin, *Clean Code*
 
@@ -899,7 +899,7 @@ If readable code is the goal, where do the moves that produce it come from, and 
 
 # A Map of the Territory
 
-*The Java quality toolchain at a glance — linters, analyzers, formatters, coverage, gates · 05 · Part I*
+*The Java quality toolchain at a glance — linters, analyzers, formatters, coverage, gates · Part I*
 
 ## Hook
 
@@ -1111,7 +1111,7 @@ If a stack of tools only works in a team that welcomes it, what does a quality c
 
 # Whose Job Is Quality?
 
-*Culture, ownership, shift-left, and the knowledge that leaves when people do · 06 (folds 90) · Part I*
+*Culture, ownership, shift-left, and the knowledge that leaves when people do · Part I*
 
 > "A generative culture is a psychologically safe culture." — DORA, on Westrum's typology
 
@@ -1293,7 +1293,7 @@ With the foundation set, the craft begins. The first stop is the book that taugh
 
 # The Canon, Dated
 
-*Effective Java in practice, read through a language that changed underneath it · 08 (folds 13) · Part II*
+*Effective Java in practice, read through a language that changed underneath it · Part II*
 
 > "Items" are the unit of Effective Java; the language is the unit that keeps moving.
 
@@ -1514,7 +1514,7 @@ If the language now states much of the developer's intent, the highest-leverage 
 
 # Three Things You Should Never Argue About Twice
 
-*Naming, structure, formatting — and the one of them a tool cannot do for you · 07 (folds 17, 34) · Part II*
+*Naming, structure, formatting — and the one of them a tool cannot do for you · Part II*
 
 > A formatter settles where the braces go. Nothing settles whether the name is true.
 
@@ -1780,7 +1780,7 @@ Names and structure make code *readable*; the next chapter makes it *correct und
 
 # A Method Is a Promise
 
-*Designing contracts that are easy to keep and hard to break — in the small, and across versions · 09 (folds 60) · Part II*
+*Designing contracts that are easy to keep and hard to break — in the small, and across versions · Part II*
 
 > The signature is the part of the promise the compiler enforces. Everything else, the developer enforces.
 
@@ -2013,7 +2013,7 @@ The *interface* is now honest. Next comes the *value*: immutability, and the `eq
 
 # Objects That Do Not Change Their Mind
 
-*Immutability, records, and the four contracts the language enforces in silence · 10 (folds 15) · Part II*
+*Immutability, records, and the four contracts the language enforces in silence · Part II*
 
 > The compiler makes a record's fields final. It does not make the list inside one stop changing.
 
@@ -2286,7 +2286,7 @@ This chapter closed with value types that are *there* and equal. Next: the value
 
 # The Value That Isn't There
 
-*Designing NullPointerExceptions out — at design time, at the boundary, at build time, and at runtime · 11 (folds 31, 32) · Part II*
+*Designing NullPointerExceptions out — at design time, at the boundary, at build time, and at runtime · Part II*
 
 > `null` is a value of every reference type and a member of none of them. The compiler will not catch it — until told to.
 
@@ -2513,7 +2513,7 @@ Absence handled, the focus turns to failure. The next chapter is about exception
 
 # When Things Go Wrong
 
-*Exceptions, resource cleanup, and not trusting inputs: the failure paths done right · 12 (folds 16, 18) · Part II*
+*Exceptions, resource cleanup, and not trusting inputs: the failure paths done right · Part II*
 
 > The happy path is where the program does its job. The failure paths are where it earns trust.
 
@@ -2801,7 +2801,7 @@ An exception handles a failure at run time; a generic type prevents one at compi
 
 # Let the Compiler Carry It
 
-*Generics, type erasure, and writing code where a runtime cast can never occur · 14 · Part II*
+*Generics, type erasure, and writing code where a runtime cast can never occur · Part II*
 
 > The unchecked warning is the compiler's report that it has done all it can. The rest of the proof belongs to the developer.
 
@@ -3010,7 +3010,7 @@ Part II closes by naming what it has been teaching. The next chapter covers code
 
 # Names for What's Wrong
 
-*Code smells, the refactor for each, and design patterns read through modern Java · 19 (folds 61) · Part II*
+*Code smells, the refactor for each, and design patterns read through modern Java · Part II*
 
 > A smell is not a bug. It is the code signaling that the next change will cost more than it should.
 
@@ -3224,7 +3224,7 @@ Part III opens on the hardest correctness problem in the book: code that is corr
 
 # The Bug That Passes Every Test
 
-*Thread-safety, the Java Memory Model, and publishing shared state so other threads can actually see it · 20 (folds 21, 23) · Part III*
+*Thread-safety, the Java Memory Model, and publishing shared state so other threads can actually see it · Part III*
 
 > Correctly synchronized means data-race-free. Get the program there, and the simple, intuitive reading of it is the one the spec guarantees.
 
@@ -3453,7 +3453,7 @@ Threads used to be precious: pooled, counted, reused. The next chapter is virtua
 
 # Cheap Threads, Same Rules
 
-*Virtual threads, structured concurrency (still preview), and how concurrent code is actually verified · 22 (folds 24, 25) · Part III*
+*Virtual threads, structured concurrency (still preview), and how concurrent code is actually verified · Part III*
 
 > A thread per request became cheap. Every obligation the memory model imposed on it stayed exactly as expensive.
 
@@ -3711,7 +3711,7 @@ The tools have been everywhere in this book — Error Prone failing a build on a
 
 # Wrong in Both Directions
 
-*How a linter actually reads a program (AST, data-flow, taint), and why no tool can be perfect · 26 · Part IV*
+*How a linter actually reads a program (AST, data-flow, taint), and why no tool can be perfect · Part IV*
 
 > A static analyzer is a machine that approximates an unanswerable question. Its false alarms and its blind spots are not bugs in the tool. They are mathematics.
 
@@ -3939,7 +3939,7 @@ Technique in hand, the workhorses follow. The next chapter covers the four bug-f
 
 # Four Tools, Four Different Bugs
 
-*Checkstyle, PMD, SpotBugs, Error Prone — what each one sees, and why a pipeline runs more than one · 27 (folds 28, 29, 30) · Part IV*
+*Checkstyle, PMD, SpotBugs, Error Prone — what each one sees, and why a pipeline runs more than one · Part IV*
 
 > They all "find bugs." They find *different* bugs, because each reads the program at a different moment in the build.
 
@@ -4142,7 +4142,7 @@ Four tools, four overlapping finding sets, and one open question: how to turn th
 
 # Composition, Not Accumulation
 
-*SonarQube as the platform, the IDE as the first line, and how to layer analyzers into one coherent stack · 35 (folds 36, 37) · Part IV*
+*SonarQube as the platform, the IDE as the first line, and how to layer analyzers into one coherent stack · Part IV*
 
 > Bolting on every analyzer produces a slow build and a flood of duplicate findings. The skill is composing a few that each watch a different blind spot.
 
@@ -4368,7 +4368,7 @@ The stack so far runs rules other people wrote. The next chapter covers writing 
 
 # Teaching the Build Your Rules
 
-*Writing custom analyzer rules, and the compile-time codegen that writes the boilerplate — including the Lombok debate · 38 (folds 40) · Part IV*
+*Writing custom analyzer rules, and the compile-time codegen that writes the boilerplate — including the Lombok debate · Part IV*
 
 > Every team has rules that live in review comments and tribal memory. The ones the build cannot see get broken the week the person who knows them is on vacation.
 
@@ -4608,7 +4608,7 @@ A stack wired to catch a great deal is exactly the problem the last chapter of P
 
 # Keeping the Gate Honest
 
-*False positives, suppression with a reason, baselines, and the ratchet — how a static-analysis gate survives contact with a real codebase · 39 · Part IV (closer)*
+*False positives, suppression with a reason, baselines, and the ratchet — how a static-analysis gate survives contact with a real codebase · Part IV (closer)*
 
 > A gate that fails the build on a finding the team has judged wrong, or on four thousand findings in legacy code, doesn't get fixed. It gets disabled.
 
@@ -4816,7 +4816,7 @@ Static analysis can prove code is well-formed, idiomatic, and free of known bad 
 
 # How Much vs How Good
 
-*The testing landscape, the pyramid, and the two axes of a test suite — plus architecture, flakiness, and test smells · 41 (folds 49) · Part V (opener)*
+*The testing landscape, the pyramid, and the two axes of a test suite — plus architecture, flakiness, and test smells · Part V (opener)*
 
 > A suite can run every line of the codebase and still catch nothing. Coverage measures how much executes; it says nothing about whether a test would notice if the answer were wrong.
 
@@ -5042,7 +5042,7 @@ The base of the pyramid is where most tests live, and it has its own toolkit: a 
 
 # The Base of the Pyramid
 
-*JUnit as the harness, assertion libraries that diagnose, and test doubles done with discipline · 42 (folds 43, 44) · Part V*
+*JUnit as the harness, assertion libraries that diagnose, and test doubles done with discipline · Part V*
 
 > Two tests of the same code: one asserts what the code produced and survives a refactor; the other mocks everything, checks call order, and shatters when a private method is renamed. Same coverage. One is an asset.
 
@@ -5264,7 +5264,7 @@ A mock proves the code *calls* the repository; it says nothing about whether the
 
 # The Database That Does Not Exist in Production
 
-*Integration testing against real dependencies, and the inputs no example imagined · 45 (folds 46) · Part V*
+*Integration testing against real dependencies, and the inputs no example imagined · Part V*
 
 > A unit test is only as good as the doubles it exercises against and the inputs it was given. Two techniques close exactly those two blind spots.
 
@@ -5437,7 +5437,7 @@ A suite can be large, well-spread across the pyramid, and built with real depend
 
 # The Number That Feels Like Quality
 
-*Coverage as the necessary floor, mutation testing as the deeper truth, and why only one of them is cheap · 48 (folds 47) · Part V*
+*Coverage as the necessary floor, mutation testing as the deeper truth, and why only one of them is cheap · Part V*
 
 > Coverage reports that a line ran. It cannot report whether a test would have noticed if that line were wrong. Those are different facts, and only one of them has a cheap number.
 
@@ -5605,7 +5605,7 @@ A change can be fully covered and kill every mutant and still break what a downs
 
 # Correctness Against an Outside Reference
 
-*Contract testing for the agreements between services, API testing for the running endpoint, and approval testing against a reviewed baseline · 50 (folds 52) · Part V (closer)*
+*Contract testing for the agreements between services, API testing for the running endpoint, and approval testing against a reviewed baseline · Part V (closer)*
 
 > A service can pass every test it owns, hit 100% coverage, kill every mutant, and still break the team downstream, because nothing in the suite encoded what they depend on.
 
@@ -5825,7 +5825,7 @@ Part V proved the code behaves. It said nothing about whether the code is *built
 
 # Principles, Measures, and Where the Lines Fall
 
-*SOLID as heuristics, coupling and cohesion as the structure they aim at, and the package design that makes good structure possible · 53 (folds 54, 57) · Part VI (opener)*
+*SOLID as heuristics, coupling and cohesion as the structure they aim at, and the package design that makes good structure possible · Part VI (opener)*
 
 > One codebase has an interface for every class and five layers of indirection to add a field. Another has two hundred classes in one package and a three-thousand-line service. Both are unmaintainable — for opposite reasons.
 
@@ -6033,7 +6033,7 @@ A directed, acyclic dependency graph drawn carefully today fills with cycles by 
 
 # Giving the Diagram Teeth
 
-*Making architecture rules executable with ArchUnit and JPMS — and the fitness-function frame that unifies every gate in the book · 55 (folds 33, 56) · Part VI (closer)*
+*Making architecture rules executable with ArchUnit and JPMS — and the fitness-function frame that unifies every gate in the book · Part VI (closer)*
 
 > The team drew the architecture, nodded, and six months later it is a ball of mud again — not by anyone's decision, but by a thousand small imports nobody stopped.
 
@@ -6228,7 +6228,7 @@ Every gate in this book (the ArchUnit rule, the coverage threshold, the mutation
 
 # The Foundation Under Every Gate
 
-*The build as a quality surface, dependency hygiene that makes the graph deterministic, and the bots that keep it from rotting · 62 (folds 63, 64) · Part VII (opener)*
+*The build as a quality surface, dependency hygiene that makes the graph deterministic, and the bots that keep it from rotting · Part VII (opener)*
 
 > Most of an application is other people's code. The build is where the team keeps that tree honest: pinned so it is reproducible, and current so it does not rot into a wall of vulnerabilities.
 
@@ -6379,7 +6379,7 @@ A dependency tree can be perfectly pinned, converged, and current — and still 
 
 # Knowing What You Ship
 
-*Scanning dependencies for known vulnerabilities, inventorying what you ship with an SBOM, and proving how it was built · 65 (folds 66) · Part VII*
+*Scanning dependencies for known vulnerabilities, inventorying what you ship with an SBOM, and proving how it was built · Part VII*
 
 > When the next Log4Shell drops, the question is not "how do we fix it?" — that is a version bump. It is "where are we even using it?" Most teams cannot answer for days.
 
@@ -6406,9 +6406,9 @@ That gap is the subject of this chapter, the security half of Part VII. The last
 
 The three questions form a pipeline, not a checklist: each stage answers one of them and feeds the next. Figure 28.1 lays out that chain, from inventorying the components, to scanning the inventory, to attesting how the whole thing was built. The sections that follow walk it one stage at a time.
 
-![Figure 28.1 — Supply-chain pipeline: three questions, one chain — Ch 28 · dossier key 65 (folds 66) · Part VII · each stage answers one question and enables the next](figures/fig65_1.png)
+![Figure 28.1 — Supply-chain pipeline: three questions, one chain — each stage answers one question and enables the next](figures/fig65_1.png)
 
-*Figure 28.1 — Supply-chain pipeline: three questions, one chain — Ch 28 · dossier key 65 (folds 66) · Part VII · each stage answers one question and enables the next*
+*Figure 28.1 — Supply-chain pipeline: three questions, one chain — each stage answers one question and enables the next*
 
 ### SCA: is anything known-vulnerable?
 
@@ -6562,7 +6562,7 @@ Everything in this chapter assumed the build that produced the scanned, inventor
 
 # A Build You Can Stand Behind
 
-*Reproducible builds that prove the artifact matches the source, and the licenses hiding in the dependency tree · 67 (folds 68) · Part VII (closer)*
+*Reproducible builds that prove the artifact matches the source, and the licenses hiding in the dependency tree · Part VII (closer)*
 
 > The build's provenance was signed last chapter. But a signature over an artifact means nothing if rebuilding the same source produces a different artifact — the attestation covers a moving target.
 
@@ -6748,7 +6748,7 @@ Everything in Part VII concerned code that was not written in-house or the artif
 
 # The Vulnerabilities You Write Yourself
 
-*Secure coding as designing out vulnerability classes — the OWASP map, injection and deserialization, and cryptographic-API misuse · 69 (folds 72, 74) · Part VIII (opener)*
+*Secure coding as designing out vulnerability classes — the OWASP map, injection and deserialization, and cryptographic-API misuse · Part VIII (opener)*
 
 > The supply chain is pristine: every dependency pinned, scanned, attested. And the endpoint builds a SQL query by string concatenation. The dependency scanner is green and blind. The vulnerability is in the code the team wrote.
 
@@ -7018,7 +7018,7 @@ Designing out a vulnerability class works only if every developer remembers the 
 
 # Catching What You Forgot
 
-*SAST that traces untrusted input to a dangerous sink, and secrets detection for the credentials that leak — with the hard truth that finding one is already too late · 70 (folds 71) · Part VIII*
+*SAST that traces untrusted input to a dangerous sink, and secrets detection for the credentials that leak — with the hard truth that finding one is already too late · Part VIII*
 
 > A developer hardcodes an AWS key and pushes. Ninety seconds later an attacker's bot scraping public commits has it. Deleting it in the next commit changes nothing — it is in the history, it is gone, it is compromised.
 
@@ -7214,7 +7214,7 @@ The security controls are now in place (designed-out classes, SAST, secrets dete
 
 # Making the Security Gate Stick
 
-*Assembling SAST, SCA, secrets, and DAST into one automated gate — and the block-versus-warn policy that keeps it from being disabled · 73 · Part VIII (closer)*
+*Assembling SAST, SCA, secrets, and DAST into one automated gate — and the block-versus-warn policy that keeps it from being disabled · Part VIII (closer)*
 
 > Turn every security tool on as a hard blocker and within two weeks the build is permanently red and someone has added `continue-on-error: true`. A security gate the team routes around protects nothing.
 
@@ -7399,7 +7399,7 @@ Building the security gate required three decisions: which checks to run, in wha
 
 # A Gate the Team Keeps On
 
-*Designing the CI pipeline that runs every gate in the book — ordered for fast feedback, scoped to new code, and kept fast enough that nobody routes around it · 75 (folds 76, 79) · Part IX (opener)*
+*Designing the CI pipeline that runs every gate in the book — ordered for fast feedback, scoped to new code, and kept fast enough that nobody routes around it · Part IX (opener)*
 
 > Wire up every gate the team has built and run them all, blocking, on every pull request, and within a month the slow ones are skipped with `[skip ci]` and the strict ones are set to `continue-on-error`. The gates did not fail. The pipeline did.
 
@@ -7600,7 +7600,7 @@ This chapter set the pipeline's shape but left clean-as-you-code as a principle 
 
 # Making the Gate Real for the Developer
 
-*A coverage strategy that improves tests instead of gaming them, the platforms that run the pipeline, and getting the verdict onto the pull request · 80 (folds 77, 78) · Part IX*
+*A coverage strategy that improves tests instead of gaming them, the platforms that run the pipeline, and getting the verdict onto the pull request · Part IX*
 
 > Set an 80% coverage gate to improve the tests, and a quarter later coverage is 82% and the tests are worse. Developers wrote assertion-free tests that call getters to hit the number. The gate measured a proxy; the proxy was what improved.
 
@@ -7791,7 +7791,7 @@ A required check is only a gate if it cannot be merged around, and a fast gate o
 
 # Teeth and Speed
 
-*Branch protection and merge queues that make the gate unbypassable, trunk-based development that keeps it fast, and pre-commit hooks that move the feedback to the keyboard · 81 (folds 82) · Part IX*
+*Branch protection and merge queues that make the gate unbypassable, trunk-based development that keeps it fast, and pre-commit hooks that move the feedback to the keyboard · Part IX*
 
 > A quality gate that is not a *required* check is a suggestion. A gate that runs only in CI is a ten-minute gotcha. The workflow has to give the gate both teeth and speed, or developers route around it.
 
@@ -7954,7 +7954,7 @@ The workflow this chapter built — small frequent merges to an always-green, al
 
 # When Quality Meets Reality
 
-*Release gates, progressive delivery that limits the blast radius of a bad change, and the post-release feedback loop that closes the quality cycle · 83 · Part IX (closer)*
+*Release gates, progressive delivery that limits the blast radius of a bad change, and the post-release feedback loop that closes the quality cycle · Part IX (closer)*
 
 > Every gate in this book lowers the odds a defect ships. None lowers them to zero. Release quality is the layer that assumes a defect *will* slip through — and limits what it can do when it does.
 
@@ -8139,7 +8139,7 @@ The hook of this chapter named the defect that defeats the whole automated pipel
 
 # The Part the Machine Can't Do
 
-*Code review that catches what tools miss, coding standards that take style off the table, and documentation that records the why · 84 (folds 86, 89) · Part X (opener)*
+*Code review that catches what tools miss, coding standards that take style off the table, and documentation that records the why · Part X (opener)*
 
 > The logic bug that slipped every automated gate reaches a human reviewer. That reviewer is the one safety net the pipeline could not provide. It gets a "LGTM" in four minutes, because it is buried in a 2,400-line pull request nobody actually read.
 
@@ -8322,7 +8322,7 @@ Every human practice in this chapter raises one question: is it working? Are rev
 
 # Knowing Whether It Works
 
-*Measuring a quality program so it helps rather than harms — outcome metrics over vanity, a rollout that adoption survives, and dashboards that show trends, not leaderboards · 85 (folds 87, 88) · Part X (closer)*
+*Measuring a quality program so it helps rather than harms — outcome metrics over vanity, a rollout that adoption survives, and dashboards that show trends, not leaderboards · Part X (closer)*
 
 > A VP asks "how do we measure developer productivity?" A lead stands up a dashboard ranking engineers by lines of code and commits. A month later the strongest engineer — who spends her days on architecture and unblocking others — ranks dead last, and the whole team is gaming the number.
 
@@ -8491,7 +8491,7 @@ This part measured whether the codebase is *improving* — baselining legacy deb
 
 # Changing Code Without Breaking It
 
-*The craft of safe change at four scales (refactoring a method, getting untested code under test, strangling a system, migrating a Java version) all under one rule · 91 (folds 92, 93, 95) · Part XI (opener)*
+*The craft of safe change at four scales (refactoring a method, getting untested code under test, strangling a system, migrating a Java version) all under one rule · Part XI (opener)*
 
 > A team declares the legacy system unmaintainable and starts a ground-up rewrite. Two years later the rewrite is still not done, the old system never stopped growing features, and the project is quietly cancelled. The most expensive failure in software has a single cause: changing everything at once.
 
@@ -8678,7 +8678,7 @@ This chapter was the manual craft of safe change, and it kept reaching for one e
 
 # Taming the Inherited Disaster
 
-*An ordered, incremental remediation playbook for a low-quality codebase — and the type-aware automation engine that scales the craft from one method to ten thousand files · 96 (folds 94) · Part XI (closer)*
+*An ordered, incremental remediation playbook for a low-quality codebase — and the type-aware automation engine that scales the craft from one method to ten thousand files · Part XI (closer)*
 
 > A million-line, under-tested codebase: forty thousand findings on the first scan, a flaky twenty-minute build, a backlog of features due Monday. Fixing everything is impossible, rewriting is the two-year cancellation, and ignoring it compounds. What is the right move?
 
@@ -8887,7 +8887,7 @@ This part improved code that humans wrote. The code arriving in pull requests in
 
 # The Draft That Looks Like a Deliverable
 
-*The quality of AI-generated Java — its characteristic risks, the guardrails for AI-assisted refactoring and test generation, and the one stance that makes AI safe to use · 97 (folds 99) · Part XII (opener / umbrella)*
+*The quality of AI-generated Java — its characteristic risks, the guardrails for AI-assisted refactoring and test generation, and the one stance that makes AI safe to use · Part XII (opener / umbrella)*
 
 > An AI assistant writes a clean, idiomatic, well-tested pull request in thirty seconds. It also has a SQL injection it learned from its training data, imports a package that does not exist, and passes its own tests because they were generated from the buggy code. Nothing looks wrong.
 
@@ -9065,7 +9065,7 @@ This chapter set the stance for one developer with an assistant. But AI in an or
 
 # Only Policy Can Ship It
 
-*Governing AI in the development workflow — sanctioned tools, mandatory verification, an accountable human, and AI code review as an augmentation that never replaces the gate · 100 (folds 98) · Part XII (closer)*
+*Governing AI in the development workflow — sanctioned tools, mandatory verification, an accountable human, and AI code review as an augmentation that never replaces the gate · Part XII (closer)*
 
 > A developer ships a pull request that takes down production, and explains in the post-mortem: "the AI generated that part." It is not a defense. The commit has their name on it. When a machine writes the code, someone still has to own its quality.
 
@@ -9212,7 +9212,7 @@ Part XII added AI to the quality picture but treated quality as correctness, sec
 
 # Measure, Don't Guess
 
-*Performance as a quality attribute: setting targets, profiling the real hotspot, allocation hygiene where it matters, and honest benchmarking with JMH · 101 (folds 102, 103, 51, 104) · Part XIII (opener / umbrella)*
+*Performance as a quality attribute: setting targets, profiling the real hotspot, allocation hygiene where it matters, and honest benchmarking with JMH · Part XIII (opener / umbrella)*
 
 > A developer spends a week hand-optimizing the method they were sure was the bottleneck. The latency does not move — the real hotspot was elsewhere, the one a profiler would have found in five minutes. And the benchmark that "proved" the 10× speedup? The JIT had deleted the code being measured.
 
@@ -9398,7 +9398,7 @@ This chapter measured performance: it set a target, profiled the hotspot, benchm
 
 # The Thousand Cuts
 
-*Load and macro testing for the system-level truth a microbenchmark cannot give, and a performance-regression gate built honestly enough to survive the noise · 105 · Part XIII*
+*Load and macro testing for the system-level truth a microbenchmark cannot give, and a performance-regression gate built honestly enough to survive the noise · Part XIII*
 
 > No single pull request made the service slow. Each added three milliseconds — invisible, defensible, below any reviewer's notice — and a hundred PRs later the p99 latency had tripled. The first anyone heard of it was a customer complaint.
 
@@ -9553,7 +9553,7 @@ This chapter and the last handled performance before release, but the gate catch
 
 # Understanding a Running System
 
-*Observability as quality — structured logging, the three pillars of logs/metrics/traces, and the production feedback loop that turns an incident into a test · 106 (folds 107, 108) · Part XIII (closer)*
+*Observability as quality — structured logging, the three pillars of logs/metrics/traces, and the production feedback loop that turns an incident into a test · Part XIII (closer)*
 
 > Every gate in this book runs before the code ships. None of them is watching at 3am, when the code is the only thing left running.
 
@@ -9751,7 +9751,7 @@ This chapter completed the book's last quality dimension, runtime understandabil
 
 # So What Do I Actually Set Up?
 
-*One coherent, worked, end-to-end Java quality stack and CI gate — the book's single recommendation, realized as a runnable reference project · 109 · Part XIV (opener / capstone)*
+*One coherent, worked, end-to-end Java quality stack and CI gate — the book's single recommendation, realized as a runnable reference project · Part XIV (opener / capstone)*
 
 > Every tool got its strongest case and its hardest limitation. "Best" never appeared as a verdict. That restraint was the point, and it earned the right to offer, here, once, a starting point a team can trust.
 
@@ -9952,7 +9952,7 @@ The chapter delivered the destination, a concrete stack and a runnable reference
 
 # Where to Start, and How to Keep Going
 
-*A staged adoption roadmap that turns the whole book into a plan — offered as a guide to outcomes, not a ladder to climb for its own sake · 110 · Part XIV (the final chapter)*
+*A staged adoption roadmap that turns the whole book into a plan — offered as a guide to outcomes, not a ladder to climb for its own sake · Part XIV (the final chapter)*
 
 > A team proudly reports it has reached "Level 4 maturity": every gate, every tool, a dashboard of solid green. Its codebase is still miserable to work in, its best engineers are leaving, and Mondays are still dreaded. They climbed the ladder and arrived nowhere.
 

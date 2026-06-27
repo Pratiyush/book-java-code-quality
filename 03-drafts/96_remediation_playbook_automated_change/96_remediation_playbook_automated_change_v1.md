@@ -13,7 +13,7 @@ DRAFT v1 — gates manual; ordered-remediation-playbook(assess→gate-new→net�
 
 # Taming the Inherited Disaster
 
-*An ordered, incremental remediation playbook for a low-quality codebase — and the type-aware automation engine that scales the craft from one method to ten thousand files · 96 (folds 94) · Part XI (closer)*
+*An ordered, incremental remediation playbook for a low-quality codebase — and the type-aware automation engine that scales the craft from one method to ten thousand files · Part XI (closer)*
 
 > A million-line, under-tested codebase: forty thousand findings on the first scan, a flaky twenty-minute build, a backlog of features due Monday. Fixing everything is impossible, rewriting is the two-year cancellation, and ignoring it compounds. What is the right move?
 

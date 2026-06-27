@@ -1,6 +1,6 @@
 # How Much vs How Good
 
-*The testing landscape, the pyramid, and the two axes of a test suite — plus architecture, flakiness, and test smells · 41 (folds 49) · Part V (opener)*
+*The testing landscape, the pyramid, and the two axes of a test suite — plus architecture, flakiness, and test smells · Part V (opener)*
 
 > A suite can run every line of the codebase and still catch nothing. Coverage measures how much executes; it says nothing about whether a test would notice if the answer were wrong.
 

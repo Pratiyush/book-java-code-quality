@@ -15,7 +15,7 @@ DRAFT v1 — gates manual; human-catches-what-tools-miss + review-size/time-effe
 
 # The Part the Machine Can't Do
 
-*Code review that catches what tools miss, coding standards that take style off the table, and documentation that records the why · 84 (folds 86, 89) · Part X (opener)*
+*Code review that catches what tools miss, coding standards that take style off the table, and documentation that records the why · Part X (opener)*
 
 > The logic bug that slipped every automated gate reaches a human reviewer. That reviewer is the one safety net the pipeline could not provide. It gets a "LGTM" in four minutes, because it is buried in a 2,400-line pull request nobody actually read.
 

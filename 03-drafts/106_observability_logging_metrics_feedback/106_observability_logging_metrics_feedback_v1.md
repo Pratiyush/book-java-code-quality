@@ -15,7 +15,7 @@ DRAFT v1 — gates manual; observability-is-the-quality-of-understanding-a-runni
 
 # Understanding a Running System
 
-*Observability as quality — structured logging, the three pillars of logs/metrics/traces, and the production feedback loop that turns an incident into a test · 106 (folds 107, 108) · Part XIII (closer)*
+*Observability as quality — structured logging, the three pillars of logs/metrics/traces, and the production feedback loop that turns an incident into a test · Part XIII (closer)*
 
 > Every gate in this book runs before the code ships. None of them is watching at 3am, when the code is the only thing left running.
 

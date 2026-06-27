@@ -14,7 +14,7 @@ DRAFT v1 — gates manual; new-code-focus+ratchet + coverage≠quality-leads + p
 
 # Making the Gate Real for the Developer
 
-*A coverage strategy that improves tests instead of gaming them, the platforms that run the pipeline, and getting the verdict onto the pull request · 80 (folds 77, 78) · Part IX*
+*A coverage strategy that improves tests instead of gaming them, the platforms that run the pipeline, and getting the verdict onto the pull request · Part IX*
 
 > Set an 80% coverage gate to improve the tests, and a quarter later coverage is 82% and the tests are worse. Developers wrote assertion-free tests that call getters to hit the number. The gate measured a proxy; the proxy was what improved.
 

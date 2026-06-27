@@ -18,7 +18,7 @@ DRAFT v1 — editorial gates (VERIFY/CLARITY/AUDIT) manual/pending; select→pre
 
 # Teaching the Build Your Rules
 
-*Writing custom analyzer rules, and the compile-time codegen that writes the boilerplate — including the Lombok debate · 38 (folds 40) · Part IV*
+*Writing custom analyzer rules, and the compile-time codegen that writes the boilerplate — including the Lombok debate · Part IV*
 
 > Every team has rules that live in review comments and tribal memory. The ones the build cannot see get broken the week the person who knows them is on vacation.
 

@@ -16,7 +16,7 @@ DRAFT v1 — gates manual; preserve-behavior+test-backed+incremental (the one in
 
 # Changing Code Without Breaking It
 
-*The craft of safe change at four scales (refactoring a method, getting untested code under test, strangling a system, migrating a Java version) all under one rule · 91 (folds 92, 93, 95) · Part XI (opener)*
+*The craft of safe change at four scales (refactoring a method, getting untested code under test, strangling a system, migrating a Java version) all under one rule · Part XI (opener)*
 
 > A team declares the legacy system unmaintainable and starts a ground-up rewrite. Two years later the rewrite is still not done, the old system never stopped growing features, and the project is quietly cancelled. The most expensive failure in software has a single cause: changing everything at once.
 

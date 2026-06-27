@@ -1,6 +1,6 @@
 # The Foundation Under Every Gate
 
-*The build as a quality surface, dependency hygiene that makes the graph deterministic, and the bots that keep it from rotting · 62 (folds 63, 64) · Part VII (opener)*
+*The build as a quality surface, dependency hygiene that makes the graph deterministic, and the bots that keep it from rotting · Part VII (opener)*
 
 > Most of an application is other people's code. The build is where the team keeps that tree honest: pinned so it is reproducible, and current so it does not rot into a wall of vulnerabilities.
 
