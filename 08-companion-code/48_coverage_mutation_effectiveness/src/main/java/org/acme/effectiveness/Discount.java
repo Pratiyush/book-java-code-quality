@@ -40,18 +40,18 @@ public final class Discount {
      * @throws NullPointerException     if {@code unitPrice} is {@code null}
      * @throws IllegalArgumentException if {@code quantity} is negative or {@code rate} is outside
      *     {@code [0, 1)}
-     * @implSpec Below {@link #THRESHOLD} the original price is returned unchanged (the early-return
-     *     path); at or above it the price is scaled by {@code (1 - rate)} in exact minor-unit math.
+     * @implSpec At or above {@link #THRESHOLD} the price is scaled by {@code (1 - rate)} in exact
+     *     minor-unit math; below it the original price is returned unchanged.
      */
     public Money apply(Money unitPrice, long quantity, double rate) {
         validate(unitPrice, quantity, rate);
         // tag::under-test[]
-        if (quantity < THRESHOLD) {       // CONDITIONALS_BOUNDARY mutates >= to > here
-            return unitPrice;             // early-return path: no discount below the threshold
+        if (quantity >= THRESHOLD) {      // CONDITIONALS_BOUNDARY mutates >= to > here
+            long discounted = Math.round(unitPrice.minorUnits() * (1.0 - rate)); // MATH mutates * and -
+            discountsApplied.incrementAndGet();
+            return new Money(discounted, unitPrice.currency());
         }
-        long discounted = Math.round(unitPrice.minorUnits() * (1.0 - rate)); // MATH mutates * and -
-        discountsApplied.incrementAndGet();
-        return new Money(discounted, unitPrice.currency());
+        return unitPrice;                 // no discount below the threshold
         // end::under-test[]
     }
 

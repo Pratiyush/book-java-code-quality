@@ -47,7 +47,7 @@ class OrderReportApprovalTest {
         SnapshotVerifier verifier = new SnapshotVerifier(workDir);
 
         // tag::approval-verify[]
-        // Render at two different instants; the scrubber makes both match the one approved baseline.
+        // Render with a live timestamp; the scrubber normalizes it so it matches the approved baseline.
         String report = OrderReport.render(ORDERS, Instant.now());
         assertThatNoException()
             .isThrownBy(() -> verifier.verify("order-report", report, SCRUB_TIMESTAMP));
