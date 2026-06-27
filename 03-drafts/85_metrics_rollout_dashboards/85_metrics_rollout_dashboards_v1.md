@@ -37,7 +37,7 @@ This closing chapter of Part X answers the question the last chapter raised ("is
 
 ## How it works
 
-Figure 85.1 lays out the three columns of the measurement discipline: the DORA and SPACE outcome measures to adopt on the left, the vanity metrics to refuse on the right, and Goodhart's law running underneath as the force that turns any of them from a question into a target. The rest of this section walks each column in turn.
+Figure 38.1 lays out the three columns of the measurement discipline: the DORA and SPACE outcome measures to adopt on the left, the vanity metrics to refuse on the right, and Goodhart's law running underneath as the force that turns any of them from a question into a target. The rest of this section walks each column in turn.
 
 ![DORA and SPACE outcome measures to adopt, versus vanity metrics to refuse — anchored by Goodhart's law.](../../05-figures/85_metrics_rollout_dashboards/fig85_1.png)
 

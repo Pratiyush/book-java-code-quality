@@ -27,15 +27,15 @@ The word "quality" cannot answer those questions. It is too vague to argue with.
 
 ## How it works
 
-Three pictures carry this chapter. Figure 01.1 shows the standards lens: the ISO/IEC 25010 product quality model, nine top-level characteristics, with the one this book lives in marked off. Figure 01.2 shows the economics lens: how the cost of a new feature diverges over time between a high-internal-quality codebase and a low one. Figure 01.3 shows Fowler's technical-debt quadrant, the four kinds of debt that hide behind one word. Each arrives in the section that explains it.
+Three pictures carry this chapter. Figure 1.1 shows the standards lens: the ISO/IEC 25010 product quality model, nine top-level characteristics, with the one this book lives in marked off. Figure 1.2 shows the economics lens: how the cost of a new feature diverges over time between a high-internal-quality codebase and a low one. Figure 1.3 shows Fowler's technical-debt quadrant, the four kinds of debt that hide behind one word. Each arrives in the section that explains it.
 
 ### Quality is not one thing: it is a decomposable set of attributes
 
-The reason "improve quality" is unarguable is that *quality* is an umbrella over many distinct properties. The international standard for software quality, **ISO/IEC 25010**, makes the decomposition explicit. Its **product quality model** breaks quality into top-level *characteristics*, each with sub-characteristics. Figure 01.1 lays out the whole model, with Maintainability, this book's territory, highlighted.
+The reason "improve quality" is unarguable is that *quality* is an umbrella over many distinct properties. The international standard for software quality, **ISO/IEC 25010**, makes the decomposition explicit. Its **product quality model** breaks quality into top-level *characteristics*, each with sub-characteristics. Figure 1.1 lays out the whole model, with Maintainability, this book's territory, highlighted.
 
-![Figure 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.](figures/fig01_1.png)
+![Figure 1.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.](figures/fig01_1.png)
 
-*Figure 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.*
+*Figure 1.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.*
 
 > **CONCEPT** *Product quality* is the set of static and dynamic properties of the software itself. It is distinct from *quality in use*, which is about outcomes when real people use it in a real context. ISO/IEC 25010 defines the product model; its companion ISO/IEC 25019 now holds the quality-in-use model.
 
@@ -67,7 +67,7 @@ The standards lens names the attributes. A second, sharper lens, from Martin Fow
 
 That invisibility is the whole problem. When a stakeholder weighs "quality" against a deadline, they are picturing *external* quality, and trading away *internal* quality they cannot see. The two map cleanly onto the standards lens: external quality is roughly Functional Suitability, Usability, and Reliability-as-experienced; **internal quality is ISO Maintainability**. This book is almost entirely about the internal half: the half no demo reveals and no customer praises.
 
-The cost of that invisible half shows up over time, not on any one day. Figure 01.2 plots it: the cost of adding a feature against the age of the codebase, traced twice, once for a codebase that holds its internal quality and once for one that lets it slide. The two lines start together and pull apart. The ASCII sketch below names the same shape the rendered figure carries.
+The cost of that invisible half shows up over time, not on any one day. Figure 1.2 plots it: the cost of adding a feature against the age of the codebase, traced twice, once for a codebase that holds its internal quality and once for one that lets it slide. The two lines start together and pull apart. The ASCII sketch below names the same shape the rendered figure carries.
 
 ```
             cheap to add a feature  │ ████ high internal quality
@@ -77,9 +77,9 @@ The cost of that invisible half shows up over time, not on any one day. Figure 0
             expensive ─────────────┴───────────────────────────────▶ time
 ```
 
-![Figure 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).](figures/fig01_2.png)
+![Figure 1.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).](figures/fig01_2.png)
 
-*Figure 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).*
+*Figure 1.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).*
 
 ### Why internal quality has negative cost
 
@@ -104,16 +104,16 @@ If internal quality is an asset, poor internal quality is a liability. The field
 
 Debt has **principal** (the not-quite-right code) and **interest** (the extra cost every future change pays). Crucially, Cunningham's debt was never a license to write bad code on purpose. It was shipping the team's current best understanding and refactoring as knowledge grows.
 
-Martin Fowler sharpens the misuse into a quadrant: debt is **deliberate or inadvertent**, crossed with **prudent or reckless**. Figure 01.3 sets the two axes against each other and gives each of the four cells a voice, the sentence a team actually says when it lands there.
+Martin Fowler sharpens the misuse into a quadrant: debt is **deliberate or inadvertent**, crossed with **prudent or reckless**. Figure 1.3 sets the two axes against each other and gives each of the four cells a voice, the sentence a team actually says when it lands there.
 
 | | Reckless | Prudent |
 |---|---|---|
 | **Deliberate** | "We don't have time for design." | "We must ship now and will deal with the consequences — knowingly." |
 | **Inadvertent** | "What's layering?" | "Now we know how we should have done it." |
 
-![Figure 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.](figures/fig01_3.png)
+![Figure 1.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.](figures/fig01_3.png)
 
-*Figure 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.*
+*Figure 1.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.*
 
 The quadrant matters because "technical debt" is routinely used to launder reckless work. This book holds the line: *prudent, tracked* debt is a tool; *reckless* debt is damage with a respectable name.
 
@@ -232,5 +232,3 @@ The vocabulary is now in place: quality decomposes into ISO characteristics; the
 Once quality can be named, the next temptation is to measure it. So why do most quality metrics make teams *worse*?
 
 ---
-
-` marker), so there is no module to build and FLOOR C's compile clause is inapplicable — adjudicated N/A in 01_what_is_code_quality_EXAMPLE.md. The OrderDiscount demo above is a withdrawn proposal, not a built module.

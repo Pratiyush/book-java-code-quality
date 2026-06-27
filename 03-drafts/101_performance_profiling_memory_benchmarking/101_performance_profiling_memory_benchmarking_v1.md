@@ -40,11 +40,11 @@ This opening chapter of Part XIII is the discipline that defeats both lies, and 
 
 ## How it works
 
-The whole discipline fits one loop, shown in Figure 101.1: set a real target, profile to find the actual hotspot, benchmark the fix honestly with JMH, then gate the result against regression. The four sections below walk each step in turn. The loop's first lesson is the gate around it, since most code never enters the loop at all.
+The whole discipline fits one loop, shown in Figure 43.1: set a real target, profile to find the actual hotspot, benchmark the fix honestly with JMH, then gate the result against regression. The four sections below walk each step in turn. The loop's first lesson is the gate around it, since most code never enters the loop at all.
 
 ![The "measure, don't guess" performance loop: set a real target, profile, benchmark the fix with JMH, gate against regression. Most code never enters the loop.](../../05-figures/101_performance_profiling_memory_benchmarking/fig101_1.png)
 
-*Figure 101.1 — the "measure, don't guess" performance loop: set a real target, profile, benchmark the fix with JMH, gate against regression. Most code never enters the loop.*
+*Figure 43.1 — the "measure, don't guess" performance loop: set a real target, profile, benchmark the fix with JMH, gate against regression. Most code never enters the loop.*
 
 
 ### Performance as a measured requirement

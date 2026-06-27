@@ -23,7 +23,7 @@ This closing chapter of Part X answers the question the last chapter raised ("is
 
 ## How it works
 
-Figure 85.1 lays out the three columns of the measurement discipline: the DORA and SPACE outcome measures to adopt on the left, the vanity metrics to refuse on the right, and Goodhart's law running underneath as the force that turns any of them from a question into a target. The rest of this section walks each column in turn.
+Figure 38.1 lays out the three columns of the measurement discipline: the DORA and SPACE outcome measures to adopt on the left, the vanity metrics to refuse on the right, and Goodhart's law running underneath as the force that turns any of them from a question into a target. The rest of this section walks each column in turn.
 
 ![DORA and SPACE outcome measures to adopt, versus vanity metrics to refuse — anchored by Goodhart's law.](figures/fig85_1.png)
 
@@ -157,8 +157,6 @@ The metrics, rollout, and dashboards of this chapter keep pointing at one thing 
 - **Rolling out quality** (key 87) — easy greenfield, hard legacy ("40,000 issues, now what?"). **Baseline** (accept past/gate future: SpotBugs/Checkstyle/Sonar new-code, Ch 16/17/19/34; debt recorded key 59) + **Ratchet** (only-improve: coverage-no-drop Ch 34 key 80, new-issues-zero, complexity-tightens). New-code focus + Boy Scout Rule (Ch 1 key 06). Sequence: format (Ch 6 key 34) → linters-at-warn → block-on-new → heavier → tighten; warn-then-block. Hotspot paydown (key 59) + OpenRewrite (key 94). Bring the team (Ch 1 key 06): why + fast (Ch 33 key 79) + low-FP (Ch 19 key 39) + celebrate-trend. *(baseline tools + clean-as-you-code wording ⚠ @pin. LIMITS: baseline-without-paydown=amnesty; big-bang-fails; suppression-sprawl; new-code-leaves-cold-legacy; can't-mandate-into-hostile-culture.)*
 - **Quality dashboards** (key 88) — point-in-time=noise, TREND=signal; presentation layer of the measurement discipline (Ch 1/2 key 04). Show TRENDS + counter-metrics on NEW code: new-code coverage (Ch 34), debt/maintainability (Ch 17/key 59), complexity (key 58), defect-escape/flaky (Ch 20 key 49), DORA (key 85). Tools: SonarQube dashboards + portfolio (Ch 17 key 35), CI trends, DORA dashboards. New-code lens + audience-fit (dev vs lead/portfolio). Feedback-loop-not-scoreboard. *(SonarQube dashboard/portfolio features ⚠ @pin. LIMITS: weaponize-easily (NEVER individual leaderboard — Goodhart+morale); vanity-on-a-screen; whole-repo-misleads; dashboard-fatigue; green-dashboard≠quality (review Ch 37 key 84).)*
 - **Routing** — measurement discipline → Ch 1/2 (04); economics → Ch 1 (02); flaky/MTTR → Ch 20 (49); debt/hotspots → key 59; new-code coverage → Ch 34 (80); baseline tools → Ch 16/17/19 (27/29/35/39); OpenRewrite → key 94; SonarQube dashboards → Ch 17 (35); review → Ch 37 (84); culture → Ch 1 (06); maturity → key 110; remediation → key 96. SOURCE-PIN: DORA = pinned (§5 2025 DORA report + §7 Accelerate 2018, corrected 2026-06-27); SPACE (Forsgren et al. ACM Queue 2021) remains a §7 canon gap, TO-PIN (flagged 09-flags/85).
-
-> Snippet tags: `DoraMetrics.java#change-failure-rate` · `CounterMetric.java#counter-metric` · `RolloutPolicy.java#baseline-gate` · `DashboardSpec.java#dashboard-no-leaderboard` (all ≤9 lines, resolved by `check_snippets.sh`).
 
 ## Next chapter teaser
 

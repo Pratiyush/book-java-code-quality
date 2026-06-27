@@ -148,8 +148,6 @@ The balanced form flattens the nesting into guard clauses and keeps the logic in
         return new Money(cappedRaw(cart, basisPoints, cap), currency);
 ```
 
-A behaviour-preservation test drives all three across every tier and the floor and cap boundaries and asserts they agree: the cognitive score changed, the result did not. The house Checkstyle/SpotBugs gate measures neither method length nor complexity, so it flags none of the three, a reminder that different tools measure different things. Snippet tags: `smell-nested`, `smell-fragmented`, `refactor-balanced`.
-
 ### The contested zone: two reputable schools
 
 *That* readability matters is consensus. *How* to achieve it (function size, comments) is genuinely contested among reputable practitioners, and this book presents the disagreement fairly rather than crowning a side.
