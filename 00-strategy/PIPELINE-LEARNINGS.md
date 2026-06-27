@@ -2565,3 +2565,32 @@ Learnings:
 5. **Re-run obligation:** this DRY-RUN is on `_v1` drafts; the HARD Step-15 scan must run on the
    assembled `06-assembly/` text (folds/splices may introduce new spans + cross-chapter quote dup =
    RECONCILE's lane).
+
+## EXAMPLE-BUILD fix — Ch 26 / key 55 (ArchUnit fitness functions): CODE-REVIEW FIX-5a (2026-06-27)
+
+Context: CODE-REVIEW + RED-TEAM flagged a fidelity overclaim — prose/Javadoc said `layeredArchitecture()`
+rejects the seeded `..web..` field edge, but no test ran the layered rule over the breach (only the
+`System.out` coding-rule breach was proven), and the seeded class sat in an **undeclared** `..governance..`
+package under `consideringOnlyDependenciesInLayers()`, so the rule as written could not have caught it.
+
+1. **Prove beat soften here, and it was cheap.** The fix was one self-contained test, not a code change to
+   the demo: declare the breaching package as its own layer and run the layered rule under
+   `consideringAllDependencies()`, then assert the violation names the offending class. The displayed
+   `// tag::layered-rule` region was left **untouched** (it teaches the clean one-way policy; the proof
+   test is separate and undisplayed, so no snippet-budget cost). Lesson: an overclaim about a *seeded
+   breach* is usually provable by adding a scoped rule run over the breach — reach for soften only when the
+   mechanism genuinely cannot catch the named edge.
+2. **`consideringOnlyDependenciesInLayers()` is a verified fidelity trap.** ArchUnit 1.4.2 Javadoc
+   (`library/Architectures.java`, verified at tag `v1.4.2`): this scope "ignores" any dependency whose
+   *origin or target sits outside any defined layer" — its own example is the identical `myapp.utils ->`
+   corner case. So a breach class in an undeclared package is silently invisible to a `mayNotBeAccessedBy*`
+   rule. When a chapter demonstrates a layering violation, the breach must sit in a **declared** layer or
+   the rule must use `consideringAllDependencies()` — confirm which against the pinned source, not memory.
+3. **Non-vacuity probe is worth the 30 seconds.** Temporarily scoping the new assertion to the clean import
+   (no breach) made the `assertThatThrownBy` fail as expected — proving the test's green is driven by the
+   breach being *detected*, not by a tautology. Recommend a standard "flip the input, expect the opposite"
+   probe for any seeded-breach detection test before recording it as proven.
+4. **Reconcile the count atoms too.** The fix moved the module from 8 → 9 tests; the draft header, the
+   foot spec block, README table, and class/package Javadoc all carried the old "the rule catches it"
+   framing or test count and had to be reconciled so the printed artifact matches what is now proven. A
+   prove-don't-soften fix still touches every doc atom that described the old behavior.

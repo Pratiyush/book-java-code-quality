@@ -73,14 +73,35 @@ class ArchitectureFitnessTest {
     }
 
     @Test
-    void seededBreachIsDetectedButDoesNotFailTheBuild() {
-        // The seeded ..governance.. class writes to System.out and holds a ..web.. field. Over the
-        // full import (which includes ..governance..) the coding rule reports it. The build stays
-        // green because the breach is asserted as detected here, not left to fail a passing rule.
+    void seededConsoleBreachIsDetectedButDoesNotFailTheBuild() {
+        // The seeded ..governance.. class writes to System.out. Over the full import (which includes
+        // ..governance..) the coding rule reports it. The build stays green because the breach is
+        // asserted as detected here, not left to fail a passing rule.
         ArchRule noConsole = NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS;
         assertThatThrownBy(() -> noConsole.check(LAYERS))
             .isInstanceOf(AssertionError.class)
             .hasMessageContaining("LegacyReportWriter");
+    }
+
+    @Test
+    void seededLayeringBreachIsRejectedByTheLayeredRule() {
+        // The seeded class holds a ..web.. field from outside the four layers. To run the layered rule
+        // over that edge the breaching package is itself declared a layer, and consideringAllDependencies()
+        // is used so an access whose origin sits outside the four core layers still counts (the scope the
+        // layersAreRespectedTopToBottom rule narrows away to stay focused on the clean layers). The rule
+        // then reports the upward ..governance.. -> ..web.. edge with the offending class named — the same
+        // build failure a real cross-layer import would produce, asserted here rather than left to fail.
+        ArchRule webIsClosed = layeredArchitecture().consideringAllDependencies()
+            .layer("Web").definedBy("..web..")
+            .layer("Service").definedBy("..service..")
+            .layer("Persistence").definedBy("..persistence..")
+            .layer("Domain").definedBy("..domain..")
+            .layer("Legacy").definedBy("..governance..")
+            .whereLayer("Web").mayOnlyBeAccessedByLayers("Service");
+        assertThatThrownBy(() -> webIsClosed.check(LAYERS))
+            .isInstanceOf(AssertionError.class)
+            .hasMessageContaining("LegacyReportWriter")
+            .hasMessageContaining("OrderController");
     }
 
     @Test

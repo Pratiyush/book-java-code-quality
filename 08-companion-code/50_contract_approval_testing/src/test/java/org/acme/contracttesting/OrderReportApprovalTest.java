@@ -86,21 +86,30 @@ class OrderReportApprovalTest {
     void rubberStampingAWrongBaselineHidesABug(@TempDir Path workDir) throws IOException {
         SnapshotVerifier verifier = new SnapshotVerifier(workDir);
 
-        // A WRONG total (9999, not 6200) is approved without anyone reading the diff: the failure mode the
-        // chapter warns about. From here the suite stays green against wrong output forever — the test
-        // verifies "unchanged," not "correct". Shown so the cost is visible, never as a pattern to copy.
+        // A bug corrupts order 43's total (9999, where the reviewed report has 1200), so the report renders
+        // a wrong total of 14999 instead of 6200. This is the received output that should be caught in review.
+        List<Order> buggy = List.of(
+            new Order("42", "CONFIRMED", 5_000L),
+            new Order("43", "SHIPPED", 9_999L));
+        String wrongReport = OrderReport.render(buggy, Instant.now());
+
+        // The wrong received report is approved without anyone reading the diff — received promoted to
+        // approved unscrutinised, the failure mode the chapter warns about. The scrubber is applied so the
+        // stored baseline matches what verify() will compare against, exactly as a real approval would store.
         Files.writeString(
             workDir.resolve("order-report.approved.txt"),
-            "ORDER REPORT\ngenerated-at: <timestamp>\ncount: 2\n"
-                + "  - 42 [CONFIRMED] 5000\n  - 43 [SHIPPED] 1200\ntotal: 9999\n",
+            SCRUB_TIMESTAMP.apply(wrongReport),
             StandardCharsets.UTF_8);
 
-        String report = OrderReport.render(ORDERS, Instant.now());
-        assertThatExceptionOfType(SnapshotMismatchException.class)
-            .isThrownBy(() -> verifier.verify("order-report", report, SCRUB_TIMESTAMP));
+        // Re-running against that same wrong output now passes: a wrong baseline sails through green. From
+        // here the suite confirms the wrong output forever — verify() checks "unchanged," never "correct".
+        assertThatNoException()
+            .isThrownBy(() -> verifier.verify("order-report", wrongReport, SCRUB_TIMESTAMP));
 
-        // The real total is 6200; the rubber-stamped baseline says 9999 — the bug is now the baseline.
-        assertThat(report).contains("total: 6200");
+        // Yet the baked-in baseline is genuinely wrong: it reports total 14999, while the reviewed output is
+        // 6200. The green test asserts nothing about correctness — that is why reading the diff is mandatory.
+        assertThat(wrongReport).contains("total: 14999");
+        assertThat(OrderReport.render(ORDERS, Instant.now())).contains("total: 6200");
     }
 
     @Test
