@@ -40,9 +40,9 @@ Both failures live in the **build**, and the build is the subject of this openin
 
 ## How it works
 
-![Fig 62.1 — The build lifecycle as quality-gate host — Maven phases and Gradle check task · bind checks cheapest-first · no winner between the two tools](../../05-figures/62_build_dependency_hygiene/fig62_1.png)
+![Fig 27.1 — The build lifecycle as quality-gate host — Maven phases and Gradle check task · bind checks cheapest-first · no winner between the two tools](../../05-figures/62_build_dependency_hygiene/fig62_1.png)
 
-*Fig 62.1 — The build lifecycle as quality-gate host — Maven phases and Gradle check task · bind checks cheapest-first · no winner between the two tools*
+*Fig 27.1 — The build lifecycle as quality-gate host — Maven phases and Gradle check task · bind checks cheapest-first · no winner between the two tools*
 
 
 ### The build as the gate host

@@ -39,10 +39,10 @@ That inward turn is Part VIII, and this opening chapter frames it. The reassurin
 
 ## How it works
 
-![Fig 69.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically.
+![Fig 30.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically.
     A vulnerability in the eliminate](../../05-figures/69_secure_coding_owasp/fig69_1.png)
 
-*Fig 69.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically.
+*Fig 30.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically.
     A vulnerability in the eliminate*
 
 
@@ -56,7 +56,7 @@ The shared map of which classes matter is the **OWASP Top 10**, the consensus li
 
 Each risk has a Java manifestation and a place it is addressed: injection, cryptographic failures, and deserialization are this chapter's deep dives; vulnerable components are software composition analysis (Part VII); authentication, access control, misconfiguration, SSRF, and logging failures are framework configuration and secure-coding patterns. Each maps to tooling: **SAST** finds many of these in a project's own code (next chapter), **SCA** finds them in dependencies (Part VII), secrets scanners find leaked credentials, and the security gate runs them all in CI. Beyond the Top 10 sit the deeper standards: **ASVS** (the Application Security Verification Standard, the actual *requirements spec*), the **Cheat Sheet Series** (concrete how-to), and **CWE** (the weakness taxonomy SAST tools map their findings to).
 
-> **CONCEPT** *The Top 10 is awareness, not a checklist.* It is a prioritized risk list, not a complete requirements specification (ASVS is). Treating "we have no Top-10 findings" as "we are secure" is a category error: it omits everything not in the top ten, and it omits the flaws *no scanner catches*. SAST and the Top 10 are strong on injection, crypto, and known patterns, and weak on **business-logic and authorization flaws**: a broken access-control check is invisible to a pattern scanner because the pattern looks correct; only design review and tests (Chapter 84) catch it. Security is awareness plus tooling plus review, never tooling alone.
+> **CONCEPT** *The Top 10 is awareness, not a checklist.* It is a prioritized risk list, not a complete requirements specification (ASVS is). Treating "we have no Top-10 findings" as "we are secure" is a category error: it omits everything not in the top ten, and it omits the flaws *no scanner catches*. SAST and the Top 10 are strong on injection, crypto, and known patterns, and weak on **business-logic and authorization flaws**: a broken access-control check is invisible to a pattern scanner because the pattern looks correct; only design review and tests (Chapter 37) catch it. Security is awareness plus tooling plus review, never tooling alone.
 
 ### Injection and deserialization: untrusted data treated as trusted
 
@@ -68,7 +68,7 @@ For **injection**, the principle is *parameterize, do not concatenate*:
 - **Command** → avoid `Runtime.exec` with user input entirely; use an allow-list and `ProcessBuilder` with fixed arguments.
 - **LDAP, XPath, expression languages** (EL/SpEL/OGNL) → encode and parameterize; OGNL and EL injection have caused some of Java's most severe remote-code-execution CVEs.
 
-Input *validation* (Jakarta Bean Validation, Chapter 9) is a useful substrate, but **validation is not a substitute for parameterization**. A string can be perfectly "valid" by every structural rule and still inject; validation is defense-in-depth, parameterization is the actual fix. A team that sells input validation as the injection defense has misunderstood the class.
+Input *validation* (Jakarta Bean Validation, Chapter 10) is a useful substrate, but **validation is not a substitute for parameterization**. A string can be perfectly "valid" by every structural rule and still inject; validation is defense-in-depth, parameterization is the actual fix. A team that sells input validation as the injection defense has misunderstood the class.
 
 The difference is one line of code. The vulnerable lookup folds the value straight into the query text:
 
@@ -143,12 +143,12 @@ The last leg — reject what cannot be made safe — completes the method: an in
 
 The reason to prefer "design out" over "mitigate" is the same reason this book has favored making bad states unrepresentable throughout: a record that cannot hold invalid data (Chapter 8), a type that cannot be null (Chapter 9), an exhaustive switch that cannot miss a case (Chapter 5). A mitigation is a control that can be misconfigured, forgotten, or bypassed; an elimination is a property of the code that holds regardless. `ObjectInputFilter` is a mitigation: it works only if the allow-list is correct and maintained as gadget chains evolve. Not deserializing untrusted data is an elimination. There is no allow-list to get wrong. Moving a vulnerability from "mitigated" to "impossible by construction" is always preferable, because the impossible-by-construction version does not depend on anyone remembering anything.
 
-The honest boundary, shared across all three sections and the whole of Part VIII: **automated detection catches patterns, not design.** A scanner finds the string-concatenated query, the `MD5`, the ECB mode — the *syntactic* signatures of known classes. It does not find a broken authorization check that looks structurally correct, a sound cipher composed into an insecure protocol, or a business-logic flaw that lets a user approve their own refund. Those are *design* flaws, requiring threat modeling, design review, and tests (Chapter 84), not a linter. The OWASP Top 10 is awareness-not-a-checklist and "no SAST findings" is not "secure": the tools cover the pattern-matchable classes, which is most of the volume and the cheapest to fix, while the highest-severity breaches often turn on the logic flaws no tool sees. The complete posture is design out the classes that can be eliminated, gate the patterns automatically (next two chapters), and review for the design flaws tools miss. That is security as a layered quality discipline, not a single scan.
+The honest boundary, shared across all three sections and the whole of Part VIII: **automated detection catches patterns, not design.** A scanner finds the string-concatenated query, the `MD5`, the ECB mode — the *syntactic* signatures of known classes. It does not find a broken authorization check that looks structurally correct, a sound cipher composed into an insecure protocol, or a business-logic flaw that lets a user approve their own refund. Those are *design* flaws, requiring threat modeling, design review, and tests (Chapter 37), not a linter. The OWASP Top 10 is awareness-not-a-checklist and "no SAST findings" is not "secure": the tools cover the pattern-matchable classes, which is most of the volume and the cheapest to fix, while the highest-severity breaches often turn on the logic flaws no tool sees. The complete posture is design out the classes that can be eliminated, gate the patterns automatically (next two chapters), and review for the design flaws tools miss. That is security as a layered quality discipline, not a single scan.
 
 ## Limitations & when NOT to reach for it
 
 - **The OWASP Top 10 is awareness, not a checklist.** It is a prioritized risk list, not a requirements spec (ASVS is); "no Top-10 findings" is not "secure." Use it to prioritize, not to certify.
-- **Tools catch patterns, not design.** SAST and secure-coding rules are weak on business-logic and broken-access-control flaws: the structurally-correct-looking bugs that cause the worst breaches. These need threat modeling, design review, and tests (Chapter 84), not scanners.
+- **Tools catch patterns, not design.** SAST and secure-coding rules are weak on business-logic and broken-access-control flaws: the structurally-correct-looking bugs that cause the worst breaches. These need threat modeling, design review, and tests (Chapter 37), not scanners.
 - **Validation is not parameterization.** A "valid" string can still inject; input validation is defense-in-depth, parameterization is the fix. Selling validation as the injection defense is a real error.
 - **Allow-list filtering is mitigation, not elimination.** `ObjectInputFilter` constrains an evolving gadget-chain threat; not deserializing untrusted data at all is the only robust stance.
 - **Crypto static analysis catches misuse, not protocol flaws.** It finds ECB and MD5; it does not find a bad key-management design or correct primitives in an insecure protocol. Anything bespoke needs a security expert. This is hygiene, not a crypto course.
@@ -159,7 +159,7 @@ The honest boundary, shared across all three sections and the whole of Part VIII
 ## Alternatives & adjacent approaches
 
 - **ASVS** — the verification *standard* that the Top 10 only gestures at; use it when a project needs a requirements spec, not an awareness list alone.
-- **Threat modeling and design review** (Chapter 84) — the only way to catch the authorization and business-logic flaws that pattern tools miss; complementary to, not replaceable by, SAST.
+- **Threat modeling and design review** (Chapter 37) — the only way to catch the authorization and business-logic flaws that pattern tools miss; complementary to, not replaceable by, SAST.
 - **SAST and secrets scanning** (next chapter) — the automated detection of the pattern-matchable classes this chapter teaches how to design out.
 - **SCA and supply-chain security** (Part VII) — the *other* half of application security: vulnerabilities in the code the team did not write.
 - **Make-it-unrepresentable language features** (Chapters 5, 8, 9) — records, sealed types, and non-null types that eliminate whole bug classes by construction, the same principle applied to security.
@@ -173,7 +173,7 @@ These compose into a layered posture: design out the classes with safe construct
 - **Against insecure deserialization:** avoid native Java serialization of untrusted data; use JSON/Protobuf without polymorphic typing; `ObjectInputFilter` only where native serialization is unavoidable.
 - **For cryptography:** vetted defaults — `SecureRandom`, AES/GCM, a real password hash with salt; never `Random` for secrets, ECB, MD5/SHA-1 for security, or hardcoded keys; consult an expert for anything bespoke.
 - **To catch the pattern-matchable classes:** FindSecBugs/Error Prone at build time and SAST in CI (next chapter).
-- **To catch the design and authorization flaws tools miss:** threat modeling, design review, and tests (Chapter 84).
+- **To catch the design and authorization flaws tools miss:** threat modeling, design review, and tests (Chapter 37).
 - **For anything novel, bespoke, or compliance-bound:** a security expert — this guidance is hygiene, not sign-off.
 
 ## Hand-off to the next chapter

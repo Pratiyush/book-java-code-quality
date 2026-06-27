@@ -38,13 +38,13 @@ This chapter is the automated detection that the last one's secure-coding princi
 
 ## How it works
 
-![Fig 70.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.](../../05-figures/70_sast_secrets_detection/fig70_1.png)
+![Fig 31.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.](../../05-figures/70_sast_secrets_detection/fig70_1.png)
 
-*Fig 70.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.*
+*Fig 31.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.*
 
-![Fig 71.1 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents](../../05-figures/70_sast_secrets_detection/fig71_1.png)
+![Fig 31.2 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents](../../05-figures/70_sast_secrets_detection/fig71_1.png)
 
-*Fig 71.1 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents*
+*Fig 31.2 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents*
 
 
 ### SAST: tracing untrusted input to a dangerous sink
@@ -74,7 +74,7 @@ In the pipeline, the scan over the project's own code is one step among the secu
 
 > **CONCEPT** *SAST, SCA, and DAST are three lenses, layered.* SAST analyzes *the project's code, statically*; SCA analyzes *the project's dependencies* (Part VII); DAST (dynamic testing, next chapter) probes the *running app* from outside. They overlap little and cover different blind spots — SAST sees a sink SCA cannot, SCA sees a vulnerable library SAST will not flag, DAST sees a runtime misconfiguration neither static tool can. A security program runs all three; none substitutes for another.
 
-SAST's honest limits are the sharp version of Chapter 30's "tools catch patterns, not design." It produces **both false positives** (flagging non-exploitable paths: a sink that is unreachable, input that is already sanitized upstream) **and false negatives** (missing flows its model cannot trace, and missing entire classes it *cannot* model, including business-logic flaws and broken access control, where the code looks structurally correct). Unmanaged, the false-positive noise gets the gate ignored (Chapter 19), so triage and justified suppression are mandatory; and the false negatives mean SAST never replaces design review, threat modeling, and tests (Chapter 84). Deep dataflow (CodeQL) is also slow on large codebases, so its CI cost must be budgeted (the CI part).
+SAST's honest limits are the sharp version of Chapter 30's "tools catch patterns, not design." It produces **both false positives** (flagging non-exploitable paths: a sink that is unreachable, input that is already sanitized upstream) **and false negatives** (missing flows its model cannot trace, and missing entire classes it *cannot* model, including business-logic flaws and broken access control, where the code looks structurally correct). Unmanaged, the false-positive noise gets the gate ignored (Chapter 19), so triage and justified suppression are mandatory; and the false negatives mean SAST never replaces design review, threat modeling, and tests (Chapter 37). Deep dataflow (CodeQL) is also slow on large codebases, so its CI cost must be budgeted (the CI part).
 
 ### Secrets detection: and why finding is too late
 
@@ -102,14 +102,14 @@ The prevention itself is a resolver that reads the credential from the environme
 
 The two halves of this chapter and the whole of Part VIII fit into one progression, and naming it is what makes the security program coherent rather than a pile of scanners. Chapter 30 taught *what* the vulnerability classes are and how to *design them out*. This chapter is the *automated detection* of those same classes, because design-out depends on human memory, and the shift-left principle is to convert "remember to parameterize" into "the build fails if the developer did not." SAST's taint analysis is literally Chapter 30's "untrusted data treated as trusted" turned into an algorithm: it traces the source-to-sink flow that *is* the injection class. Secrets detection covers the one class (leaked credentials) that is pure pattern-and-entropy and that Chapter 30 could only advise teams to avoid. The relationship is tight: this chapter does not introduce new vulnerabilities; it mechanizes the catching of the ones already taught.
 
-But the automation inherits the exact blind spot the manual discipline had. Static tools find **patterns**; they do not find **design**. SAST will trace tainted input to a SQL sink all day, and it will sail straight past a broken authorization check that lets one user read another's data, because the code *looks* correct: no tainted-source-to-dangerous-sink flow, only a missing `if`. It will not find a business-logic flaw that lets a customer approve their own refund. Secrets detection finds the hardcoded key; it cannot find the secret that is correctly externalized but stored in a misconfigured, world-readable bucket. The pattern-matchable classes are most of the *volume* of vulnerabilities and the cheapest to fix automatically. That is exactly why SAST and secrets scanning are high-value. But the highest-*severity* breaches often turn on the design and logic flaws no static tool sees. That is not an argument against the tools; it is the boundary of what they deliver. The complete posture for Part VIII: design out the classes (Chapter 30), detect the patterns automatically (here), and review for the design flaws tools miss (Chapter 84). Three layers, because each covers what the others cannot.
+But the automation inherits the exact blind spot the manual discipline had. Static tools find **patterns**; they do not find **design**. SAST will trace tainted input to a SQL sink all day, and it will sail straight past a broken authorization check that lets one user read another's data, because the code *looks* correct: no tainted-source-to-dangerous-sink flow, only a missing `if`. It will not find a business-logic flaw that lets a customer approve their own refund. Secrets detection finds the hardcoded key; it cannot find the secret that is correctly externalized but stored in a misconfigured, world-readable bucket. The pattern-matchable classes are most of the *volume* of vulnerabilities and the cheapest to fix automatically. That is exactly why SAST and secrets scanning are high-value. But the highest-*severity* breaches often turn on the design and logic flaws no static tool sees. That is not an argument against the tools; it is the boundary of what they deliver. The complete posture for Part VIII: design out the classes (Chapter 30), detect the patterns automatically (here), and review for the design flaws tools miss (Chapter 37). Three layers, because each covers what the others cannot.
 
 The secrets case adds one more permanent lesson that generalizes beyond security: **for some problems, detection is not prevention, and the asymmetry pushes effort upstream.** A bug found in CI is cheaper than one found in production, but a *secret* found anywhere is already a breach in progress. The cost of detection-after-the-fact is not "fix it," it is "rotate every affected credential and audit what was accessed." That asymmetry is why secrets get a pre-commit hook (the only stage that actually prevents the leak) and why the real answer is a secret manager that makes the mistake impossible, applying the same design-out-the-class principle from Chapter 30 to credentials. Detection is the net; prevention is the floor; and where the cost of a single escape is catastrophic, the investment belongs in the floor, not only in the net.
 
 ## Limitations & when NOT to reach for it
 
 - **SAST produces false positives and false negatives.** It flags non-exploitable paths (noise that gets the gate ignored without triage, Chapter 19) and misses flows its model cannot trace. Triage findings; never treat a clean SAST run as proof of security.
-- **SAST cannot see design or authorization flaws.** Broken access control and business-logic bugs look structurally correct (no source-to-sink flow), so they are invisible to static tools. These need design review, threat modeling, and tests (Chapter 84), the highest-severity class SAST will not catch.
+- **SAST cannot see design or authorization flaws.** Broken access control and business-logic bugs look structurally correct (no source-to-sink flow), so they are invisible to static tools. These need design review, threat modeling, and tests (Chapter 37), the highest-severity class SAST will not catch.
 - **Deep dataflow is slow and licensing varies.** CodeQL's taint analysis costs CI time on large codebases (budget it), and CodeQL/Snyk/Sonar have differing OSS-versus-commercial terms — a real choice, crowned none.
 - **Secrets detection has false positives.** Entropy analysis flags UUIDs, hashes, and test fixtures; without allow-listing discipline the team disables it. Verification (TruffleHog) reduces but does not eliminate the noise.
 - **Detection is not remediation — a found secret is compromised.** Deleting it from `HEAD`, or even rewriting history, does not un-leak it; the only fix is to **rotate** the credential. Scanning catches the mistake; it cannot reverse it.
@@ -123,7 +123,7 @@ The secrets case adds one more permanent lesson that generalizes beyond security
 - **SCA and DAST** — the other two lenses: dependencies (Part VII) and the running app (next chapter); a security program layers all three.
 - **The secrets tools** (gitleaks, TruffleHog, platform push-protection) — config-driven versus verifying versus platform-native; run more than one stage of the ladder.
 - **Secret managers** (Vault, cloud secret stores) — the *prevention* that makes secrets detection a net rather than the primary control.
-- **Design review and threat modeling** (Chapter 84) — the only way to catch the authorization and logic flaws static tools structurally cannot.
+- **Design review and threat modeling** (Chapter 37) — the only way to catch the authorization and logic flaws static tools structurally cannot.
 
 These compose into a layered security posture: design out the classes, SAST the code, SCA the dependencies, scan for secrets across the lifecycle, manage secrets out of source entirely, and review for what tools miss.
 
@@ -135,7 +135,7 @@ These compose into a layered security posture: design out the classes, SAST the 
 - **To keep secrets out of source:** the defense-in-depth ladder — pre-commit hook (prevents) + push protection + CI gate + periodic history scan.
 - **When a secret is found:** rotate it — always, immediately; history rewrite is necessary but secondary.
 - **To make the secret mistake impossible:** a secret manager and externalized config — the prevention SAST/secrets-scanning backstops.
-- **For authorization, business-logic, and design flaws:** design review and threat modeling (Chapter 84) — the static tools will not find them.
+- **For authorization, business-logic, and design flaws:** design review and threat modeling (Chapter 37) — the static tools will not find them.
 
 ## Hand-off to the next chapter
 

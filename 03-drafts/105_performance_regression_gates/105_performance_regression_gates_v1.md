@@ -38,9 +38,9 @@ But a performance gate is uniquely treacherous to build, and the reason is the l
 
 ## How it works
 
-![Fig 105.1 — The performance-regression gate: a fitness function that knows its own noise — Measure against a baseline, compare relative](../../05-figures/105_performance_regression_gates/fig105_1.png)
+![Fig 44.1 — The performance-regression gate: a fitness function that knows its own noise — Measure against a baseline, compare relative](../../05-figures/105_performance_regression_gates/fig105_1.png)
 
-*Fig 105.1 — The performance-regression gate: a fitness function that knows its own noise — Measure against a baseline, compare relative*
+*Fig 44.1 — The performance-regression gate: a fitness function that knows its own noise — Measure against a baseline, compare relative*
 
 
 ### Load and macro testing: the system-level truth
