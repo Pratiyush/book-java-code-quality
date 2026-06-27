@@ -228,9 +228,26 @@ def parse_score(slug):
             return None
     text = open(p, encoding="utf-8").read()
     # Match the labelled total in any of the forms the scorers use:
-    # "**Aggregate 39/50**", "Cluster subtotal:** 38 / 50", "Aggregate score: 36/50".
-    m = re.search(r"(?:Aggregate|Cluster subtotal)\D{0,10}(\d+)\s*/\s*50", text, re.I)
-    total = int(m.group(1)) if m else None
+    # "**Aggregate 39/50**", "Cluster subtotal:** 38 / 50", "Aggregate score: 36/50",
+    # and the sum form "Cluster subtotal: 8 + 8 + 8 + 8 + 8 = 40 / 50".
+    # CRITICAL: must NOT match a *bar-description* line like "Requires aggregate >= 44/50"
+    # or "the 44/50 bar" — those state the threshold, not this chapter's score. So scan
+    # aggregate/subtotal lines, skip threshold prose, and take the RESULT number (the last
+    # "NN/50" on the line, i.e. the figure after "=").
+    total = None
+    for ln in text.splitlines():
+        low = ln.lower()
+        if ("aggregate" not in low) and ("cluster subtotal" not in low):
+            continue
+        if any(x in low for x in ("≥", ">=", "requires", "/50 bar", "/50)", " bar", "vs ", "ship bar", "auto-approv", "threshold")):
+            continue
+        nums = re.findall(r"(\d+)\s*/\s*50", ln)
+        if nums:
+            total = int(nums[0])    # the FINAL/headline figure, e.g. "45/50 (was 43/50)" -> 45;
+            break                   # and the sum form "...= 40/50" -> 40 (its only /50)
+    if total is None:   # fallback to the original lenient form
+        m = re.search(r"(?:Aggregate|Cluster subtotal)\D{0,10}(\d+)\s*/\s*50", text, re.I)
+        total = int(m.group(1)) if m else None
     # Floors are read from the floor TABLE: a row whose label cell contains the floor name, with the
     # verdict in the next cell. Tolerates both "| A — NEUTRALITY | ✅ PASS |" and "| **NEUTRALITY** |
     # PASS |" formats; reads the verdict from the verdict cell only (evidence cells often mention other
