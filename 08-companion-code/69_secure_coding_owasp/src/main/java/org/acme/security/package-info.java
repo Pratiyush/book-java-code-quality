@@ -9,8 +9,9 @@
  * {@link java.security.SecureRandom} nonce, and a salted PBKDF2 password hash).
  *
  * <p>Every {@code Vulnerable*} type is a deliberate teaching counter-example: it is exercised only
- * for behavior by a test and is never wired into a running path. The accompanying {@code *Defenses}
- * type is the design-out fix the chapter recommends. The crypto here is hygiene shown in code, dated
+ * for behavior by a test and is never wired into a running path. The accompanying {@code CustomerLookup},
+ * {@code OrderIntake}, and {@code TokenCrypto} types are the design-out fixes the chapter recommends.
+ * The crypto here is hygiene shown in code, dated
  * against the chapter's pinned guidance; it is not a cryptography course or a security sign-off, and
  * anything bespoke needs a security expert.
  */

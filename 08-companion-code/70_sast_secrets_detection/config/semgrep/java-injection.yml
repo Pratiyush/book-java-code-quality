@@ -16,7 +16,7 @@ rules:
     severity: ERROR
     message: >
       SQL built by string concatenation: untrusted input can reach the query as SQL, not data
-      (OWASP A03 / CWE-89). Use a bound parameter (PreparedStatement '?') instead.
+      (OWASP Top 10:2025 Injection, CWE-89). Use a bound parameter (PreparedStatement '?') instead.
     patterns:
       - pattern: $STMT.executeQuery("..." + ...)
   # end::semgrep-rule[]

@@ -21,7 +21,7 @@
   -->
 
   <!--
-    Injection (OWASP Top 10:2025 A03 / CWE-89). VulnerableOrderLookup.findOrdersByEmail builds its query
+    Injection (OWASP Top 10:2025 Injection, CWE-89). VulnerableOrderLookup.findOrdersByEmail builds its query
     by string concatenation and passes the nonconstant String to Statement.executeQuery, so SpotBugs
     raises SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE (verified High here, so the suppression is
     load-bearing, not decorative). This is the same source-to-sink flow the chapter's Semgrep rule
