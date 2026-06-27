@@ -28,3 +28,18 @@ re-confirm items 1–4 against the pinned user guide / repo. Until then these ar
 ## Also
 No `33_archunit` row exists in `00-strategy/DEMO-CATALOG.md` — proposed demo (storefront layered-breach) lives
 in the dossier §6; backfill the catalog row (flag to catalog owner / example-builder).
+
+## Update — 2026-06-27 (web-verify pass, Maven Central + official ArchUnit docs)
+- **Item 1 — GAV version: RESOLVED.** `com.tngtech.archunit:archunit` and `com.tngtech.archunit:archunit-junit5`
+  both publish **1.4.2** on Maven Central (`maven-metadata.xml` `<latest>1.4.2</latest>` / `<release>1.4.2</release>`,
+  fetched 2026-06-27 from `repo1.maven.org/maven2/com/tngtech/archunit/...`). Matches SOURCE-PIN §2 and the green
+  companion build. The drafts already assert 1.4.2 as confirmed; no marker change needed.
+- **Item 3 — documented min JDK / class-file window: LEFT FLAGGED.** ArchUnit's own versioned docs do NOT state
+  a minimum JDK. Checked the README (`raw.githubusercontent.com/TNG/ArchUnit/main/README.md`), the User Guide
+  index (`archunit.org/userguide/html/000_Index.html`), and the installation page — none states a minimum Java
+  version. Per the web-verify rule (resolve only on a verbatim versioned-doc statement), this atom stays
+  `⚠ verify-at-pin`. Draft 55 line 170 keeps "documented JDK window ⚠ verify-at-pin" correctly.
+- **Items 2, 4 (archunit.properties default values 100/20; full GeneralCodingRules constant set): LEFT FLAGGED.**
+  Not Maven-Central facts; not stated verbatim in a versioned doc fetched this pass (the 100/20 values are
+  exercised by the built module but not re-confirmed against the pinned doc text; the full constant set is not
+  enumerated in a fetched versioned doc). Stay `⚠ verify-at-pin`.

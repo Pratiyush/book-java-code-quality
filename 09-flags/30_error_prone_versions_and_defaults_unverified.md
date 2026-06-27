@@ -29,3 +29,15 @@
 ## Action
 At `/pin-source`: pin the Error Prone row, then re-trace the §2.6/§2.7 reference tables as one unit; replace
 every `⚠ verify at pin` with the pinned version's verified value; reserve ☑ for that post-pin pass.
+
+## Update — 2026-06-27 (web-verify pass, Maven Central)
+- **Exact version + GAV of `error_prone_core` / `error_prone_annotations`: RESOLVED.** Both
+  `maven-metadata.xml` `<latest>2.50.0</latest>` / `<release>2.50.0</release>` (fetched 2026-06-27,
+  `repo1.maven.org`). Confirms SOURCE-PIN §2 "latest 2.x" line; **2.50.0** is the current latest 2.x.
+  `error_prone_annotations` **2.36.0** is also present on Central (the NullAway minimum). Draft 27 line 174 now
+  cites Central for the latest-2.x version.
+- **LEFT FLAGGED (not Central facts):** exact default-on membership and per-check severity (version-sensitive,
+  move across releases); the `net.ltgt.errorprone` Gradle plugin version (community cadence, not asserted as a
+  VERSION atom in the draft); byte-identical check-description quotes + the Refaster template-rule sentence;
+  whether `-XDcompilePolicy=simple` / `--should-stop=ifError=FLOW` are unchanged on a Java 25 build. All stay
+  `⚠ verify-at-pin`.

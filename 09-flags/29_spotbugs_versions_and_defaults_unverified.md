@@ -35,3 +35,20 @@ but the following are version-sensitive and must be re-traced after `/pin-source
 ## Resolution
 Re-trace all of the above against the pinned SpotBugs / FindSecBugs / fb-contrib identifiers after
 `/pin-source`; reserve `☑`/"@the pin" for post-pin verification (pre-pin = "live-line, verify at pin").
+
+## Update — 2026-06-27 (web-verify pass, Maven Central)
+- **Item 1 — exact versions / GAVs: RESOLVED on Central** (all `maven-metadata.xml`, fetched 2026-06-27,
+  `repo1.maven.org`):
+  - `com.github.spotbugs:spotbugs` `<release>4.10.2` — confirms SOURCE-PIN §2 **4.10.2** and draft 27 line 173.
+  - `com.github.spotbugs:spotbugs-maven-plugin` `<release>4.10.2.0` (the dossier's observed 4.9.8.4 is an older
+    published patch; latest is 4.10.2.0).
+  - `com.h3xstream.findsecbugs:findsecbugs-plugin` `<release>1.14.0` — confirms the **1.14.0** assertion; the
+    "1.12.0" in the old SpotBugs Maven example is simply an older published version (drift trap resolved).
+  - `com.mebigfatguy.fb-contrib:fb-contrib` — **7.6.11 is published** (confirms draft 27's 7.6.11); latest is
+    now **7.7.4**.
+- **Items 2 (version-drift trap): RESOLVED** — every GAV taken from Central, not from a doc example, as the
+  flag instructed.
+- **Items 3, 4, 5 — FindSecBugs pattern count ("144/826"), default rank/effort membership per pattern, Java
+  21/25 bytecode-support "experimental" label: LEFT FLAGGED.** Not Central facts; resolve only against the
+  pinned versioned doc text stating them verbatim (not fetched this pass). Stay `⚠ verify-at-pin`; the
+  "experimental" label is preserved, not upgraded.

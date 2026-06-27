@@ -30,3 +30,14 @@
 ## Action
 Re-trace all of the above at `/pin-source` against the pinned PMD identifier; until then they carry
 `⚠ verify at pin` in the dossier (§2.5 reference table + §7 queue).
+
+## Update — 2026-06-27 (web-verify pass, Maven Central)
+- **PMD engine version: RESOLVED.** `net.sourceforge.pmd:pmd-core` `maven-metadata.xml` `<latest>7.25.0</latest>`
+  / `<release>7.25.0</release>` (fetched 2026-06-27, `repo1.maven.org`). Confirms SOURCE-PIN §2 **7.25.0** and
+  the "live 7.25.0" assertion in draft 27 (line 172, now cites Central).
+- **LEFT FLAGGED (per-rule + plugin-default atoms, not Central facts):** per-rule priority (1–5) and default
+  property thresholds (`CyclomaticComplexity`, `AvoidDuplicateLiterals`, `ExcessiveImports`); `quickstart.xml`
+  membership; the CPD Maven `minimumTokens` **100** default (resolve only against
+  `maven.apache.org/plugins/maven-pmd-plugin/cpd-check-mojo.html` verbatim — not fetched this pass);
+  `maven-pmd-plugin` / Gradle `de.aaschmid.cpd` plugin versions (not asserted as VERSION atoms in the draft
+  prose). All stay `⚠ verify-at-pin`.
