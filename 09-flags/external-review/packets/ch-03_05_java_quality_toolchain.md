@@ -113,13 +113,13 @@ This chapter is the map. It does not cover configuring any single tool — that 
 
 ## How it works
 
-![Fig 05.1 — The Java quality toolchain: lifecycle map — Seven moments · tool categories placed at the moment they run · earlier = cheaper to fix](../../05-figures/05_java_quality_toolchain/fig05_1.png)
+![Fig 3.1 — The Java quality toolchain: lifecycle map — Seven moments · tool categories placed at the moment they run · earlier = cheaper to fix](../../05-figures/05_java_quality_toolchain/fig05_1.png)
 
-*Fig 05.1 — The Java quality toolchain: lifecycle map — Seven moments · tool categories placed at the moment they run · earlier = cheaper to fix*
+*Fig 3.1 — The Java quality toolchain: lifecycle map — Seven moments · tool categories placed at the moment they run · earlier = cheaper to fix*
 
-![Fig 05.2 — Concern × tool routing matrix — Any quality concern → which tool kind → when it runs → deep chapter · (not the order — the menu)](../../05-figures/05_java_quality_toolchain/fig05_2.png)
+![Fig 3.2 — Concern × tool routing matrix — Any quality concern → which tool kind → when it runs → deep chapter · (not the order — the menu)](../../05-figures/05_java_quality_toolchain/fig05_2.png)
 
-*Fig 05.2 — Concern × tool routing matrix — Any quality concern → which tool kind → when it runs → deep chapter · (not the order — the menu)*
+*Fig 3.2 — Concern × tool routing matrix — Any quality concern → which tool kind → when it runs → deep chapter · (not the order — the menu)*
 
 
 ### Two axes: what it catches, and when it runs

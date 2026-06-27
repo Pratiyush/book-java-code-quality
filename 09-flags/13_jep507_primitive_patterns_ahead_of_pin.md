@@ -15,3 +15,14 @@ change or be removed. It must NOT be presented as a settled Java 25 language fea
 (records, sealed, pattern `switch`, record patterns, text blocks) plus JEP 512 (final at 25).
 
 **Owner:** draft of key 13.
+
+---
+
+**Web-verify update 2026-06-27 (status re-confirmed; STAYS AHEAD-OF-PIN / PREVIEW).** openjdk.org JEP 507
+re-fetched via `curl` (browser UA). Header table confirms: **Title "Primitive Types in Patterns,
+instanceof, and switch (Third Preview)", Type Feature, Scope SE, Status Closed/Delivered, Release 25**
+(Owner Angelos Bimpoudis; specification/language; relates to JEP 488 second-preview and JEP 530
+fourth-preview). The title's "(Third Preview)" qualifier confirms it remains a **preview** language
+feature at the Java 25 pin (requires `--enable-preview`) — consistent with this flag. JEP number + title
++ release verified correct; `⚠ AHEAD-OF-PIN` is **retained**. Not present in drafts 11/12/01 — the atom
+lives in key 13 (`13_jep507`) — so no draft edit in this pass.

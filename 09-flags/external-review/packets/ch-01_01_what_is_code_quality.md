@@ -84,7 +84,7 @@ Dossier key: 01 (owner) + folds 02, 59 — per 01-index/FINAL_INDEX.md Ch 1
 Slug: 01_what_is_code_quality
 Part / arc position: Part I — Foundations, Chapter 1
 Companion module: EXAMPLE-BUILD = N/A (pure-concept chapter; no companion module — adjudicated in 01_what_is_code_quality_EXAMPLE.md; FLOOR-C compile clause inapplicable, no displayed code to source-trace as a build). The trailing RUNNABLE-EXAMPLE-SPEC is a withdrawn proposal, retained for provenance only.
-Verified against SOURCE-PIN: 2026-06-27 (corrected pin; ISO/IEC 25010:2023; Fowler; Clean Code; Cunningham; SQALE/SonarQube; CISQ 2022; DORA 2025). Atom re-trace at draft = done against the pinned rows. Named-book verbatims (Fowler/Clean Code/Cunningham) + the CISQ statistic stay ⚠ verify-at-pin per 09-flags/01_named_canon_verbatims_and_cisq_stat_verify_at_pin.md.
+Verified against SOURCE-PIN: 2026-06-27 (corrected pin; ISO/IEC 25010:2023; Fowler; Clean Code; Cunningham; SQALE/SonarQube; CISQ 2022; DORA 2025). Atom re-trace at draft = done against the pinned rows. Named-book verbatims (Fowler/Clean Code/Cunningham) + the CISQ statistic + the SonarQube SQALE "30 min/line" default stay ⚠ verify-at-pin per 09-flags/01_named_canon_verbatims_and_cisq_stat_verify_at_pin.md; the finer ISO/IEC 25010:2023 sub-characteristic tree (e.g. maturity→faultlessness) stays ⚠ UNVERIFIED per 09-flags/01_iso25010_2023_subtree_unverified.md. ORIGINALITY+RED-TEAM (RT-7/RT-8) quote-density trim applied 2026-06-27: over-long Fowler/Clean Code/Cunningham verbatims paraphrased into the locked voice, one short attributed fragment kept per source (LEGAL-IP §2; VOICE-GUIDE "two or three quotations from a source, maximum").
 DRAFT v1 — gates run as documented manual passes (cheaper mode); EXAMPLE-BUILD = N/A (no toolchain dependency).
 -->
 
@@ -151,7 +151,7 @@ The most widely encountered model is the **2011 edition's eight characteristics*
 
 The bolded row is the one this book lives in. **Maintainability** — and its five sub-characteristics — is what nearly every tool, test, and gate in the chapters ahead actually moves.
 
-> **NOTE** ISO/IEC 25010 was revised in **2023** (the current edition). It adds **Safety** as a ninth top-level characteristic, renames Usability to *Interaction Capability* and Portability to *Flexibility*, and adjusts sub-characteristics (for example, Reliability's *maturity* becomes *faultlessness*). A caution that this book practises and preaches: many articles titled "ISO 25010:2023" actually print the 2011 model. Edition-specific names trace to the standard's own text, never to a blog (see *Sources*).
+> **NOTE** ISO/IEC 25010 was revised in **2023** (the current edition). It adds **Safety** as a ninth top-level characteristic and renames Usability to *Interaction Capability* and Portability to *Flexibility*. The 2023 edition also reworks several sub-characteristic names — for example, secondary summaries describe Reliability's *maturity* being renamed to *faultlessness* — but the complete 2023 sub-characteristic tree is confirmed against the standard's own text at the pin, not asserted here from a secondary (verify-at-pin; tracked in `09-flags/01_iso25010_2023_subtree_unverified.md`). A caution that this book practises and preaches: many articles titled "ISO 25010:2023" actually print the 2011 model. Edition-specific names trace to the standard's own text, never to a blog (see *Sources*).
 
 The point is not to memorize the tree. It is that "improve quality" decomposes into nameable, separable targets. A lead who says "our **analysability** and **testability** are below bar, and here are the two gates that move them" has a program. A lead who says "improve quality" has a wish.
 
@@ -160,7 +160,7 @@ The point is not to memorize the tree. It is that "improve quality" decomposes i
 The standards lens names the attributes. A second, sharper lens — from Martin Fowler — explains *why quality arguments go wrong*. Fowler splits quality into two kinds:
 
 - **External quality**: what users and customers can perceive (the UI, the features, the defects they hit).
-- **Internal quality**: chiefly the architecture — whether, in his words, "the source code [is] divided into clear modules, so that programmers can easily find and understand which bit of the code they need to work on." Crucially, "users and customers cannot perceive the architecture of the software."
+- **Internal quality**: chiefly the architecture, in Fowler's account — whether the source code is divided into clear modules so a developer can quickly find and understand the part they need to change. The decisive property is that, as Fowler puts it, "users and customers cannot perceive the architecture of the software."
 
 That invisibility is the whole problem. When a stakeholder weighs "quality" against a deadline, they are picturing *external* quality, and trading away *internal* quality they cannot see. The two map cleanly onto the standards lens: external quality is roughly Functional Suitability, Usability, and Reliability-as-experienced; **internal quality is ISO Maintainability**. This book is almost entirely about the internal half — the half no demo reveals and no customer praises.
 
@@ -174,12 +174,12 @@ That invisibility is the whole problem. When a stakeholder weighs "quality" agai
 
 ### Why internal quality has negative cost
 
-Fowler defines **cruft** as "the difference between the current code and how it would ideally be" — tangled logic, unclear data relationships, confusing names. The cost mechanism runs in four steps:
+Fowler's term for the accumulated gap between the code as it is and as it ideally would be is **cruft** — tangled logic, unclear data relationships, confusing names. The cost mechanism runs in four steps:
 
 1. Neglecting internal quality lets cruft accumulate.
 2. Cruft slows every future change, because developers must understand and work around it.
 3. So poor internal quality is a **tax on all future features**.
-4. Therefore high internal quality *reduces* the cost of future features. The usual cost-versus-quality trade-off "does not make sense with the internal quality of software," and the cost of high internal quality is, over any non-trivial timeframe, **negative**.
+4. Therefore high internal quality *reduces* the cost of future features. On Fowler's analysis the usual cost-versus-quality trade-off does not hold for internal quality at all, and the cost of high internal quality is, over any non-trivial timeframe, **negative**.
 
 This inverts the instinct that quality is something a team buys with time. For internal quality, past the first few weeks of a codebase's life, the team buys *time* with quality.
 
@@ -187,15 +187,13 @@ This inverts the instinct that quality is something a team buys with time. For i
 
 ### Why readability is the highest-leverage internal attribute
 
-Of the five Maintainability sub-characteristics, **analysability** (can a developer understand and locate things?) carries the most weight, because reading dominates how developers spend their time. *Clean Code* puts the ratio plainly: "the ratio of time spent reading versus writing is well over **10 to 1** … because this ratio is so high, we want the reading of code to be easy, even if it makes the writing harder." Optimize the operation performed ten times, not the one performed once. That is why Chapters 2, 3, 6, and 17 keep returning to readability.
+Of the five Maintainability sub-characteristics, **analysability** (can a developer understand and locate things?) carries the most weight, because reading dominates how developers spend their time. *Clean Code* puts the reading-to-writing ratio at "well over **10 to 1**," and draws the conclusion that follows: make code easy to read even when that makes it harder to write. Optimize the operation performed ten times, not the one performed once. That is why Chapters 2, 3, 6, and 17 keep returning to readability.
 
 ### What poor quality costs: technical debt
 
-If internal quality is an asset, poor internal quality is a liability. The field already has the right metaphor for it. **Ward Cunningham** coined *technical debt* in his **1992 OOPSLA** experience report, while building the WyCash financial product, to justify refactoring to his boss:
+If internal quality is an asset, poor internal quality is a liability. The field already has the right metaphor for it. **Ward Cunningham** coined *technical debt* in his **1992 OOPSLA** experience report, while building the WyCash financial product, to justify refactoring to his boss. His image was that "shipping first-time code is like going into debt": a little speeds development as long as it is paid back promptly with a rewrite, and the danger arrives only when it is not — every change made over not-quite-right code pays interest.
 
-> "Shipping first-time code is like going into debt. A little debt speeds development so long as it is paid back promptly with a rewrite… The danger occurs when the debt is not repaid. Every minute spent on not-quite-right code counts as interest on that debt."
-
-Debt has **principal** (the not-quite-right code) and **interest** (the extra cost every future change pays). Crucially, Cunningham's debt was *not* "writing bad code on purpose." It was shipping the team's current best understanding and refactoring as knowledge grows.
+Debt has **principal** (the not-quite-right code) and **interest** (the extra cost every future change pays). Crucially, Cunningham's debt was never a license to write bad code on purpose. It was shipping the team's current best understanding and refactoring as knowledge grows.
 
 Martin Fowler sharpens the misuse into a quadrant: debt is **deliberate or inadvertent**, crossed with **prudent or reckless**.
 
@@ -211,7 +209,7 @@ The quadrant matters because "technical debt" is routinely used to launder reckl
 A metaphor that cannot be measured stays an argument. The **SQALE** method (Software Quality Assessment based on Lifecycle Expectations), defined by Jean-Louis Letouzey and implemented directly by **SonarQube**, is how most Java teams actually *see* their debt:
 
 - Each rule carries an estimated **remediation cost in minutes**. A project's **technical debt** is the sum of those costs across all maintainability issues.
-- The **Technical Debt Ratio** is `remediation effort ÷ development effort × 100`, where development effort is `lines of code × cost-to-develop-one-line` (SonarQube's default is **30 minutes per line**).
+- The **Technical Debt Ratio** is `remediation effort ÷ development effort × 100`, where development effort is `lines of code × cost-to-develop-one-line` (SonarQube documents a configurable default of **30 minutes per line** — verify the exact figure against the pinned SonarQube release; the model is owned in Chapter 38).
 - A **Maintainability Rating** (A–E) is derived from that ratio.
 
 > **WARNING** A SQALE debt number is a *model output*, not ground truth. The "30 minutes per line" default and the per-rule estimates are heuristics; two teams' debt numbers are not comparable unless their model configuration matches. Treat the ratio as a **trend** to watch, never a target to hit. Chapter 2 explains why a metric that becomes a target stops measuring anything.
@@ -302,7 +300,7 @@ The vocabulary is now in place: quality decomposes into ISO characteristics; the
 **Reference (exact, traced to the pin)**
 
 - ISO/IEC 25010 Maintainability sub-characteristics: modularity, reusability, analysability, modifiability, testability.
-- SonarQube SQALE defaults: cost-to-develop = 30 min/line; 8-hour day for debt-in-days; Maintainability Rating A–E from the debt ratio. *(Exact rating thresholds verify against the pinned SonarQube 2026.1 LTA — Chapter 38.)*
+- SonarQube SQALE defaults: cost-to-develop = 30 min/line; 8-hour day for debt-in-days; Maintainability Rating A–E from the debt ratio. *(These SQALE defaults and the exact rating thresholds are configurable conventions — verify each against the pinned SonarQube 2026.1 LTA; the model is owned in Chapter 38. Tracked in `09-flags/01_named_canon_verbatims_and_cisq_stat_verify_at_pin.md`.)*
 
 **Sources and further reading**
 

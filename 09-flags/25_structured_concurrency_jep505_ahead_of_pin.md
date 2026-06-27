@@ -11,3 +11,14 @@
   companion module (no `--enable-preview`). Reinforces SOURCE-PIN moving-target policy and the existing
   `09-flags/08_structured_concurrency_ahead_of_pin.md` / `09-flags/12_jep358_default_level_and_rule_ids.md`.
 - **Re-check at:** any re-anchor past JDK 25.
+
+---
+
+**Web-verify update 2026-06-27 (status re-confirmed; STAYS AHEAD-OF-PIN / PREVIEW).** openjdk.org JEP 505
+re-fetched via `curl` (browser UA). Header table confirms: **Title "Structured Concurrency (Fifth
+Preview)", Type Feature, Scope SE, Status Closed/Delivered, Release 25** (Owner Alan Bateman; core-libs;
+relates to JEP 499 fourth-preview and JEP 525 sixth-preview). The title's "(Fifth Preview)" qualifier
+confirms `StructuredTaskScope` is still a **preview** API at the Java 25 forward-LTS (requires
+`--enable-preview`) — consistent with this flag. JEP number + title + release verified correct; the
+`⚠ AHEAD-OF-PIN` framing is **retained**. Not present in drafts 11/12/01 (Ch12 correctly cites the Java 21
+preview JEP 453, not 505), so no draft edit in this pass.
