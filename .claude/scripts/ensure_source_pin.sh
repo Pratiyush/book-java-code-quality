@@ -23,14 +23,40 @@
 set -euo pipefail
 
 # ===== CONFIGURE PER BOOK (see .foundation/BOOK-TYPE-PROFILES.md) =====
-AUTHORITY_REPO="{URL}"     # e.g. https://github.com/quarkusio/quarkus.git
+AUTHORITY_REPO="{URL}"     # (this book is MULTI-AUTHORITY: no single repo — see SOURCE-PIN.md)
 AUTHORITY_TAG="multi-authority (see SOURCE-PIN.md; no single tag)"           # e.g. 3.33.2 (release tag / edition label)
 AUTHORITY_SHA="n/a-multi-authority"           # e.g. 2f9a60b84d3338f5b81cd83a2b4b853c41071a0f
-CLONE_PATH="$CLAUDE_JOB_DIR/tmp"       # e.g. /tmp/quarkus-3.33.2 (local pinned-source dir)
+CLONE_PATH="${CLAUDE_JOB_DIR:-/tmp}/source-pin-clone"       # guarded (was $CLAUDE_JOB_DIR/tmp — unbound under set -u); unused in multi-authority mode
 DOCS_SUBDIR="per-tool (see SOURCE-PIN.md)"     # e.g. docs/src/main/asciidoc (file count sanity-check; "." if flat)
 # Non-repo book types (science/business/narrative): set AUTHORITY_REPO="" and keep
 # CLONE_PATH pointing at the local frozen corpus; --heal then becomes a no-op guard.
+# THIS BOOK: MULTI-AUTHORITY pin — SOURCE-PIN.md is a version table of many tools/specs,
+# each fetched from its own official channel; there is no single clone/SHA to heal. The
+# gate is "the pin file is present and populated"; per-authority versions verified at use.
+MULTI_AUTHORITY="true"
+PIN_FILE="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/00-strategy/SOURCE-PIN.md"
 # =====================================================================
+
+# --- Multi-authority short-circuit (this book): the pin FILE is the authority --------
+if [ "${MULTI_AUTHORITY:-false}" = "true" ]; then
+  case "${1:-check}" in
+    --heal|heal)
+      echo "ensure_source_pin: MULTI-AUTHORITY pin — no single clone to (re-)heal."
+      [ -f "$PIN_FILE" ] || { echo "  FAIL: $PIN_FILE missing — run /pin-source." >&2; exit 1; }
+      echo "  OK — SOURCE-PIN.md present; it is the authority (per-tool versions fetched at use)."
+      exit 0
+      ;;
+    check|*)
+      if [ -f "$PIN_FILE" ] && [ "$(grep -cE '✅ *(re-)?pinned' "$PIN_FILE")" -ge 3 ]; then
+        echo "ensure_source_pin: OK — multi-authority SOURCE-PIN.md present and populated"
+        echo "  (per-authority versions verified at use; no single clone to check)."
+        exit 0
+      fi
+      echo "ensure_source_pin: FAIL — SOURCE-PIN.md missing or unpopulated; run /pin-source." >&2
+      exit 1
+      ;;
+  esac
+fi
 
 on_tag() {
   [ -d "$CLONE_PATH/.git" ] || return 1
