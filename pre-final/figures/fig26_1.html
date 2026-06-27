@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 15 — How Static Analysis Works (dossier key 26, Ch 15 in FINAL_INDEX, opens Part IV)
+  Figure:  Fig 26.1 — The four-move technique ladder: AST → symbols/types → control-/data-flow → taint
+  Family:  Flow-sequence / technique ladder (stacked stages with cost/power axes)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"The ladder in one view" — after the four Move sections, before §Deep dive
+  One idea: Static analysis is four moves layered — AST/pattern, symbol+type, control-/data-flow,
+             taint — each seeing more than the one below at rising cost; the soundness↔completeness
+             trade-off is the permanent condition, not a bug.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 15.1 — Static-analysis technique ladder</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 960px;
+    }
+
+    /* ── Main layout: ladder on left, axis on right ── */
+    .layout {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      margin-top: 8px;
+    }
+
+    /* ── Ladder column ── */
+    .ladder {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* Each rung row: arrow-connector + rung card */
+    .rung-row {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    /* Connector between rungs */
+    .rung-connector {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 32px;
+      height: 24px;
+    }
+    .rung-connector-line {
+      width: 2px;
+      height: 100%;
+      background: var(--ink);
+      position: relative;
+    }
+    .rung-connector-arrow {
+      font-size: 14px;
+      color: var(--ink);
+      font-weight: 700;
+      margin-left: -5px;
+      margin-top: 4px;
+      line-height: 1;
+    }
+
+    /* Rung card */
+    .rung {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    /* Left depth bar — grows with move number */
+    .depth-bar {
+      width: 8px;
+      background: var(--tint-3);
+      flex-shrink: 0;
+    }
+    .rung.d1 .depth-bar { background: var(--tint-1); width: 8px; }
+    .rung.d2 .depth-bar { background: var(--tint-2); width: 8px; }
+    .rung.d3 .depth-bar { background: var(--tint-3); width: 8px; }
+    .rung.d4 .depth-bar { background: var(--ink);    width: 8px; }
+
+    /* Body of rung */
+    .rung-body {
+      flex: 1;
+      padding: 10px 14px;
+    }
+
+    /* Move header line */
+    .move-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 5px;
+    }
+    .move-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      flex-shrink: 0;
+    }
+    .move-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* Badges row */
+    .rung-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    /* Cost + power badges */
+    .badge-cost {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      background: var(--tint-0);
+    }
+    .badge-cost.low    { background: var(--tint-1); }
+    .badge-cost.medium { background: var(--tint-2); }
+    .badge-cost.high   { background: var(--tint-3); }
+
+    /* Runs-in pill */
+    .badge-where {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--ink-soft);
+      background: var(--tint-0);
+    }
+
+    /* Tool example */
+    .rung-tools {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      margin-bottom: 4px;
+    }
+    .rung-tools .tool {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink);
+    }
+
+    /* Catches / blind spot row */
+    .rung-detail {
+      display: flex;
+      gap: 10px;
+      font-size: 11.5px;
+    }
+    .detail-catch {
+      flex: 1;
+    }
+    .detail-catch .label {
+      font-weight: 700;
+      color: var(--ok);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+    .detail-blind {
+      flex: 1;
+    }
+    .detail-blind .label {
+      font-weight: 700;
+      color: var(--stop);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+
+    /* ── Right column: axes + soundness note ── */
+    .right-col {
+      width: 180px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Vertical power/cost axis bar */
+    .axis-block {
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 12px 12px;
+    }
+    .axis-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    /* Arrow with gradient fill (CSS-only, no images) */
+    .axis-arrow-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .power-bar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      width: 100%;
+    }
+    .power-bar-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink);
+      text-align: center;
+    }
+    .power-bar-ramp {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      width: 52px;
+    }
+    .ramp-cell {
+      height: 14px;
+      border-radius: 3px;
+      border: 1px solid var(--line);
+    }
+    .ramp-cell.r1 { background: var(--tint-1); }
+    .ramp-cell.r2 { background: var(--tint-2); }
+    .ramp-cell.r3 { background: var(--tint-3); }
+    .ramp-cell.r4 { background: var(--accent); }
+
+    /* Soundness↔completeness note */
+    .soundness-block {
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      padding: 10px 12px;
+      border-radius: 0 8px 8px 0;
+    }
+    .soundness-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 5px;
+    }
+    .soundness-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-bottom: 3px;
+    }
+    .soundness-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1.5px solid var(--ink);
+      flex-shrink: 0;
+    }
+    .soundness-dot.filled { background: var(--ink); }
+
+    /* Undecidability callout at bottom */
+    .undecidability-bar {
+      margin-top: 14px;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 9px 13px;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+    }
+    .undecidability-bar b { color: var(--ink); }
+
+    /* ── Legend ── */
+    .legend-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      align-items: center;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--ink-soft);
+    }
+    .l-bar {
+      width: 8px;
+      height: 18px;
+      border-radius: 2px;
+      border: 1px solid var(--line);
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 15.1 — Static-analysis technique ladder</p>
+  <p class="fig-subtitle">Four moves, each seeing more than the one below — at rising power and cost.</p>
+
+  <div class="layout">
+
+    <!-- ── LADDER (left) ── -->
+    <div class="ladder">
+
+      <!-- Move 1: AST / pattern match -->
+      <div class="rung-row">
+        <div class="rung d1">
+          <div class="depth-bar"></div>
+          <div class="rung-body">
+            <div class="move-header">
+              <span class="move-num">MOVE 1</span>
+              <span class="move-name">Parse to an AST &mdash; match shapes</span>
+            </div>
+            <div class="rung-badges">
+              <span class="badge-cost low">cost: low</span>
+              <span class="badge-where">runs on: source</span>
+            </div>
+            <div class="rung-tools">
+              Tools: <span class="tool">PMD</span> (XPath / visitor on "root AST node"),
+              <span class="tool">Checkstyle</span> (source tokens),
+              <span class="tool">Error Prone</span> (compiler AST inside <span class="tool">javac</span>)
+            </div>
+            <div class="rung-detail">
+              <div class="detail-catch">
+                <div class="label">catches well</div>
+                style, naming, syntactic smells, empty <code style="font-family:var(--mono);font-size:11px;">catch</code>, missing <code style="font-family:var(--mono);font-size:11px;">break</code>
+              </div>
+              <div class="detail-blind">
+                <div class="label">blind spot</div>
+                anything behavioral — sees shape, not runtime values
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- rung-row 1 -->
+
+      <!-- Connector 1→2 -->
+      <div style="display:flex;align-items:flex-start;padding-left:24px;height:22px;">
+        <div style="width:2px;height:16px;background:var(--ink);margin-top:0;"></div>
+        <div style="font-size:13px;color:var(--ink);font-weight:700;margin-top:2px;margin-left:-1px;">&#8595;</div>
+        <span style="font-size:11px;color:var(--ink-soft);margin-left:6px;margin-top:2px;">+ symbols &amp; types</span>
+      </div>
+
+      <!-- Move 2: Symbols + types -->
+      <div class="rung-row">
+        <div class="rung d2">
+          <div class="depth-bar"></div>
+          <div class="rung-body">
+            <div class="move-header">
+              <span class="move-num">MOVE 2</span>
+              <span class="move-name">Resolve symbols &amp; types</span>
+            </div>
+            <div class="rung-badges">
+              <span class="badge-cost low">cost: low</span>
+              <span class="badge-where">runs on: source / compiler</span>
+            </div>
+            <div class="rung-tools">
+              Tools: <span class="tool">PMD</span> SymbolFacade + optional TypeResolution;
+              <span class="tool">Error Prone</span> (full types free inside <span class="tool">javac</span>)
+            </div>
+            <div class="rung-detail">
+              <div class="detail-catch">
+                <div class="label">catches well</div>
+                type-aware misuse: wrong overload, raw types, <code style="font-family:var(--mono);font-size:11px;">LinkedList.get(int)</code> in a loop
+              </div>
+              <div class="detail-blind">
+                <div class="label">blind spot</div>
+                flow-dependent facts — cannot tell if a value is null <em>at a point</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- rung-row 2 -->
+
+      <!-- Connector 2→3 -->
+      <div style="display:flex;align-items:flex-start;padding-left:24px;height:22px;">
+        <div style="width:2px;height:16px;background:var(--ink);margin-top:0;"></div>
+        <div style="font-size:13px;color:var(--ink);font-weight:700;margin-top:2px;margin-left:-1px;">&#8595;</div>
+        <span style="font-size:11px;color:var(--ink-soft);margin-left:6px;margin-top:2px;">+ control-flow graph + data-flow fixpoint</span>
+      </div>
+
+      <!-- Move 3: Control- / data-flow -->
+      <div class="rung-row">
+        <div class="rung d3">
+          <div class="depth-bar"></div>
+          <div class="rung-body">
+            <div class="move-header">
+              <span class="move-num">MOVE 3</span>
+              <span class="move-name">Control- &amp; data-flow analysis</span>
+            </div>
+            <div class="rung-badges">
+              <span class="badge-cost medium">cost: medium&ndash;high</span>
+              <span class="badge-where">runs on: source / bytecode / whole-program graph</span>
+            </div>
+            <div class="rung-tools">
+              Tools: <span class="tool">PMD</span> "DFA visitor … building control flow graphs and data flow nodes";
+              <span class="tool">SpotBugs</span> <code style="font-family:var(--mono);font-size:11px;">OpcodeStackDetector</code>
+              on bytecode (<code style="font-family:var(--mono);font-size:11px;">.class</code>);
+              <span class="tool">CodeQL</span> local/global data-flow graph
+            </div>
+            <div class="rung-detail">
+              <div class="detail-catch">
+                <div class="label">catches well</div>
+                null-deref, unclosed resource, lock discipline (intra); leaks/injection spanning methods (inter/global)
+              </div>
+              <div class="detail-blind">
+                <div class="label">blind spot</div>
+                intraprocedural stops at method boundary; global flow must approximate aliasing, reflection, dynamic dispatch
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- rung-row 3 -->
+
+      <!-- Connector 3→4 -->
+      <div style="display:flex;align-items:flex-start;padding-left:24px;height:22px;">
+        <div style="width:2px;height:16px;background:var(--ink);margin-top:0;"></div>
+        <div style="font-size:13px;color:var(--ink);font-weight:700;margin-top:2px;margin-left:-1px;">&#8595;</div>
+        <span style="font-size:11px;color:var(--ink-soft);margin-left:6px;margin-top:2px;">+ source / sink / sanitizer roles</span>
+      </div>
+
+      <!-- Move 4: Taint tracking -->
+      <div class="rung-row">
+        <div class="rung d4" style="border-color:var(--ink);border-width:2px;">
+          <div class="depth-bar"></div>
+          <div class="rung-body">
+            <div class="move-header">
+              <span class="move-num">MOVE 4</span>
+              <span class="move-name">Taint tracking</span>
+            </div>
+            <div class="rung-badges">
+              <span class="badge-cost high">cost: high</span>
+              <span class="badge-where">runs in: CI / nightly, not pre-commit</span>
+            </div>
+            <div class="rung-tools">
+              Tools: <span class="tool">CodeQL</span> — taint "extends data flow … steps in which data values are not necessarily preserved, but the potentially insecure object is still propagated" (e.g. <code style="font-family:var(--mono);font-size:11px;">y&nbsp;=&nbsp;x+1</code>: y "derived from x").
+              <span class="tool">Semgrep</span> — AST&rarr;IL + constant-prop + taint; "No path sensitivity / No pointer or shape analysis / No soundness guarantees."
+            </div>
+            <div class="rung-detail">
+              <div class="detail-catch">
+                <div class="label">catches well</div>
+                SQLi, XSS, command injection — attacker-controlled source &rarr; dangerous sink
+              </div>
+              <div class="detail-blind">
+                <div class="label">blind spot</div>
+                unmodeled sources or sanitizers; Semgrep engine is intraprocedural
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- rung-row 4 -->
+
+    </div><!-- .ladder -->
+
+    <!-- ── RIGHT COLUMN: power/cost axis + soundness↔completeness ── -->
+    <div class="right-col">
+
+      <!-- Power / cost ramp -->
+      <div class="axis-block">
+        <div class="axis-title">power &amp; cost</div>
+        <div class="power-bar">
+          <div class="power-bar-label" style="font-size:10px;color:var(--ink-soft);">&#8593; more power</div>
+          <div class="power-bar-ramp">
+            <div class="ramp-cell r4"></div>
+            <div class="ramp-cell r3"></div>
+            <div class="ramp-cell r2"></div>
+            <div class="ramp-cell r1"></div>
+          </div>
+          <div class="power-bar-label" style="font-size:10px;color:var(--ink-soft);">&#8595; cheaper</div>
+        </div>
+        <hr class="fig-divider" style="margin:10px 0 8px;">
+        <div style="font-size:10.5px;color:var(--ink-soft);text-align:center;line-height:1.4;">
+          Move 1 runs on every<br>keystroke; Move 4<br>runs nightly in CI
+        </div>
+      </div>
+
+      <!-- Soundness / completeness -->
+      <div class="soundness-block">
+        <div class="soundness-title">Soundness ↔ Completeness</div>
+        <div class="soundness-row">
+          <div class="soundness-dot filled"></div>
+          <span><b>Sound</b> — no false negatives; all real bugs reported (costs false positives)</span>
+        </div>
+        <div class="soundness-row">
+          <div class="soundness-dot"></div>
+          <span><b>Complete</b> — no false positives; every report real (costs false negatives)</span>
+        </div>
+        <hr class="fig-divider" style="margin:8px 0;">
+        <div style="font-size:10.5px;color:var(--ink-soft);line-height:1.4;">
+          No analyzer is both for a non-trivial property (Rice's theorem &rarr; halting problem).
+          Every tool picks a point on this spectrum — that choice is its character.
+        </div>
+        <hr class="fig-divider" style="margin:8px 0;">
+        <div style="font-size:10.5px;color:var(--ink-soft);line-height:1.4;">
+          <b>Checker Framework</b>: "values soundness over limiting false positives."
+          <b>Semgrep OSS</b>: "No soundness guarantees."
+        </div>
+      </div>
+
+    </div><!-- .right-col -->
+
+  </div><!-- .layout -->
+
+  <!-- False-positive controls strip -->
+  <div style="margin-top:14px;border:1.5px solid var(--line);border-radius:var(--radius);background:var(--tint-0);padding:10px 14px;">
+    <div style="font-size:11.5px;font-weight:700;color:var(--ink);margin-bottom:6px;">False-positive controls (part of the technique, not an afterthought)</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--ink-soft);">
+      <div>
+        <span style="font-weight:700;color:var(--ink);">Justified suppression</span><br>
+        SpotBugs <code style="font-family:var(--mono);font-size:10.5px;">@SuppressFBWarnings(value, justification)</code> — records why this instance is safe
+      </div>
+      <div>
+        <span style="font-weight:700;color:var(--ink);">Filter file</span><br>
+        SpotBugs filter XML (<code style="font-family:var(--mono);font-size:10.5px;">Match</code> elements) — central exclusions
+      </div>
+      <div>
+        <span style="font-weight:700;color:var(--ink);">Triage states</span><br>
+        SonarQube "False positive" / "Won't fix" (may be "Accept" in newer versions — verify at installed version)
+      </div>
+      <div>
+        <span style="font-weight:700;color:var(--ink);">Baselines</span><br>
+        Gate only <em>new</em> code; accept existing backlog (Sonar "new code" period, SpotBugs baseline filters). Policy &rarr; Ch 19.
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend-row">
+    <div class="legend-item">
+      <div class="l-bar" style="background:var(--tint-1);"></div>
+      <span>Move 1 — cheapest, shallowest</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-bar" style="background:var(--tint-2);"></div>
+      <span>Move 2</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-bar" style="background:var(--tint-3);"></div>
+      <span>Move 3</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-bar" style="background:var(--accent);"></div>
+      <span>Move 4 — most powerful, most costly</span>
+    </div>
+    <div class="legend-item" style="margin-left:auto;">
+      <span class="fig-mono fig-muted">Per-tool depth &rarr; Ch 16 / Ch 17 &nbsp;|&nbsp; FP policy &rarr; Ch 19 &nbsp;|&nbsp; Custom rules &rarr; Ch 18</span>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Sources (verbatim): PMD "root AST node," SymbolFacade visitor, TypeResolution, "DFA (data flow analysis) visitor … building control flow graphs and data flow nodes," rules "traverse the AST" → "RuleViolations" (pmd.github.io, PMD 7.25.0). Error Prone: "hooks into your standard build," "augment the compiler's type analysis" (errorprone.info). SpotBugs <code style="font-family:var(--mono);font-size:10.5px;">OpcodeStackDetector</code> / <code style="font-family:var(--mono);font-size:10.5px;">BytecodeScanningDetector</code>: "scan the bytecode of a method and use an operand stack" (spotbugs.github.io, SpotBugs 4.10.2). CodeQL: taint "extends data flow analysis by including steps in which the data values are not necessarily preserved, but the potentially insecure object is still propagated"; y=x+1 "derived from x" (codeql.github.com). Semgrep: "No path sensitivity / No pointer or shape analysis / No soundness guarantees" (semgrep.dev, 1.163.0). Checker Framework: "values soundness over limiting false positives" (checkerframework.org, 4.2.0). SpotBugs @SuppressFBWarnings; SonarQube "False positive"/"Won't fix"/"Accept" (docs.sonarsource.com, Server 2026.1 LTA).
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

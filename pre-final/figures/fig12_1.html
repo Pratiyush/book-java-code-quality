@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   10 (dossier key 12) — When Things Go Wrong
+  Figure:    Fig 12.1 — The Throwable hierarchy and the checked/unchecked decision rule
+  Family:    Architecture / concept-map (hierarchy + decision)
+  Method:    Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"The exception model: the hierarchy and the decision" — after the decision table
+  One idea:  Java's Throwable hierarchy has exactly three meaningful kinds; the checked/unchecked
+             split is enforced at compile time by the catch-or-specify rule (JLS §11.2), and
+             Effective Java Item 70 gives the decision rule: recoverable→checked, programming
+             error→unchecked, JVM error→Error (do not throw or subclass).
+  Sources:   JLS SE 21 §11 (hierarchy); JLS §11.2 (catch-or-specify); Effective Java 3e Item 70.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 10.1 — The Throwable hierarchy and the checked/unchecked decision</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure { width: 1020px; padding: 26px 30px 24px; }
+
+    /* ── hierarchy layout ── */
+    .tree-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .tree-root {
+      border: 2.5px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--tint-2);
+      padding: 10px 30px;
+      font-weight: 700;
+      font-size: 15px;
+      font-family: var(--mono);
+      text-align: center;
+      position: relative;
+    }
+    .tree-root small {
+      display: block;
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      margin-top: 3px;
+    }
+
+    /* vertical line from root down */
+    .v-stem {
+      width: 2px;
+      height: 18px;
+      background: var(--ink);
+      flex-shrink: 0;
+    }
+
+    /* horizontal bus */
+    .h-bus {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      position: relative;
+      width: 100%;
+      justify-content: center;
+    }
+    /* the horizontal line drawn with a pseudo element via absolute positioning */
+    .h-line {
+      position: absolute;
+      top: 0;
+      left: 18%;
+      right: 18%;
+      height: 2px;
+      background: var(--ink);
+    }
+
+    /* each branch column */
+    .branch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    .branch-stem {
+      width: 2px;
+      height: 18px;
+      background: var(--ink);
+    }
+
+    /* node cards */
+    .node {
+      border: 2px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--tint-1);
+      padding: 10px 14px;
+      text-align: center;
+      width: 240px;
+    }
+    .node .n-type {
+      font-family: var(--mono);
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+    .node .n-label {
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+    .node.checked-node {
+      background: var(--tint-2);
+      border-width: 2.5px;
+    }
+    .node.unchecked-node {
+      background: var(--tint-1);
+    }
+    .node.error-node {
+      background: var(--tint-3);
+    }
+
+    /* compile gate badge */
+    .gate-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-top: 5px;
+      border: 1.5px solid;
+    }
+    .gate-compile {
+      border-color: var(--ok);
+      color: var(--ok);
+      background: #f0faf4;
+    }
+    .gate-runtime {
+      border-color: var(--warn);
+      color: var(--warn);
+      background: #fdf6e3;
+    }
+    .gate-jvm {
+      border-color: var(--stop);
+      color: var(--stop);
+      background: #fdf2f2;
+    }
+
+    /* sub-leaf children — stacked vertically to avoid overflow */
+    .node-sub-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin-top: 0;
+    }
+    .sub-stem-row {
+      display: flex;
+      gap: 10px;
+    }
+    .sub-stem {
+      width: 2px;
+      height: 14px;
+      background: var(--ink);
+      margin: 0 auto;
+    }
+    .sub-node {
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      background: var(--tint-0);
+      padding: 6px 10px;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      min-width: 110px;
+      white-space: nowrap;
+    }
+
+    /* ── decision panel ── */
+    .decision-section {
+      margin-top: 22px;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+    .decision-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      margin-bottom: 10px;
+    }
+    .decision-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    .decision-card {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .decision-card .dc-head {
+      background: var(--tint-2);
+      padding: 7px 12px;
+      font-weight: 700;
+      font-size: 12.5px;
+      border-bottom: 1.5px solid var(--ink);
+      font-family: var(--mono);
+    }
+    .decision-card .dc-body {
+      padding: 9px 12px;
+      font-size: 12px;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    .decision-card .dc-rule {
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-top: 6px;
+      border-top: 1px solid var(--line);
+      padding-top: 6px;
+    }
+    .decision-card .dc-rule code {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      background: var(--tint-1);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+    .decision-card.dc-checked { border-left: 4px solid var(--ok); }
+    .decision-card.dc-unchecked { border-left: 4px solid var(--warn); }
+    .decision-card.dc-error { border-left: 4px solid var(--stop); }
+
+    .note-bar {
+      margin-top: 14px;
+      background: var(--tint-1);
+      border-left: 3px solid var(--accent-bar);
+      border-radius: 0 8px 8px 0;
+      padding: 8px 12px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .note-bar b { font-family: var(--mono); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 10.1 — The <code style="font-size:15px">Throwable</code> hierarchy and the checked/unchecked decision</p>
+  <p class="fig-subtitle">JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · <em>Effective Java</em> 3e Item 70 decision</p>
+
+  <!-- ── hierarchy tree ── -->
+  <div class="tree-wrap">
+
+    <!-- root -->
+    <div class="tree-root">
+      Throwable
+      <small>java.lang — JLS SE 21 §11</small>
+    </div>
+    <div class="v-stem"></div>
+
+    <!-- horizontal bus + three branches -->
+    <div class="h-bus">
+      <div class="h-line"></div>
+
+      <!-- branch 1: checked exceptions -->
+      <div class="branch">
+        <div class="branch-stem"></div>
+        <div class="node checked-node">
+          <div class="n-type">Exception</div>
+          <div class="n-label">minus RuntimeException</div>
+          <div class="gate-badge gate-compile">compile-time gate (catch-or-specify, JLS §11.2)</div>
+        </div>
+        <!-- sub-children -->
+        <div style="width:2px;height:14px;background:var(--ink)"></div>
+        <div class="node-sub-row">
+          <div class="sub-node">IOException</div>
+          <div class="sub-node">SQLException</div>
+        </div>
+      </div>
+
+      <!-- branch 2: unchecked -->
+      <div class="branch">
+        <div class="branch-stem"></div>
+        <div class="node unchecked-node">
+          <div class="n-type">RuntimeException</div>
+          <div class="n-label">unchecked subtype of Exception</div>
+          <div class="gate-badge gate-runtime">no compile-time requirement</div>
+        </div>
+        <div style="width:2px;height:14px;background:var(--ink)"></div>
+        <div class="node-sub-row">
+          <div class="sub-node">IllegalArgumentException</div>
+          <div class="sub-node">NullPointerException</div>
+        </div>
+      </div>
+
+      <!-- branch 3: Error -->
+      <div class="branch">
+        <div class="branch-stem"></div>
+        <div class="node error-node">
+          <div class="n-type">Error</div>
+          <div class="n-label">JVM's — do not throw or subclass<br>(except AssertionError)</div>
+          <div class="gate-badge gate-jvm">unchecked · JVM-reserved</div>
+        </div>
+        <div style="width:2px;height:14px;background:var(--ink)"></div>
+        <div class="node-sub-row">
+          <div class="sub-node">OutOfMemoryError</div>
+          <div class="sub-node">AssertionError</div>
+        </div>
+      </div>
+
+    </div><!-- .h-bus -->
+  </div><!-- .tree-wrap -->
+
+  <!-- ── decision panel ── -->
+  <div class="decision-section">
+    <div class="decision-title">Effective Java 3e, Item 70 — decision rule (one sentence per kind)</div>
+    <div class="decision-grid">
+
+      <div class="decision-card dc-checked">
+        <div class="dc-head">Checked <span style="font-family:var(--font);font-weight:400;font-size:11px">(Exception − RuntimeException)</span></div>
+        <div class="dc-body">
+          Use for conditions the caller <strong>can reasonably recover from</strong> — e.g. a file that may not exist, a remote call that may time out.
+          <div class="dc-rule">Enforced by: <code>Checkstyle IllegalThrows</code> · <code>Sonar java:S112</code></div>
+        </div>
+      </div>
+
+      <div class="decision-card dc-unchecked">
+        <div class="dc-head">Unchecked <span style="font-family:var(--font);font-weight:400;font-size:11px">(RuntimeException)</span></div>
+        <div class="dc-body">
+          Use for <strong>programming errors</strong> — broken preconditions. <em>"When in doubt, throw unchecked"</em> (Item 70).
+          <div class="dc-rule">Enforced by: <code>PMD AvoidThrowingRawExceptionTypes</code> · <code>Sonar java:S112</code></div>
+        </div>
+      </div>
+
+      <div class="decision-card dc-error">
+        <div class="dc-head">Error</div>
+        <div class="dc-body">
+          Reserved for the JVM (resource exhaustion, unrecoverable state). <strong>Do not throw or subclass</strong> — except <code>AssertionError</code>.
+          <div class="dc-rule">Item 70: "you shouldn't throw them either, and you should not subclass them."</div>
+        </div>
+      </div>
+
+    </div><!-- .decision-grid -->
+
+    <div class="note-bar">
+      <strong>The failure model is a contract.</strong> The checked exceptions a module declares are API: callers plan recovery around them. Unchecked exceptions signal bugs callers are expected to debug. Choosing the wrong kind — or swallowing one — breaks the contract as surely as returning the wrong value. Catching too broadly (<code>catch (Exception e) {}</code>) violates Items 70 + 77 and is flagged by <code>Checkstyle IllegalCatch</code>, <code>PMD EmptyCatchBlock</code>, and <code>SpotBugs DE_MIGHT_IGNORE</code>.
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    <b>Sources:</b> JLS SE 21 §11 (Throwable hierarchy); §11.2 (catch-or-specify compile-time rule); <em>Effective Java</em>, 3rd ed. (Bloch, 2018), Item 70 — decision rule and quoted directive;
+    Checkstyle <code>IllegalThrows</code>/<code>IllegalCatch</code>; Sonar <code>java:S112</code>; PMD <code>EmptyCatchBlock</code>/<code>AvoidThrowingRawExceptionTypes</code>; SpotBugs <code>DE_MIGHT_IGNORE</code>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

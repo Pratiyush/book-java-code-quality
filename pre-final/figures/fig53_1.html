@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 25 — Principles, Measures, and Where the Lines Fall (dossier key 53, folds 54+57)
+  Figure:  Fig 53.1 — The five SOLID principles: intent, Java smell fought, and over-application trap
+  Family:  Concept-map / structured table (one row per principle)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"SOLID: useful vocabulary, not a law to maximize" — after the five-principle list
+  One idea: Each SOLID principle aims at low coupling / high cohesion but has an over-application
+             trap; no principle is a law to maximize and none is crowned over the alternatives.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 53.1 — SOLID: intent and over-application trap</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 980px;
+    }
+
+    /* ── Two-schools callout at top ── */
+    .schools-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 18px;
+      align-items: stretch;
+    }
+    .school-pill {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      background: var(--tint-1);
+      padding: 9px 14px;
+      font-size: 12.5px;
+    }
+    .school-pill .sp-head {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+    .school-pill .sp-body {
+      color: var(--ink-soft);
+      font-size: 12px;
+    }
+    .school-pill.is-vs {
+      flex: 0 0 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      border-style: none;
+      background: transparent;
+      padding: 0;
+    }
+
+    /* ── Principle table ── */
+    .solid-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .solid-table thead tr {
+      background: var(--tint-2);
+      border-bottom: 2px solid var(--ink);
+    }
+    .solid-table thead th {
+      padding: 9px 12px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: .2px;
+    }
+    .solid-table tbody tr {
+      border-bottom: 1px solid var(--tint-3);
+    }
+    .solid-table tbody tr:last-child {
+      border-bottom: none;
+    }
+    .solid-table tbody td {
+      padding: 10px 12px;
+      vertical-align: top;
+      color: var(--ink);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    /* Principle name column */
+    .solid-table .col-name {
+      white-space: nowrap;
+      width: 155px;
+    }
+    .p-abbr {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: .5px;
+      font-family: var(--mono);
+    }
+    .p-full {
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-top: 2px;
+      font-weight: 600;
+    }
+    /* Rule of thumb column */
+    .col-rule {
+      width: 250px;
+    }
+    .rule-text {
+      font-style: italic;
+      color: var(--ink);
+    }
+    /* Smell-fought column */
+    .col-smell {
+      width: 200px;
+    }
+    .smell-tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--tint-2);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 6px;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+    /* Over-application trap column */
+    .col-trap {
+      /* remaining width */
+    }
+    .trap-text {
+      color: var(--warn);
+      font-size: 12px;
+    }
+    /* LSP row is nearest a hard correctness rule — subtle highlight */
+    .solid-table tbody tr.is-lsp td {
+      background: var(--tint-1);
+    }
+    .lsp-note {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-top: 2px;
+    }
+
+    /* ── Bottom note ── */
+    .bottom-note {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .warn-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      background: var(--warn);
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+    .bottom-note-text {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 53.1 — SOLID: intent and over-application trap</p>
+  <p class="fig-subtitle">Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.</p>
+
+  <!-- Two-schools banner: SOLID vs CUPID / simple-design -->
+  <div class="schools-bar">
+    <div class="school-pill">
+      <div class="sp-head">SOLID (Martin)</div>
+      <div class="sp-body">SRP · OCP · LSP · ISP · DIP — principles that aim at low coupling, high cohesion, safe change. Widely taught shared vocabulary; maps to measurable structure.</div>
+    </div>
+    <div class="school-pill is-vs">vs</div>
+    <div class="school-pill">
+      <div class="sp-head">CUPID (North) &amp; "simple over SOLID"</div>
+      <div class="sp-body">Composable · Unix-philosophy · Predictable · Idiomatic · Domain-based. Argues dogmatic SOLID drives premature abstraction that hurts readability. Legitimate alternative lens — neither crowned.</div>
+    </div>
+  </div>
+
+  <!-- Five-principle table -->
+  <table class="solid-table">
+    <thead>
+      <tr>
+        <th class="col-name">Principle</th>
+        <th class="col-rule">Rule of thumb</th>
+        <th class="col-smell">Smell it fights (Java)</th>
+        <th class="col-trap">Over-application trap</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr>
+        <td class="col-name">
+          <div class="p-abbr">SRP</div>
+          <div class="p-full">Single Responsibility</div>
+        </td>
+        <td class="col-rule">
+          <span class="rule-text">A class should have one reason to change.</span>
+        </td>
+        <td class="col-smell">
+          <span class="smell-tag">God service</span><br>
+          2 000-line class that does everything
+        </td>
+        <td class="col-trap">
+          <span class="trap-text">Cloud of one-method classes — a single behaviour scattered across a dozen files; hurts readability.</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="col-name">
+          <div class="p-abbr">OCP</div>
+          <div class="p-full">Open/Closed</div>
+        </td>
+        <td class="col-rule">
+          <span class="rule-text">Open for extension; closed for modification — new behaviour is a new class, not an edit.</span>
+        </td>
+        <td class="col-smell">
+          <span class="smell-tag">Shotgun surgery</span><br>
+          One change forcing edits to many existing classes
+        </td>
+        <td class="col-trap">
+          <span class="trap-text">Speculative abstraction — an extension point added for a variation that never comes (YAGNI tension).</span>
+        </td>
+      </tr>
+
+      <tr class="is-lsp">
+        <td class="col-name">
+          <div class="p-abbr">LSP</div>
+          <div class="p-full">Liskov Substitution</div>
+        </td>
+        <td class="col-rule">
+          <span class="rule-text">A subtype must be substitutable for its supertype without breaking callers' expectations.</span>
+          <div class="lsp-note">Nearest to a hard correctness rule — ties to equals/hashCode contract and sealed types.</div>
+        </td>
+        <td class="col-smell">
+          <span class="smell-tag">Broken contract</span><br>
+          Subclass that strengthens preconditions or weakens the contract
+        </td>
+        <td class="col-trap">
+          <span class="trap-text">Less of an over-application risk; violation is a latent bug. Sealed types make permitted subtypes explicit.</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="col-name">
+          <div class="p-abbr">ISP</div>
+          <div class="p-full">Interface Segregation</div>
+        </td>
+        <td class="col-rule">
+          <span class="rule-text">Many focused role interfaces over one fat interface — a client depends only on methods it uses.</span>
+        </td>
+        <td class="col-smell">
+          <span class="smell-tag">Fat interface</span><br>
+          Callers forced to implement methods they never use
+        </td>
+        <td class="col-trap">
+          <span class="trap-text">Interface proliferation — too many single-method interfaces adds indirection with no real variation.</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="col-name">
+          <div class="p-abbr">DIP</div>
+          <div class="p-full">Dependency Inversion</div>
+        </td>
+        <td class="col-rule">
+          <span class="rule-text">Depend on abstractions, not concretions — program to interfaces; inject implementations.</span>
+        </td>
+        <td class="col-smell">
+          <span class="smell-tag">Hard dependency</span><br>
+          Class instantiates its own collaborators; untestable
+        </td>
+        <td class="col-trap">
+          <span class="trap-text">Five layers of DI wiring to add one field — interface-with-one-implementation satisfies DIP on paper, adds indirection that makes change harder.</span>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <!-- Bottom caution note -->
+  <div class="bottom-note">
+    <div class="warn-swatch"></div>
+    <div class="bottom-note-text">
+      <strong>Heuristics, not metrics.</strong> SOLID-ness cannot be gated — "one reason to change" is subjective; the measurable, enforceable subset is coupling direction and cycles (next chapter).
+      Records, sealed types, and pattern matching (Chapter 5) sometimes reach a SOLID goal more directly than a classic refactor.
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Sources: Robert C. Martin — <em>Agile Software Development</em> / <em>Clean Architecture</em> (SOLID definitions; dossier §2 verbatim ⚠); Dan North — "CUPID for joyful coding" (dannorth.net; dossier §4 named alt); draft v1 §"SOLID: useful vocabulary, not a law to maximize" and §"Two schools, crown neither" CONCEPT callout.
+    LSP origin: Liskov &amp; Wing — "A behavioral notion of subtyping" (⚠ formal statement @pin; draft v1 §LSP). No principle is crowned; SOLID and CUPID/simple-design presented as current debate.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

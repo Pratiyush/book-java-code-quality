@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   19 — Keeping the Gate Honest (dossier key 39, Ch 19 in FINAL_INDEX, closes Part IV)
+  Figure:    Fig 39.1 — Triage decision tree → four-lever scope ladder
+  Family:    Flow-sequence / concept-map
+  Method:    Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"The triage tree" / §"The four levers" — the central mechanism of the chapter
+  One idea:  Every static-analysis finding forces one triage decision (fix / suppress with reason /
+             tune / baseline+ratchet), and each decision maps to exactly one lever ordered
+             from narrowest to broadest scope; breadth is always a smell.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 19.1 — Finding triage and the four-lever scope ladder</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 1020px;
+    }
+
+    /* ─── Top layout: triage tree (left) + lever ladder (right) ─── */
+    .layout {
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+      margin-top: 10px;
+    }
+
+    /* ─── Left: triage decision tree ─── */
+    .triage-col {
+      width: 360px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .triage-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      margin-bottom: 10px;
+    }
+
+    /* Entry node */
+    .entry-node {
+      background: var(--tint-3);
+      border: 2px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      text-align: center;
+    }
+    .entry-node .label {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .entry-node .sub {
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-top: 2px;
+    }
+
+    /* Vertical connector from entry to branches */
+    .v-connector {
+      display: flex;
+      justify-content: center;
+      height: 20px;
+      position: relative;
+    }
+    .v-connector::before {
+      content: "";
+      width: 2px;
+      background: var(--ink);
+      height: 100%;
+    }
+
+    /* Branch row: horizontal spread */
+    .branch-row {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      gap: 0;
+      position: relative;
+    }
+
+    /* Horizontal line connecting all branches */
+    .h-bar {
+      position: absolute;
+      top: 0;
+      left: 25%;
+      right: 25%;
+      height: 2px;
+      background: var(--ink);
+    }
+
+    .branch-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .branch-drop {
+      width: 2px;
+      height: 18px;
+      background: var(--ink);
+      flex-shrink: 0;
+    }
+
+    /* Decision cards */
+    .decision-card {
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: var(--tint-1);
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .decision-card .dc-label {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .decision-card .dc-sub {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .decision-card .dc-lever {
+      margin-top: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      display: inline-block;
+      border: 1px solid var(--ink);
+      background: var(--tint-0);
+      color: var(--ink);
+    }
+
+    .decision-card.is-fix {
+      background: var(--tint-0);
+      border-style: dashed;
+    }
+    .decision-card.is-suppress {
+      background: var(--tint-1);
+    }
+    .decision-card.is-tune {
+      background: var(--tint-2);
+    }
+    .decision-card.is-baseline {
+      background: var(--tint-3);
+    }
+
+    /* Wide four-quadrant layout for the two-column branch grid */
+    .four-branch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .branch-entry {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .entry-drop {
+      width: 2px;
+      height: 14px;
+      background: var(--ink);
+    }
+
+    /* The wide horizontal bar linking all four drops */
+    .connector-band {
+      position: relative;
+      height: 14px;
+      display: flex;
+      justify-content: center;
+    }
+    .connector-band::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 12.5%;
+      right: 12.5%;
+      height: 2px;
+      background: var(--ink);
+    }
+
+    /* Per-branch drop (from the horizontal bar) */
+    .quadrant-drop-wrap {
+      display: flex;
+      justify-content: space-around;
+    }
+    .quadrant-drop {
+      width: 2px;
+      background: var(--ink);
+      height: 14px;
+    }
+
+    /* ─── Right: lever ladder ─── */
+    .lever-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .lever-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      margin-bottom: 10px;
+    }
+
+    .lever-card {
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--paper);
+      display: flex;
+    }
+
+    .lever-swatch {
+      width: 10px;
+      flex-shrink: 0;
+    }
+    .l1 .lever-swatch { background: var(--tint-1); }
+    .l2 .lever-swatch { background: var(--tint-2); }
+    .l3 .lever-swatch { background: var(--tint-3); }
+    .l4 .lever-swatch { background: var(--ink); }
+
+    .lever-body {
+      flex: 1;
+      padding: 9px 12px;
+    }
+
+    .lever-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .lever-num {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      flex-shrink: 0;
+    }
+    .lever-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .lever-scope-badge {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--ink-soft);
+      background: var(--tint-0);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .lever-apis {
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+    .lever-apis .api {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink);
+    }
+
+    .lever-detail {
+      display: flex;
+      gap: 10px;
+      font-size: 10.5px;
+    }
+    .ld-ok, .ld-warn {
+      flex: 1;
+    }
+    .ld-label {
+      font-weight: 700;
+      font-size: 9.5px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      margin-bottom: 1px;
+    }
+    .ld-ok .ld-label  { color: var(--ok); }
+    .ld-warn .ld-label { color: var(--stop); }
+    .ld-ok  { color: var(--ink-soft); }
+    .ld-warn { color: var(--ink-soft); }
+
+    /* connector between lever cards */
+    .lever-connector {
+      display: flex;
+      align-items: center;
+      padding-left: 20px;
+      height: 18px;
+    }
+    .lc-line {
+      width: 2px;
+      height: 100%;
+      background: var(--ink);
+    }
+    .lc-arrow {
+      font-size: 12px;
+      color: var(--ink);
+      font-weight: 700;
+      margin-top: 2px;
+      margin-left: -1px;
+    }
+    .lc-note {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      margin-left: 6px;
+    }
+
+    /* ─── Breadth-is-a-smell callout ─── */
+    .breadth-note {
+      margin-top: 14px;
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      padding: 9px 13px;
+      border-radius: 0 8px 8px 0;
+      font-size: 11.5px;
+    }
+    .breadth-note b { color: var(--ink); }
+
+    /* ─── Bottom: suppression-is-a-claim strip ─── */
+    .bottom-strip {
+      margin-top: 14px;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 10px 14px;
+    }
+    .bs-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 7px;
+    }
+    .bs-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    .bs-cell {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+    .bs-cell .bs-tool {
+      font-weight: 700;
+      color: var(--ink);
+      font-size: 11px;
+      margin-bottom: 2px;
+    }
+    .bs-cell .bs-api {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--ink);
+    }
+
+    /* ─── Legend ─── */
+    .legend-row {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      align-items: center;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10.5px;
+      color: var(--ink-soft);
+    }
+    .l-swatch {
+      width: 10px;
+      height: 18px;
+      border-radius: 2px;
+      border: 1px solid var(--line);
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 19.1 — Finding triage and the four-lever scope ladder</p>
+  <p class="fig-subtitle">Every finding demands one triage decision; each decision maps to exactly one lever ordered narrow&rarr;broad. Breadth is always a smell.</p>
+
+  <div class="layout">
+
+    <!-- ═══════════════════════════════════════════════
+         LEFT: TRIAGE DECISION TREE
+         ═══════════════════════════════════════════════ -->
+    <div class="triage-col">
+      <div class="triage-title">Step 1 — triage the finding</div>
+
+      <!-- Entry node -->
+      <div class="entry-node">
+        <div class="label">A static-analysis finding arrives</div>
+        <div class="sub">What is it, exactly?</div>
+      </div>
+
+      <!-- Drop from entry to horizontal bar -->
+      <div style="display:flex;justify-content:center;height:14px;"><div style="width:2px;background:var(--ink);"></div></div>
+
+      <!-- Horizontal bar -->
+      <div style="position:relative;height:2px;background:var(--ink);margin:0 10px;"></div>
+
+      <!-- Four drops from bar -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0;">
+        <div style="display:flex;justify-content:center;height:14px;"><div style="width:2px;background:var(--ink);"></div></div>
+        <div style="display:flex;justify-content:center;height:14px;"><div style="width:2px;background:var(--ink);"></div></div>
+        <div style="display:flex;justify-content:center;height:14px;"><div style="width:2px;background:var(--ink);"></div></div>
+        <div style="display:flex;justify-content:center;height:14px;"><div style="width:2px;background:var(--ink);"></div></div>
+      </div>
+
+      <!-- Four decision cards -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+
+        <div class="decision-card is-fix">
+          <div class="dc-label">Real defect</div>
+          <div class="dc-sub">Tool is right; the code is wrong.</div>
+          <span class="dc-lever" style="border-color:var(--ok);color:var(--ok);">Fix it</span>
+        </div>
+
+        <div class="decision-card is-suppress">
+          <div class="dc-label">False positive</div>
+          <div class="dc-sub">Tool is wrong at this site; or real but accepted.</div>
+          <span class="dc-lever">Lever 1</span>
+        </div>
+
+        <div class="decision-card is-tune">
+          <div class="dc-label">Rule misfires<br>everywhere</div>
+          <div class="dc-sub">Same wrong pattern across the whole project.</div>
+          <span class="dc-lever">Lever 2</span>
+        </div>
+
+        <div class="decision-card is-baseline">
+          <div class="dc-label">Pre-existing<br>legacy debt</div>
+          <div class="dc-sub">Too large to fix now; freeze past, guard future.</div>
+          <span class="dc-lever">Levers 3 + 4</span>
+        </div>
+
+      </div>
+
+      <!-- Breadth smell callout -->
+      <div class="breadth-note" style="margin-top:12px;">
+        <b>Breadth is always a smell.</b> Reaching for a broad lever (class-wide <span style="font-family:var(--mono);font-size:10.5px;">@SuppressWarnings</span>, rule-blind <span style="font-family:var(--mono);font-size:10.5px;">//NOSONAR</span>) when only one site or one rule is wrong silences future real findings in that scope. The discipline: always reach for the <em>narrowest lever that solves the actual problem</em>.
+      </div>
+
+    </div><!-- .triage-col -->
+
+    <!-- ═══════════════════════════════════════════════
+         RIGHT: FOUR-LEVER SCOPE LADDER
+         ═══════════════════════════════════════════════ -->
+    <div class="lever-col">
+      <div class="lever-title">Step 2 — apply the right lever (narrow &rarr; broad)</div>
+
+      <!-- Lever 1 -->
+      <div class="lever-card l1">
+        <div class="lever-swatch"></div>
+        <div class="lever-body">
+          <div class="lever-header">
+            <span class="lever-num">LEVER 1</span>
+            <span class="lever-name">Per-finding suppression</span>
+            <span class="lever-scope-badge">scope: one site</span>
+          </div>
+          <div class="lever-apis">
+            <b>SpotBugs:</b> <span class="api">@SuppressFBWarnings(value="NP_…", justification="…")</span> — <span class="api">justification</span> field is intentional.<br>
+            <b>PMD:</b> <span class="api">@SuppressWarnings("PMD.RuleName")</span> or <span class="api">// NOPMD &lt;reason&gt;</span> (trailing text enters report).<br>
+            <b>Checkstyle:</b> <span class="api">@SuppressWarnings("checkname")</span> (requires <span class="api">SuppressWarningsFilter</span> + <span class="api">SuppressWarningsHolder</span> on TreeWalker).<br>
+            <b>Error Prone:</b> <span class="api">@SuppressWarnings("CheckName")</span>. &nbsp;<b>NullAway:</b> <span class="api">castToNonNull(x)</span> at the exact site.<br>
+            <b>Sonar:</b> <span class="api">//NOSONAR</span> (EOL; rule-blind — drops all issues on the line); prefer reviewed <b>False Positive</b> / <b>Accepted</b> transition.
+          </div>
+          <div class="lever-detail">
+            <div class="ld-ok"><div class="ld-label">use when</div>The tool is wrong at exactly this one site; reason is traceable.</div>
+            <div class="ld-warn"><div class="ld-label">danger</div>Broad form (<span style="font-family:var(--mono);font-size:9.5px;">@SuppressWarnings("PMD")</span> on a class) silences all future findings of that kind in scope.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lever-connector"><div class="lc-line"></div><div class="lc-arrow">&#8595;</div><span class="lc-note">if the same rule misfires everywhere in the project &rarr;</span></div>
+
+      <!-- Lever 2 -->
+      <div class="lever-card l2">
+        <div class="lever-swatch"></div>
+        <div class="lever-body">
+          <div class="lever-header">
+            <span class="lever-num">LEVER 2</span>
+            <span class="lever-name">Rule / ruleset tuning</span>
+            <span class="lever-scope-badge">scope: one rule, project-wide</span>
+          </div>
+          <div class="lever-apis">
+            <b>Checkstyle:</b> drop the module or set <span class="api">severity</span>.<br>
+            <b>PMD:</b> <span class="api">&lt;exclude name="RuleName"/&gt;</span>; or <span class="api">violationSuppressRegex</span> / <span class="api">violationSuppressXPath</span> for systematic misfires by message or AST shape.<br>
+            <b>SpotBugs:</b> <span class="api">FindBugsFilter</span> <span class="api">Match</span> with no class/method narrowing = "never report this pattern."<br>
+            <b>Error Prone:</b> <span class="api">-Xep:CheckName:OFF</span> (last flag for a check wins).<br>
+            <b>Sonar:</b> deactivate the rule in the Quality Profile.
+          </div>
+          <div class="lever-detail">
+            <div class="ld-ok"><div class="ld-label">use when</div>One rule misfires the same way across the whole project; one config change replaces scattered site suppressions.</div>
+            <div class="ld-warn"><div class="ld-label">danger</div>Global OFF removes signal where the rule would have caught a real defect. Do not use to make a gate green fast under deadline.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lever-connector"><div class="lc-line"></div><div class="lc-arrow">&#8595;</div><span class="lc-note">if legacy debt is too large to fix now &rarr;</span></div>
+
+      <!-- Lever 3 -->
+      <div class="lever-card l3">
+        <div class="lever-swatch"></div>
+        <div class="lever-body">
+          <div class="lever-header">
+            <span class="lever-num">LEVER 3</span>
+            <span class="lever-name">Baseline — freeze existing findings</span>
+            <span class="lever-scope-badge">scope: all current findings</span>
+          </div>
+          <div class="lever-apis">
+            <b>SpotBugs:</b> <span class="api">baselineFiles</span> — "bugs found in the baseline files won't be reported" (multi-file since spotbugs-maven-plugin 4.7.1.0).<br>
+            <b>Checkstyle:</b> external <span class="api">suppressions.xml</span> via <span class="api">SuppressionFilter</span> (one <span class="api">&lt;suppress&gt;</span> per frozen finding = de-facto baseline); <span class="api">maxAllowedViolations</span> caps by count.<br>
+            <b>Sonar:</b> anything outside the <b>New Code</b> window is tracked but excluded from the default gate.
+          </div>
+          <div class="lever-detail">
+            <div class="ld-ok"><div class="ld-label">use when</div>Legacy codebase is too noisy to fix on day 1; gate the delta not the total. Precondition for turning a gate on at all.</div>
+            <div class="ld-warn"><div class="ld-label">danger</div>Freezes real bugs hiding among pre-existing findings. Count cap is order-blind; finding-set baseline drifts on refactor.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lever-connector"><div class="lc-line"></div><div class="lc-arrow">&#8595;</div><span class="lc-note">combine with lever 3: let past persist, block new &rarr;</span></div>
+
+      <!-- Lever 4 -->
+      <div class="lever-card l4" style="border-width:2px;">
+        <div class="lever-swatch"></div>
+        <div class="lever-body">
+          <div class="lever-header">
+            <span class="lever-num">LEVER 4</span>
+            <span class="lever-name">Ratchet — "clean as you code"</span>
+            <span class="lever-scope-badge">scope: future code only</span>
+          </div>
+          <div class="lever-apis">
+            <b>Sonar:</b> <b>New Code Definition</b> marks what is "new"; the default gate applies its conditions <em>only to new code</em>. Legacy does not block the build; new code must be clean; debt decays as files are touched.<br>
+            <b>Checkstyle:</b> <span class="api">maxAllowedViolations</span> set to today's count, then lowered over time = count ratchet; blocks any increase.<br>
+            <b>SpotBugs:</b> regenerating the baseline at each release plays the same role at the finding-set level.
+          </div>
+          <div class="lever-detail">
+            <div class="ld-ok"><div class="ld-label">use when</div>Baseline (lever 3) is in place. Combine: lever 3 freezes past; lever 4 blocks new debt. Enables adoption on a million-line legacy codebase with no flag-day.</div>
+            <div class="ld-warn"><div class="ld-label">danger</div>Never forces legacy remediation; cold modules stay dirty indefinitely. Count ratchets can be gamed (split a file, reformat). Needs accurate SCM / git-blame data.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- .lever-col -->
+
+  </div><!-- .layout -->
+
+  <!-- ═══════════════════════════════════════════════
+       BOTTOM: SUPPRESSION-IS-A-CLAIM strip
+       ═══════════════════════════════════════════════ -->
+  <div class="bottom-strip">
+    <div class="bs-title">Suppression is a claim that needs evidence — every lever, per tool</div>
+    <div class="bs-grid">
+
+      <div class="bs-cell">
+        <div class="bs-tool">SpotBugs 4.10.2</div>
+        <span class="bs-api">@SuppressFBWarnings(<br>  value = "EI_EXPOSE_REP",<br>  justification = "…")</span><br>
+        from <span class="bs-api">edu.umd.cs.findbugs<br>.annotations</span> (CLASS retention; bytecode)
+      </div>
+
+      <div class="bs-cell">
+        <div class="bs-tool">PMD 7.25.0</div>
+        <span class="bs-api">// NOPMD validated<br>  non-null by contract</span><br>
+        Trailing text enters the report = built-in justification slot.<br>
+        <span class="bs-api">@SuppressWarnings("PMD.RuleName")</span>
+      </div>
+
+      <div class="bs-cell">
+        <div class="bs-tool">Checkstyle 13.6.0</div>
+        Requires <span class="bs-api">SuppressWarningsFilter</span> + <span class="bs-api">SuppressWarningsHolder</span> child of TreeWalker.<br>
+        Then: <span class="bs-api">@SuppressWarnings("checkname")</span> (case-insensitive; dotted-prefix / Check-suffix removed).
+      </div>
+
+      <div class="bs-cell">
+        <div class="bs-tool">Error Prone / NullAway</div>
+        <span class="bs-api">@SuppressWarnings("CheckName")</span><br>
+        NullAway site-narrow: <span class="bs-api">castToNonNull(x)</span> (self-suppressed; narrower than blanket annotation).<br>
+        <span class="bs-api">-Xep:Check:OFF|WARN|ERROR</span> (last flag wins)
+      </div>
+
+      <div class="bs-cell">
+        <div class="bs-tool">SonarQube Server 2026.1 LTA</div>
+        <span class="bs-api">//NOSONAR</span> (EOL; rule-blind).<br>
+        Reviewed path: <b>False Positive</b> or <b>Accepted</b> issue transition (both excluded from ratings + quality reports; "Accepted" supersedes "Won't Fix").
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       LEGEND
+       ═══════════════════════════════════════════════ -->
+  <div class="legend-row">
+    <div class="legend-item">
+      <div class="l-swatch" style="background:var(--tint-1);"></div>
+      <span>Lever 1 — narrowest (one site)</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-swatch" style="background:var(--tint-2);"></div>
+      <span>Lever 2 — one rule</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-swatch" style="background:var(--tint-3);"></div>
+      <span>Lever 3 — all current findings (baseline)</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-swatch" style="background:var(--ink);"></div>
+      <span>Lever 4 — future code (ratchet)</span>
+    </div>
+    <div class="legend-item" style="margin-left:auto;">
+      <span class="fig-mono fig-muted">Suppression policy &rarr; Ch 19 &nbsp;|&nbsp; Analyzer internals &rarr; Ch 15 (key 26) &nbsp;|&nbsp; Layered stack &rarr; Ch 17 (key 37)</span>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Sources: <b>SpotBugs 4.10.2</b> — <code style="font-family:var(--mono);font-size:10.5px;">@SuppressFBWarnings(value, justification)</code> from <code style="font-family:var(--mono);font-size:10.5px;">edu.umd.cs.findbugs.annotations</code> (CLASS retention, bytecode); <code style="font-family:var(--mono);font-size:10.5px;">baselineFiles</code> "bugs found in the baseline files won't be reported"; multi-file since spotbugs-maven-plugin 4.7.1.0 (spotbugs.readthedocs.io). <b>PMD 7.25.0</b> — <code style="font-family:var(--mono);font-size:10.5px;">@SuppressWarnings("PMD"/"PMD.RuleName"/"unused")</code>; <code style="font-family:var(--mono);font-size:10.5px;">// NOPMD</code> (same line; trailing text &rarr; report); <code style="font-family:var(--mono);font-size:10.5px;">violationSuppressRegex</code> / <code style="font-family:var(--mono);font-size:10.5px;">violationSuppressXPath</code>; ruleset <code style="font-family:var(--mono);font-size:10.5px;">&lt;exclude&gt;</code> (pmd.github.io). <b>Checkstyle 13.6.0</b> — <code style="font-family:var(--mono);font-size:10.5px;">SuppressWarningsFilter</code> + required <code style="font-family:var(--mono);font-size:10.5px;">SuppressWarningsHolder</code>; <code style="font-family:var(--mono);font-size:10.5px;">SuppressionFilter</code> (<code style="font-family:var(--mono);font-size:10.5px;">suppressions.xml</code>); <code style="font-family:var(--mono);font-size:10.5px;">maxAllowedViolations</code>; <code style="font-family:var(--mono);font-size:10.5px;">failOnViolation</code> (default true) (checkstyle.org; maven.apache.org/plugins/maven-checkstyle-plugin). <b>Error Prone / NullAway 0.13.4</b> — <code style="font-family:var(--mono);font-size:10.5px;">@SuppressWarnings("CheckName")</code>; <code style="font-family:var(--mono);font-size:10.5px;">-Xep:Check:OFF|WARN|ERROR</code> last flag wins; NullAway <code style="font-family:var(--mono);font-size:10.5px;">castToNonNull</code> (errorprone.info; github.com/uber/NullAway). <b>SonarQube Server 2026.1 LTA</b> — <code style="font-family:var(--mono);font-size:10.5px;">//NOSONAR</code> (EOL, suppresses all issues on the line); issue transitions False Positive / Accepted (Accepted supersedes Won't Fix; both excluded from ratings/quality reports); New Code Definition + Clean-as-You-Code gate (docs.sonarsource.com).
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

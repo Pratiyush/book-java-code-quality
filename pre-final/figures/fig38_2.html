@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 18 — Teaching the Build Your Rules (dossier key 38, folds 40 · Ch 18 in FINAL_INDEX, Part IV)
+  Figure:  Fig 38.2 — Codegen approaches by relation to the JSR 269 standard contract
+  Family:  Architecture / concept-map — three positions on a spectrum, each with strongest case + hardest limitation
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"The Lombok debate" — just before the three-approach split, or immediately after the JSR 269 CONCEPT box
+  One idea: record (compiler derives, no processor), generate-new-files processors (inside the JSR 269 contract,
+            new visible file), and Lombok (edits the annotated type past the contract via compiler internals)
+            are three different positions on one spectrum, each with a distinct strongest case and hardest limitation;
+            no approach is crowned.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 18.2 — Codegen approaches by relation to the JSR 269 contract</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 24px;
+      width: 980px;
+    }
+
+    /* ── Spectrum bar ── */
+    .spectrum {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin-bottom: 20px;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .spectrum-zone {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-right: 1.5px solid var(--ink);
+    }
+    .spectrum-zone:last-child { border-right: none; }
+
+    .sz-header {
+      padding: 10px 14px;
+      background: var(--tint-2);
+      border-bottom: 1.5px solid var(--ink);
+    }
+    .sz-pos {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      margin-bottom: 3px;
+    }
+    .sz-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .sz-body {
+      padding: 10px 14px;
+      background: var(--tint-0);
+      flex: 1;
+    }
+
+    .sz-examples {
+      margin: 0 0 8px 0;
+      padding: 0;
+      list-style: none;
+    }
+    .sz-examples li {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      margin-bottom: 3px;
+    }
+    .sz-examples li b { color: var(--ink); font-size: 12px; }
+    .m { font-family: var(--mono); font-size: 10.5px; color: var(--ink); }
+
+    /* ── JSR 269 contract strip ── */
+    .contract-strip {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin-bottom: 18px;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--tint-0);
+    }
+    .cs-label {
+      width: 130px;
+      flex-shrink: 0;
+      background: var(--tint-2);
+      border-right: 1.5px solid var(--ink);
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cs-label-text {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink);
+      text-align: center;
+      line-height: 1.4;
+    }
+    .cs-items {
+      flex: 1;
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+    .cs-item {
+      flex: 1;
+      padding: 9px 12px;
+      border-right: 1px solid var(--line);
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .cs-item:last-child { border-right: none; }
+    .cs-item b { color: var(--ink); }
+
+    /* ── Three-column detail cards ── */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .detail-card {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .dc-hd {
+      padding: 7px 12px;
+      background: var(--tint-2);
+      border-bottom: 1.5px solid var(--ink);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .dc-body {
+      padding: 10px 12px;
+      background: var(--tint-0);
+    }
+
+    .dc-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+      align-items: flex-start;
+    }
+    .dc-row:last-child { margin-bottom: 0; }
+
+    .dc-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      flex-shrink: 0;
+      width: 72px;
+      padding-top: 1px;
+    }
+    .dc-label.ok-label { color: var(--ok); }
+    .dc-label.stop-label { color: var(--stop); }
+    .dc-label.neutral-label { color: var(--ink-soft); }
+
+    .dc-value {
+      font-size: 11.5px;
+      color: var(--ink);
+      line-height: 1.35;
+      flex: 1;
+    }
+
+    /* Lombok has accent-bar treatment (most contested, not crowned) */
+    .detail-card.is-contested {
+      border-color: var(--ink);
+    }
+    .detail-card.is-contested .dc-hd {
+      background: var(--tint-3);
+    }
+
+    /* ── Bottom note ── */
+    .bottom-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .note-main {
+      flex: 1;
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      padding: 8px 12px;
+      border-radius: 0 8px 8px 0;
+      font-size: 11.5px;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    .note-main b { color: var(--ink); }
+
+    .note-jsr {
+      width: 240px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 8px 12px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.45;
+    }
+    .note-jsr b { color: var(--ink); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 18.2 &mdash; Codegen approaches by relation to the JSR&nbsp;269 standard contract</p>
+  <p class="fig-subtitle">Three positions on one spectrum: compiler-derived &rarr; new-file processor (inside contract) &rarr; AST-edit processor (past contract). Each states its trade-off; none is crowned.</p>
+
+  <!-- ── Spectrum bar ── -->
+  <div class="spectrum">
+    <div class="spectrum-zone">
+      <div class="sz-header">
+        <div class="sz-pos">Position A &mdash; Sidesteps the contract</div>
+        <div class="sz-name">Language-level derivation</div>
+      </div>
+      <div class="sz-body">
+        <ul class="sz-examples">
+          <li><b><span class="m">record</span></b> (JEP&nbsp;395, final JDK&nbsp;16)</li>
+          <li>Compiler derives canonical ctor, accessors,<br><span class="m">equals</span>, <span class="m">hashCode</span>, <span class="m">toString</span></li>
+          <li>No dependency &nbsp;·&nbsp; No processor &nbsp;·&nbsp; No generated file</li>
+        </ul>
+      </div>
+    </div>
+    <div class="spectrum-zone">
+      <div class="sz-header">
+        <div class="sz-pos">Position B &mdash; Inside the contract</div>
+        <div class="sz-name">Generate-new-files processors</div>
+      </div>
+      <div class="sz-body">
+        <ul class="sz-examples">
+          <li><b>AutoValue</b> <span class="m">@AutoValue</span> &rarr; <span class="m">AutoValue_Foo</span></li>
+          <li><b>Immutables</b> <span class="m">@Value.Immutable</span> &rarr; <span class="m">ImmutableFoo</span></li>
+          <li><b>MapStruct</b> <span class="m">@Mapper</span> &rarr; <span class="m">FooMapperImpl</span></li>
+          <li>Standard <span class="m">Filer</span> API &nbsp;·&nbsp; Visible, inspectable output file</li>
+        </ul>
+      </div>
+    </div>
+    <div class="spectrum-zone" style="border-right:none;">
+      <div class="sz-header">
+        <div class="sz-pos">Position C &mdash; Past the contract</div>
+        <div class="sz-name">AST-edit processor</div>
+      </div>
+      <div class="sz-body">
+        <ul class="sz-examples">
+          <li><b>Lombok</b> &mdash; edits annotated type in place</li>
+          <li>Casts to <span class="m">com.sun.tools.javac.*</span> internal types</li>
+          <li>Forces extra rounds via dummy file + <span class="m">Filer</span> patch</li>
+          <li>No documented mutate-existing-type method in JSR&nbsp;269</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── JSR 269 contract strip ── -->
+  <div class="contract-strip">
+    <div class="cs-label">
+      <div class="cs-label-text">JSR&nbsp;269<br>round model</div>
+    </div>
+    <div class="cs-items">
+      <div class="cs-item">
+        <b>SPI discovery</b><br>
+        <span class="m">META-INF/services/<br>javax.annotation.processing.Processor</span>
+      </div>
+      <div class="cs-item">
+        <b>Round loop</b><br>
+        <span class="m">process(annotations,</span><br>
+        <span class="m">&nbsp;RoundEnvironment)</span><br>
+        <span style="font-size:10.5px;color:var(--ink-soft);">"query about a round"</span>
+      </div>
+      <div class="cs-item">
+        <b>Create files</b><br>
+        <span class="m">Filer</span><br>
+        <span style="font-size:10.5px;color:var(--ink-soft);">"creation of new files by<br>an annotation processor"<br>(SE&nbsp;21 pkg summary)</span>
+      </div>
+      <div class="cs-item" style="border-right:none;">
+        <b>Contract limit</b><br>
+        <span style="font-size:10.5px;color:var(--ink-soft);">No documented method to<br>modify the body of an<br>already-declared type</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Three detail cards ── -->
+  <div class="detail-grid">
+
+    <!-- record -->
+    <div class="detail-card">
+      <div class="dc-hd"><span class="m">record</span> (JEP&nbsp;395, JDK&nbsp;16)</div>
+      <div class="dc-body">
+        <div class="dc-row">
+          <div class="dc-label ok-label">Strongest case</div>
+          <div class="dc-value">No dependency, no processor, no generated file; transparent carrier with compiler-derived value semantics; impossible to construct with a wrong type</div>
+        </div>
+        <div class="dc-row">
+          <div class="dc-label stop-label">Hardest limit</div>
+          <div class="dc-value">Transparent carrier only: cannot extend a class, shallowly immutable; builders, mutable entities, mappers, loggers are out of scope</div>
+        </div>
+        <div class="dc-row">
+          <div class="dc-label neutral-label">Generated file</div>
+          <div class="dc-value">none (compiler derives)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate-new-files processors -->
+    <div class="detail-card">
+      <div class="dc-hd">AutoValue / Immutables / MapStruct</div>
+      <div class="dc-body">
+        <div class="dc-row">
+          <div class="dc-label ok-label">Strongest case</div>
+          <div class="dc-value">Generated class is ordinary, inspectable Java; every IDE and analyzer already understands it; covers value types with builders, mappers, optional fields</div>
+        </div>
+        <div class="dc-row">
+          <div class="dc-label stop-label">Hardest limit</div>
+          <div class="dc-value">Caller references a generated symbol; clean build needs generated-sources dir on source path; processor ordering is unspecified (<span class="m">lombok-mapstruct-binding</span> for multi-processor builds)</div>
+        </div>
+        <div class="dc-row">
+          <div class="dc-label neutral-label">Generated file</div>
+          <div class="dc-value"><span class="m">AutoValue_Foo</span> / <span class="m">ImmutableFoo</span> / <span class="m">FooMapperImpl</span> (visible, new file)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lombok -->
+    <div class="detail-card is-contested">
+      <div class="dc-hd">Lombok (AST-edit)</div>
+      <div class="dc-body">
+        <div class="dc-row">
+          <div class="dc-label ok-label">Strongest case</div>
+          <div class="dc-value">Maximal terseness across a broad surface: <span class="m">@Data</span>, <span class="m">@Builder</span>, <span class="m">@Slf4j</span>, <span class="m">@SneakyThrows</span>, <span class="m">@Cleanup</span>; first-class Maven / Gradle / IDE support; <span class="m">lombok.config</span> <span class="m">addLombokGeneratedAnnotation=true</span> &rarr; JaCoCo&nbsp;(&#8805;&nbsp;0.8.1) excludes <span class="m">@lombok.Generated</span> members</div>
+        </div>
+        <div class="dc-row">
+          <div class="dc-label stop-label">Hardest limit</div>
+          <div class="dc-value">Depends on <span class="m">com.sun.tools.javac.*</span> internals (<span class="m">jdk.compiler</span> not exported since JDK&nbsp;16; requires <span class="m">--add-opens</span>); source the developer reads &ne; code that runs; IDE plugin required; other processors may not see edits; <span class="m">annotationProcessorPaths</span> mandatory at JDK&nbsp;23; <span class="m">delombok</span> is the exit</div>
+        </div>
+        <div class="dc-row">
+          <div class="dc-label neutral-label">Generated file</div>
+          <div class="dc-value">none (members injected into mutated AST; <span class="m">delombok</span> externalises)</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .detail-grid -->
+
+  <!-- ── Bottom row ── -->
+  <div class="bottom-row">
+    <div class="note-main">
+      <b>Neutral framing (NEUTRALITY.md):</b>
+      <span class="m">record</span>, generate-new-files processors, and Lombok are
+      <b>different approaches to the same boilerplate problem</b> &mdash; a codebase may use several at once
+      (records for DTOs, MapStruct for mapping, Lombok for logging).
+      Each states its trade-off; none is crowned.
+      The live question is which mix matches a team&rsquo;s surface area and its tolerance for the respective coupling.
+    </div>
+    <div class="note-jsr">
+      <b>Annotation processing note</b><br>
+      <span class="m">annotationProcessorPaths</span> in
+      <span class="m">maven-compiler-plugin</span> becomes
+      <b>mandatory at JDK&nbsp;23</b>; before that, a
+      processor on the plain classpath was discovered
+      implicitly. Multi-processor builds need explicit
+      ordering (<span class="m">lombok-mapstruct-binding</span>).
+      Routing: JaCoCo <span class="m">@Generated</span>
+      exclusion &rarr; metrics chapter.
+      <span class="m">record</span> as a full language
+      feature &rarr; Ch&nbsp;5 / Ch&nbsp;8.
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Sources: JSR&nbsp;269 / <span style="font-family:var(--mono);font-size:10.5px;">javax.annotation.processing</span> (SE&nbsp;21 pkg summary):
+    <span style="font-family:var(--mono);font-size:10.5px;">Processor</span> SPI via <span style="font-family:var(--mono);font-size:10.5px;">META-INF/services</span>;
+    <span style="font-family:var(--mono);font-size:10.5px;">RoundEnvironment</span> &ldquo;query about a round of annotation processing&rdquo;;
+    <span style="font-family:var(--mono);font-size:10.5px;">Filer</span> &ldquo;creation of new files by an annotation processor&rdquo; (verbatim SE&nbsp;21).
+    <span style="font-family:var(--mono);font-size:10.5px;">record</span>: JEP&nbsp;395, final JDK&nbsp;16; &ldquo;transparent carrier&rdquo; (JEP&nbsp;395).
+    AutoValue: <span style="font-family:var(--mono);font-size:10.5px;">@AutoValue</span>&rarr;<span style="font-family:var(--mono);font-size:10.5px;">AutoValue_*</span> (github.com/google/auto).
+    Immutables: <span style="font-family:var(--mono);font-size:10.5px;">@Value.Immutable</span>&rarr;<span style="font-family:var(--mono);font-size:10.5px;">Immutable*</span> (immutables.github.io).
+    MapStruct: <span style="font-family:var(--mono);font-size:10.5px;">@Mapper</span>&rarr;<span style="font-family:var(--mono);font-size:10.5px;">*Impl</span> (mapstruct.org).
+    Lombok (projectlombok.org): SPI <span style="font-family:var(--mono);font-size:10.5px;">lombok.launch.AnnotationProcessorHider$AnnotationProcessor</span>;
+    <span style="font-family:var(--mono);font-size:10.5px;">ShadowClassLoader (.SCL.lombok)</span>;
+    <span style="font-family:var(--mono);font-size:10.5px;">lombok.javac.apt.LombokProcessor</span>;
+    <span style="font-family:var(--mono);font-size:10.5px;">com.sun.tools.javac.*</span> internal-API coupling + <span style="font-family:var(--mono);font-size:10.5px;">--add-opens</span>
+    (jdk.compiler not exporting since JDK&nbsp;16);
+    <span style="font-family:var(--mono);font-size:10.5px;">addLombokGeneratedAnnotation=true</span>&rarr;<span style="font-family:var(--mono);font-size:10.5px;">@lombok.Generated</span>&rarr;JaCoCo&nbsp;&#8805;&nbsp;0.8.1;
+    <span style="font-family:var(--mono);font-size:10.5px;">delombok</span> (<span style="font-family:var(--mono);font-size:10.5px;">java -jar lombok.jar delombok src -d out</span>);
+    <span style="font-family:var(--mono);font-size:10.5px;">annotationProcessorPaths</span> mandatory JDK&nbsp;23;
+    <span style="font-family:var(--mono);font-size:10.5px;">lombok-mapstruct-binding</span> ordering dependency. (API identity verified; versions/GAVs &#9888; at pin.)
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

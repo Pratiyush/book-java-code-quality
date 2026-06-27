@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   12 — Names for What's Wrong (dossier key 19, folds 61) · Part II — Writing Quality Java
+  Figure:    Fig 19.1 — The smell-triple: smell → refactoring → detecting rule, by detection mode
+  Family:    Concept-map / catalogue (three detection-mode lanes; each lane shows the triple)
+  Method:    Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: Load-bearing reference figure — the visual realization of §"The triple that makes it
+             operational" in the draft. Placed after that section.
+  One idea:  Every named smell comes with a refactoring that resolves it and a detecting rule that
+             catches it; the detection mode (metric-threshold / structural-pattern /
+             contract-bug-overlap) determines whether a linter or a human review finds it.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 12.1 — The smell-triple: smell, refactoring, detecting rule</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout only — palette and components come from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 980px;
+    }
+
+    /* ── Triple header row ── */
+    .triple-header {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 18px 0 10px;
+      justify-content: center;
+    }
+    .triple-pill {
+      flex: 1;
+      text-align: center;
+      padding: 9px 14px;
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      background: var(--tint-3);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      max-width: 200px;
+    }
+    .triple-pill.is-accent {
+      border-color: var(--accent-bar);
+      box-shadow: inset 0 0 0 3px var(--accent-bar);
+      background: var(--tint-1);
+    }
+    .triple-arrow {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      padding: 0 12px;
+      flex-shrink: 0;
+    }
+
+    /* ── Detection-mode section labels ── */
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--ink-soft);
+      margin: 20px 0 8px 0;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 4px;
+    }
+
+    /* ── Smell cards grid — three per detection mode ── */
+    .smell-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .smell-card {
+      border: 1.5px solid var(--ink);
+      border-radius: 9px;
+      background: var(--tint-1);
+      overflow: hidden;
+    }
+    .smell-card .sc-smell {
+      background: var(--tint-2);
+      border-bottom: 1px solid var(--line);
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.25;
+    }
+    .smell-card .sc-smell .group-tag {
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      font-style: italic;
+      display: block;
+      margin-top: 1px;
+    }
+    .smell-card .sc-body {
+      padding: 8px 10px;
+    }
+    .sc-row {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      margin-bottom: 4px;
+    }
+    .sc-row:last-child { margin-bottom: 0; }
+    .sc-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      min-width: 42px;
+      flex-shrink: 0;
+    }
+    .sc-val {
+      font-size: 11px;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+    .sc-rule {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--ink);
+    }
+    .sc-fp {
+      font-size: 10px;
+      color: var(--ink-soft);
+      font-style: italic;
+      line-height: 1.25;
+    }
+
+    /* Detection-mode border accent */
+    .smell-card.mode-metric  { border-left: 4px solid var(--ink); }
+    .smell-card.mode-struct  { border-left: 4px solid var(--line); }
+    .smell-card.mode-contract{ border-left: 4px solid var(--accent-bar); }
+
+    /* ── Detection-mode key strip ── */
+    .mode-key {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .mode-cell {
+      flex: 1;
+      border-radius: 7px;
+      padding: 9px 12px;
+      border: 1.5px solid var(--ink);
+      background: var(--tint-1);
+    }
+    .mode-cell .mc-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+    .mode-cell .mc-desc {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .mode-cell.mode-metric  { border-left: 4px solid var(--ink); }
+    .mode-cell.mode-struct  { border-left: 4px solid var(--line); }
+    .mode-cell.mode-contract{ border-left: 4px solid var(--accent-bar); }
+
+    /* ── Bottom rule ── */
+    .rule-note {
+      margin-top: 14px;
+    }
+
+    .fig-caption { margin-top: 14px; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 12.1 — The smell-triple: smell → refactoring → detecting rule</p>
+  <p class="fig-subtitle">Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it</p>
+
+  <!-- ── The triple: three pillars ── -->
+  <div class="triple-header">
+    <div class="triple-pill is-accent">Smell<br><span style="font-size:10px;font-weight:400;color:var(--ink-soft)">surface symptom (not a bug)</span></div>
+    <div class="triple-arrow">→</div>
+    <div class="triple-pill">Refactoring<br><span style="font-size:10px;font-weight:400;color:var(--ink-soft)">Fowler's named fix</span></div>
+    <div class="triple-arrow">→</div>
+    <div class="triple-pill">Detecting rule<br><span style="font-size:10px;font-weight:400;color:var(--ink-soft)">tool · rule key</span></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       DETECTION MODE A — METRIC-THRESHOLD
+       ═══════════════════════════════════════════════════════ -->
+  <div class="section-label">A — Metric-threshold smells &nbsp;·&nbsp; a counter vs a configurable limit &nbsp;·&nbsp; tool-found</div>
+
+  <div class="smell-grid">
+
+    <!-- Long Method -->
+    <div class="smell-card mode-metric">
+      <div class="sc-smell">Long Method
+        <span class="group-tag">Bloater · Fowler Refactoring 2e</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-row">
+          <span class="sc-lbl">Refactor</span>
+          <span class="sc-val">Extract Function; Decompose Conditional</span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Rules</span>
+          <span class="sc-val">
+            <span class="sc-rule">PMD NcssCount</span> (method 60)<br>
+            <span class="sc-rule">Sonar java:S138</span><br>
+            <span class="sc-rule">Checkstyle MethodLength</span>
+          </span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">FP note</span>
+          <span class="sc-fp">A linear recipe may read better whole than split</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- High Complexity -->
+    <div class="smell-card mode-metric">
+      <div class="sc-smell">High Complexity
+        <span class="group-tag">Bloater · Fowler Refactoring 2e</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-row">
+          <span class="sc-lbl">Refactor</span>
+          <span class="sc-val">Extract Function; Replace Conditional with Polymorphism</span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Rules</span>
+          <span class="sc-val">
+            <span class="sc-rule">PMD CyclomaticComplexity</span> (10/80)<br>
+            <span class="sc-rule">PMD CognitiveComplexity</span> (15)<br>
+            <span class="sc-rule">Sonar java:S3776</span> (15)
+          </span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">FP note</span>
+          <span class="sc-fp">Thresholds are conventions — tools disagree by design</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Long Parameter List -->
+    <div class="smell-card mode-metric">
+      <div class="sc-smell">Long Parameter List
+        <span class="group-tag">Bloater · Fowler Refactoring 2e</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-row">
+          <span class="sc-lbl">Refactor</span>
+          <span class="sc-val">Introduce Parameter Object</span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Rules</span>
+          <span class="sc-val">
+            <span class="sc-rule">PMD ExcessiveParameterList</span> (10)<br>
+            <span class="sc-rule">Sonar java:S107</span> (7)
+          </span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Fix note</span>
+          <span class="sc-fp">A Builder or <code style="font-family:var(--mono);font-size:10px">record</code> (JEP 395) often replaces the parameter object</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Large Class / God Class -->
+    <div class="smell-card mode-metric">
+      <div class="sc-smell">Large Class / God Class
+        <span class="group-tag">Bloater · Fowler Refactoring 2e; Brown et al. AntiPatterns</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-row">
+          <span class="sc-lbl">Refactor</span>
+          <span class="sc-val">Extract Class</span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Rules</span>
+          <span class="sc-val">
+            <span class="sc-rule">PMD GodClass</span><br>
+            <span class="sc-rule">PMD TooManyMethods</span> (10)<br>
+            <span class="sc-rule">PMD TooManyFields</span> (15)<br>
+            <span class="sc-rule">Sonar java:S1448</span>
+          </span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">FP note</span>
+          <span class="sc-fp">Central coordinators look large but may be correct</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Duplicate Code -->
+    <div class="smell-card mode-metric">
+      <div class="sc-smell">Duplicate Code
+        <span class="group-tag">Dispensable · Fowler Refactoring 2e</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-row">
+          <span class="sc-lbl">Refactor</span>
+          <span class="sc-val">Extract Function; Pull Up Method</span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Rules</span>
+          <span class="sc-val">
+            <span class="sc-rule">PMD CPD</span> (copy-paste detector)<br>
+            <span class="sc-rule">Sonar java:S1192</span> (dup string literals, 3)
+          </span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">FP note</span>
+          <span class="sc-fp">Structural duplication ≠ conceptual duplication</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Class -->
+    <div class="smell-card mode-metric">
+      <div class="sc-smell">Data Class
+        <span class="group-tag">Dispensable · Fowler Refactoring 2e</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-row">
+          <span class="sc-lbl">Refactor</span>
+          <span class="sc-val">Move Function (behavior to the data)</span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Rules</span>
+          <span class="sc-val">
+            <span class="sc-rule">PMD DataClass</span>
+          </span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Fix note</span>
+          <span class="sc-fp">A DTO may legitimately be a Data Class; use <code style="font-family:var(--mono);font-size:10px">record</code> (JEP 395) for pure data carriers</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .smell-grid metric -->
+
+  <!-- ═══════════════════════════════════════════════════════
+       DETECTION MODE B — STRUCTURAL-PATTERN
+       ═══════════════════════════════════════════════════════ -->
+  <div class="section-label">B — Structural-pattern smells &nbsp;·&nbsp; AST shape match, no threshold number &nbsp;·&nbsp; tool-found or review-found</div>
+
+  <div class="smell-grid">
+
+    <!-- Feature Envy -->
+    <div class="smell-card mode-struct">
+      <div class="sc-smell">Feature Envy
+        <span class="group-tag">Coupler · Fowler Refactoring 2e</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-row">
+          <span class="sc-lbl">Refactor</span>
+          <span class="sc-val">Move Function</span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Rules</span>
+          <span class="sc-val">No reliable automated detector — review-found</span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">FP note</span>
+          <span class="sc-fp">Judgment call: is the envy intentional coordination?</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message Chains / Law of Demeter -->
+    <div class="smell-card mode-struct">
+      <div class="sc-smell">Message Chains
+        <span class="group-tag">Coupler · Fowler Refactoring 2e</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-row">
+          <span class="sc-lbl">Refactor</span>
+          <span class="sc-val">Hide Delegate</span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Rules</span>
+          <span class="sc-val">
+            <span class="sc-rule">PMD LawOfDemeter</span> (trust radius 1)
+          </span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">FP note</span>
+          <span class="sc-fp">Fluent builder APIs look like chains but are intentional</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Speculative Generality -->
+    <div class="smell-card mode-struct">
+      <div class="sc-smell">Speculative Generality
+        <span class="group-tag">Dispensable · Fowler Refactoring 2e</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-row">
+          <span class="sc-lbl">Refactor</span>
+          <span class="sc-val">Collapse Hierarchy; Remove Delegation</span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Rules</span>
+          <span class="sc-val">No reliable automated detector — review-found</span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">FP note</span>
+          <span class="sc-fp">Planned extension may genuinely need the abstraction</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .smell-grid structural -->
+
+  <!-- ═══════════════════════════════════════════════════════
+       DETECTION MODE C — CONTRACT / BUG-OVERLAP
+       ═══════════════════════════════════════════════════════ -->
+  <div class="section-label">C — Contract / bug-overlap smells &nbsp;·&nbsp; bytecode or flow analysis; overlaps with real defects &nbsp;·&nbsp; tool-found (hard)</div>
+
+  <div class="smell-grid">
+
+    <!-- Exposing internal representation -->
+    <div class="smell-card mode-contract">
+      <div class="sc-smell">Exposing Internal Representation
+        <span class="group-tag">Coupler (latent bug) · Fowler Refactoring 2e</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-row">
+          <span class="sc-lbl">Refactor</span>
+          <span class="sc-val">Defensive copy or <code style="font-family:var(--mono);font-size:10px">List.copyOf</code> (immutable view)</span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Rules</span>
+          <span class="sc-val">
+            <span class="sc-rule">SpotBugs EI_EXPOSE_REP</span><br>
+            <span class="sc-rule">SpotBugs EI_EXPOSE_REP2</span>
+          </span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Risk</span>
+          <span class="sc-fp">Caller mutation silently corrupts internal state — a real latent bug, not just style</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- equals without hashCode -->
+    <div class="smell-card mode-contract">
+      <div class="sc-smell"><code style="font-family:var(--mono);font-size:11px">equals</code> without <code style="font-family:var(--mono);font-size:11px">hashCode</code>
+        <span class="group-tag">OO abuser · Bloch EJ 3e Items 10–11</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-row">
+          <span class="sc-lbl">Refactor</span>
+          <span class="sc-val">Override both, or use a <code style="font-family:var(--mono);font-size:10px">record</code> (JEP 395)</span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Rules</span>
+          <span class="sc-val">
+            <span class="sc-rule">Error Prone EqualsHashCode</span><br>
+            <span class="sc-rule">PMD OverrideBothEqualsAndHashcode</span>
+          </span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Risk</span>
+          <span class="sc-fp">Object silently misbehaves in HashMap / HashSet</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Telescoping Constructor (EJ anti-pattern) -->
+    <div class="smell-card mode-contract">
+      <div class="sc-smell">Telescoping Constructor
+        <span class="group-tag">Java anti-pattern · Bloch EJ 3e Item 2</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-row">
+          <span class="sc-lbl">Refactor</span>
+          <span class="sc-val">Builder pattern (or <code style="font-family:var(--mono);font-size:10px">record</code> where immutable)</span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">Rules</span>
+          <span class="sc-val">
+            <span class="sc-rule">PMD ExcessiveParameterList</span> (10)<br>
+            Partially metric-caught; judgment confirms intent
+          </span>
+        </div>
+        <div class="sc-row">
+          <span class="sc-lbl">FP note</span>
+          <span class="sc-fp">Long param list ≠ telescoping; check for overloads</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .smell-grid contract -->
+
+  <!-- ── Detection-mode key ── -->
+  <div class="mode-key">
+    <div class="mode-cell mode-metric">
+      <div class="mc-title">A — Metric-threshold</div>
+      <div class="mc-desc">A counter against a configurable limit. The threshold is a convention, not a law — tools disagree on the number, which is the lesson. Gate-able in CI at a tuned threshold.</div>
+    </div>
+    <div class="mode-cell mode-struct">
+      <div class="mc-title">B — Structural-pattern</div>
+      <div class="mc-desc">An AST shape match with no number. Some have a rule (PMD LawOfDemeter); others (Feature Envy, Speculative Generality) have no reliable detector. Review-found, not tool-found.</div>
+    </div>
+    <div class="mode-cell mode-contract">
+      <div class="mc-title">C — Contract / bug-overlap</div>
+      <div class="mc-desc">Bytecode or flow analysis that overlaps with genuine defects. These are not just stylistic: the EI_EXPOSE_REP smell is also a real latent mutation bug. Hard gate in CI.</div>
+    </div>
+  </div>
+
+  <!-- ── Core rule ── -->
+  <div class="rule-note">
+    <div class="fig-note">
+      <b>The smell is a hint to investigate, never a verdict to obey.</b>
+      A 60-line method may be clearer whole than split (the <em>APoSD</em> counter-point — Ousterhout).
+      A rule fires when a threshold is crossed, not when a refactoring is warranted. The detection mode
+      tells you who finds the smell; the triple tells you what to do when they do.
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    <b>Fig 12.1</b> — Smell names: Fowler <em>Refactoring</em> 2e (2018); five-group taxonomy (Bloaters / OO abusers / Change preventers / Dispensables / Couplers) is a widely-mirrored teaching aid.
+    Anti-pattern items: Bloch <em>Effective Java</em> 3e (2018) Items 2, 10–11.
+    Rule keys and default thresholds: PMD 7.25.0, Sonar java rules (Server 2026.1 LTA), SpotBugs 4.10.2, Error Prone 2.x — all per <code>00-strategy/SOURCE-PIN.md</code> (pin 2026-06-20); thresholds ⚠ verify at pin (move across versions).
+    JEP 395 (records, Java 16) · Ousterhout <em>A Philosophy of Software Design</em> (over-decomposition counter-point).
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

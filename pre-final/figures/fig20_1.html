@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   13 — The Bug That Passes Every Test (dossier key 20) · Part III — Concurrency & Correctness
+  Figure:    Fig 20.1 — JMM happens-before edges and the four safe-publication idioms
+  Family:    Concept-map / architecture (three-column relational layout)
+  Method:    Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: The chapter's load-bearing reference figure — the visual equivalent of
+             §"The edges you can rely on" (JLS §17.4.5) and §"Safe publication: the four idioms".
+  One idea:  Every Java Memory Model happens-before edge establishes cross-thread visibility in
+             exactly one way; the four safe-publication idioms are each one of these edges applied
+             to sharing an object reference safely between threads.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fig 13.1 — JMM happens-before edges and safe publication</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + shared components come from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 26px;
+      width: 980px;
+    }
+
+    /* ── Three-column layout ── */
+    .three-col {
+      display: grid;
+      grid-template-columns: 260px 1fr 230px;
+      gap: 18px;
+      margin-top: 20px;
+      align-items: start;
+    }
+
+    /* ── Column headers ── */
+    .col-header {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      border-bottom: 1.5px solid var(--ink);
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+
+    /* ── Edge rows (left column) ── */
+    .edge-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .edge-row {
+      display: flex;
+      flex-direction: column;
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      background: var(--tint-1);
+      overflow: hidden;
+    }
+
+    .edge-row.is-accent {
+      border-color: var(--accent-bar);
+      background: var(--tint-0);
+      box-shadow: inset 3px 0 0 var(--accent-bar);
+    }
+
+    .edge-name {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      padding: 6px 10px 4px;
+      border-bottom: 1px solid var(--line);
+      background: var(--tint-2);
+    }
+
+    .edge-row.is-accent .edge-name {
+      background: var(--tint-1);
+      border-bottom-color: var(--accent-bar);
+    }
+
+    .edge-ref {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      padding: 5px 10px 6px;
+      line-height: 1.35;
+    }
+
+    /* ── Middle column: what each edge provides ── */
+    .guarantee-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .guarantee-card {
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      background: var(--tint-0);
+      padding: 7px 11px;
+    }
+
+    .guarantee-card .g-head {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+
+    .guarantee-card .g-body {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+
+    .guarantee-card .g-warn {
+      font-size: 11px;
+      color: var(--stop);
+      margin-top: 4px;
+      line-height: 1.3;
+    }
+
+    .guarantee-card.is-strong {
+      border-color: var(--ink);
+      background: var(--tint-1);
+    }
+
+    /* ── Right column: safe-publication idioms ── */
+    .idiom-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .idiom-card {
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      background: var(--tint-2);
+      overflow: hidden;
+    }
+
+    .idiom-card .ic-hd {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink);
+      padding: 5px 10px 4px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .idiom-card .ic-code {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink);
+      padding: 5px 10px;
+      background: var(--tint-1);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .idiom-card .ic-edge {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      padding: 4px 10px 6px;
+    }
+
+    /* ── Connector arrows between columns ── */
+    .connector-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      justify-content: flex-start;
+      padding-top: 30px;   /* aligns with first card after header */
+    }
+
+    .conn-arrow {
+      height: 44px;       /* matches one edge card height approximately */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--line);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* ── Outer wrapper for the three-column with connectors ── */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 260px 24px 1fr 24px 230px;
+      gap: 0 4px;
+      margin-top: 20px;
+      align-items: start;
+    }
+
+    /* ── Transitivity row (spans all three concepts) ── */
+    .transitivity-bar {
+      margin-top: 12px;
+      padding: 8px 12px;
+      border: 1.5px dashed var(--ink);
+      border-radius: 8px;
+      background: var(--tint-0);
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .transitivity-bar .t-label {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .transitivity-bar .t-body {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+
+    /* ── Bottom: key rule boxes ── */
+    .bottom-rules {
+      display: flex;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .rule-box {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .rule-box .rb-hd {
+      background: var(--tint-2);
+      border-bottom: 1px solid var(--line);
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .rule-box .rb-bd {
+      padding: 6px 10px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+
+    .rule-box .rb-bd code {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink);
+    }
+
+    .rule-box .rb-bd .stop-text {
+      color: var(--stop);
+      font-weight: 600;
+    }
+
+    .rule-box .rb-bd .ok-text {
+      color: var(--ok);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Fig 13.1 — Java Memory Model: happens-before edges and safe publication</p>
+  <p class="fig-subtitle">JLS SE 21 §17.4.5 · six edges that establish cross-thread visibility · four idioms for safely publishing an object reference</p>
+
+  <!-- ── Main three-column grid with connectors ── -->
+  <div class="main-grid">
+
+    <!-- LEFT: happens-before edges -->
+    <div>
+      <div class="col-header">HB edge (JLS §17.4.5)</div>
+      <div class="edge-list">
+
+        <div class="edge-row">
+          <div class="edge-name">Program order</div>
+          <div class="edge-ref">Within one thread: earlier action hb later action (single-thread as-if-serial)</div>
+        </div>
+
+        <div class="edge-row">
+          <div class="edge-name">Monitor lock</div>
+          <div class="edge-ref">unlock on a monitor hb every subsequent lock on it — <em>exclusion + visibility</em></div>
+        </div>
+
+        <div class="edge-row is-accent">
+          <div class="edge-name">Volatile write/read</div>
+          <div class="edge-ref">write to volatile field hb every subsequent read of it — <em>visibility only, no exclusion</em></div>
+        </div>
+
+        <div class="edge-row">
+          <div class="edge-name">Thread.start()</div>
+          <div class="edge-ref">Thread.start() hb any action in the started thread</div>
+        </div>
+
+        <div class="edge-row">
+          <div class="edge-name">Thread.join()</div>
+          <div class="edge-ref">every action in thread T hb another thread's return from T.join()</div>
+        </div>
+
+        <div class="edge-row">
+          <div class="edge-name">java.util.concurrent</div>
+          <div class="edge-ref">actions before put into concurrent collection hb actions after take; before executor submit hb task execution</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CONNECTOR LEFT→MID -->
+    <div class="connector-col">
+      <div class="conn-arrow">→</div>
+      <div class="conn-arrow">→</div>
+      <div class="conn-arrow">→</div>
+      <div class="conn-arrow">→</div>
+      <div class="conn-arrow">→</div>
+      <div class="conn-arrow">→</div>
+    </div>
+
+    <!-- MIDDLE: what each edge guarantees -->
+    <div>
+      <div class="col-header">What the edge guarantees</div>
+      <div class="guarantee-list">
+
+        <div class="guarantee-card">
+          <div class="g-head">Single-thread ordering only</div>
+          <div class="g-body">Does not cross thread boundaries. No cross-thread visibility guarantee on its own.</div>
+        </div>
+
+        <div class="guarantee-card is-strong">
+          <div class="g-head">Mutual exclusion + full visibility</div>
+          <div class="g-body">All writes by the releasing thread are visible to the acquiring thread. The heavyweight, complete tool.</div>
+        </div>
+
+        <div class="guarantee-card is-strong">
+          <div class="g-head">Visibility — not atomicity</div>
+          <div class="g-body">Latest write is visible to subsequent reads. <span class="g-warn">Does NOT make read-modify-write atomic. <code>count++</code> on a volatile field still loses updates (SpotBugs VO_VOLATILE_INCREMENT).</span></div>
+        </div>
+
+        <div class="guarantee-card">
+          <div class="g-head">Publication at thread birth</div>
+          <div class="g-body">Everything the parent thread did before start() is visible inside the new thread from its first action.</div>
+        </div>
+
+        <div class="guarantee-card">
+          <div class="g-head">Publication at thread death</div>
+          <div class="g-body">Everything the joined thread did is visible to the joining thread after join() returns.</div>
+        </div>
+
+        <div class="guarantee-card">
+          <div class="g-head">Library-encoded edges</div>
+          <div class="g-body">Every j.u.c utility documents its happens-before guarantee. Use the building block; do not re-derive by hand.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CONNECTOR MID→RIGHT -->
+    <div class="connector-col">
+      <!-- only four of the six edges map to a distinct safe-publication idiom -->
+      <div class="conn-arrow" style="height:44px;">&nbsp;</div>
+      <div class="conn-arrow" style="height:44px;">→</div>
+      <div class="conn-arrow" style="height:44px;">→</div>
+      <div class="conn-arrow" style="height:44px;">&nbsp;</div>
+      <div class="conn-arrow" style="height:44px;">&nbsp;</div>
+      <div class="conn-arrow" style="height:44px;">→</div>
+    </div>
+
+    <!-- RIGHT: safe-publication idioms -->
+    <div>
+      <div class="col-header">Safe-publication idiom</div>
+      <div class="idiom-list">
+
+        <!-- blank spacer to align with program-order row -->
+        <div style="height:56px; border: 1.5px dashed var(--line); border-radius:8px; display:flex; align-items:center; justify-content:center;">
+          <span style="font-size:10.5px; color:var(--ink-soft);">static final (class-init lock)</span>
+        </div>
+
+        <div class="idiom-card">
+          <div class="ic-hd">Lock-guarded publish</div>
+          <div class="ic-code">publish + read inside synchronized</div>
+          <div class="ic-edge">monitor unlock → lock edge</div>
+        </div>
+
+        <div class="idiom-card">
+          <div class="ic-hd">volatile / AtomicReference</div>
+          <div class="ic-code">volatile X x; /* then publish */</div>
+          <div class="ic-edge">volatile write → read edge</div>
+        </div>
+
+        <!-- spacer for thread-start row -->
+        <div style="height:56px; border: 1.5px dashed var(--line); border-radius:8px; display:flex; align-items:center; justify-content:center;">
+          <span style="font-size:10.5px; color:var(--ink-soft);">final field (§17.5 freeze)</span>
+        </div>
+
+        <!-- spacer for thread-join row -->
+        <div style="height:56px; border: 1.5px dashed var(--line); border-radius:8px; display:flex; align-items:center; justify-content:center;">
+          <span style="font-size:10.5px; color:var(--ink-soft);">(join: used for shutdown / await, not publication)</span>
+        </div>
+
+        <div class="idiom-card">
+          <div class="ic-hd">Concurrent collection / executor</div>
+          <div class="ic-code">BlockingQueue / ExecutorService</div>
+          <div class="ic-edge">j.u.c put-before-take edge</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- .main-grid -->
+
+  <!-- Transitivity rule -->
+  <div class="transitivity-bar">
+    <span class="t-label">Transitivity</span>
+    <span class="t-body">If hb(A, B) and hb(B, C), then hb(A, C) — edges compose. A chain of synchronized blocks, a volatile read after a lock, or any sequence of j.u.c operations can establish a transitive happens-before path across many actions (JLS §17.4.5).</span>
+  </div>
+
+  <!-- Bottom: three key rules -->
+  <div class="bottom-rules">
+
+    <div class="rule-box">
+      <div class="rb-hd">final-field freeze (§17.5)</div>
+      <div class="rb-bd">
+        A thread that sees a reference to a fully-constructed object is guaranteed to see
+        correctly initialized values for that object's <code>final</code> fields.
+        A <code>record</code> (all-final components) is thread-safe to share for free.
+        <br><span class="stop-text">Trap: if <code>this</code> escapes during construction, the freeze is voided.</span>
+      </div>
+    </div>
+
+    <div class="rule-box">
+      <div class="rb-hd">Unsafe publication (the silent hazard)</div>
+      <div class="rb-bd">
+        Handing a reference through a plain (non-<code>final</code>, non-<code>volatile</code>, un-locked) field
+        lets a reader observe default values (<code>0</code> / <code>null</code>), even after the constructor returned.
+        <br><span class="stop-text">JMM permits this. Use one of the four idioms above.</span>
+      </div>
+    </div>
+
+    <div class="rule-box">
+      <div class="rb-hd">volatile ≠ atomic</div>
+      <div class="rb-bd">
+        Use <code>volatile</code> for a flag or a published reference, never for a counter.
+        Use <code>AtomicInteger</code> / <code>LongAdder</code> for read-modify-write.
+        <br><span class="ok-text">SpotBugs VO_VOLATILE_INCREMENT catches volatile++ at build time.</span>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="fig-caption">
+    <b>Fig 13.1</b> — Happens-before edges: JLS SE 21 §17.4.5 (verbatim guarantee list);
+    j.u.c "Memory Consistency Properties" (JDK 21 package summary).
+    Safe-publication idioms: JLS SE 21 §17.5 + §17.5.1 (final-field freeze guarantee + freeze action);
+    <em>Java Concurrency in Practice</em> §3.5 (the four-idiom catalogue; guarantee from JLS, not JCIP).
+    VO_VOLATILE_INCREMENT: SpotBugs 4.10.2 MT_CORRECTNESS category.
+    Non-atomic long/double: JLS SE 21 §17.7.
+    Draft: <code>03-drafts/20_thread_safety_jmm/20_thread_safety_jmm_v1.md</code> §§"The edges you can rely on",
+    "Safe publication: the four idioms", "Three levers: synchronized, volatile, final".
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>
