@@ -21,6 +21,11 @@ import javax.crypto.spec.SecretKeySpec;
  * sizes change and post-quantum migration is on the horizon — so the parameters here are a current
  * baseline to date, not a timeless constant, and anything bespoke needs a security expert. The
  * stance is "don't roll your own crypto": reach for vetted defaults rather than primitives.
+ *
+ * <p>The PBKDF2 work factor is not baked into this class: it is read from the active
+ * {@link SecurityProfile} ({@code dev} or {@code prod}, chosen by the {@code security.profile}
+ * system property), so a deployment dials the cost without recompiling. The salt length, key size,
+ * and GCM parameters are fixed implementation constants, not deployment knobs.
  */
 public final class TokenCrypto {
 
@@ -29,10 +34,25 @@ public final class TokenCrypto {
     private static final int GCM_TAG_BITS = 128;
     private static final String PBKDF2 = "PBKDF2WithHmacSHA256";
     private static final int PBKDF2_SALT_BYTES = 16;
-    private static final int PBKDF2_ITERATIONS = 210_000;
     private static final int PBKDF2_KEY_BITS = 256;
 
     private final SecureRandom secureRandom = new SecureRandom();
+    private final int pbkdf2Iterations;
+
+    /** Uses the active {@link SecurityProfile}'s work factor (the running-path constructor). */
+    public TokenCrypto() {
+        this(SecurityProfile.active().pbkdf2Iterations());
+    }
+
+    /**
+     * Uses an explicit PBKDF2 work factor, so a caller that already holds a {@link SecurityProfile}
+     * can pass its value through rather than reloading it.
+     *
+     * @param pbkdf2Iterations the externalized PBKDF2 iteration count to derive password hashes with
+     */
+    public TokenCrypto(int pbkdf2Iterations) {
+        this.pbkdf2Iterations = pbkdf2Iterations;
+    }
 
     /**
      * Encrypts a token with AES/GCM under a fresh random nonce, returning the nonce followed by the
@@ -85,8 +105,8 @@ public final class TokenCrypto {
      */
     // tag::crypto-pbkdf2[]
     public byte[] hashPassword(String password, byte[] salt) throws GeneralSecurityException {
-        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, PBKDF2_ITERATIONS, PBKDF2_KEY_BITS);
-        // Salted and iterated: slow by design, so a stolen hash resists brute force.
+        // Salted and iterated (work factor from the active profile): slow by design.
+        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, pbkdf2Iterations, PBKDF2_KEY_BITS);
         return SecretKeyFactory.getInstance(PBKDF2).generateSecret(spec).getEncoded();
     }
     // end::crypto-pbkdf2[]

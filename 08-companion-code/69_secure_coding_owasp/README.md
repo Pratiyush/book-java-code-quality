@@ -60,10 +60,13 @@ Java 21; OWASP Top 10:2025).
 ## Externalized config
 
 `src/main/resources/application.properties` externalizes the security tunables a deployment changes —
-the request-body cap and the PBKDF2 work factor — under a `%dev` and a `%prod` profile, read by
-`SecurityProfile` and selected with `-Dsecurity.profile=prod` (default `dev`). The dev profile uses a
-lower PBKDF2 cost so the test suite stays fast; the prod profile uses the stronger, dated baseline. No
-key or secret lives in any file — those stay out of source entirely.
+the request-body cap and the PBKDF2 work factor — under a `%dev` and a `%prod` profile, loaded by
+`SecurityProfile` and selected with `-Dsecurity.profile=prod` (default `dev`). The running path
+consumes them: `SecurityGate` reads its body cap from the active profile and constructs `TokenCrypto`
+with the profile's PBKDF2 work factor, so both are deployment-selected values rather than literals
+baked into the code. The dev profile uses a lower PBKDF2 cost so the test suite stays fast; the prod
+profile uses the stronger, dated baseline. No key or secret lives in any file — those stay out of
+source entirely.
 
 ## The failure path
 
