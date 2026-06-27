@@ -2594,3 +2594,29 @@ package under `consideringOnlyDependenciesInLayers()`, so the rule as written co
    foot spec block, README table, and class/package Javadoc all carried the old "the rule catches it"
    framing or test count and had to be reconciled so the printed artifact matches what is now proven. A
    prove-don't-soften fix still touches every doc atom that described the old behavior.
+
+### Lift pass — Ch 12 (When Things Go Wrong), voice/readability/clarity lift (2026-06-27)
+
+A no-prior-independent-score LIFT toward the locked voice. Findings worth promoting:
+
+1. **The whole-file em-dash count is NOT the prose-cadence number.** Ch 12 read 13.15 em-dashes/1000
+   whole-file (well over the ~8 target), but a prose-only recount — excluding the HTML provenance header,
+   code fences, table `—` "none/N-A" cell markers, source-traced figure captions, and the back-matter
+   `term — detail` citation format — was already **6.66/1000**, under target. The genuine appositive
+   cadence the AUDIT lever targets lived in only ~6 running-prose lines. Lesson: when the em-dash scan
+   flags a chapter, compute the prose-only density before mass-converting; converting table/caption/
+   citation dashes damages source-traced structure for no cadence gain. Recommend the AUDIT em-dash scan
+   report **two** numbers (whole-file and prose-only) so the gate and the drafter target the right set.
+2. **Figures dropped cold under a section heading fail the "introduce before it appears" rule cheaply.**
+   Ch 12 stacked fig 10.1 + fig 10.2 directly under `## How it works` with only captions. The in-bounds
+   fix is one figure-intro sentence each, naming what the figure shows and which later section it serves —
+   no need to relocate the image. Recommend the CLARITY gate add a greppable check: every `![` image line
+   should be preceded (within ~2 lines) by a prose sentence that is not another image/caption.
+3. **Flag-marker dashes (`… ⚠ impl GAV @pin`) read as appositive em-dashes to a grep but are annotations.**
+   Converting them to `;`/`,` lowers the whole-file count without touching the flag content or the fact —
+   a safe lift lever distinct from prose-cadence conversion.
+4. **A LIFT can clear the cross-gate CODE-REVIEW MINOR for free.** CODE-REVIEW finding #1 (the inline,
+   non-tagged `Money` prose sketch showed `"minorUnits < 0: …"` while the deliverable emits
+   `"minorUnits must not be negative: …"`) was explicitly referred to the drafter/CLARITY gate. The lift
+   aligned the illustrative fence's string to the verified companion literal (the real `include:` tag
+   region was untouched), resolving the finding as a pure prose-fidelity fix with zero invention.

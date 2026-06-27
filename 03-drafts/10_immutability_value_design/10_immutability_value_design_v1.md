@@ -8,11 +8,11 @@ Resolved at SOURCE-VERIFY (2026-06-27): the `copyOf`/`Map.ofEntries` version + b
 DRAFT v1 — gates manual; three-instruments + contract-card shapes; EXAMPLE-BUILD = BUILT green (`mvn -Pquality verify`).
 -->
 
-# Objects That Don't Change Their Mind
+# Objects That Do Not Change Their Mind
 
 *Immutability, records, and the four contracts the language enforces in silence · 10 (folds 15) · Part II*
 
-> The compiler will make a record's fields final for you. It will not make the list inside one stop changing.
+> The compiler makes a record's fields final. It does not make the list inside one stop changing.
 
 ## Hook
 
@@ -44,6 +44,8 @@ This chapter is about objects that genuinely do not change their state, and abou
 The central idea: *using the feature is not the same as getting the guarantee.* A record gives immutability's intent, not its enforcement, for mutable components. Overriding `equals` without `hashCode` produces a value type that breaks the moment it meets a `HashMap`.
 
 ## How it works
+
+Three instruments carry immutability in Java, and each closes a gap the previous one leaves open. Figure 1 lays them out in that order — records, then immutable collections, then defensive copies — and marks the specific gap each one leaves for the next to close.
 
 ![Three instruments of Java immutability — Each instrument closes a specific gap — composed, they satisfy Effective Java](../../05-figures/10_immutability_value_design/fig10_1.png)
 
@@ -162,7 +164,7 @@ The cleanest fix is to make `Money` a record: derived `equals` and `hashCode` ar
 
 ## Limitations & when NOT to reach for it
 
-- **Records are shallow, not deeply immutable.** The central caveat: a mutable component leaks unless the compact constructor and accessor copy it. "I used a record" is not "it's immutable."
+- **Records are shallow, not deeply immutable.** The central caveat: a mutable component leaks unless the compact constructor and accessor copy it. Reaching for a record is not the same as making the type immutable.
 - **`unmodifiable*` is a view, not a copy.** Wrapping a retained mutable field gives a read-only window that still changes when the source does. Use `copyOf` for a snapshot.
 - **Immutability has an object-churn cost.** Item 17's own stated disadvantage: a separate object per distinct value. Multi-step transformations allocate intermediates (the `String`-concat-in-a-loop class of problem); the mitigation is a mutable companion like `StringBuilder`. Real cost on allocation-sensitive hot paths.
 - **Records are constrained by design.** Records cannot extend a class, cannot add instance fields beyond components, and expose *all* components — wrong tool when hidden/derived state, inheritance, or a non-canonical field set is needed. Derived `equals` also uses array *identity* for array components and ignores nothing, so a record is wrong when array-content equality is required or when `equals` must skip a cache field.
@@ -170,7 +172,7 @@ The cleanest fix is to make `Money` a record: derived `equals` and `hashCode` ar
 - **`compareTo` consistency with `equals` is recommended, not required.** A rule flagging every inconsistency would false-positive on `BigDecimal`; the contract sanctions the exception with a documented note.
 - **Static checks have false positives and negatives.** Historic gaps with anonymous classes and records (PMD), and a documented SpotBugs case where satisfying a rule can itself break the contract. This is the normal cost of analysis (Chapter 18), not tool failure.
 - **`Objects.hash` allocates.** It boxes varargs and allocates an array per call. That is fine for most code, but measurable on a hot path, where a hand-written `hashCode` (or a cached one for an immutable, kept thread-safe) is the optimization. Over-engineering a cold-path `hashCode` is the opposite waste.
-- **When NOT to make it immutable.** Identity-bearing entities (a JPA `@Entity` with a lifecycle and a mutable row), performance objects built around in-place mutation (buffers, accumulators), and builders mid-construction. Item 17's rule is "immutable *unless there's a very good reason* to be mutable"; these are the reasons.
+- **When NOT to make it immutable.** Identity-bearing entities (a JPA `@Entity` with a lifecycle and a mutable row), performance objects built around in-place mutation (buffers, accumulators), and builders mid-construction. Item 17's rule is to stay immutable *unless there is a very good reason* to be mutable; these are the reasons.
 
 ## Alternatives & adjacent approaches
 
@@ -179,7 +181,7 @@ The cleanest fix is to make `Money` a record: derived `equals` and `hashCode` ar
 - **Error Prone `@Immutable` + `ImmutableChecker`:** annotate a type and have the compiler *verify* deep immutability. This is stronger than convention, at the cost of adopting Error Prone (Chapter 16's neighbour).
 - **Value-based classes (JEP 390, Java 16):** the JDK's existing identity-free contract on library types (the boxed primitives, `java.time`, `Optional`). Do not synchronize on or `==`-compare them; use `equals`. This is GA and the stable story today.
 
-> **AHEAD-OF-PIN** *Declaring your own* value classes (JEP 401, Project Valhalla) is a **preview** feature at JDK 25 — heap flattening for identity-free types. Treat it as a clearly-labelled horizon, not a settled idiom. The ship-today spine is records + immutable collections + defensive copies + the JEP 390 contract on library types.
+> **AHEAD-OF-PIN** *Declaring a project's own* value classes (JEP 401, Project Valhalla) is a **preview** feature at JDK 25 — heap flattening for identity-free types. Treat it as a clearly-labelled horizon, not a settled idiom. The ship-today spine is records + immutable collections + defensive copies + the JEP 390 contract on library types.
 
 These layer rather than compete: records for the common value type, immutable collections for the fields, defensive copies for the mutable components that remain, and the analyzer rules to verify the contracts on anything hand-written.
 
