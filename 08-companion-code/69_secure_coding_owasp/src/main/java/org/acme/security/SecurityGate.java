@@ -15,14 +15,32 @@ import java.util.concurrent.atomic.AtomicLong;
  * the secure-coding floor (reject untrusted input you cannot make safe) made concrete. The health
  * surface is {@link #isReady()} plus {@link #rejectedRequestCount()}, a readiness probe over the
  * wired crypto and a running count of turned-away requests.
+ *
+ * <p>The body-size cap and the crypto work factor are taken from the active {@link SecurityProfile}
+ * ({@code dev} or {@code prod}, chosen by the {@code security.profile} system property) rather than
+ * baked into this class, so a deployment selects its security posture without recompiling.
  */
 public final class SecurityGate {
 
-    /** Defensive cap so an oversized body is rejected before it is parsed (a denial-of-service edge). */
-    static final int MAX_BODY_CHARS = 4_096;
-
-    private final TokenCrypto crypto = new TokenCrypto();
+    private final int maxBodyChars;
+    private final TokenCrypto crypto;
     private final AtomicLong rejectedRequests = new AtomicLong();
+
+    /** Wires the gate to the active externalized profile (default {@code dev}). */
+    public SecurityGate() {
+        this(SecurityProfile.active());
+    }
+
+    /**
+     * Wires the gate to a given externalized profile, so the body cap and the crypto work factor are
+     * the deployment-selected values rather than literals baked into the code.
+     *
+     * @param profile the externalized security profile to read tunables from
+     */
+    public SecurityGate(SecurityProfile profile) {
+        this.maxBodyChars = profile.maxBodyChars();
+        this.crypto = new TokenCrypto(profile.pbkdf2Iterations());
+    }
 
     /**
      * Accepts an order request body, rejecting input that cannot be made safe.
@@ -33,7 +51,7 @@ public final class SecurityGate {
      */
     public OrderRequest acceptOrder(String body) {
         // tag::failure-path[]
-        if (body == null || body.length() > MAX_BODY_CHARS) {
+        if (body == null || body.length() > maxBodyChars) {
             throw reject("body-too-large", null);       // reject what cannot be made safe
         }
         try {
@@ -42,6 +60,15 @@ public final class SecurityGate {
             throw reject("malformed-body", malformed);
         }
         // end::failure-path[]
+    }
+
+    /**
+     * Returns the externalized request-body cap this gate enforces.
+     *
+     * @return the maximum body size in characters for the active profile
+     */
+    public int maxBodyChars() {
+        return maxBodyChars;
     }
 
     private RejectedRequestException reject(String code, Throwable cause) {

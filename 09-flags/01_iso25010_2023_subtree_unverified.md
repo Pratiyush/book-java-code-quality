@@ -14,5 +14,20 @@ The **complete, exact 2023 sub-characteristic tree** (every sub-characteristic n
 - Confirm the exact 25010 ↔ 25019 ↔ 25002 part split.
 - Until resolved: the draft may state the corroborated top-level changes; it must NOT print finer 2023 sub-characteristic names as fact.
 
+## Draft compliance (updated 2026-06-27 — SOURCE-TRACE lineage fix, RT-8)
+The draft `01_what_is_code_quality_v1.md` §How-it-works NOTE previously printed the finer rename
+"Reliability's *maturity* becomes *faultlessness*" as a bare parenthetical **fact**, which violated the
+"must NOT print finer 2023 sub-characteristic names as fact" rule above. Fixed 2026-06-27: that example
+is now attributed to secondary summaries and explicitly held verify-at-pin against the standard's own
+text, pointing here —
+> "secondary summaries describe Reliability's *maturity* being renamed to *faultlessness* — but the
+> complete 2023 sub-characteristic tree is confirmed against the standard's own text at the pin, not
+> asserted here from a secondary (verify-at-pin; tracked in
+> `09-flags/01_iso25010_2023_subtree_unverified.md`)."
+
+The corroborated **top-level** changes (Safety added → 9 characteristics; Usability→Interaction
+Capability; Portability→Flexibility) remain stated as fact, consistent with "What is unconfirmed" above.
+No finer sub-characteristic name is now asserted as a pin-verified fact in the draft.
+
 ## Pipeline learning
 General rule proposed: for any ISO/spec edition claim, a secondary source is corroboration only; the edition's own text is required to assert edition-specific names/numbers. → promote to PIPELINE-LEARNINGS.md / SOURCE-VERIFY at /retro.

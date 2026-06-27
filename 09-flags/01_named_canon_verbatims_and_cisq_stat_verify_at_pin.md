@@ -47,6 +47,19 @@ statistic is dated + hedged — but none is verifiable-in-repo.
    it to CISQ, and (c) flags it as a top-down national estimate with stated modelling assumptions
    ("Use those figures for scale… Not an invoice.") — the HARD "stats dated + attributed" discipline is
    met. The figures themselves cannot be confirmed against the multi-authority pin from inside the repo.
+5. **SonarQube SQALE "30 minutes per line" cost-to-develop default** (§Putting a number on it + the
+   back-matter Reference block) — SOURCE-PIN §2 pins **SonarQube Server 2026.1 LTA (patch 2026.1.3)**
+   but does NOT confirm the SQALE model defaults (the cost-to-develop-one-line figure, the 8-hour day,
+   the A–E rating grid). These are configurable conventions documented by SonarQube, not pin-verified
+   constants. As of 2026-06-27 the draft no longer states "SonarQube's default is 30 minutes per line"
+   as a bare fact: it now reads "SonarQube documents a configurable default of 30 minutes per line —
+   verify the exact figure against the pinned SonarQube release; the model is owned in Chapter 38," and
+   the WARNING + back-matter Reference caveat both carry the verify-at-pin pointer. The owning chapter
+   is **key 35** (the SonarQube/IDE/layered-stack chapter), whose own flag
+   `35_sonar_versions_and_defaults_unverified.md` holds the SQALE grid/defaults as the steady-state
+   verify-at-pin atom; this chapter-01 entry is the upstream pointer to it. Confirm the exact default
+   against the pinned SonarQube docs at /pin-source; until then keep it as an attributed configurable
+   default, never a pin-verified constant.
 
 ## Why a flag, not a silent fix or a cut
 
@@ -56,17 +69,45 @@ under LEGAL-IP §2/§5 and the "stats dated + attributed" rule. They simply cann
 character-for-character against the pinned authority set from inside the repo, so they are recorded here
 as the standing verify-at-pin guard rather than asserted as machine-verified pinned facts.
 
+## LEGAL-IP §2 quote-density trim (applied 2026-06-27, ORIGINALITY + RED-TEAM RT-7/RT-8)
+
+The draft's named-canon verbatims were over the §2 ceiling and stacked (RT-7/RT-8). Fixed 2026-06-27
+without changing any attribution or meaning — only the *quoting*:
+
+- **Fowler internal-quality (L82)** — the ~26-word "source code [is] divided into clear modules…"
+  span was paraphrased into the locked third-person voice; the single short fragment "users and
+  customers cannot perceive the architecture of the software" (10 words) is kept, attributed to Fowler.
+- **Fowler cruft (L96)** and **Fowler negative-cost (L101)** — both paraphrased into the book's voice,
+  attribution to Fowler retained. Fowler verbatim count across the chapter is now **two** spans (the
+  9-word epigraph + the one 10-word fragment), within VOICE-GUIDE's "two or three quotations from a
+  source, maximum."
+- **Clean Code (L109)** — the ~38-word read-vs-write quote trimmed to the load-bearing fragment "well
+  over 10 to 1" (<15 words), the conclusion paraphrased; attributed to *Clean Code*.
+- **Cunningham (L113–115)** — the ~45-word block quote replaced by the short fragment "shipping
+  first-time code is like going into debt" woven into the prose, the interest mechanism paraphrased;
+  attributed to Cunningham, the OOPSLA '92 / WyCash provenance retained. The block quote is gone, so
+  the prior ellipsis-elision concern no longer applies to a displayed span.
+
+So the verbatim re-check at /pin-source now applies to the **trimmed, shorter** fragments, not the
+prior over-length spans.
+
 ## At /pin-source (resolution)
 
 - Add **CISQ** (the 2022 report) and the **Fowler articles** as explicit SOURCE-PIN §7 rows (or a
   pinned web-fetch), and confirm **Cunningham's OOPSLA '92 / c2** provenance.
-- Re-confirm every quoted span in atoms 1–3 verbatim (and the LEGAL-IP §2 length/one-per-source ceiling)
-  and the two CISQ figures against those pinned editions; append a VERIFIED/UNVERIFIED line to **both**
-  this flag and the chapter `_VERIFY.md`. Until then: keep them as attributed paraphrase/short-quote +
-  dated statistic, never as a pin-verified fact.
+- Re-confirm every (now-trimmed) quoted fragment in atoms 1–3 verbatim (and the LEGAL-IP §2
+  length/one-per-source ceiling — already re-checked at the 2026-06-27 trim) and the two CISQ figures
+  against those pinned editions; append a VERIFIED/UNVERIFIED line to **both** this flag and the chapter
+  `_VERIFY.md`. Until then: keep them as attributed paraphrase/short-quote + dated statistic, never as a
+  pin-verified fact.
+- **Atom 5 (SQALE 30-min/line default):** confirm the exact cost-to-develop default, the 8-hour day,
+  and the A–E rating grid against the pinned **SonarQube 2026.1 LTA** docs; cross-check against the
+  owning key-35 flag `35_sonar_versions_and_defaults_unverified.md`. Until then keep it as an attributed
+  configurable default.
 
-**Status:** ⚠ verify-at-pin (atoms 1–4). Left flagged by design — the expected steady state for
-named-canon secondaries + a non-pinned empirical statistic.
+**Status:** ⚠ verify-at-pin (atoms 1–5). Left flagged by design — the expected steady state for
+named-canon secondaries, a non-pinned empirical statistic, and a configurable-default tool model.
+LEGAL-IP §2 quote-density (RT-7/RT-8): **resolved** at the 2026-06-27 trim (above).
 
 **Related flags:** `01_iso25010_2023_subtree_unverified.md` (same chapter, ISO 2023 finer sub-tree);
 `08_effective_java_verbatims_not_in_repo.md`, `10_effective_java_verbatims_not_in_repo.md` (same

@@ -215,7 +215,7 @@ class SecureCodingTest {
         @Test
         void gateRejectsAnOversizedBodyBeforeParsingIt() {
             SecurityGate gate = new SecurityGate();
-            String oversized = "x".repeat(SecurityGate.MAX_BODY_CHARS + 1);
+            String oversized = "x".repeat(gate.maxBodyChars() + 1);
 
             RejectedRequestException rejection = catchThrowableOfType(
                 RejectedRequestException.class, () -> gate.acceptOrder(oversized));
@@ -233,12 +233,13 @@ class SecureCodingTest {
     class ExternalizedConfig {
 
         @Test
-        void prodProfileUsesAStrongerWorkFactorThanDev() {
+        void theRunningPathConsumesTheExternalizedProfile() {
             SecurityProfile dev = SecurityProfile.load("dev");
             SecurityProfile prod = SecurityProfile.load("prod");
 
             assertThat(prod.pbkdf2Iterations()).isGreaterThan(dev.pbkdf2Iterations());
-            assertThat(dev.maxBodyChars()).isEqualTo(SecurityGate.MAX_BODY_CHARS);
+            // The gate reads its body cap from the profile it is wired to — not a baked-in literal.
+            assertThat(new SecurityGate(dev).maxBodyChars()).isEqualTo(dev.maxBodyChars());
         }
     }
 

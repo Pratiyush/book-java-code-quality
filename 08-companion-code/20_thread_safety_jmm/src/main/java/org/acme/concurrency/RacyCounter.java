@@ -2,8 +2,8 @@ package org.acme.concurrency;
 
 /**
  * A shared counter with a data race — the deliberate counter-example, the bug that passes every test,
- * kept runnable so {@link org.acme.concurrency.ThreadSafetyContractTest} can prove the lost update
- * rather than merely describe it.
+ * kept runnable so the lost update is exhibited under contention and flagged by SpotBugs, while
+ * {@link org.acme.concurrency.ThreadSafetyContractTest} pins only the safe invariant.
  *
  * <p>This is the hook made concrete. The field is {@code volatile}, so a reader always sees the
  * latest write (the {@code volatile} happens-before edge gives <em>visibility</em>); but
