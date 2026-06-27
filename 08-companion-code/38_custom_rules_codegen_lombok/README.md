@@ -59,7 +59,7 @@ complete fence.
 
 `MoneyPolicyHealth` exposes a readiness probe over the loaded policy and a running count of reported
 breaches — a custom rule's natural observable signal is its finding stream, the same place a stock
-analyzer's report shows up for a dashboard to consume (Chapter 88).
+analyzer's report shows up for a dashboard to consume (Chapter 45).
 
 ## Externalized config
 

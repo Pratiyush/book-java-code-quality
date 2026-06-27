@@ -54,9 +54,9 @@ mvn -B -Pquality -f pom.xml verify
 A green run reports tests passing, **0 Checkstyle violations**, and **0 SpotBugs findings reported** (the
 legacy finding is baselined; the one false positive is suppressed at its site).
 
-> This module is intentionally **not yet** listed in `08-companion-code/pom.xml`'s `<modules>`. Per the
-> companion-code policy, a module joins the reactor only after a green build **and** the CODE-REVIEW gate
-> passes; until then it is built standalone with the commands above.
+> This module is registered in `08-companion-code/pom.xml`'s `<modules>` — added after its green build
+> **and** the CODE-REVIEW gate passed, per the companion-code policy that a module joins the reactor only
+> once both are green. It also builds standalone with the commands above.
 
 ## The two-pin override
 
