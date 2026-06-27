@@ -1,0 +1,278 @@
+# SCORING PACKET — Printed Chapter 09  (dossier 11_null_safety_optional)
+# 1. Paste EVERYTHING below the line into a fresh chat in a DIFFERENT-VENDOR LLM (not Claude).
+# 2. Save its one-pager reply VERBATIM as: 03-drafts/11_null_safety_optional/11_null_safety_optional_SCORE_INDEP.md
+# 3. score >=88% (44/50) + floors A/B/C-source PASS auto-promotes the chapter.
+# =====================================================================
+
+# External independent-review prompt (paste into the other LLM)
+
+> **How to use.** For one chapter: paste everything in the fenced block below into your top-tier LLM,
+> then **attach or paste the chapter draft** (`03-drafts/<slug>/<slug>_v1.md`). The LLM returns a
+> one-pager scorecard. Save that reply verbatim as `03-drafts/<slug>/<slug>_SCORE_INDEP.md` (or paste
+> it back here) — it is written in the exact format the pipeline's engine parses, so it drops straight
+> in and Claude applies the lifts. This is the **independent gate**: a different model from the author
+> (Claude/Opus), which is the whole point.
+
+---
+
+```
+You are an INDEPENDENT editorial quality gate for a technical book on Java code quality. You are a
+DIFFERENT model from the author — your job is to be a rigorous, skeptical reviewer who catches an
+over-generous self-assessment, NOT to praise. Review the ONE chapter draft I attach.
+
+Score it against these five clusters, each 1–10 (higher is better):
+- CLARITY — is the mechanism explained in a clear, followable order; why-before-how; a load-bearing figure where one is needed?
+- ACCURACY — is every technical claim correct and traceable to a credible source; any invented rule ID, API, version, GAV, flag, or statistic? (Flag specifics that look unverifiable as PENDING, not invented, unless clearly fabricated.)
+- UTILITY — is it directly actionable; concrete guidance, decision rules, a runnable example or worked snippet?
+- DEPTH — does it go beyond a feature tour to senior-level insight and the real trade-offs?
+- READABILITY — does it read in ONE locked voice: third-person invisible narrator (NO second-person "you" in narration; imperative is allowed for instructions), no narration contractions, em-dash density ≤ ~8 per 1000 words, no self-narration ("the load-bearing point is…"), no filler ("simply", "just", "obviously", "easy")?
+
+Also judge the THREE content floors as PASS / PENDING / FAIL:
+- A — NEUTRALITY: no option crowned; NO banned phrasings ("better than", "unlike X", "superior", "beats", "the problem with X", "outperforms", "worse than", "inferior"); every cross-tool comparison is on named axes with trade-offs both ways. (A single banned phrase = FAIL.)
+- B — HONEST-LIMITATIONS: every technique/claim carries its hardest objection AND an explicit when-NOT-to-use.
+- C — SOURCE-TRACE: no invented facts; specifics trace to a credible source. (Mark SaaS/dated stats that cannot be verified from the text as PENDING.)
+(Two more are tracked elsewhere — for COMPILE write PENDING, for CODE-REVIEW write N/A; do not fail the chapter on them.)
+
+Return ONLY this one-pager, in EXACTLY this Markdown structure (keep the headings and the literal "Aggregate NN/50" line):
+
+# INDEPENDENT SCORECARD — Ch <N> — model: <your model name> — <date>
+
+## Content floors
+| Floor | Verdict | Evidence / offending text + fix |
+|---|---|---|
+| A — NEUTRALITY | PASS or PENDING or FAIL | … |
+| B — HONEST-LIMITATIONS | PASS/PENDING/FAIL | … |
+| C — SOURCE-TRACE | PASS/PENDING/FAIL | … |
+| C — COMPILE | PENDING | tracked separately |
+| C — CODE-REVIEW | N/A | tracked separately |
+
+## Clusters
+| Cluster | Score (1–10) | Note (specific, with a draft location) |
+|---|---|---|
+| CLARITY | n | … |
+| ACCURACY | n | … |
+| UTILITY | n | … |
+| DEPTH | n | … |
+| READABILITY | n | … |
+
+**Aggregate NN/50**
+
+## Lift actions (specific, minimal changes that would raise the score)
+1. <cluster/floor> — <exact location> — <the change to make>
+2. …
+(5–10 items, each concrete and actionable. Label each: prose-fixable / needs-figure / needs-source-verify / needs-example.)
+
+## Verdict
+APPROVE (≥40/50 AND A/B/C-source all PASS) · LIFT (below the bar — list above) · BLOCK (a floor FAILs).
+```
+
+---
+
+## The contract that makes this drop-in
+
+- The literal token **`Aggregate NN/50`** and the **floor table** are what the engine
+  (`.claude/scripts/status.py`) reads. Keep them exactly.
+- Save the reply as `03-drafts/<slug>/<slug>_SCORE_INDEP.md`. Claude then runs the lift actions
+  (the heavy editing) and re-requests a review if needed (≤3 lift passes), routing the chapter to the
+  human gate at ≥80% + floors PASS.
+- One chapter per request keeps the feedback a true one-pager.
+
+===================== CHAPTER DRAFT TO REVIEW =====================
+
+<!--
+Dossier key: 11 (owner) + folds 31 + 32 — per 01-index/FINAL_INDEX.md Ch 9
+Slug: 11_null_safety_optional
+Part / arc position: Part II — Writing Quality Java, Chapter 9
+Companion module: 08-companion-code/11_null_safety_optional/ — ✅ EXAMPLE-BUILD GREEN (mvn -Pquality verify on JDK 21, 2026-06-27: 16 tests pass, Checkstyle 10.26.1 + SpotBugs 0 findings, bytecode 65/Java 21). Spec at foot.
+Verified against SOURCE-PIN: 2026-06-27 (corrected pin). Sources: JDK 21 API (Optional design-intent verbatim + value-based; Objects.requireNonNull family — module-confirmed); JEP 358 (helpful NPEs, on-by-default since JDK 15, active at anchor — module-confirmed on JDK 21; ⚠ JEP-page text unread, 403); JLS SE 21 §4.1 null type (pinned edition); JSpecify 1.0.0 (@Nullable/@NonNull/@NullMarked/@NullUnmarked, TYPE_USE — GAV org.jspecify:jspecify:1.0.0 module-confirmed); Checker Framework Nullness Checker 4.2.0 (@PolyNull/@MonotonicNonNull/@KeyFor; Init+MapKey sub-checkers; ⚠ soundness-sentence quote verify @pin); JSR-305 javax.annotation (declaration, DORMANT May 2012, JPMS split-package — status verified); NullAway 0.13.4 (Error Prone plugin, req JDK 17 + EP 2.36.0+; -Xep:NullAway:ERROR / AnnotatedPackages / JSpecifyMode; ⚠ FSE'19 1.15x vs 2.8x/5.1x figures + quote UNVERIFIED — paper outside pin); Effective Java 3e Items 54/55 (paraphrased); Sonar java:S3655/S2789/S2259; SpotBugs NP_*/RCN_*; Error Prone NullableOptional/OptionalNotPresent/ReturnMissingNullable (IDs cited; defaults not asserted).
+⚠ comparison-sensitive (JSpecify/Checker FW/JSR-305; NullAway/Checker FW) — each its own case+limit, no crown; cross-tool "which stack" verdict deferred to Ch 17.
+⚠ Residual verify-at-pin (genuinely unverifiable / deferred): JEP-358 page verbatim text (403); Checker Framework soundness-sentence quote; NullAway FSE'19 overhead figures + quote (paper outside the pinned authority set); Sonar/SpotBugs/Error Prone rule default-activation state. ⚠ AHEAD-OF-PIN: Spring 7/Boot 4 + IntelliJ 2025.3 JSpecify adoption; Valhalla null-restricted types. (NullAway 0.13.4 is now the pin, not ahead of it.)
+DRAFT v1 — gates manual; four-levers layered-defense + family×guarantee shapes; EXAMPLE-BUILD green (JDK 21).
+-->
+
+# The Value That Isn't There
+
+*Designing NullPointerExceptions out — at design time, at the boundary, at build time, and at runtime · 11 (folds 31, 32) · Part II*
+
+> `null` is a value of every reference type and a member of none of them. The compiler will not catch it — until told to.
+
+## Hook
+
+```
+Cannot invoke "String.toLowerCase()" because the return value of "Customer.getEmail()" is null
+```
+
+That message (naming the *exact* expression that was null) is the most useful thing the JVM reports about an NPE, and it arrives only after the exception has already brought the request down. The whole subject of this chapter is moving the moment of discovery *earlier*: from the production log, to a test, to the boundary check, and finally all the way to a compile error that never lets the code ship.
+
+Java's type system, by itself, cannot help. The language specification makes `null` a possible value of *every* reference type, and there is no compile-time obligation to prove a reference is non-null — so an NPE is, almost always, a design defect that the type system was structurally unable to catch. That gap is fillable, in four complementary layers, turning "might throw an NPE" from a runtime gamble into a build-time fact.
+
+## Overview
+
+**What this chapter covers**
+
+- The four levers of null-safety as a *layered defense*: **design-time** (`Optional`, return-empty-not-null), **boundary** (`Objects.requireNonNull`), **build-time** (nullness annotations + a checker), and **runtime** (JEP 358 helpful messages).
+- `Optional<T>` discipline: its documented design intent, the `of`/`ofNullable` split, and the long list of ways to misuse it.
+- The annotation landscape — three families (**JSpecify**, the **Checker Framework** set, the dormant **JSR-305** `javax.annotation` set) — distinguished by what they attach to and what guarantee the checker offers.
+- The enforcement tools: **NullAway** (fast, modular, deliberately unsound) and the **Checker Framework Nullness Checker** (sound, heavier) — presented as two points on one trade-off curve, neither crowned.
+
+**What this chapter does NOT cover.** The cross-tool "which stack should we standardize on" verdict (Chapter 17), the Error Prone host in depth (Chapter 16's neighbour), suppression and ruleset tuning (Chapter 18), and migration recipes between annotation families (the OpenRewrite chapter). This chapter owns the *design problem*, the *annotation vocabulary*, and the *enforcement idea*.
+
+**The one idea worth carrying:** *an NPE is a design defect made visible at runtime, and there are four chances to catch it earlier — the latest of which is a comment, and the earliest of which is a compiler error.*
+
+## How it works
+
+![Fig 11.1 — Null-safety: four levers of layered defense — Each lever catches the null the earlier one cannot reach. Detection moves left (earlier) across the lifecycle.](../../05-figures/11_null_safety_optional/fig11_1.png)
+
+*Fig 11.1 — Null-safety: four levers of layered defense — Each lever catches the null the earlier one cannot reach. Detection moves left (earlier) across the lifecycle.*
+
+
+### Why null is special in Java
+
+`null` is structural in the language. The JLS makes a null reference assignable to any reference type (JLS SE 21 §4.1, the null type), and the compiler imposes no non-null obligation — so `String s = maybe(); s.length();` compiles whether or not `maybe()` can return null. That gap is exactly what the four levers fill. None of them changes the language; each adds information the compiler or the JVM did not have.
+
+> **CONCEPT** *Layered defense.* Null-safety is not one technique but four, applied at different times: design-time (do not model absence with null), boundary (fail fast on the null that slips in), build-time (prove the rest non-null), runtime (diagnose the one that still gets through). A mature program uses all four; each has its own when-NOT-to-use.
+
+| Lever | When it acts | What it does | Cost it carries |
+|---|---|---|---|
+| `Optional` / return-empty (Items 54–55) | design-time | absence becomes a type, not a null | allocation; prone to misuse |
+| `Objects.requireNonNull` | boundary, runtime | converts a silent later NPE into a loud one now | still throws; a runtime check |
+| annotations + checker (JSpecify + NullAway/Checker FW) | build-time | "might NPE" becomes a build error | annotation effort; checker limits |
+| JEP 358 helpful NPEs | runtime | names the exact null expression | diagnoses, prevents nothing |
+
+### Lever 1 — `Optional`: absence as a type
+
+`Optional<T>` is "a container object which may or may not contain a non-null value." Its design intent is stated, verbatim, in its own Javadoc: it is "primarily intended for use as a method return type where there is a clear need to represent 'no result,' and where using `null` is likely to cause errors. A variable whose type is `Optional` should never itself be `null`." It is also a *value-based class*: never synchronize on it, never compare it with `==`, never use it as a map key.
+
+Two construction paths carry different contracts: `Optional.of(value)` throws if the value is null (use when null would be a programming error); `Optional.ofNullable(value)` yields empty for null (use to lift a possibly-null legacy value). And the *Effective Java* discipline (Items 54–55): return empty collections or arrays, never null; return `Optional` for a method that genuinely "might not be able to return a result"; never wrap a container in an `Optional`, never use it as a field, parameter, or map value, and never `Optional<Integer>` (use `OptionalInt`).
+
+The lookup done right returns the absence in its type, so the caller cannot dereference a null it never receives:
+
+<!-- include: 11_null_safety_optional/src/main/java/org/acme/storefront/pricing/DiscountService.java#optional-return -->
+
+### Lever 2 — `Objects.requireNonNull`: fail fast at the boundary
+
+`java.util.Objects` supplies the canonical guard: `requireNonNull(obj)` / `requireNonNull(obj, "message")` throws `NullPointerException` immediately if the argument is null, and returns it otherwise, composing inline: `this.email = Objects.requireNonNull(email, "email")`. The mechanism is *fail-fast*: it converts a null that would otherwise NPE several frames later into a loud failure at the exact entry point, naming the offending parameter. `requireNonNullElse(obj, default)` returns a non-null fallback. It is a runtime check; it makes the failure earlier and clearer, not absent.
+
+The constructor guards every required collaborator the same way, so a missing dependency fails at the boundary rather than on first use:
+
+<!-- include: 11_null_safety_optional/src/main/java/org/acme/storefront/pricing/DiscountService.java#require-nonnull -->
+
+### Lever 3 — annotations + a checker: prove it at compile time
+
+This is where "might NPE" becomes a build error, and it has two halves that developers commonly conflate: the **annotation vocabulary** (which the developer writes) and the **checker** (which reads it). The annotations are inert metadata — `@Nullable` without a checker is a comment with a type.
+
+**The annotation landscape has three families**, and the single fact that separates them is *what the annotation can syntactically attach to*:
+
+| Family | Attaches to | Scope default | Generics precision | Guarantee | Hardest limit |
+|---|---|---|---|---|---|
+| **JSpecify** (`org.jspecify.annotations`) | type-use | `@NullMarked` (module/pkg/class) | yes — `List<@Nullable String>`, nullable bounds | whatever the chosen checker gives | tool conformance uneven on generics; 1.0 young |
+| **Checker Framework** (`...nullness.qual`) | type-use | `@NonNull` default | yes + init + `@KeyFor` | **sound** (no NPE from null misuse in checked code) | annotation + build cost |
+| **JSR-305** (`javax.annotation`) | declaration | `@ParametersAreNonnullByDefault` | **no** | heuristic, consumer-dependent | **dormant** JSR; JPMS split-package on Java 9+ |
+
+> **CONCEPT** *Declaration vs type-use.* A *declaration* annotation (JSR-305) attaches to a field, parameter, or return — it cannot reach inside a generic. A *type-use* annotation (JSpecify, Checker Framework — enabled by `TYPE_USE`, JSR 308, Java 8) attaches to *any* use of a type, so it can distinguish `List<@Nullable String>` (non-null list of nullable strings) from `@Nullable List<String>` (a nullable list). That precision difference is also the families' dividing line.
+
+In code the two placements are two different contracts, and only a type-use annotation can tell them apart:
+
+<!-- include: 11_null_safety_optional/src/main/java/org/acme/storefront/pricing/TypeUsePrecision.java#type-use-precision -->
+
+JSpecify is the consensus standardization effort: a "tool-neutral, library-neutral" vocabulary (four annotations: `@Nullable`, `@NonNull`, `@NullMarked`, `@NullUnmarked`) that *any* conforming checker reads, with a 1.0.0 compatibility guarantee. The idiom is `@NullMarked` on a `package-info.java` (everything is non-null by default within the scope), then `@Nullable` only where null is genuinely allowed, and `@NullUnmarked` to exempt a not-yet-migrated class for incremental adoption. JSR-305 is *dormant* (the JCP voted it so in May 2012) and never finalized; its `javax.annotation` package also collides with the platform `java.annotation` module on Java 9+ (a split-package the module system rejects). For new code, JSpecify is the starting vocabulary; JSR-305 is a family to migrate *from*.
+
+Marking the package once is the whole gesture: a single annotation flips the default for everything inside the scope to non-null.
+
+<!-- include: 11_null_safety_optional/src/main/java/org/acme/storefront/pricing/package-info.java#nullmarked-package -->
+
+Inside that scope, the few places null is the honest answer have to say so — an explicit `@Nullable` return is the marked exception, not a silent one:
+
+<!-- include: 11_null_safety_optional/src/main/java/org/acme/storefront/pricing/DiscountService.java#nullable-return -->
+
+**The checker is the enforcement.** Two design points:
+
+- **NullAway** runs as an Error Prone plugin *inside* `javac`, so a nullness violation fails the build like a compile error. The developer marks what *can* be null; it treats everything else as non-null and does modular, per-method dataflow to prove no `@Nullable` value is dereferenced unguarded. It is *deliberately unsound* — it optimistically assumes unannotated code is non-null and that callees do not mutate, which is exactly what keeps it fast and low-annotation. Activated with `-Xep:NullAway:ERROR` and scoped with `-XepOpt:NullAway:AnnotatedPackages=...` (or JSpecify's `@NullMarked`).
+
+The dereference such a checker rejects is the one below: a `@Nullable` value used without a guard. It compiles, and at runtime an absent value throws — the JEP 358 message naming the exact null expression:
+
+<!-- include: 11_null_safety_optional/src/main/java/org/acme/storefront/pricing/BrokenCheckout.java#unguarded-deref -->
+
+The fix gives the empty case a value instead of dereferencing it, so there is nothing left to throw:
+
+<!-- include: 11_null_safety_optional/src/main/java/org/acme/storefront/pricing/Checkout.java#guarded-fix -->
+
+- **The Checker Framework Nullness Checker** runs as a `javac` annotation processor and offers a *soundness* guarantee, stated verbatim in its manual: "If the Nullness Checker type-checks your program without errors, then your program will not crash with a NullPointerException that is caused by misuse of null in checked code." It pays for that with annotation effort and build time, and adds sub-checkers a bare `@Nullable` cannot replace — an Initialization Checker (non-null fields set in the constructor) and a Map Key Checker (`@KeyFor`, so `map.get(k)` types non-null when `k` is a known key).
+
+These are two points on one trade-off curve (speed-and-low-annotation versus soundness), and a team picks by context; neither is crowned, and the cross-stack verdict is Chapter 17's.
+
+### Lever 4 — JEP 358: a better message when it still happens
+
+Helpful NullPointerExceptions (JEP 358) make the JVM analyze the bytecode at the throw site and name the exact null expression — the hook's message. It targeted JDK 14 (flag `-XX:+ShowCodeDetailsInExceptionMessages`) and has been *on by default since JDK 15*, so it is active at the Java 21/25 anchor with no flag. It prevents nothing; it makes the remaining NPEs diagnosable in one read, which is the honest counterpoint to "every null cannot be designed out."
+
+### Tools that police null/Optional usage without a full regime
+
+Even without annotations, the standard analyzers ship null rules, each cited to its own tool: Sonar `java:S3655` (value access without an `isPresent` guard), `java:S2789` (an `Optional` itself being null), `java:S2259` (data-flow null dereference); SpotBugs `NP_NULL_ON_SOME_PATH`; Error Prone `NullableOptional`, `OptionalNotPresent`, `ReturnMissingNullable`. These overlap; the layering question is Chapter 17's.
+
+## Deep dive: the soundness–overhead trade-off
+
+The choice between NullAway and the Checker Framework is the clearest worked example of a recurring theme in static analysis: a checker approximates a property it cannot decide cheaply, and *how* it approximates is both its strongest case and its hardest limitation.
+
+The property is "no `null` is ever dereferenced." No *modular* checker can decide that soundly without either annotating the whole world or doing whole-program inference — both expensive. So each tool picks a decidable proxy:
+
+- **NullAway** picks a *modular, optimistic* proxy. It checks one method at a time, assumes unannotated code is non-null, and assumes callees do not mutate. That optimism is unsound — a real NPE *can* slip through from a mutating callee or an unannotated return. But NullAway's own FSE'19 paper measured the cost of that optimism and found it well-targeted: on a corpus of production Android crashes, remaining NPEs traced to unchecked third-party libraries (64%), deliberate suppressions (17%), or reflection (17%) — "never due to NullAway's unsound assumptions for checked code." And it is fast: the paper reports ~1.15× a normal build, against ~2.8× and ~5.1× for the comparable tools it benchmarks — figures attributed to NullAway's own FSE'19 paper, never to a rival's docs (⚠ UNVERIFIED: the FSE'19 paper is outside the pinned authority set; re-quote byte-exact from the paper before release — see 09-flags/31_nullaway_overhead_figures_unverified.md).
+- **The Checker Framework** picks a *sound* proxy. It pays the annotation and build cost (the paper's 5.1× point) and in return offers the guarantee NullAway declines to: type-check clean, and no NPE from null misuse in checked code.
+
+Neither proxy is "right." They sit at opposite ends of a single axis — *how much soundness the team buys, and what build time and annotation effort it pays* — and the honest framing is to show the axis, not pick a winner. A team that needs a guarantee on a long-lived core library leans one way; a team that wants most of the benefit for ~15% build cost and minimal annotation leans the other; some run both. The decision belongs to the team and to Chapter 17; the chapter's job is to make the trade-off legible.
+
+The unifying move across all four levers is the one this whole part keeps making: *take a fact that was invisible to the compiler (here: "this might be absent") and lift it into the type, so the failure is caught as early as the team is willing to pay for.*
+
+## Limitations & when NOT to reach for it
+
+- **`Optional` is not free and prone to misuse.** It allocates and wraps; Item 55 warns it is unsuited to hot paths. Overuse — `Optional` fields, parameters, `Optional<List<T>>`, `optional.get()` without a guard — recreates the very NPE risk (now as `NoSuchElementException`). When NOT to use: fields, parameters, collection elements, map values, container returns, hot loops.
+- **`requireNonNull` shifts, it does not eliminate.** It is a runtime check, invisible to the compiler; it makes failure earlier, not absent. Do not reflexively guard every private/internal parameter where the invariant already holds, and do not use it for *expected* absence (`Optional`/validation covers that case).
+- **Annotations alone do nothing.** Without a checker wired into the build, `@Nullable` is documentation, not enforcement.
+- **No annotation system catches every NPE.** Reflection, deserialization, JNI, and raw null from unchecked external code all bypass static reasoning. Static null-safety is necessary, not sufficient. Pair it with runtime guards and tests.
+- **NullAway is deliberately unsound** — it can have false negatives; it never claims to prevent *all* NPEs. When a *guarantee* is required, that is the Checker Framework's trade, at higher cost.
+- **The Checker Framework's soundness has a tax** — annotation effort, a learning curve, slower builds, and stub files for unannotated dependencies. It pays off most on long-lived, correctness-critical libraries; it is heavy for prototypes.
+- **JSpecify's annotations are 1.0-stable but the checkers that read them are not uniformly complete** — generics conformance varies across NullAway, IntelliJ, and the Checker Framework. Separate *annotation stability* from *tool conformance*; verify the chosen checker handles the constructs the codebase uses.
+- **Field-initialization strictness surprises injection-heavy code.** NullAway and the Checker Framework both flag non-null fields not set in a constructor — DI/ORM-populated fields need `@Initializer`/`ExcludedFieldAnnotations`/`@MonotonicNonNull`, or they are false positives.
+- **JEP 358 messages can expose variable and method names in logs** (a minor information-disclosure consideration).
+- **Adoption is incremental, not free.** Turning a checker to `ERROR` on a large legacy module produces a wall of errors; the honest path is scope-then-expand, with reviewed `@SuppressWarnings`/`castToNonNull` for genuine exceptions (which, overused, hide real bugs).
+
+> **AHEAD-OF-PIN** The most current null-safety story — JSpecify adopted in Spring Framework 7 / Spring Boot 4 (Nov 2025) with NullAway recommended, IntelliJ 2025.3 alignment, and Valhalla null-restricted *language-level* types — is past the Java 21/25 anchor (SOURCE-PIN.md runtime baseline). Per the moving-target policy it is cited as direction of travel, never as anchor baseline (see 09-flags/11_nullsafety_ahead_of_pin.md).
+
+## Alternatives & adjacent approaches
+
+- **Empty objects / null object pattern:** return a do-nothing instance instead of null where a no-op default makes sense. Complementary to `Optional`, sometimes clearer.
+- **Bean Validation** (`@NotNull`): declarative null-rejection at system boundaries (request DTOs) — Chapter 10; complements, does not replace, type-level nullness.
+- **IDE inference** (IntelliJ inspections): zero-build null warnings in the editor; useful but not a gate, and tool-specific.
+- **Kotlin interop:** Kotlin's nullable types consume JSpecify annotations (1.8.20+), so a JSpecify-annotated Java library is null-safe to Kotlin callers, giving teams a reason to annotate even when the chosen checker is light.
+
+These layer rather than compete: design with `Optional`/empty, guard the boundary with `requireNonNull`, prove the interior with annotations + a checker, and diagnose the survivor with JEP 358. Four lines of defense, each owning the null the others cannot reach.
+
+## When to use what
+
+- **For a method that may have no result:** return `Optional<T>` (or an empty collection), not null — the absence is now in the type.
+- **At every public constructor and entry point:** `Objects.requireNonNull` the required arguments, so a null fails loud and immediately.
+- **For a new codebase or module:** `@NullMarked` the packages with JSpecify annotations and run NullAway for fast, low-annotation build-time proof.
+- **For a long-lived, correctness-critical core library:** consider the Checker Framework Nullness Checker for a soundness guarantee, accepting the annotation and build cost.
+- **For a legacy tree on JSR-305:** plan a migration to JSpecify (incrementally, with `@NullUnmarked`), and mind the JPMS split-package when running on the module path.
+- **Always:** keep runtime guards and tests — no static layer catches reflection, deserialization, or a lie to the checker.
+
+## Hand-off to the next chapter
+
+Three invisible facts have now been lifted into the type system across Part II — the contract (Chapter 7), the value's identity (Chapter 8), and possible absence. The next chapter turns from values to *control*: how methods signal and handle failure. Null was one way to say "no result"; an exception is the other, and the same discipline applies — make the failure path explicit, fail fast, and do not let a swallowed exception become the silent NPE of error handling.
+
+## Back matter — sources & traceability
+
+- **JDK 21 API** — `java.util.Optional` (design-intent + value-based-class wording verified verbatim; `of`/`ofNullable`/`orElse`/`map`); `java.util.Objects.requireNonNull` family (since Java 7/8/9). 
+- **JEP 358** — Helpful NullPointerExceptions; `-XX:+ShowCodeDetailsInExceptionMessages`; off in JDK 14, on by default since JDK 15 (so active at the Java 21/25 anchor — empirically active in the companion module on JDK 21). *(⚠ the verbatim JEP-358 page text remains unread — openjdk.org/jeps/358 returned HTTP 403; no JEP-page wording is block-quoted here. See 09-flags/11_jep358_text_unverified.md.)*
+- **JLS SE 21** — §4.1 the null type / reference types (the no-non-null-obligation fact), pinned edition.
+- **JSpecify 1.0.0** (`org.jspecify:jspecify:1.0.0`, SOURCE-PIN.md §2) — `@Nullable`/`@NonNull`/`@NullMarked`/`@NullUnmarked`, `@Target(TYPE_USE)`, compatibility guarantee. GAV, version, and type-use targeting empirically confirmed: the companion module compiles green against this coordinate on JDK 21.
+- **Checker Framework Nullness Checker 4.2.0** (SOURCE-PIN.md §2) — `@PolyNull`/`@MonotonicNonNull`/`@KeyFor`; Initialization + Map Key sub-checkers; `javac -processor nullness`. *(⚠ the soundness-guarantee sentence is quoted from the Checker Framework manual, which is outside the pinned local copy and not exercised by the companion module; verify the quotation byte-exact against the 4.2.0 manual before release.)*
+- **JSR-305** (`javax.annotation`, de-facto `com.google.code.findbugs:jsr305:3.0.2`) — declaration annotations; **Dormant** (JCP, May 2012); Java 9+ split-package with `java.annotation`. Status verified; JSR-305 is a "migrate-from" family, not a pinned authority row (the `3.0.2` jar is a de-facto coordinate, not pin-asserted).
+- **NullAway 0.13.4** (`com.uber.nullaway:nullaway`, Error Prone plugin; requires JDK 17 + Error Prone 2.36.0+ — SOURCE-PIN.md §2) — `-Xep:NullAway:ERROR`, `AnnotatedPackages`, `JSpecifyMode`; modular optimistic checking (deliberately unsound); field-init checking; FSE'19 paper (arXiv:1907.02127) overhead ~1.15× vs ~2.8×/~5.1×, and "never due to NullAway's unsound assumptions for checked code." *(⚠ UNVERIFIED: the FSE'19 figures and quotation are outside the pinned authority set and not module-verifiable (NullAway is named, not wired, in the companion); re-quote byte-exact from the paper before release — 09-flags/31_nullaway_overhead_figures_unverified.md.)*
+- **Effective Java 3e** (3rd ed., 2018 — SOURCE-PIN.md §7) — Item 54 (empty not null), Item 55 (Optional discipline). Paraphrased, not block-quoted.
+- **Sonar** `java:S3655`/`S2789`/`S2259` (SonarQube 2026.1 LTA); **SpotBugs** `NP_NULL_ON_SOME_PATH`/`RCN_*` (SpotBugs 4.10.2); **Error Prone** `NullableOptional`/`OptionalNotPresent`/`ReturnMissingNullable`. Rule IDs cited. *(⚠ whether each rule is default-on in its pinned ruleset is not asserted here and is not exercised by the companion module — confirm default-activation state at the chapter that owns ruleset tuning. See 09-flags/13_sonar_rule_defaults_unverified.md, 09-flags/15_tool_rule_defaults_unverified.md.)*
+
+**Companion module (✅ EXAMPLE-BUILD GREEN — `mvn -Pquality verify` on JDK 21, 2026-06-27: 16 tests pass, Checkstyle 10.26.1 + SpotBugs Max-effort 0 findings, bytecode major 65 = Java 21):** `08-companion-code/11_null_safety_optional/` — a `@NullMarked` `org.acme.storefront.pricing` package: a `DiscountService` whose lookup returns `Optional<Discount> findDiscount(String code)`, an explicit `@Nullable String defaultCodeOrNull()` opt-out, `Objects.requireNonNull` at the constructor boundary, and JEP 358 active by default (JDK 21). The `BrokenCheckout`/`Checkout` pair sits side by side: `BrokenCheckout.total(@Nullable Discount, …)` dereferences a possibly-absent discount unguarded, and the source/bytecode analyzers in the `quality` profile (Checkstyle, SpotBugs) deliberately do *not* flag it — the gap a nullness checker (NullAway, the Checker Framework) reading the `@Nullable` is what closes, the chapter's build-time lever; `Checkout` gives the empty case a value via `map`/`orElse`. The honest-limit point: removing the `@Nullable` (lying to a checker) would let even a checker-enabled build pass while the runtime NPE returned. A `type-use-precision` file shows `List<@Nullable String>` vs `@Nullable List<String>` compiling under JSpecify 1.0.0. The module wires JSpecify annotations (`provided` scope) only; NullAway/Checker-Framework enforcement is named and configured per team, not bundled here. Snippet tags: `optional-return`, `require-nonnull`, `nullmarked-package`, `nullable-return`, `unguarded-deref`, `guarded-fix`, `type-use-precision`.
+
+## Next chapter teaser
+
+Absence handled, the focus turns to failure. The next chapter is about exceptions and error handling — checked vs unchecked, the swallowed catch, the failure path as part of the contract — where the same discipline (lift the failure into something the compiler and the reader can see) meets Java's most argued-about language feature.

@@ -1,0 +1,237 @@
+# SCORING PACKET — Printed Chapter 31  (dossier 70_sast_secrets_detection)
+# 1. Paste EVERYTHING below the line into a fresh chat in a DIFFERENT-VENDOR LLM (not Claude).
+# 2. Save its one-pager reply VERBATIM as: 03-drafts/70_sast_secrets_detection/70_sast_secrets_detection_SCORE_INDEP.md
+# 3. score >=88% (44/50) + floors A/B/C-source PASS auto-promotes the chapter.
+# =====================================================================
+
+# External independent-review prompt (paste into the other LLM)
+
+> **How to use.** For one chapter: paste everything in the fenced block below into your top-tier LLM,
+> then **attach or paste the chapter draft** (`03-drafts/<slug>/<slug>_v1.md`). The LLM returns a
+> one-pager scorecard. Save that reply verbatim as `03-drafts/<slug>/<slug>_SCORE_INDEP.md` (or paste
+> it back here) — it is written in the exact format the pipeline's engine parses, so it drops straight
+> in and Claude applies the lifts. This is the **independent gate**: a different model from the author
+> (Claude/Opus), which is the whole point.
+
+---
+
+```
+You are an INDEPENDENT editorial quality gate for a technical book on Java code quality. You are a
+DIFFERENT model from the author — your job is to be a rigorous, skeptical reviewer who catches an
+over-generous self-assessment, NOT to praise. Review the ONE chapter draft I attach.
+
+Score it against these five clusters, each 1–10 (higher is better):
+- CLARITY — is the mechanism explained in a clear, followable order; why-before-how; a load-bearing figure where one is needed?
+- ACCURACY — is every technical claim correct and traceable to a credible source; any invented rule ID, API, version, GAV, flag, or statistic? (Flag specifics that look unverifiable as PENDING, not invented, unless clearly fabricated.)
+- UTILITY — is it directly actionable; concrete guidance, decision rules, a runnable example or worked snippet?
+- DEPTH — does it go beyond a feature tour to senior-level insight and the real trade-offs?
+- READABILITY — does it read in ONE locked voice: third-person invisible narrator (NO second-person "you" in narration; imperative is allowed for instructions), no narration contractions, em-dash density ≤ ~8 per 1000 words, no self-narration ("the load-bearing point is…"), no filler ("simply", "just", "obviously", "easy")?
+
+Also judge the THREE content floors as PASS / PENDING / FAIL:
+- A — NEUTRALITY: no option crowned; NO banned phrasings ("better than", "unlike X", "superior", "beats", "the problem with X", "outperforms", "worse than", "inferior"); every cross-tool comparison is on named axes with trade-offs both ways. (A single banned phrase = FAIL.)
+- B — HONEST-LIMITATIONS: every technique/claim carries its hardest objection AND an explicit when-NOT-to-use.
+- C — SOURCE-TRACE: no invented facts; specifics trace to a credible source. (Mark SaaS/dated stats that cannot be verified from the text as PENDING.)
+(Two more are tracked elsewhere — for COMPILE write PENDING, for CODE-REVIEW write N/A; do not fail the chapter on them.)
+
+Return ONLY this one-pager, in EXACTLY this Markdown structure (keep the headings and the literal "Aggregate NN/50" line):
+
+# INDEPENDENT SCORECARD — Ch <N> — model: <your model name> — <date>
+
+## Content floors
+| Floor | Verdict | Evidence / offending text + fix |
+|---|---|---|
+| A — NEUTRALITY | PASS or PENDING or FAIL | … |
+| B — HONEST-LIMITATIONS | PASS/PENDING/FAIL | … |
+| C — SOURCE-TRACE | PASS/PENDING/FAIL | … |
+| C — COMPILE | PENDING | tracked separately |
+| C — CODE-REVIEW | N/A | tracked separately |
+
+## Clusters
+| Cluster | Score (1–10) | Note (specific, with a draft location) |
+|---|---|---|
+| CLARITY | n | … |
+| ACCURACY | n | … |
+| UTILITY | n | … |
+| DEPTH | n | … |
+| READABILITY | n | … |
+
+**Aggregate NN/50**
+
+## Lift actions (specific, minimal changes that would raise the score)
+1. <cluster/floor> — <exact location> — <the change to make>
+2. …
+(5–10 items, each concrete and actionable. Label each: prose-fixable / needs-figure / needs-source-verify / needs-example.)
+
+## Verdict
+APPROVE (≥40/50 AND A/B/C-source all PASS) · LIFT (below the bar — list above) · BLOCK (a floor FAILs).
+```
+
+---
+
+## The contract that makes this drop-in
+
+- The literal token **`Aggregate NN/50`** and the **floor table** are what the engine
+  (`.claude/scripts/status.py`) reads. Keep them exactly.
+- Save the reply as `03-drafts/<slug>/<slug>_SCORE_INDEP.md`. Claude then runs the lift actions
+  (the heavy editing) and re-requests a review if needed (≤3 lift passes), routing the chapter to the
+  human gate at ≥80% + floors PASS.
+- One chapter per request keeps the feedback a true one-pager.
+
+===================== CHAPTER DRAFT TO REVIEW =====================
+
+<!--
+Dossier key: 70 (owner, leads) + folds 71 — per 01-index/FINAL_INDEX.md Ch 31
+Slug: 70_sast_secrets_detection (owner key 70)
+Part / arc position: Part VIII — Security & SAST, Chapter 31 (Part VIII = Ch 30-32)
+Companion module: 08-companion-code/70_sast_secrets_detection/ (CONFIG-centric, peer shape of 75: a Semgrep injection rule + a SAST CI workflow + a gitleaks config + a pre-commit hook, none run by the build; runnable core = string-concat SQL sink vs PreparedStatement fix + fail-closed externalized-secrets resolver) — ✅ EXAMPLE-BUILD = BUILT GREEN (JDK 21.0.11; mvn -B -Pquality verify: 9 tests, 0 Checkstyle, 0 SpotBugs; 6 snippet tags; SAST/secrets tools are SaaS/rolling/unpinned → dated-at-use, flagged 09-flags/70_sast_secrets_tools_saas_dated_at_use.md). Spec + Snippet tags at foot.
+Verified against SOURCE-PIN: 2026-06-27 (corrected pin; Semgrep 1.163.0 pinned; CodeQL/gitleaks/TruffleHog/GitHub-Actions SaaS/rolling or unpinned → dated-at-use). Sources (2 concise dossiers, both ⚠ multi-tool crown-none, each cited to own docs):
+- SAST (70, ⚠): Static Application Security Testing analyzes YOUR source/bytecode for security weaknesses (injection/XSS/path-traversal/crypto-misuse) WITHOUT running it. Security sibling of Part IV analyzers; complement to SCA (Ch 28 key 65 = deps). Automates Ch 30's design-out classes. HOW: pattern matching (syntactic) vs DATAFLOW/TAINT (trace untrusted source → dangerous sink; stronger for injection). Findings → CWE/OWASP (Ch 30). Tools (crown none, own docs): FindSecBugs (SpotBugs security plugin Ch 16 key 29; bytecode patterns; OSS Maven/Gradle; baseline common Java sinks), Semgrep (fast, OSS-friendly, custom-rule-friendly pattern engine; growing dataflow), CodeQL (GitHub; query language over code DB; deep dataflow/taint; strong complex injection; GH Actions; licensing for non-OSS), Snyk Code (commercial; dev-focused fix guidance), SonarQube security rules (hotspots+vulns Ch 17 key 35; taint in commercial editions). Where: PR/CI gate (Ch 32 key 73); IDE early feedback; triaged (security findings often need human security reviewer, not auto-block-all). SAST vs SCA vs DAST: your-code(static)/deps(Ch 28)/running-app(DAST). Layered not substitutes. LIMITS: FPs AND FNs (noisy non-exploitable paths AND misses business-logic/broken-access-control/authz it can't model — Ch 30 tools-catch-patterns-not-design); reachability/exploitability (flagged sink may be unreachable — triage); performance (deep dataflow CodeQL slow on large — CI budget key 79); licensing/cost (OSS vs paid — crown none); not a substitute for design review/threat modeling/tests (key 84).
+- Secrets detection (71, ⚠): hardcoded API key/password/token in source OR buried in git history = one of the most common+damaging leaks. Scans code/diffs/history for credential patterns + high-entropy strings, blocks before remote (or alerts when already there). Catches the hardcoded-keys Ch 30 crypto flagged that SCA never sees. Detection: regex/rule patterns (AWS keys, tokens, private keys) + ENTROPY analysis (random-looking) + some tools VERIFY against provider (TruffleHog) to cut FPs. Tools (crown none): gitleaks (fast, config-driven, pre-commit+CI+history), TruffleHog (broad detectors + live verification), platform secret scanning (GitHub) + push protection. Where (defense in depth): pre-commit hook (blocks before commit — cheapest, key 82) + CI gate (Ch 32) + history scan (already-committed) + platform push protection. Remediation: a committed secret is COMPROMISED → ROTATE it (removing from history necessary NOT sufficient; assume exposed); history rewrite (git filter-repo/BFG) + rotation. Prevention: externalized config / secret managers (env vars/Vault/cloud secret stores), never in source. LIMITS: FPs (entropy flags UUIDs/hashes/test fixtures — allow-listing key 39 or team disables); "ALREADY LEAKED" problem (detection ≠ remediation; ROTATE not just delete; scanning can't un-leak — state plainly); coverage gaps (novel/obfuscated formats, binaries, non-scanned files); pre-commit BYPASSABLE (--no-verify → CI/push-protection backstop key 82); NOT a secrets-management solution (real fix = never put secrets in source).
+Verified at corrected pin (2026-06-27): Semgrep pinned (§2, 1.163.0); the SQL-injection sink the chapter teaches (`SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE`, CWE-89; OWASP Top 10:2025 Injection category — the exact A0x ordinal ⚠ verify-at-pin against owasp.org/Top10/2025, not asserted) is confirmed against the BUILT module (core SpotBugs raises it High; suppressed load-bearing; 9 tests green); the fail-closed externalized-secrets resolver, the gitleaks AWS-key rule + allowlist, the pre-commit hook, and the safe AWS EXAMPLE fixture key (`AKIAIOSFODNN7EXAMPLE`) all confirmed in the green build. ⚠ dated-at-use (unpinned/SaaS — see 09-flags/70_sast_secrets_tools_saas_dated_at_use.md): CodeQL bundle/version + GitHub-Actions tags (rolling); gitleaks/TruffleHog versions + their config/verification feature specifics (no SOURCE-PIN row); CodeQL/Snyk licensing terms; FindSecBugs↔SpotBugs version compat (Ch 16); which tools do taint vs pattern by edition; GitHub push-protection specifics; the Semgrep rule-registry/pack text + rolling engine. REPRO: live SAST tools + secret scanners need download/network → REPRO PENDING-RUNTIME offline (the runnable core is built green; the SaaS scans are not run).
+Routes: secure-coding classes (the vulns SAST finds) → Ch 30 (69/72/74); SpotBugs/FindSecBugs → Ch 16 (29); custom security rules (Semgrep/CodeQL queries echo) → Ch 18 (38); SCA (deps) → Ch 28 (65); security gate CI + DAST → Ch 32 (73); pre-commit/local↔CI parity → CI part (82); CI cost → CI part (79); suppression/allow-list → Ch 19 (39); design review (logic/authz flaws) → key 84; config/secrets prevention → ops chapters.
+DRAFT v1 — gates manual; SAST-as-security-analyzer(taint-source→sink) + SAST-vs-SCA-vs-DAST-triad + pattern-vs-taint + multi-tool-crown-none + tools-catch-patterns-not-design + defense-in-depth-ladder + found=compromised=rotate + detection≠prevention shapes; AWS-key-90-seconds hook. EXAMPLE-BUILD ✅ BUILT GREEN (mvn -B -Pquality verify: 9 tests, 0 Checkstyle, 0 SpotBugs; JDK 21.0.11).
+-->
+
+# Catching What You Forgot
+
+*SAST that traces untrusted input to a dangerous sink, and secrets detection for the credentials that leak — with the hard truth that finding one is already too late · 70 (folds 71) · Part VIII*
+
+> A developer hardcodes an AWS key and pushes. Ninety seconds later an attacker's bot scraping public commits has it. Deleting it in the next commit changes nothing — it is in the history, it is gone, it is compromised.
+
+## Hook
+
+A developer, in a hurry, hardcodes an AWS access key in a config class and pushes to a public repository. Within ninety seconds, faster than any human could react, an automated bot scraping new public commits has the key and is spinning up cryptominers on the company's cloud account. The developer notices the mistake, deletes the key in the next commit, and breathes easy. They should not: the key is in the git *history* forever, it was scraped the moment it landed, and deleting it from `HEAD` does nothing. The only real fix is to *rotate* the key (revoke it and issue a new one), because a committed secret is a *compromised* secret. That asymmetry, where finding the problem is already too late to prevent it, is unique among the things this chapter detects, and it is why secrets get special treatment.
+
+This chapter is the automated detection that the last one's secure-coding principles depend on. Chapter 30 taught the vulnerability *classes* and how to design them out — but designing-out works only if every developer remembers the pattern every time, and the entire shift-left thesis is that memory cannot be trusted; automation is the substitute. The two automations are **SAST** (static application security testing), which analyzes the project's own source for the injection, deserialization, and crypto-misuse flaws of Chapter 30, using *taint analysis* to trace untrusted input from where it enters to where it does damage, and **secrets detection**, which scans code and history for the hardcoded credentials Chapter 30's crypto section warned about and that dependency scanning never sees. Both are shift-left backstops; both share the honest limit of every analyzer in this book (they catch *patterns*, not *design*); and secrets detection carries the extra, sobering rule that detection is not remediation.
+
+## Overview
+
+**What this chapter covers**
+
+- **SAST**: what it analyzes, pattern-matching versus dataflow/taint analysis, and the main Java tools (FindSecBugs, Semgrep, CodeQL, Snyk Code, Sonar security).
+- The **SAST / SCA / DAST** triad — the codebase, the dependencies, the running app — and why they are layered, not substitutes.
+- **Secrets detection**: pattern-plus-entropy scanning, defense in depth (pre-commit → CI → history → platform), and the *found = compromised = rotate* rule.
+- The honest limits: false positives and negatives, missed logic flaws, and detection-is-not-prevention.
+
+**What this chapter does NOT cover.** The vulnerability classes themselves and how to design them out (the previous chapter; that is what SAST *finds*). Software composition analysis of dependencies (Part VII, the *other* lens). The security CI gate and DAST (the next chapter). Secrets *management* (Vault, cloud secret stores; named as the real fix, detailed in ops chapters). The SAST and secrets tools are **multi-tool comparisons, crowning none**; each is cited to its own docs.
+
+**The single idea to hold:** *SAST traces untrusted input to a dangerous sink to catch the vulnerability classes meant to be designed out; secrets detection catches leaked credentials. Both find patterns, not design flaws, and for a leaked secret detection is already too late — the only fix is to rotate it.*
+
+## How it works
+
+![Fig 31.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.](../../05-figures/70_sast_secrets_detection/fig70_1.png)
+
+*Fig 31.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.*
+
+![Fig 31.2 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents](../../05-figures/70_sast_secrets_detection/fig71_1.png)
+
+*Fig 31.2 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents*
+
+
+### SAST: tracing untrusted input to a dangerous sink
+
+**Static application security testing** analyzes the project's own source or bytecode for security weaknesses (injection, XSS, path traversal, crypto misuse) without running it. It is the security-focused sibling of the general analyzers from Part IV, and the complement to the software composition analysis of Part VII: SCA scans the project's *dependencies*, SAST scans the code the development team wrote. It is the automation of Chapter 30, the tool that finds the string-concatenated query and the unsafe `readObject` so the pattern need not be remembered every time.
+
+There are two ways SAST finds bugs, and the distinction matters:
+
+- **Pattern matching** — syntactic rules ("flag any `MD5`," "flag `Cipher.getInstance("AES")`"). Fast, simple, good for the crypto-misuse and known-bad-API classes.
+- **Dataflow / taint analysis** — trace *untrusted input* (a "source," e.g. a request parameter) through the program to a *dangerous sink* (e.g. a SQL string or `Runtime.exec`), flagging the path where attacker-controlled data reaches code that trusts it. This is the stronger technique, and the one that catches injection: it sees the request parameter flow through three method calls into the query.
+
+> **CONCEPT** *Taint analysis is the secure-coding chapter, mechanized.* The "untrusted data treated as trusted" root cause from Chapter 30 is exactly what taint analysis models — source (untrusted) → sink (trusting). When a taint engine reports "user input reaches a SQL sink without sanitization," it has found, automatically and at pull-request time, the precise class Chapter 30 taught developers to parameterize away. Findings map to CWE and OWASP categories (Chapter 30), so the tool's output speaks the same vocabulary as the risk map.
+
+The Java tools take different approaches, and the book crowns none. **FindSecBugs** is the SpotBugs security plugin (Chapter 16): OSS, bytecode patterns, a solid baseline for common Java sinks. **Semgrep** is a fast, OSS-friendly pattern engine whose strength is *custom rules* (a team can encode its own security patterns in a concise rule format), with growing dataflow. **CodeQL** (GitHub) treats code as a queryable database and does deep dataflow/taint, strong on complex injection, integrated with GitHub Actions (with licensing terms for non-OSS use). **Snyk Code** is commercial and developer-focused with fix guidance. **SonarQube** (Chapter 17) carries security rules and hotspots, with taint analysis in its commercial editions. They run at the PR/CI gate (next chapter) and in the IDE for early feedback; security findings are *triaged*, often by a human security reviewer, not auto-blocked wholesale.
+
+The sink a SAST scan flags is the order lookup that concatenates an email straight into its query text, the source-to-sink flow with no parameterization in between.
+
+<!-- include: 70_sast_secrets_detection/src/main/java/org/acme/sast/VulnerableOrderLookup.java#sql-sink -->
+
+A team encodes that pattern as a custom Semgrep rule, the form Semgrep is built for, mapping the finding to its CWE.
+
+<!-- include: 70_sast_secrets_detection/config/semgrep/java-injection.yml#semgrep-rule -->
+
+In the pipeline, the scan over the project's own code is one step among the security lenses, running on every pull request for feedback.
+
+<!-- include: 70_sast_secrets_detection/ci/sast-scan.yml#sast-ci-step -->
+
+> **CONCEPT** *SAST, SCA, and DAST are three lenses, layered.* SAST analyzes *the project's code, statically*; SCA analyzes *the project's dependencies* (Part VII); DAST (dynamic testing, next chapter) probes the *running app* from outside. They overlap little and cover different blind spots — SAST sees a sink SCA cannot, SCA sees a vulnerable library SAST will not flag, DAST sees a runtime misconfiguration neither static tool can. A security program runs all three; none substitutes for another.
+
+SAST's honest limits are the sharp version of Chapter 30's "tools catch patterns, not design." It produces **both false positives** (flagging non-exploitable paths: a sink that is unreachable, input that is already sanitized upstream) **and false negatives** (missing flows its model cannot trace, and missing entire classes it *cannot* model, including business-logic flaws and broken access control, where the code looks structurally correct). Unmanaged, the false-positive noise gets the gate ignored (Chapter 19), so triage and justified suppression are mandatory; and the false negatives mean SAST never replaces design review, threat modeling, and tests (Chapter 37). Deep dataflow (CodeQL) is also slow on large codebases, so its CI cost must be budgeted (the CI part).
+
+### Secrets detection: and why finding is too late
+
+A hardcoded API key, password, or token in source, or buried in git history, is among the most common and damaging leaks, and it is exactly the hardcoded-credential class Chapter 30's crypto section flagged and that SCA, scanning dependencies, never sees. **Secrets detection** scans code, diffs, and history for credentials, two ways: **regex/rule patterns** for known formats (AWS keys, tokens, private keys begin with recognizable prefixes) and **entropy analysis** for random-looking high-entropy strings that no pattern matches. Some tools go further and **verify** a found secret against its provider (TruffleHog's verification) to cut false positives; a flagged string that actually authenticates is unambiguously real.
+
+The tools (**gitleaks**, fast and config-driven, running at pre-commit, CI, and history scan; **TruffleHog**, with broad detectors plus live verification; and platform **secret scanning** with GitHub push protection) are best run as *defense in depth* across the lifecycle:
+
+> **CONCEPT** *A ladder of catches, cheapest first.* A **pre-commit hook** blocks the secret before it is ever committed: the cheapest catch, and the only one that prevents the leak entirely. **Push protection** at the platform blocks it at the remote. A **CI gate** catches what slipped past a developer who skipped the hook. A **history scan** finds secrets already committed in the past. Each stage is a backstop for the one before, because the pre-commit hook is *bypassable* (`git commit --no-verify`); local checks are never the only line (the CI part's local↔CI parity caveat).
+
+A gitleaks config drives the scan: a rule for the credential pattern, and an allowlist so test fixtures and documentation example keys do not false-flag.
+
+<!-- include: 70_sast_secrets_detection/.gitleaks.toml#gitleaks-config -->
+
+The pre-commit hook runs that scan before a commit is created, the one stage on the ladder that prevents the leak rather than reporting it.
+
+<!-- include: 70_sast_secrets_detection/.pre-commit-config.yaml#precommit-hook -->
+
+**A committed secret is a compromised secret, and detection is not remediation.** Once a credential reaches a remote, especially a public one, assume it has been scraped, as in the opening scenario. Deleting it from the latest commit leaves it in the history; even rewriting the history (`git filter-repo`, BFG) does not un-leak what was already pulled. The *only* safe response to a found secret is to **rotate** it: revoke the exposed credential and issue a new one. History rewriting plus rotation is the full remediation; rotation is the non-negotiable part. Prevention dominates for this reason: the real fix is to never put secrets in source at all, using externalized configuration and a secret manager (environment variables, Vault, cloud secret stores). Secrets detection is the safety net under that discipline, not a substitute for it. Like SAST, it has false positives (entropy flags UUIDs, hashes, and test fixtures, needing allow-listing) and coverage gaps (novel or obfuscated formats, secrets in binaries).
+
+The prevention itself is a resolver that reads the credential from the environment and fails closed when it is absent, refusing to fall back to a baked-in default, the very thing a scan would flag.
+
+<!-- include: 70_sast_secrets_detection/src/main/java/org/acme/sast/SecretsResolver.java#fail-closed -->
+
+## Deep dive: detection automates secure coding, but inherits its blind spot
+
+The two halves of this chapter and the whole of Part VIII fit into one progression, and naming it is what makes the security program coherent rather than a pile of scanners. Chapter 30 taught *what* the vulnerability classes are and how to *design them out*. This chapter is the *automated detection* of those same classes, because design-out depends on human memory, and the shift-left principle is to convert "remember to parameterize" into "the build fails if the developer did not." SAST's taint analysis is literally Chapter 30's "untrusted data treated as trusted" turned into an algorithm: it traces the source-to-sink flow that *is* the injection class. Secrets detection covers the one class (leaked credentials) that is pure pattern-and-entropy and that Chapter 30 could only advise teams to avoid. The relationship is tight: this chapter does not introduce new vulnerabilities; it mechanizes the catching of the ones already taught.
+
+But the automation inherits the exact blind spot the manual discipline had. Static tools find **patterns**; they do not find **design**. SAST will trace tainted input to a SQL sink all day, and it will sail straight past a broken authorization check that lets one user read another's data, because the code *looks* correct: no tainted-source-to-dangerous-sink flow, only a missing `if`. It will not find a business-logic flaw that lets a customer approve their own refund. Secrets detection finds the hardcoded key; it cannot find the secret that is correctly externalized but stored in a misconfigured, world-readable bucket. The pattern-matchable classes are most of the *volume* of vulnerabilities and the cheapest to fix automatically. That is exactly why SAST and secrets scanning are high-value. But the highest-*severity* breaches often turn on the design and logic flaws no static tool sees. That is not an argument against the tools; it is the boundary of what they deliver. The complete posture for Part VIII: design out the classes (Chapter 30), detect the patterns automatically (here), and review for the design flaws tools miss (Chapter 37). Three layers, because each covers what the others cannot.
+
+The secrets case adds one more permanent lesson that generalizes beyond security: **for some problems, detection is not prevention, and the asymmetry pushes effort upstream.** A bug found in CI is cheaper than one found in production, but a *secret* found anywhere is already a breach in progress. The cost of detection-after-the-fact is not "fix it," it is "rotate every affected credential and audit what was accessed." That asymmetry is why secrets get a pre-commit hook (the only stage that actually prevents the leak) and why the real answer is a secret manager that makes the mistake impossible, applying the same design-out-the-class principle from Chapter 30 to credentials. Detection is the net; prevention is the floor; and where the cost of a single escape is catastrophic, the investment belongs in the floor, not only in the net.
+
+## Limitations & when NOT to reach for it
+
+- **SAST produces false positives and false negatives.** It flags non-exploitable paths (noise that gets the gate ignored without triage, Chapter 19) and misses flows its model cannot trace. Triage findings; never treat a clean SAST run as proof of security.
+- **SAST cannot see design or authorization flaws.** Broken access control and business-logic bugs look structurally correct (no source-to-sink flow), so they are invisible to static tools. These need design review, threat modeling, and tests (Chapter 37), the highest-severity class SAST will not catch.
+- **Deep dataflow is slow and licensing varies.** CodeQL's taint analysis costs CI time on large codebases (budget it), and CodeQL/Snyk/Sonar have differing OSS-versus-commercial terms — a real choice, crowned none.
+- **Secrets detection has false positives.** Entropy analysis flags UUIDs, hashes, and test fixtures; without allow-listing discipline the team disables it. Verification (TruffleHog) reduces but does not eliminate the noise.
+- **Detection is not remediation — a found secret is compromised.** Deleting it from `HEAD`, or even rewriting history, does not un-leak it; the only fix is to **rotate** the credential. Scanning catches the mistake; it cannot reverse it.
+- **Pre-commit hooks are bypassable.** `--no-verify` skips them, so local secret scanning is never the only line — CI and platform push-protection are the backstops.
+- **Neither is a management solution.** SAST does not fix the code and secrets detection does not store the credential; the real fixes are secure coding (Chapter 30) and a secret manager. Detection is the net under prevention, not a replacement for it.
+- **Coverage gaps are real.** SAST misses unmodeled flows; secrets scanners miss novel/obfuscated formats and secrets in binaries. Defense in depth, not a single scan.
+
+## Alternatives & adjacent approaches
+
+- **The SAST tools** (FindSecBugs, Semgrep, CodeQL, Snyk Code, Sonar security) — OSS pattern engines versus deep-dataflow versus commercial; run the baseline OSS option and add custom rules (Semgrep/CodeQL) for house patterns, the way custom static-analysis rules (Chapter 18) work for security.
+- **SCA and DAST** — the other two lenses: dependencies (Part VII) and the running app (next chapter); a security program layers all three.
+- **The secrets tools** (gitleaks, TruffleHog, platform push-protection) — config-driven versus verifying versus platform-native; run more than one stage of the ladder.
+- **Secret managers** (Vault, cloud secret stores) — the *prevention* that makes secrets detection a net rather than the primary control.
+- **Design review and threat modeling** (Chapter 37) — the only way to catch the authorization and logic flaws static tools structurally cannot.
+
+These compose into a layered security posture: design out the classes, SAST the code, SCA the dependencies, scan for secrets across the lifecycle, manage secrets out of source entirely, and review for what tools miss.
+
+## When to use what
+
+- **To catch injection/deserialization/crypto-misuse in the project's own code:** SAST — taint-based (CodeQL, Sonar commercial, Semgrep dataflow) for injection, pattern-based (FindSecBugs) for crypto/known-bad APIs.
+- **To encode a team's own security patterns:** custom rules in Semgrep or CodeQL.
+- **For the three lenses:** SAST (the codebase) + SCA (dependencies, Part VII) + DAST (running app, next chapter) — layered, not either/or.
+- **To keep secrets out of source:** the defense-in-depth ladder — pre-commit hook (prevents) + push protection + CI gate + periodic history scan.
+- **When a secret is found:** rotate it — always, immediately; history rewrite is necessary but secondary.
+- **To make the secret mistake impossible:** a secret manager and externalized config — the prevention SAST/secrets-scanning backstops.
+- **For authorization, business-logic, and design flaws:** design review and threat modeling (Chapter 37) — the static tools will not find them.
+
+## Hand-off to the next chapter
+
+This chapter and the last establish the security controls (designed-out classes, SAST, secrets detection), and Part VII adds the dependency and supply-chain controls. Every one of them shares a fate with every analyzer, test, and architecture rule in the book: a control that is not *wired into the build and enforced* is a control a tired developer routes around. The next chapter assembles all of it into the **security gate**, the point in CI where SAST, SCA, secrets scanning, and DAST run together, with a *policy* for what fails the build versus what merely warns, triage for the false positives that would otherwise erode it, and the DevSecOps discipline that keeps a security gate credible instead of ignored. That is where the security half of the book becomes an automated, continuously-enforced part of the pipeline, applying the same fitness-function idea from Part VI to security.
+
+## Back matter — sources & traceability
+
+- **SAST** (key 70, ⚠ multi-tool) — analyzes *your* source/bytecode for security weaknesses without running it; complement to SCA (Part VII deps). Pattern matching vs **dataflow/taint** (untrusted source → dangerous sink; the injection technique); findings → CWE/OWASP (Ch 30). Tools (crown none, own docs): **FindSecBugs** (SpotBugs security plugin, Ch 16, bytecode patterns, OSS), **Semgrep** (`semgrep.dev`, fast OSS, custom rules, growing dataflow), **CodeQL** (`codeql.github.com`, code-as-database, deep taint, GH Actions, non-OSS licensing), **Snyk Code** (commercial, fix guidance), **SonarQube** security rules (Ch 17, taint in commercial editions). PR/CI gate + IDE; findings triaged. **SAST/SCA/DAST** = your-code/deps/running-app, layered. *(mechanism verified; the injection sink the chapter teaches — `SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE`, CWE-89; OWASP Top 10:2025 Injection category (exact A0x ordinal ⚠ verify-at-pin) — confirmed against the BUILT module 08-companion-code/70_sast_secrets_detection/ at the corrected pin 2026-06-27 (core SpotBugs raises it High; load-bearing suppression; 9 tests green); Semgrep pinned (1.163.0); CodeQL/Snyk versions+licensing, taint-vs-pattern-by-edition ⚠ dated-at-use, SaaS/rolling — 09-flags/70_sast_secrets_tools_saas_dated_at_use.md; FPs+FNs, misses-logic/authz, reachability, performance, not-a-substitute-for-review.)*
+- **Secrets detection** (key 71, ⚠ multi-tool) — hardcoded credential in source/history = common+damaging leak; catches the Ch 30 hardcoded-keys SCA never sees. Detection: regex/rule patterns (AWS keys/tokens/private keys) + **entropy analysis** + some-tools-**verify**-against-provider (TruffleHog). Tools (crown none): **gitleaks** (`github.com/gitleaks/gitleaks`, config-driven, pre-commit+CI+history), **TruffleHog** (`github.com/trufflesecurity/trufflehog`, broad + verification), platform secret scanning (GitHub push protection). Defense in depth: pre-commit (prevents, bypassable via `--no-verify`) → push protection → CI → history scan. **Remediation: committed secret = COMPROMISED → ROTATE** (delete/history-rewrite necessary NOT sufficient; assume scraped). Prevention: secret managers (Vault/cloud/env), never in source. *(mechanism verified; the gitleaks AWS-key rule + allowlist, the pre-commit hook, the fail-closed externalized-secrets resolver, and the safe AWS EXAMPLE fixture key `AKIAIOSFODNN7EXAMPLE` confirmed against the BUILT module at the corrected pin 2026-06-27 (9 tests green); pre-commit pinned (§5); gitleaks/TruffleHog versions + their verification feature + GitHub push-protection specifics ⚠ dated-at-use, no SOURCE-PIN row — 09-flags/70_sast_secrets_tools_saas_dated_at_use.md; FPs (UUIDs/hashes), already-leaked, coverage gaps, pre-commit-bypassable, not-a-management-solution.)*
+- **Routing** — secure-coding classes (what SAST finds) → Ch 30 (69/72/74); SpotBugs/FindSecBugs → Ch 16 (29); custom security rules → Ch 18 (38); SCA (deps) → Ch 28 (65); security gate + DAST → Ch 32 (73); pre-commit/parity + CI cost → CI part (82/79); suppression/allow-list → Ch 19 (39); design review (logic/authz) → key 84; secrets management → ops chapters. SOURCE-PIN (corrected 2026-06-27): Semgrep + pre-commit pinned; CodeQL/GitHub-Actions rolling; gitleaks/TruffleHog unpinned (no row) → dated-at-use, flagged 09-flags/70_sast_secrets_tools_saas_dated_at_use.md. Live scanners network-gated → REPRO PENDING-RUNTIME offline (the runnable core builds green; the SaaS scans are not run).
+
+**Companion module (✅ EXAMPLE-BUILD = BUILT GREEN; JDK 21.0.11; `mvn -B -Pquality verify`: 9 tests, 0 Checkstyle, 0 SpotBugs; 6 snippet tags; SAST tools + scanners are SaaS/rolling/unpinned → dated-at-use, flagged 09-flags/70_sast_secrets_tools_saas_dated_at_use.md):** `08-companion-code/70_sast_secrets_detection/` — a CONFIG-centric module (the peer shape of `75_ci_pipeline_quality_gates`). It ships the SAST and secrets configuration the chapter teaches — a **Semgrep** rule catching the injection sink (the string-concatenated SQL), a SAST **CI** workflow (Semgrep + CodeQL + the secrets and dependency lenses), a **gitleaks** config, and a **pre-commit** hook — none run by the Maven build. The runnable, unit-tested core is the load-bearing pair of decisions: the string-concat sink (`VulnerableOrderLookup`, the SAST counter-example that core SpotBugs raises at High and that is suppressed narrowly with a reason and a test pointer, Ch 16/19) versus the parameterized fix (`OrderLookup`); and the externalized-config, **fail-closed** secrets resolver (`SecretsResolver`) wired into the running gate (`SastSecretsGate`). **Failure path:** a lookup is refused when no credential resolves from the environment, never falling back to a baked-in default. **Health surfaces:** a readiness probe over the resolved credential plus a running count of refused lookups. **Planted fake key:** a test fixture uses AWS's published, non-functional EXAMPLE key id (`AKIAIOSFODNN7EXAMPLE`), allow-listed in the gitleaks config, proving the pattern a scan flags without being a real credential. **Honest edges (comments + README):** SAST finds patterns, not design (a broken-access-control or business-logic flaw has no source→sink flow — needs review, key 84); the pre-commit hook is bypassable with `--no-verify` (CI and push protection are the backstops); and the planted key, if it were real, would be compromised the instant it pushed (delete ≠ fix; rotate).
+
+**Snippet tags:** `VulnerableOrderLookup.java#sql-sink` (the SAST-detected injection sink), `config/semgrep/java-injection.yml#semgrep-rule` (the custom Semgrep rule), `ci/sast-scan.yml#sast-ci-step` (the SAST scan in CI); `.gitleaks.toml#gitleaks-config` (the secrets-scanner config), `.pre-commit-config.yaml#precommit-hook` (the pre-commit secrets hook), `SecretsResolver.java#fail-closed` (the externalized-config failure path). Six tags, each ≤9 displayed lines, resolved by `check_snippets.sh`.
+
+## Next chapter teaser
+
+The security controls are now in place (designed-out classes, SAST, secrets detection) plus Part VII's dependency and supply-chain scanning. A control that is not wired into the build is a control developers route around under deadline. The next chapter assembles them into the security gate: SAST, SCA, secrets scanning, and DAST running together in CI, with a policy for what breaks the build versus what warns, the triage that keeps false positives from eroding it, and the DevSecOps discipline that makes a security gate stick — the fitness-function idea from Part VI, turned to security.
