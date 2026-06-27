@@ -49,11 +49,11 @@ This is *why* the analyzers barely agree, and why low agreement is good news: it
 
 ### SonarQube: the platform above the rule engine
 
-SonarQube is not "another linter" — it is a **quality platform** wrapping a rule engine. That distinction drives every choice in this section. It has two halves.
+SonarQube is not "another linter." It is a **quality platform** wrapping a rule engine, and that distinction drives every choice in this section. It has two halves.
 
 **The rule engine** (`sonar-java`) analyzes *both source and bytecode*: for a multi-file project, "Compiled `.class` files are required" via `sonar.java.binaries` or "analysis will fail," so it runs after compile with the build's classpath, not as a source-only linter. Every Java rule has a key in the **`java:`** namespace (e.g. `java:S2077`), and the engine includes a **symbolic-execution / data-flow engine** for path-sensitive bugs (null dereference, resource leaks) beyond pattern matching. Rules are classified by the **Clean Code taxonomy**: in **MQR mode**, each rule impacts one or more of three **software qualities** (Security, Reliability, Maintainability) and carries one of 14 **Clean Code attributes** (FORMATTED, CONVENTIONAL, … RESPECTFUL), with severities Blocker/High/Medium/Low/Info. The older **Standard Experience mode** keeps the familiar rule *types* (Bug, Vulnerability, Code Smell, Security Hotspot). A precision point: those issue types are **de-emphasized in favour of the Clean Code framing, not removed**; both modes coexist.
 
-The scanner config records exactly that — where the engine reads its compiled inputs and classpath:
+The scanner config records exactly that: where the engine reads its compiled inputs and classpath.
 
 ```properties
 sonar.projectKey=org.acme.storefront:sonarqube-ide-layered-stack
@@ -73,9 +73,9 @@ sonar.qualitygate.wait=true                       # fail the build when the qual
 sonar.newCode.referenceBranch=main                # Clean as You Code: gate only NEW code vs this reference
 ```
 
-> **CONCEPT** *Platform = rule engine + a layer above it.* SonarQube's distinct contribution over Checkstyle/SpotBugs is not "a better linter" — it is the layer above the rules: profiles, a server-side gate, trend, and PR decoration. It runs at three moments (author-time via SonarQube for IDE, CI via the scanner, and the dashboard over time), and in **Connected Mode** the IDE pulls the team's profile and gate so local findings match CI.
+> **CONCEPT** *Platform = rule engine + a layer above it.* SonarQube's distinct contribution over Checkstyle/SpotBugs is not "a better linter." It is the layer above the rules: profiles, a server-side gate, trend, and PR decoration. It runs at three moments (author-time via SonarQube for IDE, CI via the scanner, and the dashboard over time), and in **Connected Mode** the IDE pulls the team's profile and gate so local findings match CI.
 
-Two honest limits to state plainly. The **flagship security analysis** — taint-based SAST that follows untrusted input to a sink — is a **Developer Edition (or higher) / Cloud** capability; the free **Community Build** has the rule engine but not the deep taint SAST. And the debt/rating model (SQALE: technical debt as a sum of per-rule "remediation minutes," a Maintainability A–E rating off a debt ratio) rests on **configurable conventions** (a default "30 minutes to develop a line"), so it is a *coarse trend signal, not a precise measurement*. Never report a debt figure as ground truth (the metrics chapter goes deeper). (Naming note: as of October 2024 the products are **SonarQube Server / Cloud / for IDE / Community Build** — formerly SonarQube / SonarCloud / SonarLint / Community Edition; use the current names.)
+Two honest limits to state plainly. The **flagship security analysis** (taint-based SAST that follows untrusted input to a sink) is a **Developer Edition (or higher) / Cloud** capability; the free **Community Build** has the rule engine but not the deep taint SAST. And the debt/rating model (SQALE: technical debt as a sum of per-rule "remediation minutes," a Maintainability A–E rating off a debt ratio) rests on **configurable conventions** (a default "30 minutes to develop a line"), so it is a *coarse trend signal, not a precise measurement*. Never report a debt figure as ground truth (the metrics chapter goes deeper). (Naming note: as of October 2024 the products are **SonarQube Server / Cloud / for IDE / Community Build**, formerly SonarQube / SonarCloud / SonarLint / Community Edition; use the current names.)
 
 ### IDE inspections: the author-time first line
 
@@ -166,9 +166,9 @@ The naive stack (every analyzer, default rulesets, all as build-breakers) fails 
 
 **Redundancy.** Running two source-AST style checkers for the same concern costs build time and produces near-duplicate findings with no coverage gain. The one-owner map eliminates it by construction.
 
-**Noise.** Every static tool has false positives (the same study reports low precision across the set). An un-tuned full stack as a build-breaker trains developers to ignore or disable the gate; the worst outcome is that the *real* findings drown too. The discipline: **tune and baseline the stack before gating it** (Chapter 19 owns the how — suppression with reason, baselines, ratcheting). A noisy gate is a net negative: it teaches the team that the gate lies, so the real findings get ignored alongside the false ones.
+**Noise.** Every static tool has false positives (the same study reports low precision across the set). An un-tuned full stack as a build-breaker trains developers to ignore or disable the gate; the worst outcome is that the *real* findings drown too. The discipline: **tune and baseline the stack before gating it** (Chapter 19 owns the how: suppression with reason, baselines, ratcheting). A noisy gate is a net negative: it teaches the team that the gate lies, so the real findings get ignored alongside the false ones.
 
-The composed result is a stack where the IDE is the shared first line (fast, local, backed by CI), Error Prone fails the compile on type-aware bugs, Checkstyle and PMD own style and smells on the source, SpotBugs catches what only bytecode reveals, and SonarQube sits above it all — aggregating findings, tracking the trend, and applying one Clean-as-You-Code gate on new code that a team can actually keep green. Each tool earns its place by owning a substrate×moment cell no other tool covers; none is there to re-check a cell already owned.
+The composed result is a stack where the IDE is the shared first line (fast, local, backed by CI), Error Prone fails the compile on type-aware bugs, Checkstyle and PMD own style and smells on the source, SpotBugs catches what only bytecode reveals, and SonarQube sits above it all, aggregating findings, tracking the trend, and applying one Clean-as-You-Code gate on new code that a team can actually keep green. Each tool earns its place by owning a substrate×moment cell no other tool covers; none is there to re-check a cell already owned.
 
 The unifying thread of Part IV's tool chapters: static analysis is a set of approximations reading different views of a program, and quality comes from *composing* those views deliberately — covering each blind spot once, at its cheapest moment, with a gate scoped so the team keeps it green rather than learns to route around it.
 

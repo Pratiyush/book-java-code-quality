@@ -43,9 +43,9 @@ JUnit is the de-facto JVM unit-testing framework, and its quality relevance is t
 
 > **EDITION** *JUnit 6 is the current major line* (6.0 GA 2025-09-30; 6.1.0 GA 2026-05), raising the floor to Java 17 and unifying Platform, Jupiter, and Vintage under one version, with Vintage (the JUnit 3/4 compatibility engine) now deprecated. **JUnit 5 ("Jupiter")** is the prior, still-ubiquitous line. The Jupiter programming model is largely shared across 5 and 6, so the guidance here holds for both; the few 6-only changes (the Java-17 floor, some relocated APIs) are migration costs a Java-8/11 codebase should weigh before upgrading. Treat JUnit 6 as current, note 5 where teams remain on it — the same edition discipline the book applies to any versioned authority.
 
-- **JUnit Platform** — the foundation that launches test engines on the JVM and defines the `TestEngine` API that build tools and IDEs target. This is *why* one runner can execute Jupiter tests and jqwik property tests side by side: these are different engines on one platform.
-- **JUnit Jupiter** — the programming and extension model for writing tests, plus its own `TestEngine`.
-- **JUnit Vintage** — a `TestEngine` that runs legacy JUnit 3/4 tests on the Platform (deprecated in 6; migration-only).
+- **JUnit Platform** is the foundation that launches test engines on the JVM and defines the `TestEngine` API that build tools and IDEs target. This is *why* one runner can execute Jupiter tests and jqwik property tests side by side: these are different engines on one platform.
+- **JUnit Jupiter** is the programming and extension model for writing tests, plus its own `TestEngine`.
+- **JUnit Vintage** is a `TestEngine` that runs legacy JUnit 3/4 tests on the Platform (deprecated in 6; migration-only).
 
 The Jupiter model itself is a small, quality-relevant surface: lifecycle annotations (`@Test`, `@BeforeEach`/`@AfterEach`, `@BeforeAll`/`@AfterAll`), `@DisplayName` for readable failure output, `@Nested` to group related cases, `@Tag` for selective CI runs, and `@Disabled` (with a reason). Built-in assertions (`assertEquals`, `assertThrows`, `assertAll` to report several failures at once) cover the basics. **Parameterized tests** (`@ParameterizedTest` with `@ValueSource`/`@CsvSource`/`@MethodSource`/`@EnumSource`) kill the duplicated near-identical tests that tempt people to put loops in test methods. The **extension model** (`@ExtendWith` plus the `Extension` API) is the single hook that Mockito, Testcontainers, and Spring all plug into, having replaced JUnit 4's split between runners and rules.
 
@@ -86,7 +86,7 @@ The axes that actually differentiate them (the right thing to compare, each agai
         assertThat(TOTAL.minorUnits(), is(equalTo(5_000L)));
 ```
 
-The honest limit cuts across all four: **a library does not fix a weak assertion.** `assertThat(list).isNotNull()` is exactly as empty as `assertNotNull(list)` — readability tooling cannot supply an expectation the author did not write. And the opposite failure is real too: AssertJ's breadth can tempt over-specific assertions that break on benign change, which is itself a test smell (Chapter 20). The discipline is to assert the *behaviour that matters*, specifically, and nothing more.
+The honest limit cuts across all four: **a library does not fix a weak assertion.** `assertThat(list).isNotNull()` is exactly as empty as `assertNotNull(list)`. Readability tooling cannot supply an expectation the author did not write. And the opposite failure is real too: AssertJ's breadth can tempt over-specific assertions that break on benign change, which is itself a test smell (Chapter 20). The discipline is to assert the *behaviour that matters*, specifically, and nothing more.
 
 ### Test doubles: isolating the unit, and the discipline of doing it
 
@@ -98,7 +98,7 @@ A **test double** is a stand-in for a real collaborator, so a unit can be exerci
 - **Spy** — "stubs that also record some information based on how they were called."
 - **Mock** — "objects pre-programmed with expectations which form a specification of the calls they are expected to receive."
 
-> **CONCEPT** *State verification versus behaviour verification.* A **stub** answers questions — the test checks the *state* of the system after the method runs (state verification). A **mock** asserts an *interaction* — that the unit made the right calls on its collaborator (behaviour verification). "Mock objects always use behaviour verification, while a stub can go either way." This is the hinge of the whole topic, because behaviour verification couples a test to *how* the code collaborates, so it breaks on a refactor even when the behaviour is unchanged (the second test from the hook).
+> **CONCEPT** *State verification versus behaviour verification.* A **stub** answers questions, and the test checks the *state* of the system after the method runs (state verification). A **mock** asserts an *interaction* — that the unit made the right calls on its collaborator (behaviour verification). "Mock objects always use behaviour verification, while a stub can go either way." This is the hinge of the whole topic, because behaviour verification couples a test to *how* the code collaborates, so it breaks on a refactor even when the behaviour is unchanged (the second test from the hook).
 
 **Mockito** is the Java library that creates these at runtime. In JUnit, `@ExtendWith(MockitoExtension.class)` initializes `@Mock`, `@Spy`, `@Captor`, and `@InjectMocks` fields before each test (replacing the old `openMocks` call):
 
@@ -136,7 +136,7 @@ A query collaborator answers a question, so it reads cleanest as a stub and the 
         assertThat(receipt.total().minorUnits()).isEqualTo(7_500L);
 ```
 
-A command collaborator's side effect is the point, so the interaction with it is verified — behaviour verification, with the coupling cost the next paragraph names:
+A command collaborator's side effect is the point, so the interaction with it is verified. This is behaviour verification, with the coupling cost the next paragraph names:
 
 ```java
         // PaymentGateway's side effect is the point, so verify the interaction happened.
@@ -161,7 +161,7 @@ Put the three together and the asset-versus-liability gap from the hook resolves
 
 ## Limitations & when NOT to reach for it
 
-- **JUnit runs tests; it does not make them good.** A green suite can be assertion-light, slow, flaky, or testing a mock — necessary, not sufficient. And JUnit 6 raises the floor to Java 17 and relocates some APIs; a Java-8/11 codebase has a real migration cost (Vintage is deprecated, so 3/4 tails need genuine migration). When NOT to upgrade yet: an older-JDK codebase with a large JUnit 4 tail.
+- **JUnit runs tests; it does not make them good.** A green suite can be assertion-light, slow, flaky, or testing a mock: necessary, not sufficient. And JUnit 6 raises the floor to Java 17 and relocates some APIs; a Java-8/11 codebase has a real migration cost (Vintage is deprecated, so 3/4 tails need genuine migration). When NOT to upgrade yet: an older-JDK codebase with a large JUnit 4 tail.
 - **Over-granular structure hurts readability.** Deep `@Nested` trees and heavy parameterization are tools, not goals; structure that obscures the test is a net negative.
 - **A library does not fix a weak assertion.** `isNotNull()` asserts nothing about behaviour; the most-read line on failure is only as good as the expectation written into it. Mixing assertion libraries in one codebase hurts consistency; pick one primary.
 - **Behaviour verification couples tests to implementation.** A `verify`-heavy test breaks on a refactor that changes call structure without changing behaviour; strict stubbing catches dead stubs but cannot fix an over-specified interaction test. The over-mock smell, pinned and passing, is the liability — an `InOrder` check that fixes the internal call sequence rather than the outcome:
@@ -183,7 +183,7 @@ Put the three together and the asset-versus-liability gap from the hook resolves
 - **Real collaborators / integration tests** (next chapter, Testcontainers): when the interaction *is* the behaviour under test, use the real dependency instead of a double.
 - **Fakes over mocks**: a hand-written or vendor in-memory fake (a `Map`-backed repository) often reads cleaner than a pile of stubs for a collaborator called many ways.
 - **Parameterized and property-based testing** (later): replace duplicated example tests and assert invariants over generated inputs.
-- **Contract testing** (Pact): verify that the assumption about a service boundary matches the provider's reality — the antidote to "mocked the wrong contract."
+- **Contract testing** (Pact): verify that the assumption about a service boundary matches the provider's reality. This is the antidote to "mocked the wrong contract."
 - **The built-in assertions alone**: for simple value checks, JUnit's `assertEquals`/`assertThrows` need no extra dependency; add a fluent library where it pays.
 
 These layer rather than compete: built-ins for the simple case, a fluent library where readability pays, doubles for isolation at owned boundaries, and real collaborators where realism is the point.
@@ -196,7 +196,7 @@ These layer rather than compete: built-ins for the simple case, a fluent library
 - **A command collaborator whose side effect matters:** a **mock** with `verify`.
 - **A value object / `record`:** the real instance — never a mock.
 - **A third-party type:** a thin **owned adapter**, mocked, or a vendor **fake**.
-- **When realism is the point** (persistence, SQL, wiring): a real collaborator in an integration test — not a mock.
+- **When realism is the point** (persistence, SQL, wiring): a real collaborator in an integration test, not a mock.
 
 ## Hand-off to the next chapter
 

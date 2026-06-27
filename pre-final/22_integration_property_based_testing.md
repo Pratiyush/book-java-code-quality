@@ -47,7 +47,7 @@ A unit test isolates one class; an **integration test** checks that units work t
 
 This is the middle of the pyramid made trustworthy. Integration tests sit between the many fast unit tests and the few slow end-to-end ones, and Testcontainers is what lets that middle layer test against reality without a shared, mutable staging environment that every team fights over. (Framework "test slices" such as Spring's `@DataJpaTest` and Quarkus's `@QuarkusTest` boot only a subset of the app for faster integration tests; these are useful framework features, cited here neutrally, not endorsements.) The fixture discipline matters as much as the container: build test data through the real API or factories rather than hand-rolled SQL, and keep fixtures minimal and intention-revealing, or the integration test grows its own smells (Chapter 20).
 
-The companion module shows the shape of an integration test against a real collaborator. To stay buildable without a Docker runtime, the real dependency here is a real HTTP catalog service booted in the same JVM on an ephemeral port, and the test drives it through a real client over the wire — so the test exercises the encoding, the status mapping, and the parse a mocked client would skip (a real container is the higher-fidelity option the costs below weigh):
+The companion module shows the shape of an integration test against a real collaborator. To stay buildable without a Docker runtime, the real dependency here is a real HTTP catalog service booted in the same JVM on an ephemeral port, and the test drives it through a real client over the wire. So the test exercises the encoding, the status mapping, and the parse a mocked client would skip. A real container is the higher-fidelity option, weighed against the costs below:
 
 ```java
         try (CatalogApi server = new CatalogApi(0)
@@ -98,7 +98,7 @@ The companion module carries a value object with exactly such a round-trip surfa
     }
 ```
 
-The round-trip property then asserts that pair across generated inputs rather than a few chosen literals. The module builds without a dedicated property library on its classpath, so it realizes the technique with a seeded JDK generator feeding one body and a small shrinker for the minimal counterexample; jqwik is the prose's named Java realization, weighed in the cost discussion below:
+The round-trip property then asserts that pair across generated inputs rather than a few chosen literals. The module carries no dedicated property library on its classpath, so it realizes the technique with a seeded JDK generator feeding one body and a small shrinker for the minimal counterexample. jqwik is the prose's named Java realization, weighed in the cost discussion below:
 
 ```java
     @ParameterizedTest(name = "round-trips {0}")

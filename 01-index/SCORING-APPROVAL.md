@@ -18,16 +18,16 @@
 | 11 | 14 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
 | 12 | 19 | 45/50 | 90% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 90% (independent) ≥88% + floors PASS → auto-approve into 04-approved ★≥90% excellence |
 | 13 | 20 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
-| 14 | 22 | 43/50 | 86% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 86% (independent) <88% → lift loop (≤3) toward the bar |
+| 14 | 22 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
 | 15 | 26 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 84% (independent) <88% → lift loop (≤3) toward the bar |
 | 16 | 27 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
-| 17 | 35 | 43/50 | 86% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 86% self-score — lift + independent-score toward the 88% bar |
-| 18 | 38 | 43/50 | 86% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 86% self-score — lift + independent-score toward the 88% bar |
-| 19 | 39 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 84% self-score — lift + independent-score toward the 88% bar |
-| 20 | 41 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | no | **NEEDS-INDEP** | 88% self ≥88% — needs an INDEPENDENT score to auto-approve |
-| 21 | 42 | 43/50 | 86% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 86% self-score — lift + independent-score toward the 88% bar |
-| 22 | 45 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 84% self-score — lift + independent-score toward the 88% bar |
-| 23 | 48 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | no | **NEEDS-INDEP** | 88% self ≥88% — needs an INDEPENDENT score to auto-approve |
+| 17 | 35 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
+| 18 | 38 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
+| 19 | 39 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 84% (independent) <88% → lift loop (≤3) toward the bar |
+| 20 | 41 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
+| 21 | 42 | 45/50 | 90% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 90% (independent) ≥88% + floors PASS → auto-approve into 04-approved ★≥90% excellence |
+| 22 | 45 | 43/50 | 86% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 86% (independent) <88% → lift loop (≤3) toward the bar |
+| 23 | 48 | 45/50 | 90% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 90% (independent) ≥88% + floors PASS → auto-approve into 04-approved ★≥90% excellence |
 | 24 | 50 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 84% self-score — lift + independent-score toward the 88% bar |
 | 25 | 53 | 43/50 | 86% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 86% self-score — lift + independent-score toward the 88% bar |
 | 26 | 55 | 43/50 | 86% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 86% self-score — lift + independent-score toward the 88% bar |
@@ -56,9 +56,9 @@
 ## Routing
 
 - **0** eligible to auto-approve — independent score ≥88% + content floors PASS (applied into 04-approved/ on the next run).
-- **5** need an independent score (self ≥88%, run the independent scorer).
-- **35** in the lift loop (below the 88% bar or a floor unresolved).
-- **7** approved (in 04-approved/).
+- **3** need an independent score (self ≥88%, run the independent scorer).
+- **31** in the lift loop (below the 88% bar or a floor unresolved).
+- **13** approved (in 04-approved/).
 
 ## FLOOR-C (compile + code-review) — from the on-disk gate reports
 

@@ -3486,7 +3486,7 @@ The quality argument is *readability*, which is why this is a code-quality chapt
 
 ### The pinning trap — and its version boundary
 
-The chapter's central pitfall. Per JEP 444, a virtual thread is **pinned** to its carrier in two cases: while it runs code inside a `synchronized` block or method, or while it runs a native method or a foreign function. When a pinned virtual thread then performs a *blocking* operation, the carrier and the OS thread under it stay blocked for the length of that operation — defeating the whole scaling benefit and, under load, starving the carrier pool.
+The chapter's central pitfall. Per JEP 444, a virtual thread is **pinned** to its carrier in two cases: while it runs code inside a `synchronized` block or method, or while it runs a native method or a foreign function. When a pinned virtual thread then performs a *blocking* operation, the carrier and the OS thread under it stay blocked for the length of that operation. That defeats the whole scaling benefit and, under load, starves the carrier pool.
 
 The fix is version-dependent, and this is the cleanest example in the book of why concurrency advice must be *dated*:
 
@@ -3543,7 +3543,7 @@ And virtual threads give *no* benefit for CPU-bound work. They help when tasks s
 
 Structured concurrency is the next idea: treat a group of related concurrent subtasks as a single unit of work with a bounded lifetime, so a failure or cancellation propagates predictably and no subtask is leaked. JEP 453 frames the goal as treating related tasks across threads "as a single unit of work," and from that one move it derives cleaner error handling and cancellation, better reliability, and stronger observability. When it lands, a leaked or orphaned subtask becomes structurally impossible: the scope's lifetime bounds every fork, a failing fork cancels its siblings, and the parent-child relationship shows up in thread dumps.
 
-But it is **preview** at both ends of this book's window, and its API *changed shape* across previews — Java 21 (JEP 453) opened a `StructuredTaskScope` via constructors with `ShutdownOnFailure`/`ShutdownOnSuccess` policies; Java 25 (JEP 505, Fifth Preview) opens it via static factories `StructuredTaskScope.open(...)` taking a `Joiner`. Because the public surface has churned every preview, no production or companion code may depend on it as stable. Teach the *concept* (the leak-proof structure the unstructured `ExecutorService` + `Future` style cannot give); flag the *API* as preview.
+But it is **preview** at both ends of this book's window, and its API *changed shape* across previews. Java 21 (JEP 453) opened a `StructuredTaskScope` via constructors with `ShutdownOnFailure`/`ShutdownOnSuccess` policies; Java 25 (JEP 505, Fifth Preview) opens it via static factories `StructuredTaskScope.open(...)` taking a `Joiner`. Because the public surface has churned every preview, no production or companion code may depend on it as stable. Teach the *concept* (the leak-proof structure the unstructured `ExecutorService` + `Future` style cannot give); flag the *API* as preview.
 
 So the companion module depends on none of the preview API: it shows the bounded-lifetime *concept* in stable APIs, where the try-with-resources block bounds every fork and a failing fork surfaces on `get()`, with the preview `StructuredTaskScope` flagged in a comment rather than compiled:
 
@@ -3565,7 +3565,7 @@ The load-bearing correctness point, and the bridge from Chapter 13: virtual thre
 
 ## Deep dive: verifying concurrent code
 
-Concurrency bugs are non-deterministic — they surface only under a particular interleaving on particular hardware, often never on the developer's own machine. Single-threaded testing cannot drive them out. Two complementary disciplines close the gap (run it many ways, or force the one bad way), and a third layer catches a subset before the code even runs.
+Concurrency bugs are non-deterministic. They surface only under a particular interleaving on particular hardware, often never on the developer's own machine. Single-threaded testing cannot drive them out. Two complementary disciplines close the gap (run it many ways, or force the one bad way), and a third layer catches a subset before the code even runs.
 
 ### Testing the race: stress, deterministic, and the anti-pattern
 
@@ -3618,9 +3618,9 @@ Static analysis moves a *subset* of concurrency defects left, to build time, by 
 | **SpotBugs MT_CORRECTNESS** (bytecode, heuristic) | known dangerous shapes | no (reads them if present) | annotation-free catch of many anti-patterns | heuristic FPs/FNs (its own docs note "inaccuracy") |
 | **Checker Framework Lock Checker** (pluggable type system, sound) | full lock typing | yes (rich set) | a *guarantee* for the checked property | annotation effort; scoped to lock races |
 
-> **CONCEPT** *Approximation of a spec property.* A static concurrency tool never "proves the program race-free" — it checks a tractable proxy for the JLS property. `@GuardedBy("lock")` is the spine: a machine-readable claim of *which lock guards which field*, which Error Prone (on by default, severity ERROR) verifies at every access, failing the build on a violation. SpotBugs needs no annotation; it recognizes dangerous bytecode *shapes* (`IS2_INCONSISTENT_SYNC`, `DC_DOUBLECHECK`, `VO_VOLATILE_INCREMENT`, the non-atomic check-then-act `AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION`). The Checker Framework types locks *soundly*: its Lock Checker manual promises that a program it type-checks without errors "will not have data races" from unsynchronized access to shared mutable fields — at the cost of annotating the code.
+> **CONCEPT** *Approximation of a spec property.* A static concurrency tool never "proves the program race-free"; it checks a tractable proxy for the JLS property. `@GuardedBy("lock")` is the spine: a machine-readable claim of *which lock guards which field*, which Error Prone (on by default, severity ERROR) verifies at every access, failing the build on a violation. SpotBugs needs no annotation; it recognizes dangerous bytecode *shapes* (`IS2_INCONSISTENT_SYNC`, `DC_DOUBLECHECK`, `VO_VOLATILE_INCREMENT`, the non-atomic check-then-act `AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION`). The Checker Framework types locks *soundly*: its Lock Checker manual promises that a program it type-checks without errors "will not have data races" from unsynchronized access to shared mutable fields, at the cost of annotating the code.
 
-The companion module carries that shape as a deliberate counter-example: a counter whose field is documented `@GuardedBy("this")`, written only under the lock by `synchronized` methods, but read once without it. Error Prone's `@GuardedBy` rejects that read at compile time; SpotBugs reports it as `IS2_INCONSISTENT_SYNC` — a finding it grades low-confidence, which the module surfaces by lowering its SpotBugs threshold and then suppresses by name with a reason, the detector left on for every other class:
+The companion module carries that shape as a deliberate counter-example: a counter whose field is documented `@GuardedBy("this")`, written only under the lock by `synchronized` methods, but read once without it. Error Prone's `@GuardedBy` rejects that read at compile time; SpotBugs reports it as `IS2_INCONSISTENT_SYNC`, a finding it grades low-confidence, which the module surfaces by lowering its SpotBugs threshold and then suppresses by name with a reason, the detector left on for every other class:
 
 ```java
     public synchronized void increment() {       // every WRITE holds the lock (this)
@@ -3645,12 +3645,12 @@ The honest framing across all of it: static detection is *necessary but not suff
 - **Thread-locals do not scale to millions of threads.** Per-thread copies multiply memory; prefer scoped values (GA at 25) for read-only context, or hold expensive resources elsewhere.
 - **Virtual threads do not make concurrency safe.** The JMM is unchanged. Every data race is identical. Cheap threads tempt more sharing, raising the value of immutability and safe publication, not lowering the bar.
 - **Structured concurrency is preview through 25, with a churning API.** Never present `StructuredTaskScope` as stable or put it in production/companion code as-is; its shape changed every preview (`ShutdownOnFailure` ctors → `open(Joiner...)` factories). Teach the concept, flag the API.
-- **JCStress is probabilistic and experimental.** A green run is not proof of correctness — only that the forbidden outcome was not observed on this hardware in the time given. The harness is hardware-dependent, slow, a separate build target, and not a merge-blocking gate. Reserve it for genuinely subtle lock-free/publication code.
-- **Deterministic latch tests force one interleaving** — they prove the bug for the schedule engineered, not the ones left unexplored. Best as a regression lock, paired with sampling.
+- **JCStress is probabilistic and experimental.** A green run is not proof of correctness, only that the forbidden outcome was not observed on this hardware in the time given. The harness is hardware-dependent, slow, a separate build target, and not a merge-blocking gate. Reserve it for genuinely subtle lock-free/publication code.
+- **Deterministic latch tests force one interleaving.** They prove the bug for the schedule engineered, not the ones left unexplored. Best as a regression lock, paired with sampling.
 - **`Thread.sleep`-timed tests** neither force nor sample; they are flaky and slow. Retire them.
 - **Static detectors check proxies, not the full property.** Error Prone `@GuardedBy` only covers annotated fields and only lock discipline; SpotBugs MT patterns are heuristic with documented FPs/FNs; the Checker Framework's soundness costs annotation effort and is scoped to lock races. None catches arbitrary races, deadlock, or liveness. A green static scan is necessary, not sufficient.
 
-> **AHEAD-OF-PIN** Three features here are past the Java 21 anchor and must be dated, never asserted as anchor reality: structured concurrency (`StructuredTaskScope`, JEP 453→505 — *preview* at 21 and 25), scoped values (JEP 506 — *GA at 25*), and JEP 491 (no `synchronized` pinning — *Java 24*).
+> **AHEAD-OF-PIN** Three features here are past the Java 21 anchor and must be dated, never asserted as anchor reality: structured concurrency (`StructuredTaskScope`, JEP 453→505, *preview* at 21 and 25), scoped values (JEP 506, *GA at 25*), and JEP 491 (no `synchronized` pinning, *Java 24*).
 
 ## Alternatives & adjacent approaches
 
@@ -3664,11 +3664,11 @@ These layer rather than compete: virtual threads for blocking I/O fan-out, platf
 
 ## When to use what
 
-- **For blocking, I/O-bound, request-per-task work:** virtual threads via `newVirtualThreadPerTaskExecutor()` — one per task, never pooled, and (at Java 21) prefer `ReentrantLock` over `synchronized` around the blocking calls.
+- **For blocking, I/O-bound, request-per-task work:** virtual threads via `newVirtualThreadPerTaskExecutor()`, one per task, never pooled, and (at Java 21) prefer `ReentrantLock` over `synchronized` around the blocking calls.
 - **For CPU-bound work:** a bounded platform-thread pool sized to the cores; virtual threads add nothing.
 - **For sharing read-only context across tasks:** `ScopedValue` (Java 25) over `ThreadLocal` at scale; on Java 21, `ThreadLocal` with the memory caveat.
 - **For structured fork/join:** the concept of structured concurrency now, the `StructuredTaskScope` API only behind `--enable-preview` and never as a stable dependency.
-- **For verifying concurrent code:** static detectors (`@GuardedBy` + SpotBugs MT) in CI as a build-time floor; JCStress for genuinely subtle lock-free/publication code; deterministic latch tests as regression locks once a bug is understood — never a `Thread.sleep` test.
+- **For verifying concurrent code:** static detectors (`@GuardedBy` + SpotBugs MT) in CI as a build-time floor; JCStress for genuinely subtle lock-free/publication code; deterministic latch tests as regression locks once a bug is understood. Never a `Thread.sleep` test.
 
 ## Hand-off to Part IV
 
@@ -3676,16 +3676,16 @@ That closes Part III. Across Chapters 13 and 14, concurrent code has been made *
 
 ## Back matter — sources & traceability
 
-- **JEP 444 — Virtual Threads** (GA, Release 21): carrier/mounting, work-stealing FIFO `ForkJoinPool` scheduler, pinning on `synchronized`/native, do-not-pool, thread-locals-always-supported, "monitored and observable" — verbatim. **JEP 491 — Synchronize Virtual Threads without Pinning** (Release 24): `synchronized` no longer pins (native/FFM still do).
+- **JEP 444 — Virtual Threads** (GA, Release 21): carrier/mounting, work-stealing FIFO `ForkJoinPool` scheduler, pinning on `synchronized`/native, do-not-pool, thread-locals-always-supported, "monitored and observable" (verbatim). **JEP 491 — Synchronize Virtual Threads without Pinning** (Release 24): `synchronized` no longer pins (native/FFM still do).
 - **Structured concurrency** — JEP 453 (Preview, Release 21; `ShutdownOnFailure`/`ShutdownOnSuccess` ctors) → JEP 505 (Fifth Preview, Release 25; `open(Joiner...)` static factories) → JEP 525 (Sixth Preview, Release 26). **PREVIEW throughout — AHEAD-OF-PIN.** **JEP 506 — Scoped Values** (final, Release 25 — AHEAD-OF-PIN @21). JEP 425/436 = VT preview history (19/20). *(`Release`/`Status` verified by curl; ⚠ flag/property names + JLS §§ @pin.)*
-- **JLS SE 21 ch.17** — the JMM, unchanged by virtual threads (a virtual thread is a `Thread`). *(§§ verify @pin.)*
-- **JCStress** (OpenJDK, `org.openjdk.jcstress:jcstress-core`, 0.16 latest — ⚠ not yet a SOURCE-PIN row): `@JCStressTest`/`@State`/`@Actor`/`@Arbiter`/`@Signal`/`@Outcome`/`@Result`; `Expect` {ACCEPTABLE, ACCEPTABLE_INTERESTING, FORBIDDEN, UNKNOWN}; `Mode` {Continuous, Termination}; `-m quick`; "experimental"/"probabilistic" + triage warning — verbatim from README + annotation source. **Deterministic primitives:** `CountDownLatch`/`CyclicBarrier`/`Phaser`, single-thread executor, `Clock.fixed` (JDK). **jqwik** (property-based) / **Lincheck** (model-checking — neutral alternatives; Lincheck unpinned).
-- **Static detection** — Error Prone `GuardedBy` (ON_BY_DEFAULT ERROR, 3 annotation packages), `Immutable` (ERROR), `ThreadSafe` (experimental), `DoubleCheckedLocking`/`SynchronizeOnNonFinalField`/`WaitNotInLoop`/`LockNotBeforeTry`/`StaticGuardedByInstance`/`ThreadLocalUsage` (WARNING); SpotBugs MT_CORRECTNESS catalogue (`IS2_INCONSISTENT_SYNC` "≤⅓ accesses unsync, writes ×2" + "various sources of inaccuracy", `IS_FIELD_NOT_GUARDED`, `DC_DOUBLECHECK`/`DC_PARTIALLY_CONSTRUCTED`, `VO_VOLATILE_INCREMENT`, `AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION`, `LI_LAZY_INIT_*`, `DL_SYNCHRONIZATION_ON_*`, `NN_NAKED_NOTIFY`); Checker Framework Lock Checker (sound; `@GuardedBy`/`@Holding`/`@EnsuresLockHeld`/`@GuardSatisfied`); Sonar `java:S6906` (no synchronized in VT tasks)/`java:S6881`. *(IDs/severities cited to each tool; ⚠ versions/defaults/SpotBugs ranks @pin; rules.sonarsource.com offline — RSPEC repo.)* `@GuardedBy` = four packages, four semantics — name the package.
+- **JLS SE 21 ch.17.** The JMM, unchanged by virtual threads (a virtual thread is a `Thread`). *(§§ verify @pin.)*
+- **JCStress** (OpenJDK, `org.openjdk.jcstress:jcstress-core`, 0.16 latest — ⚠ not yet a SOURCE-PIN row): `@JCStressTest`/`@State`/`@Actor`/`@Arbiter`/`@Signal`/`@Outcome`/`@Result`; `Expect` {ACCEPTABLE, ACCEPTABLE_INTERESTING, FORBIDDEN, UNKNOWN}; `Mode` {Continuous, Termination}; `-m quick`; "experimental"/"probabilistic" + triage warning, verbatim from README + annotation source. **Deterministic primitives:** `CountDownLatch`/`CyclicBarrier`/`Phaser`, single-thread executor, `Clock.fixed` (JDK). **jqwik** (property-based) / **Lincheck** (model-checking; neutral alternatives; Lincheck unpinned).
+- **Static detection.** Error Prone `GuardedBy` (ON_BY_DEFAULT ERROR, 3 annotation packages), `Immutable` (ERROR), `ThreadSafe` (experimental), `DoubleCheckedLocking`/`SynchronizeOnNonFinalField`/`WaitNotInLoop`/`LockNotBeforeTry`/`StaticGuardedByInstance`/`ThreadLocalUsage` (WARNING); SpotBugs MT_CORRECTNESS catalogue (`IS2_INCONSISTENT_SYNC` "≤⅓ accesses unsync, writes ×2" + "various sources of inaccuracy", `IS_FIELD_NOT_GUARDED`, `DC_DOUBLECHECK`/`DC_PARTIALLY_CONSTRUCTED`, `VO_VOLATILE_INCREMENT`, `AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION`, `LI_LAZY_INIT_*`, `DL_SYNCHRONIZATION_ON_*`, `NN_NAKED_NOTIFY`); Checker Framework Lock Checker (sound; `@GuardedBy`/`@Holding`/`@EnsuresLockHeld`/`@GuardSatisfied`); Sonar `java:S6906` (no synchronized in VT tasks)/`java:S6881`. *(IDs/severities cited to each tool; ⚠ versions/defaults/SpotBugs ranks @pin; rules.sonarsource.com offline — RSPEC repo.)* `@GuardedBy` = four packages, four semantics. Name the package.
 - **Goetz et al., *Java Concurrency in Practice* (2006)** — origin of `@GuardedBy`/`@Immutable`/`@ThreadSafe`; dated (predates virtual threads, structured concurrency, scoped values).
 
 ## Next chapter teaser
 
-The tools have been everywhere in this book — Error Prone failing a build on an unguarded lock, SpotBugs flagging a `volatile++`, a `@Nullable` checker catching an NPE before it threw. Part IV makes them the subject. The next chapter opens the hood: how static analysis actually works — parsing source to an abstract syntax tree, tracking values through data-flow, following tainted input across a program — so that when a linter flags (or misses) something, the reader understands why, and can tell a real finding from a false positive.
+The tools have been everywhere in this book: Error Prone failing a build on an unguarded lock, SpotBugs flagging a `volatile++`, a `@Nullable` checker catching an NPE before it threw. Part IV makes them the subject. The next chapter opens the hood: how static analysis actually works (parsing source to an abstract syntax tree, tracking values through data-flow, following tainted input across a program) so that when a linter flags (or misses) something, the reader understands why, and can tell a real finding from a false positive.
 
 
 ---
@@ -4172,11 +4172,11 @@ This is *why* the analyzers barely agree, and why low agreement is good news: it
 
 ### SonarQube: the platform above the rule engine
 
-SonarQube is not "another linter" — it is a **quality platform** wrapping a rule engine. That distinction drives every choice in this section. It has two halves.
+SonarQube is not "another linter." It is a **quality platform** wrapping a rule engine, and that distinction drives every choice in this section. It has two halves.
 
 **The rule engine** (`sonar-java`) analyzes *both source and bytecode*: for a multi-file project, "Compiled `.class` files are required" via `sonar.java.binaries` or "analysis will fail," so it runs after compile with the build's classpath, not as a source-only linter. Every Java rule has a key in the **`java:`** namespace (e.g. `java:S2077`), and the engine includes a **symbolic-execution / data-flow engine** for path-sensitive bugs (null dereference, resource leaks) beyond pattern matching. Rules are classified by the **Clean Code taxonomy**: in **MQR mode**, each rule impacts one or more of three **software qualities** (Security, Reliability, Maintainability) and carries one of 14 **Clean Code attributes** (FORMATTED, CONVENTIONAL, … RESPECTFUL), with severities Blocker/High/Medium/Low/Info. The older **Standard Experience mode** keeps the familiar rule *types* (Bug, Vulnerability, Code Smell, Security Hotspot). A precision point: those issue types are **de-emphasized in favour of the Clean Code framing, not removed**; both modes coexist.
 
-The scanner config records exactly that — where the engine reads its compiled inputs and classpath:
+The scanner config records exactly that: where the engine reads its compiled inputs and classpath.
 
 ```properties
 sonar.projectKey=org.acme.storefront:sonarqube-ide-layered-stack
@@ -4196,9 +4196,9 @@ sonar.qualitygate.wait=true                       # fail the build when the qual
 sonar.newCode.referenceBranch=main                # Clean as You Code: gate only NEW code vs this reference
 ```
 
-> **CONCEPT** *Platform = rule engine + a layer above it.* SonarQube's distinct contribution over Checkstyle/SpotBugs is not "a better linter" — it is the layer above the rules: profiles, a server-side gate, trend, and PR decoration. It runs at three moments (author-time via SonarQube for IDE, CI via the scanner, and the dashboard over time), and in **Connected Mode** the IDE pulls the team's profile and gate so local findings match CI.
+> **CONCEPT** *Platform = rule engine + a layer above it.* SonarQube's distinct contribution over Checkstyle/SpotBugs is not "a better linter." It is the layer above the rules: profiles, a server-side gate, trend, and PR decoration. It runs at three moments (author-time via SonarQube for IDE, CI via the scanner, and the dashboard over time), and in **Connected Mode** the IDE pulls the team's profile and gate so local findings match CI.
 
-Two honest limits to state plainly. The **flagship security analysis** — taint-based SAST that follows untrusted input to a sink — is a **Developer Edition (or higher) / Cloud** capability; the free **Community Build** has the rule engine but not the deep taint SAST. And the debt/rating model (SQALE: technical debt as a sum of per-rule "remediation minutes," a Maintainability A–E rating off a debt ratio) rests on **configurable conventions** (a default "30 minutes to develop a line"), so it is a *coarse trend signal, not a precise measurement*. Never report a debt figure as ground truth (the metrics chapter goes deeper). (Naming note: as of October 2024 the products are **SonarQube Server / Cloud / for IDE / Community Build** — formerly SonarQube / SonarCloud / SonarLint / Community Edition; use the current names.)
+Two honest limits to state plainly. The **flagship security analysis** (taint-based SAST that follows untrusted input to a sink) is a **Developer Edition (or higher) / Cloud** capability; the free **Community Build** has the rule engine but not the deep taint SAST. And the debt/rating model (SQALE: technical debt as a sum of per-rule "remediation minutes," a Maintainability A–E rating off a debt ratio) rests on **configurable conventions** (a default "30 minutes to develop a line"), so it is a *coarse trend signal, not a precise measurement*. Never report a debt figure as ground truth (the metrics chapter goes deeper). (Naming note: as of October 2024 the products are **SonarQube Server / Cloud / for IDE / Community Build**, formerly SonarQube / SonarCloud / SonarLint / Community Edition; use the current names.)
 
 ### IDE inspections: the author-time first line
 
@@ -4289,9 +4289,9 @@ The naive stack (every analyzer, default rulesets, all as build-breakers) fails 
 
 **Redundancy.** Running two source-AST style checkers for the same concern costs build time and produces near-duplicate findings with no coverage gain. The one-owner map eliminates it by construction.
 
-**Noise.** Every static tool has false positives (the same study reports low precision across the set). An un-tuned full stack as a build-breaker trains developers to ignore or disable the gate; the worst outcome is that the *real* findings drown too. The discipline: **tune and baseline the stack before gating it** (Chapter 19 owns the how — suppression with reason, baselines, ratcheting). A noisy gate is a net negative: it teaches the team that the gate lies, so the real findings get ignored alongside the false ones.
+**Noise.** Every static tool has false positives (the same study reports low precision across the set). An un-tuned full stack as a build-breaker trains developers to ignore or disable the gate; the worst outcome is that the *real* findings drown too. The discipline: **tune and baseline the stack before gating it** (Chapter 19 owns the how: suppression with reason, baselines, ratcheting). A noisy gate is a net negative: it teaches the team that the gate lies, so the real findings get ignored alongside the false ones.
 
-The composed result is a stack where the IDE is the shared first line (fast, local, backed by CI), Error Prone fails the compile on type-aware bugs, Checkstyle and PMD own style and smells on the source, SpotBugs catches what only bytecode reveals, and SonarQube sits above it all — aggregating findings, tracking the trend, and applying one Clean-as-You-Code gate on new code that a team can actually keep green. Each tool earns its place by owning a substrate×moment cell no other tool covers; none is there to re-check a cell already owned.
+The composed result is a stack where the IDE is the shared first line (fast, local, backed by CI), Error Prone fails the compile on type-aware bugs, Checkstyle and PMD own style and smells on the source, SpotBugs catches what only bytecode reveals, and SonarQube sits above it all, aggregating findings, tracking the trend, and applying one Clean-as-You-Code gate on new code that a team can actually keep green. Each tool earns its place by owning a substrate×moment cell no other tool covers; none is there to re-check a cell already owned.
 
 The unifying thread of Part IV's tool chapters: static analysis is a set of approximations reading different views of a program, and quality comes from *composing* those views deliberately — covering each blind spot once, at its cheapest moment, with a gate scoped so the team keeps it green rather than learns to route around it.
 
@@ -4402,7 +4402,7 @@ What changes between tools is the *artifact* each reasons over, and that, exactl
 | SpotBugs | compiled bytecode | opcode / annotation visit | `BugInstance` → `reportBug` | no | post-compile |
 | ArchUnit | imported class graph | `classes().that(pred)` | `ArchCondition.check` → `violated` | no | test phase |
 
-> **CONCEPT** *One shape, five artifacts.* A custom rule inherits its host's substrate and moment — and so its strengths and blind spots. Pick the tool whose artifact the invariant naturally lives in: a *textual/structural* convention fits Checkstyle/PMD; a *type-aware* rule fits Error Prone; a *bytecode-only* pattern fits SpotBugs; an *architectural* law (who may depend on whom) fits ArchUnit. The choice follows the artifact, not a ranking.
+> **CONCEPT** *One shape, five artifacts.* A custom rule inherits its host's substrate and moment, and so its strengths and blind spots. Pick the tool whose artifact the invariant naturally lives in: a *textual/structural* convention fits Checkstyle/PMD; a *type-aware* rule fits Error Prone; a *bytecode-only* pattern fits SpotBugs; an *architectural* law (who may depend on whom) fits ArchUnit. The choice follows the artifact, not a ranking.
 
 ### Three realizations, briefly
 
@@ -4412,7 +4412,7 @@ What changes between tools is the *artifact* each reasons over, and that, exactl
 
 **ArchUnit (the imported class graph, as a unit test).** Beyond its fluent DSL, ArchUnit exposes two extension points: a `DescribedPredicate<JavaClass>` (the filter; override `test(JavaClass)`) and an `ArchCondition<JavaClass>` (the constraint; override `check(item, events)` and add `SimpleConditionEvent.violated(origin, message)`). Combine them: `classes().that(myPredicate).should(myCondition)`. The rule runs as a JUnit test (`@AnalyzeClasses` + `@ArchTest`) and **throws `AssertionError` on violation**, like any failing test. (PMD adds a second authoring mode worth knowing: a rule can be a Java `AbstractJavaRule` visitor *or* a declarative **XPath** expression in the ruleset XML; XPath needs no compilation but hits an expressive ceiling. SpotBugs detectors, working on bytecode at the opcode level via `OpcodeStackDetector`, are the lowest-level and most effortful, reserved for patterns only visible after compilation.)
 
-The honest first question before writing any of them: *does a stock rule with tuned config already cover this, or is this really a review judgment?* A custom rule is code the team now owns — tested, documented, and re-validated on every tool upgrade. Ship it as a `WARNING` first to gather signal, then promote to `ERROR`; a bespoke rule has had far less field-testing than a stock one, and a noisy custom gate teaches the team to ignore the gate (Chapter 19).
+The honest first question before writing any of them: *does a stock rule with tuned config already cover this, or is this really a review judgment?* A custom rule is code the team now owns: tested, documented, and re-validated on every tool upgrade. Ship it as a `WARNING` first to gather signal, then promote to `ERROR`; a bespoke rule has had far less field-testing than a stock one, and a noisy custom gate teaches the team to ignore the gate (Chapter 19).
 
 ### Compile-time codegen: the boilerplate conventions generate
 
@@ -4435,9 +4435,9 @@ Lombok is the most widely deployed of these, and the most contested, because of 
 
 **Its hardest objection**, also from its own behavior:
 
-- *Dependence on non-standard compiler internals.* The same edit-the-AST move couples Lombok to `com.sun.tools.javac.*` — packages the `jdk.compiler` module does not export. Since JDK 16 this requires `--add-opens`/`--add-exports`, and each JDK can change those internals, so every new JDK is a compatibility event (Lombok ships the incantations so supported versions keep working, but the *dependence* is the point).
-- *Invisibility and tool friction.* Because the generated members exist only in the mutated AST, the source the developer reads is not the code that runs: IDEs need a Lombok plugin to resolve the members, other annotation processors may not see Lombok's changes (hence the `lombok-mapstruct-binding` ordering dependency), and coverage/analysis tools need the `@lombok.Generated` marker (enabled by `lombok.addLombokGeneratedAnnotation = true`, which JaCoCo honors to skip generated members) to avoid distortion. The documented remedy is `delombok`, which pretty-prints the transformed AST back to standard Java source — or a committed form, to drop the dependency.
-- *The records overlap.* For the value-object slice that `@Value`/`@Data` historically served, `record` now offers a language-level answer with no dependency — the live question of whether a project still needs Lombok for that slice.
+- *Dependence on non-standard compiler internals.* The same edit-the-AST move couples Lombok to `com.sun.tools.javac.*`, packages the `jdk.compiler` module does not export. Since JDK 16 this requires `--add-opens`/`--add-exports`, and each JDK can change those internals, so every new JDK is a compatibility event. Lombok ships the incantations so supported versions keep working, but the dependence is the point.
+- *Invisibility and tool friction.* Because the generated members exist only in the mutated AST, the source the developer reads is not the code that runs. IDEs need a Lombok plugin to resolve the members. Other annotation processors may not see Lombok's changes (hence the `lombok-mapstruct-binding` ordering dependency), and coverage/analysis tools need the `@lombok.Generated` marker (enabled by `lombok.addLombokGeneratedAnnotation = true`, which JaCoCo honors to skip generated members) to avoid distortion. The documented remedy is `delombok`, which pretty-prints the transformed AST back to standard Java source, or a committed form, to drop the dependency.
+- *The records overlap.* For the value-object slice that `@Value`/`@Data` historically served, `record` now offers a language-level answer with no dependency, which keeps live the question of whether a project still needs Lombok for that slice.
 
 Framed neutrally: `record`, the generate-new-files processors, and Lombok are **different approaches to the same boilerplate problem**, and a codebase may use several at once (records for DTOs, MapStruct for mapping, Lombok for logging). Each states its trade-off; none is crowned. (One build-wiring fact teams hit: registering processors via `annotationProcessorPaths` becomes **mandatory at JDK 23**; before that, a processor on the plain classpath was discovered implicitly.)
 
@@ -4459,7 +4459,7 @@ The companion module realizes this with only the dependencies the book has pinne
     }
 ```
 
-The same four steps — select, predicate, report — written over the reflection artifact stand in for a source-AST or bytecode custom check:
+The same four steps (select, predicate, report) written over the reflection artifact stand in for a source-AST or bytecode custom check:
 
 ```java
     public List<MoneyViolation> inspect(Class<?> type) {
@@ -4486,7 +4486,7 @@ The Error Prone-style form needs no runtime code at all: the banned floating-poi
     }
 ```
 
-The architectural form is a custom ArchUnit predicate and condition — the filter and the constraint — combined into a rule that runs as an ordinary test:
+The architectural form is a custom ArchUnit predicate and condition (the filter and the constraint), combined into a rule that runs as an ordinary test:
 
 ```java
     public static final DescribedPredicate<JavaClass> IN_DOMAIN =
@@ -5056,9 +5056,9 @@ JUnit is the de-facto JVM unit-testing framework, and its quality relevance is t
 
 > **EDITION** *JUnit 6 is the current major line* (6.0 GA 2025-09-30; 6.1.0 GA 2026-05), raising the floor to Java 17 and unifying Platform, Jupiter, and Vintage under one version, with Vintage (the JUnit 3/4 compatibility engine) now deprecated. **JUnit 5 ("Jupiter")** is the prior, still-ubiquitous line. The Jupiter programming model is largely shared across 5 and 6, so the guidance here holds for both; the few 6-only changes (the Java-17 floor, some relocated APIs) are migration costs a Java-8/11 codebase should weigh before upgrading. Treat JUnit 6 as current, note 5 where teams remain on it — the same edition discipline the book applies to any versioned authority.
 
-- **JUnit Platform** — the foundation that launches test engines on the JVM and defines the `TestEngine` API that build tools and IDEs target. This is *why* one runner can execute Jupiter tests and jqwik property tests side by side: these are different engines on one platform.
-- **JUnit Jupiter** — the programming and extension model for writing tests, plus its own `TestEngine`.
-- **JUnit Vintage** — a `TestEngine` that runs legacy JUnit 3/4 tests on the Platform (deprecated in 6; migration-only).
+- **JUnit Platform** is the foundation that launches test engines on the JVM and defines the `TestEngine` API that build tools and IDEs target. This is *why* one runner can execute Jupiter tests and jqwik property tests side by side: these are different engines on one platform.
+- **JUnit Jupiter** is the programming and extension model for writing tests, plus its own `TestEngine`.
+- **JUnit Vintage** is a `TestEngine` that runs legacy JUnit 3/4 tests on the Platform (deprecated in 6; migration-only).
 
 The Jupiter model itself is a small, quality-relevant surface: lifecycle annotations (`@Test`, `@BeforeEach`/`@AfterEach`, `@BeforeAll`/`@AfterAll`), `@DisplayName` for readable failure output, `@Nested` to group related cases, `@Tag` for selective CI runs, and `@Disabled` (with a reason). Built-in assertions (`assertEquals`, `assertThrows`, `assertAll` to report several failures at once) cover the basics. **Parameterized tests** (`@ParameterizedTest` with `@ValueSource`/`@CsvSource`/`@MethodSource`/`@EnumSource`) kill the duplicated near-identical tests that tempt people to put loops in test methods. The **extension model** (`@ExtendWith` plus the `Extension` API) is the single hook that Mockito, Testcontainers, and Spring all plug into, having replaced JUnit 4's split between runners and rules.
 
@@ -5099,7 +5099,7 @@ The axes that actually differentiate them (the right thing to compare, each agai
         assertThat(TOTAL.minorUnits(), is(equalTo(5_000L)));
 ```
 
-The honest limit cuts across all four: **a library does not fix a weak assertion.** `assertThat(list).isNotNull()` is exactly as empty as `assertNotNull(list)` — readability tooling cannot supply an expectation the author did not write. And the opposite failure is real too: AssertJ's breadth can tempt over-specific assertions that break on benign change, which is itself a test smell (Chapter 20). The discipline is to assert the *behaviour that matters*, specifically, and nothing more.
+The honest limit cuts across all four: **a library does not fix a weak assertion.** `assertThat(list).isNotNull()` is exactly as empty as `assertNotNull(list)`. Readability tooling cannot supply an expectation the author did not write. And the opposite failure is real too: AssertJ's breadth can tempt over-specific assertions that break on benign change, which is itself a test smell (Chapter 20). The discipline is to assert the *behaviour that matters*, specifically, and nothing more.
 
 ### Test doubles: isolating the unit, and the discipline of doing it
 
@@ -5111,7 +5111,7 @@ A **test double** is a stand-in for a real collaborator, so a unit can be exerci
 - **Spy** — "stubs that also record some information based on how they were called."
 - **Mock** — "objects pre-programmed with expectations which form a specification of the calls they are expected to receive."
 
-> **CONCEPT** *State verification versus behaviour verification.* A **stub** answers questions — the test checks the *state* of the system after the method runs (state verification). A **mock** asserts an *interaction* — that the unit made the right calls on its collaborator (behaviour verification). "Mock objects always use behaviour verification, while a stub can go either way." This is the hinge of the whole topic, because behaviour verification couples a test to *how* the code collaborates, so it breaks on a refactor even when the behaviour is unchanged (the second test from the hook).
+> **CONCEPT** *State verification versus behaviour verification.* A **stub** answers questions, and the test checks the *state* of the system after the method runs (state verification). A **mock** asserts an *interaction* — that the unit made the right calls on its collaborator (behaviour verification). "Mock objects always use behaviour verification, while a stub can go either way." This is the hinge of the whole topic, because behaviour verification couples a test to *how* the code collaborates, so it breaks on a refactor even when the behaviour is unchanged (the second test from the hook).
 
 **Mockito** is the Java library that creates these at runtime. In JUnit, `@ExtendWith(MockitoExtension.class)` initializes `@Mock`, `@Spy`, `@Captor`, and `@InjectMocks` fields before each test (replacing the old `openMocks` call):
 
@@ -5149,7 +5149,7 @@ A query collaborator answers a question, so it reads cleanest as a stub and the 
         assertThat(receipt.total().minorUnits()).isEqualTo(7_500L);
 ```
 
-A command collaborator's side effect is the point, so the interaction with it is verified — behaviour verification, with the coupling cost the next paragraph names:
+A command collaborator's side effect is the point, so the interaction with it is verified. This is behaviour verification, with the coupling cost the next paragraph names:
 
 ```java
         // PaymentGateway's side effect is the point, so verify the interaction happened.
@@ -5174,7 +5174,7 @@ Put the three together and the asset-versus-liability gap from the hook resolves
 
 ## Limitations & when NOT to reach for it
 
-- **JUnit runs tests; it does not make them good.** A green suite can be assertion-light, slow, flaky, or testing a mock — necessary, not sufficient. And JUnit 6 raises the floor to Java 17 and relocates some APIs; a Java-8/11 codebase has a real migration cost (Vintage is deprecated, so 3/4 tails need genuine migration). When NOT to upgrade yet: an older-JDK codebase with a large JUnit 4 tail.
+- **JUnit runs tests; it does not make them good.** A green suite can be assertion-light, slow, flaky, or testing a mock: necessary, not sufficient. And JUnit 6 raises the floor to Java 17 and relocates some APIs; a Java-8/11 codebase has a real migration cost (Vintage is deprecated, so 3/4 tails need genuine migration). When NOT to upgrade yet: an older-JDK codebase with a large JUnit 4 tail.
 - **Over-granular structure hurts readability.** Deep `@Nested` trees and heavy parameterization are tools, not goals; structure that obscures the test is a net negative.
 - **A library does not fix a weak assertion.** `isNotNull()` asserts nothing about behaviour; the most-read line on failure is only as good as the expectation written into it. Mixing assertion libraries in one codebase hurts consistency; pick one primary.
 - **Behaviour verification couples tests to implementation.** A `verify`-heavy test breaks on a refactor that changes call structure without changing behaviour; strict stubbing catches dead stubs but cannot fix an over-specified interaction test. The over-mock smell, pinned and passing, is the liability — an `InOrder` check that fixes the internal call sequence rather than the outcome:
@@ -5196,7 +5196,7 @@ Put the three together and the asset-versus-liability gap from the hook resolves
 - **Real collaborators / integration tests** (next chapter, Testcontainers): when the interaction *is* the behaviour under test, use the real dependency instead of a double.
 - **Fakes over mocks**: a hand-written or vendor in-memory fake (a `Map`-backed repository) often reads cleaner than a pile of stubs for a collaborator called many ways.
 - **Parameterized and property-based testing** (later): replace duplicated example tests and assert invariants over generated inputs.
-- **Contract testing** (Pact): verify that the assumption about a service boundary matches the provider's reality — the antidote to "mocked the wrong contract."
+- **Contract testing** (Pact): verify that the assumption about a service boundary matches the provider's reality. This is the antidote to "mocked the wrong contract."
 - **The built-in assertions alone**: for simple value checks, JUnit's `assertEquals`/`assertThrows` need no extra dependency; add a fluent library where it pays.
 
 These layer rather than compete: built-ins for the simple case, a fluent library where readability pays, doubles for isolation at owned boundaries, and real collaborators where realism is the point.
@@ -5209,7 +5209,7 @@ These layer rather than compete: built-ins for the simple case, a fluent library
 - **A command collaborator whose side effect matters:** a **mock** with `verify`.
 - **A value object / `record`:** the real instance — never a mock.
 - **A third-party type:** a thin **owned adapter**, mocked, or a vendor **fake**.
-- **When realism is the point** (persistence, SQL, wiring): a real collaborator in an integration test — not a mock.
+- **When realism is the point** (persistence, SQL, wiring): a real collaborator in an integration test, not a mock.
 
 ## Hand-off to the next chapter
 
@@ -5280,7 +5280,7 @@ A unit test isolates one class; an **integration test** checks that units work t
 
 This is the middle of the pyramid made trustworthy. Integration tests sit between the many fast unit tests and the few slow end-to-end ones, and Testcontainers is what lets that middle layer test against reality without a shared, mutable staging environment that every team fights over. (Framework "test slices" such as Spring's `@DataJpaTest` and Quarkus's `@QuarkusTest` boot only a subset of the app for faster integration tests; these are useful framework features, cited here neutrally, not endorsements.) The fixture discipline matters as much as the container: build test data through the real API or factories rather than hand-rolled SQL, and keep fixtures minimal and intention-revealing, or the integration test grows its own smells (Chapter 20).
 
-The companion module shows the shape of an integration test against a real collaborator. To stay buildable without a Docker runtime, the real dependency here is a real HTTP catalog service booted in the same JVM on an ephemeral port, and the test drives it through a real client over the wire — so the test exercises the encoding, the status mapping, and the parse a mocked client would skip (a real container is the higher-fidelity option the costs below weigh):
+The companion module shows the shape of an integration test against a real collaborator. To stay buildable without a Docker runtime, the real dependency here is a real HTTP catalog service booted in the same JVM on an ephemeral port, and the test drives it through a real client over the wire. So the test exercises the encoding, the status mapping, and the parse a mocked client would skip. A real container is the higher-fidelity option, weighed against the costs below:
 
 ```java
         try (CatalogApi server = new CatalogApi(0)
@@ -5331,7 +5331,7 @@ The companion module carries a value object with exactly such a round-trip surfa
     }
 ```
 
-The round-trip property then asserts that pair across generated inputs rather than a few chosen literals. The module builds without a dedicated property library on its classpath, so it realizes the technique with a seeded JDK generator feeding one body and a small shrinker for the minimal counterexample; jqwik is the prose's named Java realization, weighed in the cost discussion below:
+The round-trip property then asserts that pair across generated inputs rather than a few chosen literals. The module carries no dedicated property library on its classpath, so it realizes the technique with a seeded JDK generator feeding one body and a small shrinker for the minimal counterexample. jqwik is the prose's named Java realization, weighed in the cost discussion below:
 
 ```java
     @ParameterizedTest(name = "round-trips {0}")
@@ -5468,7 +5468,7 @@ The gate is the `check` goal (Maven) or `jacocoTestCoverageVerification` (Gradle
 
 > **CONCEPT** *Coverage is a gap-finder, not a score.* Use a coverage number to find code the tests never touch; that use is sound and defensible. Do not use it as a quality verdict or chase it as a target. Fowler again: *"if you make a certain level of coverage a target, people will try to attain it,"* and the cheapest way to hit a target is assertion-free tests; he'd *"expect a coverage percentage in the upper 80s or 90s"* from good testing but be *"suspicious of anything like 100% — it would smell of someone writing tests to make the coverage numbers happy."* The number is a smell-detector for gaps, not a goal.
 
-JaCoCo's own sharp edges compound the trap. Line coverage *needs debug info* (`LineNumberTable`); strip it and only INSTRUCTION/BRANCH survive. The agent is injected via the `argLine` property, and a project that sets `<argLine>` directly in Surefire **overwrites** JaCoCo's value and silently reports 0% coverage, a classic CI failure. Generated code (record accessors, lambdas, Lombok output) inflates the raw number, so exclusions become their own tuning lever. JaCoCo tracks JDK releases per version (Java 21 support landed in 0.8.11, Java 25 in 0.8.14), so the version must match the JDK the build runs on. None of that makes coverage useless. It makes coverage a *floor-finding instrument* that must be read precisely and never mistaken for a verdict.
+JaCoCo's own sharp edges compound the trap. Line coverage *needs debug info* (`LineNumberTable`); strip it and only INSTRUCTION/BRANCH survive. The agent is injected via the `argLine` property, and a project that sets `<argLine>` directly in Surefire **overwrites** JaCoCo's value and silently reports 0% coverage, a classic CI failure. Generated code (record accessors, lambdas, Lombok output) inflates the raw number, so exclusions become their own tuning lever. JaCoCo tracks JDK releases per version — each JDK is supported only from a particular JaCoCo release onward (by the project's changelog, Java 21 from 0.8.11 and Java 25 from 0.8.14; confirm the exact mapping against the release notes for your JDK) — so the version must match the JDK the build runs on. None of that makes coverage useless. It makes coverage a *floor-finding instrument* that must be read precisely and never mistaken for a verdict.
 
 ### Mutation testing: would the tests catch a bug?
 
