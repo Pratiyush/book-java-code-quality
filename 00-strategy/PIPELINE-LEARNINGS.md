@@ -2405,3 +2405,32 @@ SpotBugs. Six tag-includes resolve (4 config, 2 Java), all 6 markers PASS in `ch
   accountable-human + no-auto-merge) gave a 9-line region that IS the thesis, while the earlier
   preconditions (sanctioned tool, AI-checks) stay in the compiled file. Reusable move: tag the
   chapter's *named principle*, not the whole method.
+
+## 2026-06-27 — VERIFY / deferred-marker resolution, key 22 (Cheap Threads, Same Rules — virtual threads & SC)
+
+- **A green companion module is a first-class verification authority for a deferred-marker pass.** With the
+  pinned authority set un-fetchable offline (no `tmp` clone; `{URL}`/`multi-authority` are placeholders, so
+  `verify_sources.sh` cannot run and JEP/JLS/tool pages are unreachable), the BUILT module
+  (`08-companion-code/22_virtual_threads_structured_concurrency/`, GREEN on JDK 21.0.11) was enough to
+  *confirm and unmark* the stable atoms: virtual threads GA @21, the `newVirtualThreadPerTaskExecutor`
+  idiom, the `synchronized`+blocking pinning trap and its `ReentrantLock` fix, and the
+  `IS2_INCONSISTENT_SYNC`/`MT_CORRECTNESS` rule identity (the one reviewed SpotBugs suppression). Build
+  evidence (`target/surefire-reports`, `target/spotbugsXml.xml total_bugs=0`) is checkable without network.
+- **A stale build-claim is the highest-value find in a marker pass.** The v1 front-matter said
+  "EXAMPLE-BUILD pending JDK" on line 8 while line 5 already said GREEN — an internal contradiction the
+  built artifact resolves. Generalizable check: grep the draft header for build-status phrases and diff
+  against `target/` evidence every verify pass.
+- **AHEAD-OF-PIN markers must be actively KEPT, not just "not removed".** Structured concurrency /
+  `StructuredTaskScope` (preview 21→25), scoped values (GA @25), and JEP 491 (no-pinning @24) stay marked;
+  the module enforces the discipline by using the stable VT+`ExecutorService` form and naming
+  `StructuredTaskScope` only in an uncompiled comment (`--enable-preview` nowhere). The right move is to
+  record the *deliberate keep* (with the build proof) in the flag, so a later pass doesn't "helpfully" clear it.
+- **Quoted-span verbatim is un-clearable offline and deserves its own flag.** ~12 attributed JEP/JLS/Sonar/
+  Checker-Framework quotes can't be re-confirmed character-for-character without the pin; a "verified by curl
+  at draft time" header note is the drafter's record, not a VERIFY re-confirmation. New flag
+  `09-flags/22_quoted_spans_verbatim_and_length.md`. Same flag also caught an **offline-determinable**
+  LEGAL-IP §2 finding the snippet linter misses: prose quotes >15 words and JEP 444 quoted ~5× (one-per-source
+  rule). Suggestion: extend `lint_citations.sh` with a prose-quote pass (flag `"…"` spans >15 words and >1
+  quote per named source) — today only the ≤9-line *code* snippet ceiling is scripted.
+- **`check_source_pin.sh` needs `CLAUDE_JOB_DIR` set or it dies with `unbound variable` (set -u).** Ran it as
+  `CLAUDE_JOB_DIR="$PWD" bash …`. Minor hardening: default `CLAUDE_JOB_DIR` to the repo root in the script.

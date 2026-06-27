@@ -34,3 +34,16 @@
 Re-trace as one unit when the SpotBugs / Error Prone / Sonar rows in SOURCE-PIN §2 are pinned (`/pin-source`).
 Detailed treatment lives in key 25 (static detection of concurrency issues) — do not duplicate the full
 catalogue between 22 and 25.
+
+## Deferred-marker resolution pass — key-22 draft (2026-06-27)
+Source-verify on `03-drafts/22_virtual_threads_structured_concurrency/22_virtual_threads_structured_concurrency_v1.md`
+could **not** clear these atoms: in this environment there is no fetchable pin clone (`verify_sources.sh`
+blocked) and the tool docs / `rules.sonarsource.com` / RSPEC repo are unreachable, so Sonar S6906/S6881
+titles, per-rule severities/enablement, and SpotBugs ranks stay `⚠ verify at pin`. What *was* confirmed
+against the BUILT module (`08-companion-code/22_virtual_threads_structured_concurrency/`, GREEN on JDK
+21.0.11): SpotBugs **does** report the deliberate counter-example as `IS2_INCONSISTENT_SYNC` under the
+`MT_CORRECTNESS` category (it is the one reviewed entry in `config/spotbugs/spotbugs-exclude.xml`; with
+the suppression removed the `-Pquality` build would fail), and the module surfaces it by lowering the
+SpotBugs threshold to `Low` — corroborating the draft's "low-confidence finding" framing. Rule-ID
+*identity* is thus build-corroborated; only versions/severities/titles remain deferred. Flag stays
+**OPEN** — resolve at `/pin-source`.

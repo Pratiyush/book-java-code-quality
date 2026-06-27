@@ -31,3 +31,15 @@
 ## Resolution
 Re-evaluate when structured concurrency reaches GA past the pin (logged re-pin of the runtime baseline per
 SOURCE-PIN moving-target policy). Until then: SC = preview, scoped-values GA only at 25, pinning advice dated.
+
+## Deferred-marker resolution pass — key-22 draft (2026-06-27)
+Re-verified `03-drafts/22_virtual_threads_structured_concurrency/22_virtual_threads_structured_concurrency_v1.md`
+against SOURCE-PIN.md (corrected 2026-06-27) and the BUILT module. The three AHEAD-OF-PIN atoms above
+were **deliberately KEPT marked** — not cleared: structured concurrency / `StructuredTaskScope` (preview
+21→25), scoped values (GA @25), JEP 491 (no `synchronized` pinning @24). The companion module
+(`08-companion-code/22_virtual_threads_structured_concurrency/`) confirms the discipline at build time:
+it uses the **stable** virtual-thread + `ExecutorService` form (`StructuredConceptDemo` shows the
+bounded-lifetime concept via `newVirtualThreadPerTaskExecutor()`, with `StructuredTaskScope` named only
+in a comment and **never compiled**; `--enable-preview` is used nowhere; build GREEN on JDK 21.0.11). The
+*stable* facts in the same chapter — virtual threads GA @21, the pinning trap + `ReentrantLock` fix dated
+to 21 — were verified against the built module and stated without a marker. Flag stays **OPEN**.

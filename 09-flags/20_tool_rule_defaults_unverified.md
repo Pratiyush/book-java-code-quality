@@ -24,3 +24,16 @@
 ## Resolution
 Re-trace all rows after `/pin-source`. Until then every default/severity carries `⚠ verify at pin`;
 rule **identity** (IDs/categories) is safe to cite now (per key 09 rule-ID-vs-severity discipline).
+
+## Deferred-marker resolution pass (2026-06-27)
+
+During the Chapter 13 draft re-verification, the racy-counter detector behaviour was confirmed
+**against the built module**, not just the live page: at this module's threshold SpotBugs raises BOTH
+`VO_VOLATILE_INCREMENT` and `AT_NONATOMIC_OPERATIONS_ON_SHARED_VARIABLE` on `RacyCounter.increment()`
+(the exclude filter documents that suppressing either alone leaves the other to fail the build), and a
+green `-Pquality verify` shows 0 residual findings with the reviewed suppression in place. This
+confirms rule **identity + the fired-finding behaviour** for the two MT codes the draft displays. Still
+deferred to `/pin-source` (no local pinned engine clone): SpotBugs MT **rank/priority + enabled-by-
+default**, Error Prone `GuardedBy` **default severity**, and Sonar `java:S2168/S3077/...` **titles +
+default severity** at the pinned analyzer versions (SOURCE-PIN pins SpotBugs 4.10.2 / Sonar 2026.1 LTA;
+the module is built green on SpotBugs engine 4.9.3 per flag `05_toolchain_plugin_versions.md`).
