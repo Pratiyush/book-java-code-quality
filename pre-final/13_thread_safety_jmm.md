@@ -65,7 +65,7 @@ Every safe-sharing technique in the rest of the chapter is one of these edges in
 The language gives three constructs, and the quality skill is knowing exactly what each one buys.
 
 - **`synchronized`** establishes the monitor edge: it provides *both* mutual exclusion (one thread at a time) *and* visibility (everything the previous holder did is visible to the next). It is the heavyweight, complete tool.
-- **`volatile`** establishes the volatile edge: *visibility and ordering without mutual exclusion*. This is the one most often misunderstood. `volatile` does **not** make compound actions *atomic* — happen all-at-once, with no other thread able to observe a half-done state. `count++` on a `volatile` field is a read-modify-write and can still lose updates; SpotBugs flags it as `VO_VOLATILE_INCREMENT`. Use `volatile` for a flag or a published reference, never for a counter.
+- **`volatile`** establishes the volatile edge: *visibility and ordering without mutual exclusion*. This is the one most often misunderstood. `volatile` does **not** make compound actions *atomic*, that is, happen all-at-once with no other thread able to observe a half-done state. `count++` on a `volatile` field is a read-modify-write and can still lose updates; SpotBugs flags it as `VO_VOLATILE_INCREMENT`. Use `volatile` for a flag or a published reference, never for a counter.
 - **`final`** establishes a *special publication guarantee* (the safe-publication section below), the backbone of immutable-object thread-safety.
 
 > **CONCEPT** *Visibility is not atomicity.* `volatile` guarantees that a read sees the latest write (visibility); it does *not* guarantee that read-modify-write happens as one indivisible step (atomicity). The most common concurrency bug after "no edge at all" is reaching for `volatile` where an atomic or a lock was needed.
@@ -144,7 +144,7 @@ If a data race passes every ordinary test, how is it ever caught? Two ways: befo
 
 But static analysis is necessarily incomplete: race detection is undecidable in general, so the tools catch patterns, not all races, and `@GuardedBy` only helps the fields that carry the annotation. A clean static scan is never *proof* of thread-safety.
 
-**As it runs — JCStress.** The OpenJDK Java Concurrency Stress harness is the runtime instrument: it runs threads concurrently over shared state, collects *every* observed outcome across many iterations and hardware reorderings, and labels each ACCEPTABLE / FORBIDDEN / INTERESTING. It can make the hook's race reproducible, surfacing a FORBIDDEN interleaving the unit tests never triggered, and then show it disappear once the missing edge is added. It is, by its own label, *experimental*, probabilistic, and slow; it proves the *presence* of a bug far more reliably than its absence. Reserve it for genuinely subtle lock-free or publication code. The companion module pins no JCStress coordinate, so it stands in with a plain concurrent hammer that the racy and atomic counters run through — the same shape, classified by an assertion rather than the harness:
+**As it runs — JCStress.** The OpenJDK Java Concurrency Stress harness is the runtime instrument: it runs threads concurrently over shared state, collects *every* observed outcome across many iterations and hardware reorderings, and labels each ACCEPTABLE / FORBIDDEN / INTERESTING. It can make the hook's race reproducible, surfacing a FORBIDDEN interleaving the unit tests never triggered, and then show it disappear once the missing edge is added. It is, by its own label, *experimental*, probabilistic, and slow; it proves the *presence* of a bug far more reliably than its absence. Reserve it for genuinely subtle lock-free or publication code. The companion module pins no JCStress coordinate, so it stands in with a plain concurrent hammer that the racy and atomic counters run through. The shape is the same, classified by an assertion rather than the harness:
 
 ```java
         for (int t = 0; t < THREADS; t++) {
@@ -177,7 +177,7 @@ Thread-safety is the one quality dimension developers reason about rather than t
         return Holder.INSTANCE; // class-init locking publishes INSTANCE once, lazily and safely
     }
 ```
-- **`ConcurrentHashMap` atomicity is per-operation, not per-transaction.** A `get`-then-`put` still races; use `computeIfAbsent`/`merge`. It also rejects `null` keys and values, unlike `HashMap`.
+- **`ConcurrentHashMap` atomicity is per-operation, not per-transaction.** A `get`-then-`put` still races; use `computeIfAbsent`/`merge`. It also rejects `null` keys and values, where `HashMap` permits them.
 - **`CopyOnWriteArrayList` copies on every write.** Suitable for read-mostly listener lists only, never a write-heavy path. **`StampedLock` is not reentrant,** which is a deadlock trap when reentrancy is expected.
 - **Executors leak threads if not shut down.** A non-daemon pool keeps the JVM alive; `shutdown()` + `awaitTermination()` (with a `shutdownNow()` fallback) is mandatory. An ignored `Future` hides task exceptions (Error Prone `FutureReturnValueIgnored`).
 - **Immutability has a copy cost.** Every "change" allocates; for large, frequently-updated structures that is GC pressure (the performance chapter). Genuinely stateful entities (a balance that must mutate under a lock) are an honest case for controlled mutability.
