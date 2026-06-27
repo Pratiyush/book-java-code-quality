@@ -36,18 +36,18 @@ public final class DiscountRulesNested implements DiscountRule {
         }
         long bp;
         if (cart.subtotal().minorUnits() >= floor) {
-            // tag::smell-nested[]
-            if (cart.tier() == LoyaltyTier.GOLD) {        // ... one method, nesting deeper ...
+            if (cart.tier() == LoyaltyTier.GOLD) {        // one method, nesting deeper
                 bp = 1000;
+                // tag::smell-nested[]
                 if (cart.seasonSale()) {
                     bp += SEASON_SALE_BASIS_POINTS;
                     if (cart.hasCoupon()) {               // four levels deep: the cognitive cost
                         bp += COUPON_BASIS_POINTS;
                     }
-                    // end::smell-nested[]
                 } else if (cart.hasCoupon()) {
                     bp += COUPON_BASIS_POINTS;
                 }
+                // end::smell-nested[]
             } else if (cart.tier() == LoyaltyTier.SILVER) {
                 bp = 500;
                 if (cart.seasonSale()) {
@@ -70,7 +70,6 @@ public final class DiscountRulesNested implements DiscountRule {
         } else {
             bp = 0;
         }
-        // end::smell-nested[]
         long raw = cart.subtotal().minorUnits() * bp / BASIS_POINTS_DENOMINATOR;
         long capped = Math.min(raw, cap.minorUnits());
         return new Money(capped, cart.subtotal().currency());
