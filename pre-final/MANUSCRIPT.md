@@ -451,7 +451,7 @@ The word "quality" cannot answer those questions. It is too vague to argue with.
 
 ## How it works
 
-Three pictures carry this chapter. Figure 1.1 shows the standards lens: the ISO/IEC 25010 product quality model, nine top-level characteristics, with the one this book lives in marked off. Figure 1.2 shows the economics lens: how the cost of a new feature diverges over time between a high-internal-quality codebase and a low one. Figure 1.3 shows Fowler's technical-debt quadrant, the four kinds of debt that hide behind one word. Each arrives in the section that explains it.
+The argument runs through two lenses and one cost picture. The first section sets the standards lens (ISO/IEC 25010), the next sets the economics lens (internal versus external quality), and the rest prices the gap between them. Each section carries the one figure that earns it, introduced where it lands.
 
 ### Quality is not one thing: it is a decomposable set of attributes
 
@@ -626,11 +626,11 @@ The vocabulary is now in place: quality decomposes into ISO characteristics; the
 
 **Key concepts**
 
-- *Product quality / quality in use* — properties of the software vs outcomes of using it (ISO/IEC 25010 / 25019).
-- *Internal vs external quality* — what only developers can see vs what users can see (Fowler).
-- *Cruft* — the gap between the code as it is and as it ideally would be (Fowler).
-- *Technical debt* — deferred internal-quality work that accrues interest (Cunningham); classified by Fowler's deliberate/inadvertent × prudent/reckless quadrant.
-- *Technical Debt Ratio* — remediation effort ÷ development effort × 100 (SQALE / SonarQube).
+- *Product quality / quality in use*: properties of the software vs outcomes of using it (ISO/IEC 25010 / 25019).
+- *Internal vs external quality*: what only developers can see vs what users can see (Fowler).
+- *Cruft*: the gap between the code as it is and as it ideally would be (Fowler).
+- *Technical debt*: deferred internal-quality work that accrues interest (Cunningham); classified by Fowler's deliberate/inadvertent × prudent/reckless quadrant.
+- *Technical Debt Ratio*: remediation effort ÷ development effort × 100 (SQALE / SonarQube).
 
 **Reference (exact, traced to the pin)**
 
@@ -639,17 +639,17 @@ The vocabulary is now in place: quality decomposes into ISO characteristics; the
 
 **Sources and further reading**
 
-*Tier 1 — Primary / official*
-- ISO/IEC 25010:2023 — *Systems and software Quality Requirements and Evaluation (SQuaRE) — Product quality model* (iso.org/standard/78176). Edition + characteristics; companions ISO/IEC 25019, 25002.
-- Martin Fowler, *Is High Quality Software Worth the Cost?* — martinfowler.com/articles/is-quality-worth-cost.html (external/internal quality; cruft; negative cost).
+*Tier 1: Primary / official*
+- ISO/IEC 25010:2023, *Systems and software Quality Requirements and Evaluation (SQuaRE) — Product quality model* (iso.org/standard/78176). Edition + characteristics; companions ISO/IEC 25019, 25002.
+- Martin Fowler, *Is High Quality Software Worth the Cost?* (martinfowler.com/articles/is-quality-worth-cost.html). External/internal quality; cruft; negative cost.
 - Ward Cunningham, the technical-debt metaphor (OOPSLA 1992 experience report; c2 wiki, *WardExplainsDebtMetaphor*).
-- Martin Fowler, *bliki: TechnicalDebt* — the debt quadrant (martinfowler.com/bliki/TechnicalDebt.html).
-- SonarQube — measures & metrics (SQALE, technical debt ratio), docs.sonarsource.com.
+- Martin Fowler, *bliki: TechnicalDebt*, the debt quadrant (martinfowler.com/bliki/TechnicalDebt.html).
+- SonarQube, measures & metrics (SQALE, technical debt ratio), docs.sonarsource.com.
 
-*Tier 2 — Accessible / further reading*
-- Robert C. Martin, *Clean Code* (2008) — the read-versus-write ratio.
+*Tier 2: Accessible / further reading*
+- Robert C. Martin, *Clean Code* (2008), the read-versus-write ratio.
 - CISQ, *The Cost of Poor Software Quality in the U.S.: A 2022 Report* (it-cisq.org).
-- DORA, *State of DevOps* reports / *Accelerate* (Forsgren, Humble, Kim, 2018) — speed and stability are not a trade-off (dora.dev).
+- DORA, *State of DevOps* reports / *Accelerate* (Forsgren, Humble, Kim, 2018): speed and stability are not a trade-off (dora.dev).
 
 ## Next chapter teaser
 
@@ -750,6 +750,8 @@ Complexity is one family. The broader landscape, folded in from the measurement 
 
 The hook's dashboard failed on the last row: 91% coverage measured *lines executed*, not *faults detected*. Mutation testing (Chapter 23) is the stronger signal, because it checks whether the tests would actually notice a bug.
 
+Picking the right family from that table is only half the job. Even a well-chosen signal decays once a team starts steering by it, so the next section turns from *which* number to track to the discipline that keeps any number honest.
+
 ### The discipline that keeps a metric honest
 
 The reason "the number lies" is captured by **Goodhart's Law**, in Marilyn Strathern's pithy form: *"When a measure becomes a target, it ceases to be a good measure."* Set coverage as a target and the result is assertion-free tests that touch lines. Set lines-of-code as a target and the result is bloated code. Set deploy frequency as a target and the result is artificially split deploys. The metric stops measuring the thing the moment the team optimizes the metric.
@@ -818,7 +820,7 @@ The balanced form flattens the nesting into guard clauses and keeps the logic in
 
 A vocal critique layer also exists. The essay "It's probably time to stop recommending Clean Code" argues the book is dogmatic and that some of its own example code is poor. Cite these as named positions, not as the field's verdict.
 
-Treat the disagreements as **context-dependent trade-offs**, not winners. Tiny functions aid navigation but can fragment a readable algorithm; comments rot but capture *why*; `var` cuts noise but can hide a type. A team picks a position deliberately and applies it consistently (Chapters 6 and 37).
+Treat the disagreements as **context-dependent trade-offs**, not winners. Tiny functions aid navigation but can fragment a readable algorithm; comments rot but capture *why*; `var` cuts noise but can hide a type. The contexts pull in opposite directions. School A's small, do-one-thing functions suit code with many short, independently-named responsibilities a reader scans and dips into, where each name is a signpost and the call graph is shallow. School B's deep modules suit a substantial algorithm whose steps only make sense together, where pulling each step into its own method turns one followable body into a scavenger hunt across fragments. Comments split the same way: a self-evident getter earns School A's silence, while a non-obvious *why* (a workaround for a known platform bug, a deliberate ordering constraint) is exactly the design intent School B argues the code cannot carry on its own. A team picks a position deliberately and applies it consistently (Chapters 6 and 37).
 
 ## Limitations
 
@@ -858,11 +860,11 @@ A metric on a dashboard is downstream of a hundred small decisions a developer m
 
 **Key concepts**
 
-- *Cyclomatic complexity* — count of independent execution paths (McCabe); a testability signal.
-- *Cognitive complexity* — understandability metric that penalizes nesting (Campbell/SonarSource; `java:S3776`).
-- *Vanity metric* — a number that looks meaningful but does not change a decision (e.g. LOC, raw coverage %).
-- *Goodhart's Law* — "when a measure becomes a target, it ceases to be a good measure" (Strathern).
-- *Counter-metric* — a paired metric that exposes gaming of the first.
+- *Cyclomatic complexity*: count of independent execution paths (McCabe); a testability signal.
+- *Cognitive complexity*: understandability metric that penalizes nesting (Campbell/SonarSource; `java:S3776`).
+- *Vanity metric*: a number that looks meaningful but does not change a decision (e.g. LOC, raw coverage %).
+- *Goodhart's Law*: "when a measure becomes a target, it ceases to be a good measure" (Strathern).
+- *Counter-metric*: a paired metric that exposes gaming of the first.
 
 **Reference (exact, traced to the pin)**
 
@@ -872,8 +874,8 @@ A metric on a dashboard is downstream of a hundred small decisions a developer m
 **Sources and further reading**
 
 *Tier 1 — Primary / official*
-- Robert C. Martin, *Clean Code* (2008) — read:write ratio; small-functions / comments school.
-- John Ousterhout, *A Philosophy of Software Design* — deep modules; pro-comments counter-school.
+- Robert C. Martin, *Clean Code* (2008): read:write ratio; small-functions / comments school.
+- John Ousterhout, *A Philosophy of Software Design*: deep modules; pro-comments counter-school.
 - G. Ann Campbell / SonarSource, *Cognitive Complexity — a new way of measuring understandability* (sonarsource.com).
 - Thomas McCabe, *A Complexity Measure* (IEEE TSE, 1976) — cyclomatic complexity.
 - Chidamber & Kemerer, *A Metrics Suite for Object Oriented Design* (IEEE TSE, 1994) — the CK suite.
@@ -942,22 +944,22 @@ A tool that catches a bug at compile time (Error Prone) gives faster, cheaper fe
 
 ### The routing table
 
-This is the chapter's spine: for any concern, which kind of tool, when it runs, and where the book goes deep.
+This is the chapter's spine: for any concern, which kind of tool, when it runs, and where the book goes deep. The **Moment** column uses the same seven lifecycle moments named above — author-time, compile-time, local build, pre-commit, PR / CI, platform / dashboard, runtime / production feedback — so this table and §"Two axes" speak one vocabulary.
 
 | Concern | Representative Java tools | Analyzes | Moment | Deep chapter |
 |---|---|---|---|---|
-| Formatting | Spotless, google-java-format, EditorConfig | source text | author / pre-commit / CI | 6 |
-| Style & conventions | Checkstyle, PMD | source (AST) | build / CI | 16 |
-| Bug patterns (source / compile) | PMD, Error Prone | source / inside `javac` | build / **compile-time** | 16 |
-| Bug patterns (bytecode) | SpotBugs (+ FindSecBugs) | compiled bytecode | after compile / CI | 16 |
+| Formatting | Spotless, google-java-format, EditorConfig | source text | author-time / pre-commit / PR / CI | 6 |
+| Style & conventions | Checkstyle, PMD | source (AST) | local build / PR / CI | 16 |
+| Bug patterns (source / compile) | PMD, Error Prone | source / inside `javac` | local build / **compile-time** | 16 |
+| Bug patterns (bytecode) | SpotBugs (+ FindSecBugs) | compiled bytecode | local build / PR / CI | 16 |
 | Null-safety & types | NullAway, JSpecify, Checker Framework | source + annotations | compile-time | 9 |
-| Architecture / boundaries | ArchUnit, JPMS | tests / bytecode graph | test / CI | 25, 26 |
-| Test adequacy | JaCoCo (coverage), PITest (mutation) | test runtime | test / CI gate | 23 |
-| Security — SAST | FindSecBugs, Semgrep, CodeQL | source / bytecode / dataflow | CI | 30, 31 |
-| Security — SCA / deps | OWASP Dependency-Check, Grype, Renovate | dependency tree | build / CI / scheduled | 27, 28 |
-| Platform / trend / dashboard | SonarQube / SonarLint | aggregates many | IDE + CI + server | 17, 38 |
-| Refactoring / modernization | OpenRewrite, Refaster | source (recipes) | on-demand / CI | 40 |
-| Delivery outcomes | CI + VCS data (DORA) | the process | continuous | 38 |
+| Architecture / boundaries | ArchUnit, JPMS | tests / bytecode graph | local build / PR / CI | 25, 26 |
+| Test adequacy | JaCoCo (coverage), PITest (mutation) | test runtime | local build / PR / CI | 23 |
+| Security — SAST | FindSecBugs, Semgrep, CodeQL | source / bytecode / dataflow | PR / CI | 30, 31 |
+| Security — SCA / deps | OWASP Dependency-Check, Grype, Renovate | dependency tree | local build / PR / CI / scheduled | 27, 28 |
+| Platform / trend / dashboard | SonarQube / SonarLint | aggregates many | author-time / PR / CI / platform / dashboard | 17, 38 |
+| Refactoring / modernization | OpenRewrite, Refaster | source (recipes) | local build / PR / CI | 40 |
+| Delivery outcomes | CI + VCS data (DORA) | the process | platform / dashboard | 38 |
 
 ### Why a layered stack runs more than one: the distinctions that matter
 
@@ -1032,7 +1034,7 @@ And coverage over the test run, last:
 
 ### The menu is not the order
 
-The critical caveat: the map is the *menu*, not the *order*, and running everything is not the goal. Running every tool maximizes noise and build time and produces overlapping findings; Checkstyle, PMD, and SonarQube will all flag some of the same things. The case for layering is the mechanism already established above, not a count: because a source linter, a bytecode analyzer, and a compile-integrated checker reason over different artefacts, a few *complementary* tools each catch what the others structurally cannot — while piling on tools that share a vantage mostly multiplies redundant findings and noise.
+The critical caveat: the map is the *menu*, not the *order*, and running everything is not the goal. Running every tool maximizes noise and build time and produces overlapping findings; Checkstyle, PMD, and SonarQube will all flag some of the same things. The case for layering is the mechanism already established above, not a count. Because a source linter, a bytecode analyzer, and a compile-integrated checker reason over different artefacts, a few *complementary* tools each catch what the others structurally cannot. Piling on tools that share a vantage mostly multiplies redundant findings and noise.
 
 **Chapter 17** covers combining and de-duplicating the analyzers into a coherent layered stack; **Chapter 46** builds one concrete reference stack end to end.
 
@@ -1321,7 +1323,7 @@ public record Point(int x, int y, String label) {
 }
 ```
 
-*Effective Java* taught a generation of developers how to write the language well. It was last revised in 2018, and Java has shipped a feature train every six months since. The canon's load-bearing principles still hold; the idioms that express them have moved. Reading each principle through the language as it stands now is the discipline, because citing a 2018 rule uncritically can produce hand-written code the compiler now generates, correctly, for free.
+*Effective Java* taught a generation of developers how to write the language well. It was last revised in 2018, and Java has shipped a feature train every six months since. The canon's load-bearing principles still hold; the idioms that express them have moved. Cite a 2018 rule uncritically and you can ship hand-written code the compiler now generates, correctly, for free. So each principle has to be read through the language as it stands now.
 
 ## Overview
 
@@ -1333,7 +1335,7 @@ public record Point(int x, int y, String label) {
 
 **What this chapter does NOT cover.** Deep dives on immutability (Chapter 8), null-safety (Chapter 9), generics (Chapter 11), or the full feature reference (the JDK docs). It is the bridge from the canon to modern Java; the specific topics follow.
 
-A principle can be timeless while the *idiom that expresses it* becomes obsolete. The skill is telling the two apart.
+A principle can be timeless while the *idiom that expresses it* becomes obsolete. Tell the two apart and the canon stays useful; conflate them and it misleads.
 
 ## How it works
 
@@ -1363,7 +1365,7 @@ These are not in dispute. What has changed is *how to satisfy them* in modern Ja
 
 ### Canon-dating: rule → feature → verdict
 
-Each principle gets a three-step treatment reused for every "canon" chapter (Fowler, Feathers, SOLID): state the rule, cite the **primary source** (a JEP or the JLS) that changed the terrain, and give a verdict: *Stands*, *Served by a feature*, or *Reinforced-and-dated*.
+Each principle gets a three-step treatment reused for every "canon" chapter (Fowler, Feathers, SOLID): state the rule, cite the **primary source** (a JEP or the JLS) that changed the terrain, and give one of three verdicts. ***Stands*** means no feature has changed how to apply the rule; write it the way the book says. ***Served by a feature*** means a later language feature now expresses the rule directly, so the common case is one declaration instead of hand-written code. ***Reinforced-and-dated*** means the advice still holds and a later feature expanded the tools for it, but the book predates that feature, so the verdict has to say which tool is new (concurrency is the example: the "prefer the concurrency utilities" advice stands, and virtual threads, which the 2018 text could not name, are now part of the toolkit).
 
 | Effective Java principle | Modern Java feature (JEP/version @ pin) | Verdict |
 |---|---|---|
@@ -1415,7 +1417,7 @@ public sealed interface Shape permits Shape.Circle, Shape.Rectangle, Shape.Squar
 
 ### The folklore to avoid: "records make immutability obsolete"
 
-A tempting over-claim has emerged: *records replace Effective Java's immutability item.* They do not. A `record` carries **transparent, immutable data**; its components *are* its API. But the Item-on-minimizing-mutability covers more: types with **invariants** (a temperature that must be ≥ absolute zero), **validation**, or a **hidden representation** still need the hand-written form, or a record with a **compact constructor** that validates. The honest framing, traced to JEP 395 and the EJ item, is *nuance, not replacement*: records serve the common case (a plain immutable data carrier) and shrink the boilerplate; they do not retire the principle. The companion module's temperature carrier shows the point: a record whose compact constructor still enforces the invariant the components alone cannot.
+A tempting over-claim has emerged: *records replace Effective Java's immutability item.* They do not. A `record` carries **transparent, immutable data**; its components *are* its API. But the Item-on-minimizing-mutability covers more: types with **invariants** (a temperature that must be ≥ absolute zero), **validation**, or a **hidden representation** still need the hand-written form, or a record with a **compact constructor** that validates. Records (JEP 395) serve the common case, a plain immutable data carrier, and shrink the boilerplate; the EJ item still governs the rest. The feature narrows the principle's surface area; it does not retire it. The companion module's temperature carrier shows the point: a record whose compact constructor still enforces the invariant the components alone cannot.
 
 ```java
     public Temperature {
@@ -1427,9 +1429,9 @@ A tempting over-claim has emerged: *records replace Effective Java's immutabilit
 
 > **WARNING** Reaching for a record reflexively for any small class is its own anti-pattern. A record exposes all components and is for *data*; a class with behaviour, encapsulated state, or validation beyond a compact constructor is not a record candidate. Use the feature where it fits the principle, not as a default.
 
-### Reading a 2018 book in 2026: the standing discipline
+### Reading a 2018 book in 2026
 
-The same discipline applies to every named-book source in this book (Fowler's *Refactoring*, Feathers' *Working Effectively with Legacy Code*, Martin's *Clean Code*): the **book is a secondary authority**. Where it conflicts with a **primary** source (the JLS, a JEP, a tool's own docs at the pin) or has been overtaken by a language version, the primary wins and the book's claim is dated and contextualized, never presented as current fact without the primary confirming it. *Effective Java* remains the best single distillation of Java idiom; the discipline is to read it forward into the language as it stands.
+The same rule applies to every named-book source in this book (Fowler's *Refactoring*, Feathers' *Working Effectively with Legacy Code*, Martin's *Clean Code*): the **book is a secondary authority**. Where it conflicts with a **primary** source (the JLS, a JEP, a tool's own docs at the pin) or has been overtaken by a language version, the primary wins and the book's claim is dated and contextualized, never presented as current fact without the primary confirming it. *Effective Java* remains the broadest single distillation of Java idiom. Read it forward into the language as it stands, and it keeps earning its place on the shelf.
 
 ## Limitations
 

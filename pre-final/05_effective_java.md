@@ -31,7 +31,7 @@ public record Point(int x, int y, String label) {
 }
 ```
 
-*Effective Java* taught a generation of developers how to write the language well. It was last revised in 2018, and Java has shipped a feature train every six months since. The canon's load-bearing principles still hold; the idioms that express them have moved. Reading each principle through the language as it stands now is the discipline, because citing a 2018 rule uncritically can produce hand-written code the compiler now generates, correctly, for free.
+*Effective Java* taught a generation of developers how to write the language well. It was last revised in 2018, and Java has shipped a feature train every six months since. The canon's load-bearing principles still hold; the idioms that express them have moved. Cite a 2018 rule uncritically and you can ship hand-written code the compiler now generates, correctly, for free. So each principle has to be read through the language as it stands now.
 
 ## Overview
 
@@ -43,7 +43,7 @@ public record Point(int x, int y, String label) {
 
 **What this chapter does NOT cover.** Deep dives on immutability (Chapter 8), null-safety (Chapter 9), generics (Chapter 11), or the full feature reference (the JDK docs). It is the bridge from the canon to modern Java; the specific topics follow.
 
-A principle can be timeless while the *idiom that expresses it* becomes obsolete. The skill is telling the two apart.
+A principle can be timeless while the *idiom that expresses it* becomes obsolete. Tell the two apart and the canon stays useful; conflate them and it misleads.
 
 ## How it works
 
@@ -73,7 +73,7 @@ These are not in dispute. What has changed is *how to satisfy them* in modern Ja
 
 ### Canon-dating: rule → feature → verdict
 
-Each principle gets a three-step treatment reused for every "canon" chapter (Fowler, Feathers, SOLID): state the rule, cite the **primary source** (a JEP or the JLS) that changed the terrain, and give a verdict: *Stands*, *Served by a feature*, or *Reinforced-and-dated*.
+Each principle gets a three-step treatment reused for every "canon" chapter (Fowler, Feathers, SOLID): state the rule, cite the **primary source** (a JEP or the JLS) that changed the terrain, and give one of three verdicts. ***Stands*** means no feature has changed how to apply the rule; write it the way the book says. ***Served by a feature*** means a later language feature now expresses the rule directly, so the common case is one declaration instead of hand-written code. ***Reinforced-and-dated*** means the advice still holds and a later feature expanded the tools for it, but the book predates that feature, so the verdict has to say which tool is new (concurrency is the example: the "prefer the concurrency utilities" advice stands, and virtual threads, which the 2018 text could not name, are now part of the toolkit).
 
 | Effective Java principle | Modern Java feature (JEP/version @ pin) | Verdict |
 |---|---|---|
@@ -125,7 +125,7 @@ public sealed interface Shape permits Shape.Circle, Shape.Rectangle, Shape.Squar
 
 ### The folklore to avoid: "records make immutability obsolete"
 
-A tempting over-claim has emerged: *records replace Effective Java's immutability item.* They do not. A `record` carries **transparent, immutable data**; its components *are* its API. But the Item-on-minimizing-mutability covers more: types with **invariants** (a temperature that must be ≥ absolute zero), **validation**, or a **hidden representation** still need the hand-written form, or a record with a **compact constructor** that validates. The honest framing, traced to JEP 395 and the EJ item, is *nuance, not replacement*: records serve the common case (a plain immutable data carrier) and shrink the boilerplate; they do not retire the principle. The companion module's temperature carrier shows the point: a record whose compact constructor still enforces the invariant the components alone cannot.
+A tempting over-claim has emerged: *records replace Effective Java's immutability item.* They do not. A `record` carries **transparent, immutable data**; its components *are* its API. But the Item-on-minimizing-mutability covers more: types with **invariants** (a temperature that must be ≥ absolute zero), **validation**, or a **hidden representation** still need the hand-written form, or a record with a **compact constructor** that validates. Records (JEP 395) serve the common case, a plain immutable data carrier, and shrink the boilerplate; the EJ item still governs the rest. The feature narrows the principle's surface area; it does not retire it. The companion module's temperature carrier shows the point: a record whose compact constructor still enforces the invariant the components alone cannot.
 
 ```java
     public Temperature {
@@ -137,9 +137,9 @@ A tempting over-claim has emerged: *records replace Effective Java's immutabilit
 
 > **WARNING** Reaching for a record reflexively for any small class is its own anti-pattern. A record exposes all components and is for *data*; a class with behaviour, encapsulated state, or validation beyond a compact constructor is not a record candidate. Use the feature where it fits the principle, not as a default.
 
-### Reading a 2018 book in 2026: the standing discipline
+### Reading a 2018 book in 2026
 
-The same discipline applies to every named-book source in this book (Fowler's *Refactoring*, Feathers' *Working Effectively with Legacy Code*, Martin's *Clean Code*): the **book is a secondary authority**. Where it conflicts with a **primary** source (the JLS, a JEP, a tool's own docs at the pin) or has been overtaken by a language version, the primary wins and the book's claim is dated and contextualized, never presented as current fact without the primary confirming it. *Effective Java* remains the best single distillation of Java idiom; the discipline is to read it forward into the language as it stands.
+The same rule applies to every named-book source in this book (Fowler's *Refactoring*, Feathers' *Working Effectively with Legacy Code*, Martin's *Clean Code*): the **book is a secondary authority**. Where it conflicts with a **primary** source (the JLS, a JEP, a tool's own docs at the pin) or has been overtaken by a language version, the primary wins and the book's claim is dated and contextualized, never presented as current fact without the primary confirming it. *Effective Java* remains the broadest single distillation of Java idiom. Read it forward into the language as it stands, and it keeps earning its place on the shelf.
 
 ## Limitations
 

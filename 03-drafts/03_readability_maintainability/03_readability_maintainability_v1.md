@@ -96,6 +96,8 @@ Complexity is one family. The broader landscape, folded in from the measurement 
 
 The hook's dashboard failed on the last row: 91% coverage measured *lines executed*, not *faults detected*. Mutation testing (Chapter 23) is the stronger signal, because it checks whether the tests would actually notice a bug.
 
+Picking the right family from that table is only half the job. Even a well-chosen signal decays once a team starts steering by it, so the next section turns from *which* number to track to the discipline that keeps any number honest.
+
 ### The discipline that keeps a metric honest
 
 The reason "the number lies" is captured by **Goodhart's Law**, in Marilyn Strathern's pithy form: *"When a measure becomes a target, it ceases to be a good measure."* Set coverage as a target and the result is assertion-free tests that touch lines. Set lines-of-code as a target and the result is bloated code. Set deploy frequency as a target and the result is artificially split deploys. The metric stops measuring the thing the moment the team optimizes the metric.
@@ -139,12 +141,12 @@ A behaviour-preservation test drives all three across every tier and the floor a
 
 *That* readability matters is consensus. *How* to achieve it (function size, comments) is genuinely contested among reputable practitioners, and this book presents the disagreement fairly rather than crowning a side.
 
-- **School A — *Clean Code* (Robert C. Martin):** very small functions ("functions should be small… smaller than that"), do-one-thing, and the view that **comments are largely failures**: "a comment is an apology for not making the code self-explanatory."
-- **School B — *A Philosophy of Software Design* (John Ousterhout):** favors **deep modules** (a simple interface over a substantial implementation) over many tiny ones, argues that **excessive decomposition adds cognitive load** (following one idea requires jumping between fragments), and explicitly **values comments** as capturing design intent the code cannot. It contradicts School A on both points.
+- **School A, *Clean Code* (Robert C. Martin):** very small functions ("functions should be small… smaller than that"), do-one-thing, and the view that **comments are largely failures**: "a comment is an apology for not making the code self-explanatory."
+- **School B, *A Philosophy of Software Design* (John Ousterhout):** favors **deep modules** (a simple interface over a substantial implementation) over many tiny ones, argues that **excessive decomposition adds cognitive load** (following one idea requires jumping between fragments), and explicitly **values comments** as capturing design intent the code cannot. It contradicts School A on both points.
 
 A vocal critique layer also exists. The essay "It's probably time to stop recommending Clean Code" argues the book is dogmatic and that some of its own example code is poor. Cite these as named positions, not as the field's verdict.
 
-Treat the disagreements as **context-dependent trade-offs**, not winners. Tiny functions aid navigation but can fragment a readable algorithm; comments rot but capture *why*; `var` cuts noise but can hide a type. A team picks a position deliberately and applies it consistently (Chapters 6 and 37).
+Treat the disagreements as **context-dependent trade-offs**, not winners. Tiny functions aid navigation but can fragment a readable algorithm; comments rot but capture *why*; `var` cuts noise but can hide a type. The contexts pull in opposite directions. School A's small, do-one-thing functions suit code with many short, independently-named responsibilities a reader scans and dips into, where each name is a signpost and the call graph is shallow. School B's deep modules suit a substantial algorithm whose steps only make sense together, where pulling each step into its own method turns one followable body into a scavenger hunt across fragments. Comments split the same way: a self-evident getter earns School A's silence, while a non-obvious *why* (a workaround for a known platform bug, a deliberate ordering constraint) is exactly the design intent School B argues the code cannot carry on its own. A team picks a position deliberately and applies it consistently (Chapters 6 and 37).
 
 ## Limitations
 
@@ -184,11 +186,11 @@ A metric on a dashboard is downstream of a hundred small decisions a developer m
 
 **Key concepts**
 
-- *Cyclomatic complexity* — count of independent execution paths (McCabe); a testability signal.
-- *Cognitive complexity* — understandability metric that penalizes nesting (Campbell/SonarSource; `java:S3776`).
-- *Vanity metric* — a number that looks meaningful but does not change a decision (e.g. LOC, raw coverage %).
-- *Goodhart's Law* — "when a measure becomes a target, it ceases to be a good measure" (Strathern).
-- *Counter-metric* — a paired metric that exposes gaming of the first.
+- *Cyclomatic complexity*: count of independent execution paths (McCabe); a testability signal.
+- *Cognitive complexity*: understandability metric that penalizes nesting (Campbell/SonarSource; `java:S3776`).
+- *Vanity metric*: a number that looks meaningful but does not change a decision (e.g. LOC, raw coverage %).
+- *Goodhart's Law*: "when a measure becomes a target, it ceases to be a good measure" (Strathern).
+- *Counter-metric*: a paired metric that exposes gaming of the first.
 
 **Reference (exact, traced to the pin)**
 
@@ -198,8 +200,8 @@ A metric on a dashboard is downstream of a hundred small decisions a developer m
 **Sources and further reading**
 
 *Tier 1 — Primary / official*
-- Robert C. Martin, *Clean Code* (2008) — read:write ratio; small-functions / comments school.
-- John Ousterhout, *A Philosophy of Software Design* — deep modules; pro-comments counter-school.
+- Robert C. Martin, *Clean Code* (2008): read:write ratio; small-functions / comments school.
+- John Ousterhout, *A Philosophy of Software Design*: deep modules; pro-comments counter-school.
 - G. Ann Campbell / SonarSource, *Cognitive Complexity — a new way of measuring understandability* (sonarsource.com).
 - Thomas McCabe, *A Complexity Measure* (IEEE TSE, 1976) — cyclomatic complexity.
 - Chidamber & Kemerer, *A Metrics Suite for Object Oriented Design* (IEEE TSE, 1994) — the CK suite.

@@ -27,7 +27,7 @@ The word "quality" cannot answer those questions. It is too vague to argue with.
 
 ## How it works
 
-Three pictures carry this chapter. Figure 1.1 shows the standards lens: the ISO/IEC 25010 product quality model, nine top-level characteristics, with the one this book lives in marked off. Figure 1.2 shows the economics lens: how the cost of a new feature diverges over time between a high-internal-quality codebase and a low one. Figure 1.3 shows Fowler's technical-debt quadrant, the four kinds of debt that hide behind one word. Each arrives in the section that explains it.
+The argument runs through two lenses and one cost picture. The first section sets the standards lens (ISO/IEC 25010), the next sets the economics lens (internal versus external quality), and the rest prices the gap between them. Each section carries the one figure that earns it, introduced where it lands.
 
 ### Quality is not one thing: it is a decomposable set of attributes
 
@@ -202,11 +202,11 @@ The vocabulary is now in place: quality decomposes into ISO characteristics; the
 
 **Key concepts**
 
-- *Product quality / quality in use* — properties of the software vs outcomes of using it (ISO/IEC 25010 / 25019).
-- *Internal vs external quality* — what only developers can see vs what users can see (Fowler).
-- *Cruft* — the gap between the code as it is and as it ideally would be (Fowler).
-- *Technical debt* — deferred internal-quality work that accrues interest (Cunningham); classified by Fowler's deliberate/inadvertent × prudent/reckless quadrant.
-- *Technical Debt Ratio* — remediation effort ÷ development effort × 100 (SQALE / SonarQube).
+- *Product quality / quality in use*: properties of the software vs outcomes of using it (ISO/IEC 25010 / 25019).
+- *Internal vs external quality*: what only developers can see vs what users can see (Fowler).
+- *Cruft*: the gap between the code as it is and as it ideally would be (Fowler).
+- *Technical debt*: deferred internal-quality work that accrues interest (Cunningham); classified by Fowler's deliberate/inadvertent × prudent/reckless quadrant.
+- *Technical Debt Ratio*: remediation effort ÷ development effort × 100 (SQALE / SonarQube).
 
 **Reference (exact, traced to the pin)**
 
@@ -215,17 +215,17 @@ The vocabulary is now in place: quality decomposes into ISO characteristics; the
 
 **Sources and further reading**
 
-*Tier 1 — Primary / official*
-- ISO/IEC 25010:2023 — *Systems and software Quality Requirements and Evaluation (SQuaRE) — Product quality model* (iso.org/standard/78176). Edition + characteristics; companions ISO/IEC 25019, 25002.
-- Martin Fowler, *Is High Quality Software Worth the Cost?* — martinfowler.com/articles/is-quality-worth-cost.html (external/internal quality; cruft; negative cost).
+*Tier 1: Primary / official*
+- ISO/IEC 25010:2023, *Systems and software Quality Requirements and Evaluation (SQuaRE) — Product quality model* (iso.org/standard/78176). Edition + characteristics; companions ISO/IEC 25019, 25002.
+- Martin Fowler, *Is High Quality Software Worth the Cost?* (martinfowler.com/articles/is-quality-worth-cost.html). External/internal quality; cruft; negative cost.
 - Ward Cunningham, the technical-debt metaphor (OOPSLA 1992 experience report; c2 wiki, *WardExplainsDebtMetaphor*).
-- Martin Fowler, *bliki: TechnicalDebt* — the debt quadrant (martinfowler.com/bliki/TechnicalDebt.html).
-- SonarQube — measures & metrics (SQALE, technical debt ratio), docs.sonarsource.com.
+- Martin Fowler, *bliki: TechnicalDebt*, the debt quadrant (martinfowler.com/bliki/TechnicalDebt.html).
+- SonarQube, measures & metrics (SQALE, technical debt ratio), docs.sonarsource.com.
 
-*Tier 2 — Accessible / further reading*
-- Robert C. Martin, *Clean Code* (2008) — the read-versus-write ratio.
+*Tier 2: Accessible / further reading*
+- Robert C. Martin, *Clean Code* (2008), the read-versus-write ratio.
 - CISQ, *The Cost of Poor Software Quality in the U.S.: A 2022 Report* (it-cisq.org).
-- DORA, *State of DevOps* reports / *Accelerate* (Forsgren, Humble, Kim, 2018) — speed and stability are not a trade-off (dora.dev).
+- DORA, *State of DevOps* reports / *Accelerate* (Forsgren, Humble, Kim, 2018): speed and stability are not a trade-off (dora.dev).
 
 ## Next chapter teaser
 
