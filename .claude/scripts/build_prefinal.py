@@ -87,7 +87,7 @@ def strip_internal_comments(text):
     INTERNAL = re.compile(
         r"EXAMPLE-BUILD|FIGURE PLAN|RUNNABLE EXAMPLE|BUILD STATUS:|"
         r"withdrawn proposal|adjudicated N/A|Snippet tags:|"
-        r"\*\*[A-Za-z][\w /-]*(module|artifact)\b|Trace it back\.",
+        r"\*\*[A-Za-z][\w /-]*(modules?|artifacts?)\b|Trace it back\.",
         re.IGNORECASE)
     blocks = re.split(r"\n\s*\n", text)
     kept = [b for b in blocks if not INTERNAL.search(b)]

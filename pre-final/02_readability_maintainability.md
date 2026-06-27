@@ -152,9 +152,6 @@ The balanced form flattens the nesting into guard clauses and keeps the logic in
 
 *That* readability matters is consensus. *How* to achieve it (function size, comments) is genuinely contested among reputable practitioners, and this book presents the disagreement fairly rather than crowning a side.
 
-- **School A — *Clean Code* (Robert C. Martin):** very small functions ("functions should be small… smaller than that"), do-one-thing, and the view that **comments are largely failures**: "a comment is an apology for not making the code self-explanatory."
-- **School B — *A Philosophy of Software Design* (John Ousterhout):** favors **deep modules** (a simple interface over a substantial implementation) over many tiny ones, argues that **excessive decomposition adds cognitive load** (following one idea requires jumping between fragments), and explicitly **values comments** as capturing design intent the code cannot. It contradicts School A on both points.
-
 A vocal critique layer also exists. The essay "It's probably time to stop recommending Clean Code" argues the book is dogmatic and that some of its own example code is poor. Cite these as named positions, not as the field's verdict.
 
 Treat the disagreements as **context-dependent trade-offs**, not winners. Tiny functions aid navigation but can fragment a readable algorithm; comments rot but capture *why*; `var` cuts noise but can hide a type. A team picks a position deliberately and applies it consistently (Chapters 6 and 37).
