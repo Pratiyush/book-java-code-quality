@@ -24,10 +24,10 @@ set -euo pipefail
 # =============================================================================
 
 # ===== CONFIGURE PER BOOK (see .foundation/BOOK-TYPE-PROFILES.md) =====
-AUTHORITY_REPO="{URL}"          # e.g. https://github.com/quarkusio/quarkus.git
+AUTHORITY_REPO="{URL}"          # (this book is MULTI-AUTHORITY: no single repo — see SOURCE-PIN.md)
 DEFAULT_TAG="multi-authority (see SOURCE-PIN.md; no single tag)"                  # fallback if SOURCE-PIN.md parse is empty
 DEFAULT_SHA="n/a-multi-authority"                  # fallback if SOURCE-PIN.md parse is empty
-DEFAULT_CLONE_PATH="$CLAUDE_JOB_DIR/tmp"    # fallback if SOURCE-PIN.md parse is empty
+DEFAULT_CLONE_PATH="${CLAUDE_JOB_DIR:-/tmp}/source-pin-clone"    # guarded (was $CLAUDE_JOB_DIR/tmp — unbound under set -u); unused in multi-authority mode
 PIN_FILE_REL="00-strategy/SOURCE-PIN.md"        # e.g. 00-strategy/SOURCE-PIN.md (path under repo root)
 # Regex fragments used to PARSE SOURCE-PIN.md table rows. Keep these matched to
 # your SOURCE-PIN.md row labels. The clone-path matcher must match the kind of
@@ -35,6 +35,11 @@ PIN_FILE_REL="00-strategy/SOURCE-PIN.md"        # e.g. 00-strategy/SOURCE-PIN.md
 PIN_PATH_GREP='/tmp/[^[:space:]`|]+'   # matcher for the "Clone path" cell value
 TAG_GREP='[0-9]+\.[0-9]+\.[0-9]+'      # matcher for an x.y.z tag (edit for edition labels)
 EXPECT_GIT="true"                      # "false" for a non-git frozen-corpus authority
+# THIS BOOK: SOURCE-PIN.md is a MULTI-AUTHORITY version table (one row per tool/spec,
+# each pinned to its own official channel) — there is NO single clone or SHA. In this
+# mode the Step-0 gate is "the pin file is present and populated"; per-authority versions
+# are verified at use (the companion-module green builds + the source-verifier pass).
+MULTI_AUTHORITY="true"
 # =====================================================================
 
 # --- Locate the repo root (this script lives in <root>/.claude/scripts) -------
@@ -45,6 +50,24 @@ PIN_FILE="${REPO_ROOT}/${PIN_FILE_REL}"
 if [[ ! -f "${PIN_FILE}" ]]; then
   echo "FAIL: cannot find the pin file at ${PIN_FILE}" >&2
   echo "      The pin file IS the source of truth; without it nothing can verify." >&2
+  exit 1
+fi
+
+# --- Multi-authority profile: the pin FILE is the authority (no single clone/SHA) ---
+# For this book there is no one repo to check out; SOURCE-PIN.md is a version table of
+# many authorities. The Step-0 gate therefore asserts the pin file is present and
+# populated (version rows + pinned markers). Per-authority versions are verified at use.
+if [[ "${MULTI_AUTHORITY}" == "true" ]]; then
+  rows="$(grep -cE '\*\*[0-9][0-9.]*' "${PIN_FILE}" || true)"
+  pinned="$(grep -cE '✅ *(re-)?pinned' "${PIN_FILE}" || true)"
+  echo "check_source_pin: MULTI-AUTHORITY pin (no single clone) — ${PIN_FILE_REL}"
+  if [[ "${rows}" -ge 5 && "${pinned}" -ge 3 ]]; then
+    echo "PASS: SOURCE-PIN.md present and populated (${rows} version row(s), ${pinned} pinned marker(s));"
+    echo "      it is the source of truth — per-authority versions verified at use."
+    exit 0
+  fi
+  echo "FAIL: SOURCE-PIN.md present but looks unpopulated (version rows=${rows}, pinned markers=${pinned})." >&2
+  echo "      Re-run /pin-source to populate the authority table." >&2
   exit 1
 fi
 
