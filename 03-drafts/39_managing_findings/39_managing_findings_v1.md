@@ -42,9 +42,9 @@ The stack was not wrong. The mistake was treating its output as a binary (green 
 
 ## How it works
 
-![Fig 39.1 — Finding triage and the four-lever scope ladder — Every finding demands one triage decision; each decision maps to exactly one lever ordered narrow&rarr;broad. Breadth is always a smell.](../../05-figures/39_managing_findings/fig39_1.png)
+![Fig 19.1 — Finding triage and the four-lever scope ladder — Every finding demands one triage decision; each decision maps to exactly one lever ordered narrow&rarr;broad. Breadth is always a smell.](../../05-figures/39_managing_findings/fig39_1.png)
 
-*Fig 39.1 — Finding triage and the four-lever scope ladder — Every finding demands one triage decision; each decision maps to exactly one lever ordered narrow&rarr;broad. Breadth is always a smell.*
+*Fig 19.1 — Finding triage and the four-lever scope ladder — Every finding demands one triage decision; each decision maps to exactly one lever ordered narrow&rarr;broad. Breadth is always a smell.*
 
 
 ### The triage tree: what a finding actually is

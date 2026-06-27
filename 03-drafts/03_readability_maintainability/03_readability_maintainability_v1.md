@@ -35,13 +35,13 @@ The dashboard was not lying about coverage. It was lying about *quality*, becaus
 
 ## How it works
 
-![Fig 03.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting — Two methods, identical branch count, opposite nesting structure — equal cyclomatic score, very different cognitive score.](../../05-figures/03_readability_maintainability/fig03_1.png)
+![Fig 2.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting — Two methods, identical branch count, opposite nesting structure — equal cyclomatic score, very different cognitive score.](../../05-figures/03_readability_maintainability/fig03_1.png)
 
-*Fig 03.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting — Two methods, identical branch count, opposite nesting structure — equal cyclomatic score, very different cognitive score.*
+*Fig 2.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting — Two methods, identical branch count, opposite nesting structure — equal cyclomatic score, very different cognitive score.*
 
-![Fig 03.2 — Contested prescriptions: function size &amp; comments — Two reputable schools hold opposed positions. Neither is universally correct — choose deliberately, apply consistently.](../../05-figures/03_readability_maintainability/fig03_2.png)
+![Fig 2.2 — Contested prescriptions: function size &amp; comments — Two reputable schools hold opposed positions. Neither is universally correct — choose deliberately, apply consistently.](../../05-figures/03_readability_maintainability/fig03_2.png)
 
-*Fig 03.2 — Contested prescriptions: function size &amp; comments — Two reputable schools hold opposed positions. Neither is universally correct — choose deliberately, apply consistently.*
+*Fig 2.2 — Contested prescriptions: function size &amp; comments — Two reputable schools hold opposed positions. Neither is universally correct — choose deliberately, apply consistently.*
 
 
 ### Readability is the goal because reading is the cost
