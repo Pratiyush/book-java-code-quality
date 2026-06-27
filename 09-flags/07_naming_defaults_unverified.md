@@ -29,3 +29,29 @@ palantir 120-char; Spotless `ratchetFrom`; Google Java Style §3/§4/§5 wording
 ## Resolution
 Resolve at `/pin-source` (Checkstyle/PMD/SonarSource rows) + a JLS/JEP read. Re-trace §2.4 table and clear
 the `⚠ verify at pin` markers, or correct them, before key 07 drafts.
+
+---
+
+## APPENDED 2026-06-27 (source-verify, draft v1): verbatim named-book quotes still UNVERIFIED
+
+During the deferred-marker sweep of `03-drafts/07_naming_structure_formatting/07_naming_structure_formatting_v1.md`,
+the version-pinned tool atoms were cleared against SOURCE-PIN (2026-06-27 correction) and the **green build**
+of `08-companion-code/07_naming_structure_formatting/` (`mvn -Pquality verify`: 6 tests pass, 0 Checkstyle
+errors, 0 SpotBugs bugs). The remaining `⚠ verbatim verify @pin` markers in the draft guard **named-book
+quotations**, which are NOT in the local clone or the companion module and so cannot be machine-confirmed
+here. They stay marked. Atoms (SOURCE-PIN §7 pins the *editions*; the verbatim *wording + page* still needs
+the book text):
+
+1. **Effective Java 3e (Bloch, 2018), Item 68** — quoted spans "straightforward and largely unambiguous"
+   and "more complex and looser" (draft lines 62, 222). Verify verbatim wording + page against the 3e text.
+2. **Effective Java 3e, Item 56** — "doc comments as contract" claim (draft line 132/222). Confirm Item
+   number + the precondition/`@throws`/postcondition framing against the 3e text.
+3. **Clean Code (Martin, 2008)** — quoted span "a comment is an apology" (draft line 142). Verify verbatim
+   wording + locate in the 2008 text (paraphrase-vs-quote risk: confirm it is a quotation, not a gloss).
+4. **A Philosophy of Software Design (Ousterhout, 2018, ch. 13)** — School-B position is attributed, not
+   quoted; confirm ch. 13 framing. **APoSD is not yet a SOURCE-PIN §7 canon row** — propose adding it.
+
+**Status:** `⚠ verify at pin` — clear only against the named-book editions (SOURCE-PIN §7). House rule
+(LEGAL-IP §2): prose quotes < 15 words, one quote per source per chapter — all four are within ceiling.
+
+**Filed by:** source-verifier, Chapter 07 draft-v1 deferred-marker sweep (2026-06-27).

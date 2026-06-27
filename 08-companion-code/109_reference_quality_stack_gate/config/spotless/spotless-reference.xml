@@ -2,7 +2,7 @@
 <!--
   Reference configuration (NOT wired into this module's live build) for the FORMAT layer of the reference
   stack: Spotless orchestrating google-java-format, with the new-code-focused ratchetFrom the gate design
-  uses. It is shown here rather than executed because the SOURCE-PIN identifier "Spotless 8.7.0" is the
+  uses. It is shown here rather than executed because the SOURCE-PIN identifier "Spotless 3.6.0" is the
   project / Gradle-plugin release line and does not resolve as a Maven-plugin coordinate (the
   spotless-maven-plugin is versioned on its own line); the Maven-plugin version literal is therefore left
   as the ${spotless.maven.plugin.version} property to set at pin time, so the build asserts no unpinned

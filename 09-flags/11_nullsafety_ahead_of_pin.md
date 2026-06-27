@@ -15,3 +15,13 @@ items are the ahead-of-pin layer.
 
 **Resolution before draft.** Keep these strictly in a "current direction / adoption" framing. Re-check
 status at the pin date; if the runtime baseline is ever re-anchored past 21/25, revisit.
+
+---
+
+**UPDATE 2026-06-27 (Ch 11 v1 draft cleaned).** The three AHEAD-OF-PIN items above remain correctly
+flagged and are kept in the draft only as future-direction (the `> **AHEAD-OF-PIN**` callout, now traced
+to the SOURCE-PIN.md runtime-baseline row and to this flag). NOTE a correction: **NullAway 0.13.4 is now
+the *pin*** (SOURCE-PIN.md §2), NOT an ahead-of-pin item — an earlier draft header mislabelled
+"NullAway 0.13.x" as AHEAD-OF-PIN; that has been removed from the Ch 11 draft. JSpecify 1.0.0 itself is
+released/pinned and module-confirmed; only the Spring-7/Boot-4, IntelliJ-2025.3, and Valhalla items stay
+ahead of the anchor.

@@ -27,3 +27,17 @@ coordinates, and conformance state** are `⚠ verify at pin`.
 
 **Action:** re-trace every version/GAV/conformance cell at `/pin-source`; the §2.7 reference table + the
 Fig 32.2 conformance matrix are the single re-trace unit. Reserve ☑ for post-pin.
+
+---
+
+**UPDATE 2026-06-27 (corrected pin + Ch 11 green build).** GAV/version atoms now RESOLVED against
+SOURCE-PIN.md §2 and empirically confirmed by `08-companion-code/11_null_safety_optional/`
+(`mvn -Pquality verify` green on JDK 21, bytecode 65):
+- `org.jspecify:jspecify` = **1.0.0** — pinned (§2) and module-resolved (`provided` scope, compiles green).
+- `org.checkerframework` = **Checker Framework 4.2.0** — now pinned (§2).
+- `com.uber.nullaway:nullaway` = **0.13.4** (requires JDK 17 + Error Prone 2.36.0+) — now pinned (§2);
+  this is the pin, NOT ahead-of-pin (an earlier Ch-11 draft note mislabelled 0.13.x as AHEAD-OF-PIN).
+- `com.google.code.findbugs:jsr305:3.0.2` remains a de-facto coordinate (JSR-305 is a migrate-from
+  family, not a pinned authority row).
+STILL OPEN: the tool-**conformance** matrix (NullAway/IntelliJ/Checker-FW/EISOP/Kotlin JSpecify-mode &
+generics state) is a fast-moving live-line, not module-exercised here — keep flagged.

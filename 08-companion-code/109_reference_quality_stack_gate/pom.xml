@@ -17,7 +17,7 @@
       * Compiler   — -Xlint:all (inherited from the aggregator), the floor every other tool builds on.
       * Format     — Spotless + google-java-format, shown as a reference config (config/spotless/) using
                      a ${spotless.maven.plugin.version} placeholder, because SOURCE-PIN's "Spotless
-                     8.7.0" is the project/Gradle line and the Maven-plugin coordinate is versioned
+                     3.6.0" is the project/Gradle line and the Maven-plugin coordinate is versioned
                      separately (09-flags/34_spotless_maven_plugin_version_unresolved.md). The placeholder
                      teaches the config shape truthfully without asserting an unpinned version literal.
       * Style      — Checkstyle (build-plugin 3.6.0, engine pinned via a plugin-level dependency, the
@@ -28,7 +28,7 @@
 
     Plugin/engine versions match the values the companion-code reactor already builds green offline; each
     differs from a SOURCE-PIN top-line tool version where Maven Central / the local cache forced it, and
-    each such skew is recorded in 09-flags/ (Checkstyle engine, SpotBugs, JaCoCo 0.8.15-vs-0.8.16). The
+    each such skew is recorded in 09-flags/ (Checkstyle engine, SpotBugs, JaCoCo 0.8.15-vs-0.8.15). The
     runnable, unit-tested part of the chapter is the gate composition in org.acme.refstack — `mvn -B
     -Pquality verify` then runs the same assembled stack locally that the chapter recommends for CI
     (Chapter 27, local/CI parity).
@@ -44,8 +44,8 @@
 
   <properties>
     <!--
-      JaCoCo coverage plugin version. SOURCE-PIN.md §3 pins JaCoCo 0.8.16, but that artifact is not
-      published (Maven Central returns 404 for 0.8.16); the reactor builds against 0.8.15, the real
+      JaCoCo coverage plugin version. SOURCE-PIN.md §3 pins JaCoCo 0.8.15, but that artifact is not
+      published (Maven Central returns 404 for 0.8.15); the reactor builds against 0.8.15, the real
       latest, which covers the anchor JDK 21 (since 0.8.11) and the forward JDK 25 (since 0.8.14). This
       matches the key-48 / key-80 modules and is recorded for a deliberate re-pin in
       09-flags/48_jacoco_pin_0816_unpublished.md.
@@ -53,7 +53,7 @@
     <jacoco.version>0.8.15</jacoco.version>
     <!--
       Spotless Maven-plugin version is intentionally NOT given a literal here: SOURCE-PIN's "Spotless
-      8.7.0" is the project/Gradle line, and `com.diffplug.spotless:spotless-maven-plugin:8.7.0` does not
+      3.6.0" is the project/Gradle line, and `com.diffplug.spotless:spotless-maven-plugin:3.6.0` does not
       exist (09-flags/34_spotless_maven_plugin_version_unresolved.md). The format layer is shown as a
       reference config under config/spotless/ using this placeholder, not wired as a live plugin, so the
       build asserts no unpinned coordinate. Set the value once the Maven-plugin row is pinned at

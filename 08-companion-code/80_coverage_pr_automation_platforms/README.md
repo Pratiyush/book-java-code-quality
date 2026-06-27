@@ -30,8 +30,8 @@ prose and the build cannot silently drift (Chapter 34 diff-scoping; Chapter 27 l
 
 ## Version and source pinning (read before trusting a number)
 
-- **JaCoCo** is built at **0.8.15**. `SOURCE-PIN.md` §3 pins 0.8.16, but that artifact is not published
-  (Maven Central 404s; the local cache holds only a 404 stub for 0.8.16 and a real jar for 0.8.15).
+- **JaCoCo** is built at **0.8.15**. `SOURCE-PIN.md` §3 pins 0.8.15, but that artifact is not published
+  (Maven Central 404s; the local cache holds only a 404 stub for 0.8.15 and a real jar for 0.8.15).
   0.8.15 is the published latest and covers the anchor JDK 21 (support since 0.8.11) and the forward
   JDK 25 (since 0.8.14). The same deviation the peer key-23 module hit; see
   `09-flags/48_jacoco_pin_0816_unpublished.md`.

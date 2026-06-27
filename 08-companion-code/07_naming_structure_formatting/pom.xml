@@ -47,7 +47,7 @@
 
     The deterministic-formatter half of the chapter (Spotless driving google-java-format, with
     ratchetFrom) is shown as a reference configuration in config/spotless/spotless-reference.xml rather
-    than wired live here: the SOURCE-PIN "Spotless 8.7.0" identifier is the project/Gradle-plugin release
+    than wired live here: the SOURCE-PIN "Spotless 3.6.0" identifier is the project/Gradle-plugin release
     line and does not resolve as a Maven-plugin coordinate (the spotless-maven-plugin is versioned on a
     separate line), so activating it would require a version literal not yet pinned. See
     09-flags/34_spotless_maven_plugin_version_unresolved.md. The naming gate below is fully live.

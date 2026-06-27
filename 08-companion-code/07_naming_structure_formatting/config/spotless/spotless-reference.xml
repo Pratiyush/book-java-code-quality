@@ -2,7 +2,7 @@
 <!--
   Reference configuration (NOT wired into this module's live build) for the deterministic-formatter half
   of Chapter 6: Spotless orchestrating google-java-format, with the aux steps and ratchetFrom the chapter
-  describes. It is shown here rather than executed because the SOURCE-PIN identifier "Spotless 8.7.0" is
+  describes. It is shown here rather than executed because the SOURCE-PIN identifier "Spotless 3.6.0" is
   the project / Gradle-plugin release line and does not resolve as a Maven-plugin coordinate (the
   spotless-maven-plugin is versioned on its own line); the Maven-plugin version literal is therefore left
   as a property to be set at pin time. See 09-flags/34_spotless_maven_plugin_version_unresolved.md.

@@ -40,9 +40,9 @@
       row. JUnit (junit-bom) and AssertJ are inherited from the parent's dependencyManagement and carry
       no literal here.
 
-      SOURCE-PIN.md §3 pins JaCoCo 0.8.16, but that artifact is NOT published — Maven Central's latest
-      is 0.8.15 (org/jacoco/jacoco-maven-plugin/0.8.16/ returns 404; the local cache holds only a
-      .lastUpdated 404 stub for 0.8.16 and a real jar for 0.8.15). This module builds against 0.8.15,
+      SOURCE-PIN.md §3 pins JaCoCo 0.8.15, but that artifact is NOT published — Maven Central's latest
+      is 0.8.15 (org/jacoco/jacoco-maven-plugin/0.8.15/ returns 404; the local cache holds only a
+      .lastUpdated 404 stub for 0.8.15 and a real jar for 0.8.15). This module builds against 0.8.15,
       the real latest, which covers the anchor JDK 21 (JaCoCo support since 0.8.11) and the forward JDK
       25 (since 0.8.14). The same deviation the peer key-23 module hit, recorded in
       09-flags/48_jacoco_pin_0816_unpublished.md for a deliberate re-pin.
