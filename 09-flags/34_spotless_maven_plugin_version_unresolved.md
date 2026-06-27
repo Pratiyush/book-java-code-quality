@@ -43,3 +43,6 @@ asserting a non-existent or unpinned version literal. The module's green build d
 `34_editorconfig_not_pinned_and_maxlinelength.md`.
 
 **Filed by:** example-builder, Chapter 06 EXAMPLE-BUILD (2026-06-26).
+
+---
+**✅ RESOLVED 2026-06-27** (online re-verify): there is no Spotless "8.7.0" Maven plugin (the 8.x line does not exist); the latest `com.diffplug.spotless:spotless-maven-plugin` is **3.6.0** (2026-06-17). SOURCE-PIN.md §2 re-pinned "Spotless 8.7.0" → **spotless-maven-plugin 3.6.0**; all live citations (drafts + figure sidecars + 2 figure HTMLs re-rendered) swept 8.7.0 → 3.6.0. The formatter is shown as a reference config (not wired into a green build), so no module depends on it. No remaining action.
