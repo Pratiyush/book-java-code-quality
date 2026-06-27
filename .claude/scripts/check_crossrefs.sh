@@ -55,7 +55,10 @@ if [[ ! -d "$MANUSCRIPT_DIR" ]]; then
 fi
 
 # --- Collect the manuscript files in reading order (skip an existing TOC) -----
-FILE_LIST="$(find "$MANUSCRIPT_DIR" -type f -name '*.md' ! -name 'TOC.md' 2>/dev/null | sort)"
+# Scan only MANUSCRIPT content. Exclude analysis/meta artifacts that legitimately
+# QUOTE chapter/section references in their finding text but are not book content:
+# the manuscript-level gate reports (*-REPORT.md) and the assembler-contract README.
+FILE_LIST="$(find "$MANUSCRIPT_DIR" -type f -name '*.md' ! -name 'TOC.md' ! -name '*-REPORT.md' ! -name 'README.md' 2>/dev/null | sort)"
 FILE_COUNT="$(printf '%s\n' "$FILE_LIST" | grep -c . || true)"
 if [[ "$FILE_COUNT" -eq 0 ]]; then
   echo "check_crossrefs: no *.md files under $MANUSCRIPT_DIR — nothing to check."
