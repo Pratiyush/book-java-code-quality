@@ -2,7 +2,7 @@
 <!--
   Reference configuration (NOT wired into this module's live build) for the FORMATTER layer of the
   chapter's map — the author-time / pre-commit moment. It is shown rather than executed because the
-  SOURCE-PIN identifier "Spotless 8.7.0" is the project / Gradle-plugin release line and does not
+  SOURCE-PIN identifier "Spotless 3.6.0" is the project / Gradle-plugin release line and does not
   resolve as a Maven-plugin coordinate (the spotless-maven-plugin is versioned on its own line); the
   Maven-plugin version literal is therefore left as a property to be set at pin time. This follows the
   Chapter 6 precedent exactly — see 09-flags/34_spotless_maven_plugin_version_unresolved.md. The

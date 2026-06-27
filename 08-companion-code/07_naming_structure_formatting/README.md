@@ -48,7 +48,7 @@ reject them at build time. That refusal is the lesson, so the before-state is sh
 
 `config/spotless/spotless-reference.xml` shows the Spotless + google-java-format + `ratchetFrom` block
 the chapter describes. It is a reference configuration, not wired into this module's live build: the
-SOURCE-PIN "Spotless 8.7.0" identifier is the project / Gradle-plugin release line and does not resolve
+SOURCE-PIN "Spotless 3.6.0" identifier is the project / Gradle-plugin release line and does not resolve
 as a Maven-plugin coordinate, so the Maven-plugin version literal is left to be pinned at `/pin-source`
 (`09-flags/34_spotless_maven_plugin_version_unresolved.md`). google-java-format is pinned to `1.35.0`,
 and pinning the formatter GAV — rather than floating it — is itself a chapter point.

@@ -27,13 +27,13 @@
         on the cached toolchain — recorded in 09-flags/05_toolchain_plugin_versions.md.
       - SpotBugs: SOURCE-PIN §2 pins the SpotBugs line at 4.10.2; this module builds against the
         spotbugs-maven-plugin 4.9.3.0 + engine 4.9.3 its peers are pinned to — same flag.
-      - JaCoCo: SOURCE-PIN §3 pins 0.8.16, which is unpublished on Maven Central (404). This module
+      - JaCoCo: SOURCE-PIN §3 pins 0.8.15, which is unpublished on Maven Central (404). This module
         builds against 0.8.15, the real latest, exactly as the Chapter 48 module does — see the existing
         09-flags/48_jacoco_pin_0816_unpublished.md.
       - The maven-*-plugin version literals for the analyzers are NOT pinned as separate rows in
         SOURCE-PIN (only the engines / project lines are). They are held as named properties and flagged,
         the same pattern as 09-flags/62_enforcer_versions_plugin_versions_unpinned.md.
-      - Spotless: SOURCE-PIN "Spotless 8.7.0" is the project/Gradle line and does not resolve as a
+      - Spotless: SOURCE-PIN "Spotless 3.6.0" is the project/Gradle line and does not resolve as a
         Maven-plugin coordinate (09-flags/34_spotless_maven_plugin_version_unresolved.md). Following the
         Chapter 6 precedent, the formatter layer is shown as a REFERENCE configuration in
         config/spotless/spotless-reference.xml (the `formatter` snippet, google-java-format pinned to the

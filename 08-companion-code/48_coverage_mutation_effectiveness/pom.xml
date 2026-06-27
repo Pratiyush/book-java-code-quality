@@ -13,7 +13,7 @@
     killed, line coverage unchanged).
 
     Two measures, two places in the build:
-      * JaCoCo (coverage, SOURCE-PIN.md §3: org.jacoco 0.8.16) runs in the DEFAULT verify —
+      * JaCoCo (coverage, SOURCE-PIN.md §3: org.jacoco 0.8.15) runs in the DEFAULT verify —
         prepare-agent binds the agent into the test JVM, report writes the HTML/XML observability
         surface, and check gates on BRANCH coverage (the counter LINE % hides an untested branch
         behind). The gate is the BRANCH COVEREDRATIO minimum, with a MISSEDCOUNT maximum shown as
@@ -46,8 +46,8 @@
       SOURCE-PIN.md §3 rows. JUnit (junit-bom) and AssertJ are inherited from the parent's
       dependencyManagement and carry no literal here.
 
-      SOURCE-PIN.md §3 pins JaCoCo 0.8.16, but that artifact is NOT published — Maven Central's
-      latest is 0.8.15 (org/jacoco/jacoco-maven-plugin/0.8.16/ returns 404). This module builds
+      SOURCE-PIN.md §3 pins JaCoCo 0.8.15, but that artifact is NOT published — Maven Central's
+      latest is 0.8.15 (org/jacoco/jacoco-maven-plugin/0.8.15/ returns 404). This module builds
       against 0.8.15, the real latest, which covers the anchor JDK 21 (JaCoCo support since 0.8.11)
       and the forward JDK 25 (since 0.8.14). This is a deviation from the pin forced by artifact
       availability, recorded in 09-flags/48_jacoco_pin_0816_unpublished.md for a deliberate re-pin.
@@ -85,7 +85,7 @@
     <plugins>
       <!--
         JaCoCo coverage, in the DEFAULT build (SOURCE-PIN.md §3: org.jacoco:jacoco-maven-plugin
-        0.8.16; the version matches the anchor JDK 21, which JaCoCo first supported in 0.8.11).
+        0.8.15; the version matches the anchor JDK 21, which JaCoCo first supported in 0.8.11).
         prepare-agent sets the argLine property that Surefire consumes, so the tests run under the
         agent; report writes the HTML/XML report (the observability surface); check enforces the
         BRANCH gate. The agent is injected via argLine — a project that sets <argLine> directly in

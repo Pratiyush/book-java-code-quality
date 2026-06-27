@@ -25,7 +25,7 @@ One layer is shown as **reference configuration**, not wired live:
 
 - **The formatter** — `config/spotless/spotless-reference.xml` shows Spotless orchestrating
   google-java-format (pinned to the resolvable `1.35.0`) with `ratchetFrom`. It is shown rather than
-  executed because the pinned `Spotless 8.7.0` identifier is the project/Gradle-plugin line and does not
+  executed because the pinned `Spotless 3.6.0` identifier is the project/Gradle-plugin line and does not
   resolve as a Maven-plugin coordinate; the Maven-plugin version is left as a property to set at pin time
   (see `09-flags/34_spotless_maven_plugin_version_unresolved.md`, the Chapter 6 precedent). The green
   build does not depend on it.
