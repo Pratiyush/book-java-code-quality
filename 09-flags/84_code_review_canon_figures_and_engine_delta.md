@@ -35,6 +35,19 @@ dossier/draft and labelled as the study's everywhere it appears.
    artifact, but is in the chapter's back matter. No pinned §7 row.
 4. **Nygard ADR** template + `adr.github.io` — the ADR `docs/adr/0001-...md` follows the
    Status/Context/Decision/Consequences shape attributed to Nygard. No pinned §7 row.
+5. **Diátaxis** four-type framing (tutorials / how-to / reference / explanation) — used in the
+   documentation section as the lens for matching doc type to purpose. Attributed to the Diátaxis
+   framework, not asserted as the book's own taxonomy. No pinned §7 row.
+6. **Google Java Style** *specifics* — the 2-space indent, 100-column limit, and `google_checks.xml`
+   bundled config. Named in the draft metadata/back matter as the adopted standard's specifics.
+   Google Java Style is a §7 canon gap; the module's own `checkstyle.xml` uses a cited team choice
+   (120-col) and does not redistribute `google_checks.xml`. **Do not assert the 2-space/100-col
+   specifics as fact without a pinned Google Java Style edition.**
+7. **CODEOWNERS** exact hosted/SaaS pattern-matching syntax — the path-pattern + owner grammar and
+   "last matching pattern wins" precedence in `.github/CODEOWNERS`. This is a rolling hosted-platform
+   (GitHub) syntax, not a versioned pin (SOURCE-PIN §5 treats GitHub as `⚠ dated`/rolling — pin at
+   use). The illustrative owner handles are book fixtures, not real accounts. Confirm the exact
+   syntax against the hosted-platform docs at point of use.
 
 ## Engine-vs-pin delta (recorded for re-pin completeness, non-blocking)
 
@@ -46,7 +59,18 @@ rebuild this module against the re-pinned engine. This mirrors the note already 
 
 ## Resolution
 
-When `/pin-source` adds §7 rows for Cohen/SmartBear, Google eng-practices, Bacchelli & Bird, and Nygard
-ADR, re-trace items 1-4 and convert `⚠ verify-at-pin` → verified (or correct the figure). Until then the
-figures stay labelled as the named study's, never asserted as the book's own fact. The build itself does
-not depend on any of these figures, so they are non-blocking for EXAMPLE-BUILD (Floor C = PASS).
+When `/pin-source` adds §7 rows for Cohen/SmartBear, Google eng-practices, Bacchelli & Bird, Nygard
+ADR, Diátaxis, and Google Java Style, re-trace items 1-6 and convert `⚠ verify-at-pin` → verified (or
+correct the figure). Item 7 (CODEOWNERS syntax) is a rolling hosted-platform fact — confirm at point of
+use rather than pinning. Until then the figures stay labelled as the named study's, never asserted as the
+book's own fact. The build itself does not depend on any of these figures, so they are non-blocking for
+EXAMPLE-BUILD (Floor C = PASS).
+
+## Resolution pass — deferred-marker resolution against the BUILT module (2026-06-27)
+
+A deferred-verification resolution pass over `03-drafts/84_.../v1.md` against the corrected SOURCE-PIN
+(2026-06-27) and the BUILT module confirmed and resolved the tool/config atoms (the Checkstyle Javadoc
+check identities + property keys, the plugin/engine/annotation GAVs — all build-verified, load-bearing),
+fixed the one stale build-status string (`EXAMPLE-BUILD pending` → `GREEN`), and left items 1-7 above
+marked `⚠ verify-at-pin` in the draft's front-matter and back-matter (pointing here). No named-canon
+figure was invented or "corrected" to an unsourced value.
