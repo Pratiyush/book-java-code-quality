@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * The observability surface for the money-representation rules: a readiness probe over the loaded policy
  * and a running count of breaches the rules have reported. A custom rule's natural observable signal is
  * its finding stream — the same place a stock analyzer's report shows up, which a dashboard consumes
- * (Chapter 88). This type makes that signal a small in-process seam the later observability chapter can
+ * (Chapter 45). This type makes that signal a small in-process seam the later observability chapter can
  * build on, rather than something the build only writes to a report file.
  */
 public final class MoneyPolicyHealth {

@@ -9,7 +9,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * {@code @SuppressFBWarnings} annotation suppresses at the exact member and carries the human judgment
  * next to the code: a {@code value} (which pattern) and a {@code justification} (why this instance is
  * safe). This type exists to show that in-code form. {@link #snapshot()} returns a reference to an
- * internal array, which SpotBugs reports as {@code EI_EXPOSE_REP2} — a finding that is a genuine risk in
+ * internal array, which SpotBugs reports as {@code EI_EXPOSE_REP} — a finding that is a genuine risk in
  * general but is safe here, because the array holds an immutable snapshot that is never mutated after
  * construction. The annotation names the pattern and the reason rather than disabling the detector,
  * which is the discipline the chapter argues for: suppress with a reason, never silence the rule.
@@ -37,7 +37,7 @@ public final class SuppressionDemo {
     @SuppressFBWarnings(
         value = "EI_EXPOSE_REP",
         justification = "dailyCounts is an immutable snapshot, never mutated after construction; "
-            + "sharing the reference is safe here. Recording the reason beats disabling the detector.")
+            + "sharing the reference is safe here. Record the reason rather than disable the detector.")
     public int[] snapshot() {
         return dailyCounts;
     }
