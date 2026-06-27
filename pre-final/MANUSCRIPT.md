@@ -1978,13 +1978,6 @@ These layer rather than compete: types catch what they can at compile time, runt
 
 ## When to use what
 
-- **On every public method:** push the contract into the type (return `Optional` or empty, not null; mark nullness; minimize accessibility), then fail fast on what the type cannot carry, then document the remainder (Item 56).
-- **On a hot internal path with controlled callers:** prefer `assert` or skip redundant checks; do not pay runtime validation for callers already validated at the boundary.
-- **On a mutable field that must be stored or exposed:** defensive-copy in and out (*unless* the type is already immutable, in which case use immutability and skip the copy).
-- **On a return value that carries the result:** annotate it un-ignorable (`@CheckReturnValue`) so dropping it fails the build.
-- **On a published library or shared module:** wire japicmp or revapi into CI against the last release, honour the computed semver bump, and deprecate-with-migration rather than delete.
-- **On a leaf application with no library consumers:** skip the compatibility gate; spend the effort on contract clarity within the codebase instead.
-
 ## Hand-off to the next chapter
 
 The contract framing is now in place: a promise with a type-carried half and a doc/runtime half, enforced as far left as the type system allows, and held stable across versions. The next chapters apply that framing to the specific contracts a method makes when things go *wrong*: the exception and error-handling design that determines what a `@throws` clause actually promises, and the immutability and `equals`/`hashCode` contracts that determine whether value types behave correctly in collections. The fail-fast guard is the first sentence of that larger story about failure.
@@ -2478,13 +2471,6 @@ The unifying move across all four levers is the one this whole part keeps making
 These layer rather than compete: design with `Optional`/empty, guard the boundary with `requireNonNull`, prove the interior with annotations + a checker, and diagnose the survivor with JEP 358. Four lines of defense, each owning the null the others cannot reach.
 
 ## When to use what
-
-- **For a method that may have no result:** return `Optional<T>` (or an empty collection), not null, so the absence is now in the type.
-- **At every public constructor and entry point:** `Objects.requireNonNull` the required arguments, so a null fails loud and immediately.
-- **For a new codebase or module:** `@NullMarked` the packages with JSpecify annotations and run NullAway for fast, low-annotation build-time proof.
-- **For a long-lived, correctness-critical core library:** consider the Checker Framework Nullness Checker for a soundness guarantee, accepting the annotation and build cost.
-- **For a legacy tree on JSR-305:** plan a migration to JSpecify (incrementally, with `@NullUnmarked`), and mind the JPMS split-package when running on the module path.
-- **Always:** keep runtime guards and tests, because no static layer catches reflection, deserialization, or a lie to the checker.
 
 ## Hand-off to the next chapter
 
@@ -4536,8 +4522,6 @@ The architectural form is a custom ArchUnit predicate and condition — the filt
             .should(MoneyArchRules.NOT_EXPOSE_FLOATING_POINT_MONEY);
 ```
 
-The reason Chapter 17's layering matters is that **each rule only sees its own artifact**. Smuggle a `double` in through a surface a given tool cannot see (reflection, or a generic erased before SpotBugs reads the bytecode) and that tool goes quiet. No single custom rule is a complete fence; the coverage comes from composing them, exactly as the stock analyzers compose.
-
 As **codegen**, the same `Money` is best expressed as a `record Money(BigDecimal amount, Currency currency)`. The compiler derives the value semantics, no processor, no dependency, and the type is impossible to construct with a `double` amount because the component type *is* `BigDecimal`:
 
 ```java
@@ -4557,14 +4541,6 @@ Where the convention needs more than a carrier (a mapper between the domain `Mon
 A custom rule and a code generator both *extend the build*: one extends what it checks, the other what it writes, and both are leverage the team now owns. The bill is upkeep: a custom rule is re-validated on every tool upgrade, and a generator ties the build to a processor or a language level. They earn their keep on invariants that are project-specific, frequently relevant, and cheaply machine-handled. Nowhere else.
 
 ## Limitations & when NOT to reach for it
-
-- **A custom rule is code the team maintains forever.** Every authoring API is tool-version-bound (PMD's 7.x line reworked its AST node names and rule model — custom PMD rules are the most upgrade-sensitive). An un-maintained custom rule rots into false positives and gets disabled. When NOT: for a one-off that will never be re-checked, or a convention a stock rule already covers with config.
-- **False positives cost trust fast.** A bespoke rule has little field-testing; ship `WARNING`, then promote to `ERROR`. A noisy custom gate trains the team to route around the gate.
-- **Some invariants are not machine-checkable.** "Is this abstraction the right one?" is a review judgment no AST can make. Do not force a semantic call into a syntactic rule.
-- **Each rule sees only its own artifact.** Checkstyle/PMD miss what is only in bytecode; SpotBugs misses source-only constructs; ArchUnit sees type-level structure, not statement-level logic. Coverage comes from composition (Chapter 17), not from one heroic rule.
-- **Codegen adds machinery between the declared source and the running code.** Generate-new-files processors add a generated symbol to reference and a build step; `record` covers only the transparent-carrier slice (no inheritance, shallow immutability, no builders/entities/mappers); processor *ordering* is unspecified, so multi-processor builds need explicit care (`lombok-mapstruct-binding`).
-- **Lombok's trade is specific.** It depends on non-standard compiler internals (`--add-opens` since JDK 16; a compatibility event each JDK), and the source the developer reads is not the code that runs (IDE plugin required; other processors may not see its edits; `@lombok.Generated` needed so coverage is not distorted). When NOT: a codebase that wants zero dependence on compiler internals or zero IDE-plugin requirement, or a value layer `record` already covers. Where it fits: broad boilerplate across many shapes where terseness is the priority and the team accepts the trade and configures the exclusion.
-- **Generated ≠ reviewed.** Generated code is only as correct as its generator; the `@Generated` exclusion hides it from coverage but does not test it. Name the marker precisely — `lombok.Generated` is a different annotation from `jakarta.annotation.Generated`.
 
 ## Alternatives & adjacent approaches
 
@@ -5084,8 +5060,6 @@ Figure 21.2 draws the second: the five kinds of test double laid out from inert 
 JUnit is the de-facto JVM unit-testing framework, and its quality relevance is twofold. It is the **execution substrate** nearly every other quality tool plugs into: coverage (JaCoCo), mutation (PITest), property testing (jqwik), and Testcontainers all run *on the JUnit Platform*. The *way* tests are written in it is itself a code-quality surface: readable tests get maintained, unreadable ones rot.
 
 > **EDITION** *JUnit 6 is the current major line* (6.0 GA 2025-09-30; 6.1.0 GA 2026-05), raising the floor to Java 17 and unifying Platform, Jupiter, and Vintage under one version, with Vintage (the JUnit 3/4 compatibility engine) now deprecated. **JUnit 5 ("Jupiter")** is the prior, still-ubiquitous line. The Jupiter programming model is largely shared across 5 and 6, so the guidance here holds for both; the few 6-only changes (the Java-17 floor, some relocated APIs) are migration costs a Java-8/11 codebase should weigh before upgrading. Treat JUnit 6 as current, note 5 where teams remain on it — the same edition discipline the book applies to any versioned authority.
-
-That layering is the **three-module architecture**:
 
 - **JUnit Platform** — the foundation that launches test engines on the JVM and defines the `TestEngine` API that build tools and IDEs target. This is *why* one runner can execute Jupiter tests and jqwik property tests side by side: these are different engines on one platform.
 - **JUnit Jupiter** — the programming and extension model for writing tests, plus its own `TestEngine`.
@@ -5833,8 +5807,6 @@ Part V proved the code behaves. It said nothing about whether the code is *built
 
 Two codebases, two ways to fail. The first took SOLID as gospel: an interface for every class, a factory for every interface, dependency injection wiring five layers deep, and adding one field means touching seven files. It is "well-designed" by the letter of every principle and impossible to read. The second has no structure at all: two hundred classes in a single `com.acme.service` package, a three-thousand-line `OrderService`, and every change ripples into three unrelated features because everything can reach everything. Both codebases fail the same goal — *safe, cheap change* — from opposite directions: one over-engineered, one under-structured.
 
-Hitting the middle is the subject of Part VI, and this opening chapter lays its foundation at three altitudes. **SOLID** and the design principles are the *why*: heuristics for shaping a class or module so it changes safely, useful as vocabulary and dangerous as dogma. **Coupling and cohesion** are the *what to measure*: the oldest, most durable structural qualities, the thing the principles actually aim at, and the part that can be put to a number. **Package and module structure** is the *where* — the lines that decide which dependencies are even possible. The three are one idea seen from three heights: principles provide direction, metrics indicate whether the structure is improving, and package lines make the good outcome the natural one. None of them is a dial to crank to maximum; each is a direction, and the skill is knowing how far to go.
-
 ## Overview
 
 **What this chapter covers**
@@ -6140,8 +6112,6 @@ ArchUnit's honest limits follow from its mechanism. It **only catches what is en
 
 ### JPMS: moving the boundary into the compiler
 
-Where ArchUnit checks a boundary in a *test*, the **Java Platform Module System** (JPMS, since Java 9) checks it in the *compiler*. A `module-info.java` declares `exports` (what is visible to other modules) and `requires` (what this module depends on), and `javac` and the runtime *enforce* it: code in another module cannot access a package that was not exported, full stop. That is a stronger guarantee than a test, because it is structural rather than after-the-fact, but it comes at a real cost: modularizing a legacy application, especially with non-modular dependencies, is a genuine migration, and many teams rationally stay on the classpath and use ArchUnit for finer-grained rules. JPMS is the right lever for compiler- and runtime-enforced *encapsulation* of coarse module boundaries; ArchUnit is the right lever for finer package/annotation rules and for teams not ready to modularize. A team may run both. Neither is crowned.
-
 ### Fitness functions: the frame that unifies the gates
 
 Step back, and ArchUnit rules, JPMS boundaries, and a dozen other checks in this book turn out to be the same thing. *Building Evolutionary Architectures* (Ford, Parsons, Kua, Sadalage) defines an **architectural fitness function** as "any mechanism that provides an objective integrity assessment of some architectural characteristic(s)." The premise of *evolutionary architecture* is that a system's architecture changes over its life, so those important properties are protected with **automated checks that run on every build or deploy**: shift-left applied to architecture rather than code. Fitness functions come in categories: *atomic* (one characteristic) versus *holistic* (several together), *triggered* (on build/PR) versus *continuous* (monitored in production), *static* (ArchUnit, metrics) versus *dynamic* (latency, throughput).
@@ -6166,8 +6136,6 @@ As a **wiki line**, it lasts until the first developer under deadline pressure r
         System.out.println("legacy report writer wired to " + controller); // forbidden by a coding rule
     }
 ```
-
-As an **ArchUnit rule** (the same `layeredArchitecture()` policy that keeps `web` accessible by no lower layer), that upward edge fails the build the moment it is pushed, with the offending class and edge listed in the test output; silent erosion becomes a hard, located failure. (The module proves this directly: a test runs the layered rule over the seeded edge and asserts the violation is reported by name, and a second runs the coding rule over the `System.out` write. The displayed import-then-assert rule above, `noClasses().that().resideInAPackage("..domain..").should().dependOnClassesThat().resideInAPackage("..web..")`, expresses the same decision the narrower, more familiar way.) If the boundary matters enough to pay the migration, the same decision as a **JPMS module** means the domain module does not `require` the web module and `javac` *refuses to compile* the bad import; the violation cannot reach the test phase. Seen through the fitness-function lens, that rule is one entry in a portfolio. Alongside it sit `slices().should().beFreeOfCycles()` guarding acyclicity, a complexity threshold guarding method size, a coverage gate guarding test reach, and a performance check guarding latency: each an objective, automated assessment of one characteristic, each running on every build.
 
 That progression is the whole of architecture governance in miniature, and it answers the erosion the hook described. The architecture did not decay because the team was careless; it decayed because the design was *advisory* and the pressure was *real*, and advice loses to pressure every time. Enforcement changes the contest: the rule is not a request a tired developer can rationalize past at 5pm. It is a build failure that must be dealt with, which means the decision is made once, by the team, when calm, and held automatically forever after. The honest boundary, and the reason Chapter 25 spent so long on judgment, is that enforcement only reaches what can be *expressed*: cycles, directions, and declared boundaries are crisp enough to gate, but cohesion, the right responsibility split, and whether an abstraction earns its keep remain human judgment that no fitness function captures. Governance is the thin enforceable layer that protects the structure good judgment created, not a replacement for the judgment. Draw the architecture with taste, enforce the few hard invariants that keep it from eroding, and leave the rest to review.
 
@@ -6718,14 +6686,6 @@ The honest center, shared with every gate in the book, is that both are **necess
 These compose into build integrity: pin and resolve deterministically (Chapter 27), reproduce bit-for-bit and verify by rebuild (here), attest provenance over the reproducible artifact (Chapter 28), and gate licenses off the SBOM with a counsel-set policy.
 
 ## When to use what
-
-- **For a publicly released or independently-verified artifact:** a reproducible build (`project.build.outputTimestamp`, pinned plugins, fixed locale/TZ), verified by build-twice-and-diff.
-- **For the higher SLSA levels:** hermetic builds — only declared, pinned inputs, no build-time network.
-- **To keep reproducibility from decaying:** a CI step that rebuilds and diffs; treat a byte difference as a build failure.
-- **To know the tree's licenses:** read SPDX identifiers off the SBOM; categorize permissive / weak-copyleft / strong-copyleft.
-- **To stop a banned license shipping:** a `license-maven-plugin` allow/deny policy gate, tuned to the product's distribution mode, scanning the full transitive graph.
-- **To meet attribution obligations:** auto-generate the `THIRD-PARTY`/`NOTICE` file from the inventory.
-- **For obligation interpretation and policy:** legal counsel — the tools surface facts; they do not give advice.
 
 ## Hand-off to the next part
 
@@ -7536,8 +7496,6 @@ The first two levers sit together in one stage of the companion configuration: a
         run: mvn -B -T 1C -Pquality -DskipTests verify   # -T = parallel modules, a speed lever
 ```
 
-> **CONCEPT** *Speed has its own honest limits.* Each lever can backfire. **Caching can mask staleness**: a bad cache key skips work that should run and produces a false green, and cache invalidation is famously hard, so verify cache correctness and run clean builds on main. **Parallelism surfaces flakiness**: tests with hidden shared state that passed serially fail under parallel execution (Chapter 20), which is a real bug the speedup exposed, not a regression. **Incremental analysis can miss cross-module effects** (a change whose impact lands outside the changed file), so periodic full scans (nightly) backstop it. And optimization has diminishing returns: an over-tuned build is itself hard to maintain, so measure where the time actually goes (pipeline duration is a meta-quality metric; a creeping build time is debt) and optimize the real bottleneck, not a guess.
-
 ## Deep dive: three decisions, one goal — a gate nobody routes around
 
 The three sections are not independent topics; they are three facets of a single design goal, and naming it is what turns "set up CI" into engineering. The goal is **a gate the team keeps on**, and every gate in this book, across every part, has died the same two deaths when that goal was not met: too *slow*, so developers bypass it, or too *strict*, so they disable it. Ordering, policy, and performance are precisely the three levers against those two deaths. Performance attacks "too slow" directly. Policy (clean-as-you-code, block-narrowly) attacks "too strict" directly. And ordering serves both: fast feedback from cheap-first staging, and a short blocking path that keeps the strict checks off the critical path. The three interlock: a perfectly-ordered pipeline with a too-strict policy still gets disabled; a lenient policy on a forty-minute pipeline still gets bypassed; all three are required.
@@ -8090,14 +8048,6 @@ The reframe that makes this practical is the deploy/release decoupling, because 
 Release quality has a hard ceiling that must close the chapter honestly, carrying the same humility as every gate: **a safe release process limits the damage of defects; it does not prevent them.** Canary, flags, and rollback are *damage control*: they make a bad change survivable, not impossible. The defects themselves are prevented by everything else in the book: the types that make bad states unrepresentable (Part II), the tests (Part V), the analyzers (Part IV), the secure coding (Part VIII), and the human review (Chapter 37) that catches the logic flaws no tool sees. Release quality is the safety net under all of that, not a substitute for it. A team that invests in progressive delivery while neglecting the gates has built a sophisticated way to roll back the many defects it failed to prevent. The sub-limits reinforce the point: canary analysis is blind without good observability (Part XIII); feature flags become debt (complexity and test-matrix explosion) if not removed after rollout (a removal discipline, like any debt); rollback is not always clean, because stateful changes and database migrations cannot reverse cleanly, so release quality includes *backward-compatible* migrations; and the feedback loop is theatre if the error-tracking noise is never triaged and acted on. Release quality, done well, is the layer that makes a quality program *resilient*: able to survive its own inevitable failures and learn from them. Resilience, not the absence of failure, is what a mature quality program actually achieves, and that is the right note to end the CI/CD part on.
 
 ## Limitations & when NOT to reach for it
-
-- **A safe release process is not good code.** Progressive delivery limits the *damage* of defects; it does not prevent them. The prevention is the rest of the book (types, tests, analysis, secure coding, review). A team investing here while neglecting the gates has built a way to roll back defects it should have prevented.
-- **Progressive delivery needs infrastructure and good metrics.** Canary analysis is only as good as the signals it watches; without solid observability (Part XIII) it is blind. Real setup cost is involved; a small internal app may not need canary at all.
-- **Feature flags become debt if not cleaned up.** Stale flags accumulate complexity and explode the test matrix; flags need a removal discipline after rollout, like any debt.
-- **Rollback is not always clean.** Database migrations and stateful changes cannot reverse cleanly; release quality includes designing *backward-compatible* migrations, not assuming rollback is free.
-- **Post-release feedback only helps if acted on.** Error-tracking noise nobody triages is theatre (the vanity-metric trap); the loop closes only when an incident becomes a fix, a test, and where warranted a gate.
-- **Smoke tests and release gates verify the artifact, not the design.** They confirm the green, traceable thing shipped and starts, not that the feature is correct (that verification belongs to the gates and review upstream).
-- **Continuous monitoring is necessary because release-time clean is not permanent.** A dependency clean at release gets a CVE disclosed later; without ongoing re-scanning, a shipped artifact silently becomes vulnerable.
 
 ## Alternatives & adjacent approaches
 
@@ -9764,11 +9714,6 @@ Here is one coherent, worked, end-to-end quality stack and CI gate. Not a menu b
 ## Overview
 
 **What this chapter covers**
-
-- **The reference stack**: a layered, de-duplicated set of tools — build, format, style, bug-finding, null-safety, architecture, tests, security, platform — each with its alternative named.
-- **The gate design**: the feedback-latency ladder from pre-commit to PR to nightly to merge, with what runs where and why.
-- **The capstone module**: the runnable reference project that wires the whole stack together end-to-end.
-- **The honest edges**: this is *a* stack not *the* stack, it is adopted incrementally, it is code to own, and tools do not make quality.
 
 **What this chapter does NOT cover.** The individual tools in depth, each of which has its own chapter in Parts IV–IX; this is the *synthesis* that composes them. The layering rationale lives in Chapter 3, the gate-stage mechanics in Chapters 33 and 35, and the *adoption roadmap* — how a team gets from zero to this over time — in the final chapter. All versions and GAV coordinates are verified at the pin, the stack is a *snapshot* that will age, and the capstone module is the rule-4 exception (full-file listings) that must build green before it ships.
 

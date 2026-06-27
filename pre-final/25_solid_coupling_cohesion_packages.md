@@ -8,8 +8,6 @@
 
 Two codebases, two ways to fail. The first took SOLID as gospel: an interface for every class, a factory for every interface, dependency injection wiring five layers deep, and adding one field means touching seven files. It is "well-designed" by the letter of every principle and impossible to read. The second has no structure at all: two hundred classes in a single `com.acme.service` package, a three-thousand-line `OrderService`, and every change ripples into three unrelated features because everything can reach everything. Both codebases fail the same goal — *safe, cheap change* — from opposite directions: one over-engineered, one under-structured.
 
-Hitting the middle is the subject of Part VI, and this opening chapter lays its foundation at three altitudes. **SOLID** and the design principles are the *why*: heuristics for shaping a class or module so it changes safely, useful as vocabulary and dangerous as dogma. **Coupling and cohesion** are the *what to measure*: the oldest, most durable structural qualities, the thing the principles actually aim at, and the part that can be put to a number. **Package and module structure** is the *where* — the lines that decide which dependencies are even possible. The three are one idea seen from three heights: principles provide direction, metrics indicate whether the structure is improving, and package lines make the good outcome the natural one. None of them is a dial to crank to maximum; each is a direction, and the skill is knowing how far to go.
-
 ## Overview
 
 **What this chapter covers**

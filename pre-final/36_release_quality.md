@@ -137,14 +137,6 @@ Release quality has a hard ceiling that must close the chapter honestly, carryin
 
 ## Limitations & when NOT to reach for it
 
-- **A safe release process is not good code.** Progressive delivery limits the *damage* of defects; it does not prevent them. The prevention is the rest of the book (types, tests, analysis, secure coding, review). A team investing here while neglecting the gates has built a way to roll back defects it should have prevented.
-- **Progressive delivery needs infrastructure and good metrics.** Canary analysis is only as good as the signals it watches; without solid observability (Part XIII) it is blind. Real setup cost is involved; a small internal app may not need canary at all.
-- **Feature flags become debt if not cleaned up.** Stale flags accumulate complexity and explode the test matrix; flags need a removal discipline after rollout, like any debt.
-- **Rollback is not always clean.** Database migrations and stateful changes cannot reverse cleanly; release quality includes designing *backward-compatible* migrations, not assuming rollback is free.
-- **Post-release feedback only helps if acted on.** Error-tracking noise nobody triages is theatre (the vanity-metric trap); the loop closes only when an incident becomes a fix, a test, and where warranted a gate.
-- **Smoke tests and release gates verify the artifact, not the design.** They confirm the green, traceable thing shipped and starts, not that the feature is correct (that verification belongs to the gates and review upstream).
-- **Continuous monitoring is necessary because release-time clean is not permanent.** A dependency clean at release gets a CVE disclosed later; without ongoing re-scanning, a shipped artifact silently becomes vulnerable.
-
 ## Alternatives & adjacent approaches
 
 - **Canary vs blue-green vs flags:** gradual-traffic vs environment-switch vs feature-toggle; complementary techniques (often combined), chosen by infrastructure and the granularity of control needed.
