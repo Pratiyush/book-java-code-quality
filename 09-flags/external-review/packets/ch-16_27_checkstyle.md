@@ -101,9 +101,9 @@ DRAFT v1 — gates manual; detection-time-position + encodes-a-written-standard 
 
 ## Hook
 
-Run one Java class through all four of the workhorse analyzers and the result is four almost non-overlapping lists. Checkstyle flags a constant named in `lowerCamelCase` and a missing Javadoc. PMD's CPD reports that two methods are copy-paste duplicates even though the variables were renamed. SpotBugs — reading the *compiled bytecode* — catches an `equals()` comparing two unrelated types that the compiler accepted without a murmur. Error Prone — running *inside the compiler* — refuses to compile at all, because the call is `list.contains(someEnum)` where the list holds `String`. Four tools, four findings, almost no overlap.
+Run one Java class through all four of the workhorse analyzers and the result is four almost non-overlapping lists. Checkstyle flags a constant named in `lowerCamelCase` and a missing Javadoc. PMD's CPD reports that two methods are copy-paste duplicates even though the variables were renamed. SpotBugs, reading the *compiled bytecode*, catches an `equals()` comparing two unrelated types that the compiler accepted without a murmur. Error Prone, running *inside the compiler*, refuses to compile at all, because the call is `list.contains(someEnum)` where the list holds `String`. Four tools, four findings, almost no overlap.
 
-That is the organizing fact of this chapter, and the reason teams run several analyzers rather than picking one: **they see different things because each reads the program at a different point.** Checkstyle and PMD parse the *source*. Error Prone hooks the *compiler* and sees fully-resolved types. SpotBugs analyzes the *bytecode* the compiler emitted. Where a tool stands determines what it can possibly notice — and what it cannot. The previous chapter established the technique ladder; this chapter introduces the four tools that climb it, organized not by a leaderboard (the "which to run" verdict belongs to the next chapter) but by *what each tool's vantage point lets it catch*.
+That is the organizing fact of this chapter, and the reason teams run several analyzers rather than picking one: **they see different things because each reads the program at a different point.** Checkstyle and PMD parse the *source*. Error Prone hooks the *compiler* and sees fully-resolved types. SpotBugs analyzes the *bytecode* the compiler emitted. Where a tool stands determines what it can possibly notice, and what it cannot. The previous chapter established the technique ladder; this chapter introduces the four tools that climb it, organized not by a leaderboard (the "which to run" verdict belongs to the next chapter) but by *what each tool's vantage point lets it catch*.
 
 ## Overview
 
@@ -121,6 +121,8 @@ That is the organizing fact of this chapter, and the reason teams run several an
 **One idea to carry forward:** *a tool can only catch what its vantage point lets it see* — so the four are complementary by construction, and the question is never "which one" but "what does each add."
 
 ## How it works
+
+The whole chapter hangs on one axis: the moment in the build at which each tool reads the program. Figure 16.1 places the four analyzers on that axis, from source text through the type-attributed tree inside the compiler to the emitted bytecode, and names the distinctive reach each position grants.
 
 ![Fig 16.1 — The detection-time axis: where each analyzer reads the program — Four tools, four vantage points — where a tool stands determines what it can see](../../05-figures/27_checkstyle/fig27_1.png)
 
@@ -142,7 +144,7 @@ Every finding in the hook traces to *where* the tool reads the program. This is 
 
 ### Checkstyle — encoding a written standard
 
-Checkstyle is, in its own words, "a development tool to help programmers write Java code that adheres to a coding standard … to spare humans of this boring (but important) task." It parses each source file to an AST and runs `Check` modules over it. Its niche is the **style/convention layer** — naming, layout, import hygiene, Javadoc presence, and size limits — the conventions a team agrees once and stops re-litigating in review.
+Checkstyle is, in its own words, "a development tool to help programmers write Java code that adheres to a coding standard … to spare humans of this boring (but important) task." It parses each source file to an AST and runs `Check` modules over it. Its niche is the **style/convention layer** (naming, layout, import hygiene, Javadoc presence, and size limits): the conventions a team agrees once and stops re-litigating in review.
 
 The configuration is a fixed hierarchy: a root `Checker` module holds project-wide properties and a `TreeWalker` that builds the AST and dispatches to `Check` submodules (`LineLength`, `ConstantName`, `JavadocMethod`, …). Every violation carries a **severity** (`error` by default, `warning`, `info`, or `ignore`) that decides whether it breaks the build. Checkstyle ships ready-made configs (`google_checks.xml`, `sun_checks.xml`, `openjdk_checks.xml`, `doc_comments_checks.xml`), and its naming family already covers modern Java (`RecordComponentName`, `PatternVariableName`).
 
@@ -150,7 +152,7 @@ The companion module builds to a small, curated house ruleset; its naming block,
 
 <!-- include: 27_checkstyle/config/checkstyle/checkstyle.xml#naming-rules -->
 
-Import hygiene is a second high-signal group — three checks that keep the import block honest:
+Import hygiene is a second high-signal group, three checks that keep the import block honest:
 
 <!-- include: 27_checkstyle/config/checkstyle/checkstyle.xml#import-hygiene -->
 
@@ -158,17 +160,17 @@ A size limit is the canonical *cited choice*: the house value here is 120, where
 
 <!-- include: 27_checkstyle/config/checkstyle/checkstyle.xml#line-length -->
 
-The filter layer is what keeps the gate credible — `SuppressWarningsFilter` lets a reviewed `@SuppressWarnings("checkstyle:…")` suppress one finding at its exact site rather than disabling the check for everyone:
+The filter layer is what keeps the gate credible. `SuppressWarningsFilter` lets a reviewed `@SuppressWarnings("checkstyle:…")` suppress one finding at its exact site rather than disabling the check for everyone:
 
 <!-- include: 27_checkstyle/config/checkstyle/checkstyle.xml#suppression-filter -->
 
-Its hard limit is stated in its own docs: "You have access to the content of one file only … You cannot determine the type of an expression … You cannot determine the full inheritance hierarchy of type." Checkstyle reasons about *style and local structure*, never types or whole-program facts, which is exactly why a style number like `LineLength`'s default `max=80` (the Google config sets 100) is a *cited choice*, never a universal truth. A Checkstyle-clean file is consistently formatted; it is not correct.
+Its hard limit is stated in its own docs: "You have access to the content of one file only … You cannot determine the type of an expression … You cannot determine the full inheritance hierarchy of type." Checkstyle reasons about *style and local structure*, never types or whole-program facts, which is exactly why a style number like `LineLength`'s default `max=80` (the Google config sets 100) is a *cited choice*, never a universal truth. A Checkstyle-clean file is consistently formatted. It is not correct.
 
 What `ConstantName` governs is a name, never a value: its default regex `^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$` accepts the `UPPER_SNAKE` shape, so the module's constants pass it.
 
 <!-- include: 27_checkstyle/src/main/java/org/acme/checkstyle/PricingRules.java#constant-naming -->
 
-Where one site needs a reviewed exception, the discipline is to record it at the site rather than relax the rule — the module suppresses a single `ConstantName` finding with a written reason, and removing the annotation makes the gate fail:
+Where one site needs a reviewed exception, the discipline is to record it at the site rather than relax the rule. The module suppresses a single `ConstantName` finding with a written reason, and removing the annotation makes the gate fail:
 
 <!-- include: 27_checkstyle/src/main/java/org/acme/checkstyle/PriceFormatter.java#reviewed-suppression -->
 
@@ -176,15 +178,15 @@ Where one site needs a reviewed exception, the discipline is to record it at the
 
 PMD is a source-AST rule engine that bundles two distinct analyzers. The first is the **rule engine**: it parses to an AST and runs rules (written in Java or as XPath queries over the tree), grouped into eight categories (`bestpractices`, `codestyle`, `design`, `documentation`, `errorprone`, `multithreading`, `performance`, `security`). A team curates a **ruleset** (an XML file referencing categories or single rules, with `<exclude>` and tuned `<property>` elements). PMD's distinctive slice is its **metric rules** (`CyclomaticComplexity`, `NPathComplexity`, `GodClass`, `ExcessiveImports`), which compute complexity and coupling from the AST and gate on a (configurable) threshold, the build-time half of the metrics story from Chapter 2. (The threshold is a convention, never "the" limit.)
 
-The second analyzer is **CPD**, the Copy-Paste Detector, and it is a genuinely different mechanism: it **tokenizes** source and runs **Karp-Rabin** matching to find recurring token sub-sequences of at least `--minimum-tokens` length. Because it matches *tokens* (optionally normalizing away identifiers and literals with `--ignore-identifiers`/`--ignore-literals`), it finds copy-paste that survived a rename (duplication a line-based `diff` cannot see) across many languages. The catch is `--minimum-tokens`: it is **required with no engine default** (the Maven plugin sets 100), and the value is the whole game: too low floods boilerplate false positives, too high misses real clones.
+The second analyzer is **CPD**, the Copy-Paste Detector, and it is a genuinely different mechanism: it **tokenizes** source and runs **Karp-Rabin** matching to find recurring token sub-sequences of at least `--minimum-tokens` length. Because it matches *tokens* (optionally normalizing away identifiers and literals with `--ignore-identifiers`/`--ignore-literals`), it finds copy-paste that survived a rename (duplication a line-based `diff` cannot see) across many languages. The catch is `--minimum-tokens`: it is **required with no engine default** (the Maven plugin sets 100), and the value is the whole game. Too low floods boilerplate false positives; too high misses real clones.
 
 > **CONCEPT** *One tool, two proxies.* PMD's rule engine approximates "does this code follow rule R?" with a *syntactic/metric proxy over the AST*; CPD approximates "is this duplicated?" with a *token-subsequence proxy*. Each proxy is the source of both its value and its false positives — CPD finds *textual* clones, never *semantic* ones (two methods computing the same thing differently are invisible to it).
 
-Two honest seams: the **PMD 6→7 rewrite** changed the ruleset syntax and some rule names, so a PMD-6 ruleset is not a drop-in (anchor on PMD 7); and **Gradle core has no CPD task** — duplication on Gradle needs the community `de.aaschmid.cpd` plugin, while Maven's `maven-pmd-plugin` bundles CPD goals directly.
+Two honest seams: the **PMD 6→7 rewrite** changed the ruleset syntax and some rule names, so a PMD-6 ruleset is not a drop-in (anchor on PMD 7); and **Gradle core has no CPD task**, so duplication on Gradle needs the community `de.aaschmid.cpd` plugin, while Maven's `maven-pmd-plugin` bundles CPD goals directly.
 
 ### SpotBugs (+ FindSecBugs, fb-contrib) — bug patterns over bytecode
 
-SpotBugs "looks for instances of *bug patterns* — code instances that are likely to be errors" — and its defining choice is *what it reads*: compiled `.class` **bytecode**, in a separate pass after `javac`. Because it analyzes what the compiler actually emitted, it catches defects invisible at the source level: an `equals()` comparing unrelated types (`EC_UNRELATED_TYPES`), an impossible cast (`BC_IMPOSSIBLE_CAST`), a `volatile++` that compiled to a non-atomic read-modify-write (`VO_VOLATILE_INCREMENT`), a null dereference on an exception path (`NP_NULL_ON_SOME_PATH`). It is also the tool that enforces several JDK contracts from Part II: `HE_EQUALS_USE_HASHCODE` (Chapter 8), `SE_NO_SERIALVERSIONID`, `EI_EXPOSE_REP` (defensive copying, Chapter 8). One folklore guard: SpotBugs is the maintained successor to the dead **FindBugs**; never cite FindBugs or `findbugs-maven-plugin` as current. The retained `edu.umd.cs.findbugs.*` package names are lineage, not life.
+SpotBugs "looks for instances of *bug patterns* — code instances that are likely to be errors," and its defining choice is *what it reads*: compiled `.class` **bytecode**, in a separate pass after `javac`. Because it analyzes what the compiler actually emitted, it catches defects invisible at the source level: an `equals()` comparing unrelated types (`EC_UNRELATED_TYPES`), an impossible cast (`BC_IMPOSSIBLE_CAST`), a `volatile++` that compiled to a non-atomic read-modify-write (`VO_VOLATILE_INCREMENT`), a null dereference on an exception path (`NP_NULL_ON_SOME_PATH`). It is also the tool that enforces several JDK contracts from Part II: `HE_EQUALS_USE_HASHCODE` (Chapter 8), `SE_NO_SERIALVERSIONID`, `EI_EXPOSE_REP` (defensive copying, Chapter 8). One folklore guard: SpotBugs is the maintained successor to the dead **FindBugs**; never cite FindBugs or `findbugs-maven-plugin` as current. The retained `edu.umd.cs.findbugs.*` package names are lineage, not life.
 
 Findings are organized into nine categories and a **bug rank 1–20** ("1 to 4 are scariest … 15 to 20 of concern"), so a team can gate on the scariest and triage the rest. Analysis depth is set by **effort** (`min`/`less`/`more`/`max`, default `more`). And SpotBugs is really **one engine with pluggable detector sets**: **FindSecBugs** adds 144 security patterns over 826 API signatures (SQL injection, weak crypto, `PREDICTABLE_RANDOM`, OWASP/CWE-tagged), and **fb-contrib** adds more correctness detectors. Both load into the same analysis pass, so they are SpotBugs *capabilities*, not rival tools.
 
@@ -200,7 +202,7 @@ Its cost is the flip side of its position: it runs on *every* compile, couples t
 
 ## Deep dive: the shared discipline — false positives, suppression, and adoption
 
-Four tools, but one operational reality from Chapter 15: every one of them is an *approximation*, so every one of them will sometimes cry wolf — and how a team handles that decides whether the gate survives contact with real code. Three patterns are common to all four, and getting them right matters more than any single rule.
+Four tools, but one operational reality from Chapter 15: every one of them is an *approximation*, so every one of them will sometimes cry wolf, and how a team handles that decides whether the gate survives contact with real code. Three patterns are common to all four, and getting them right matters more than any single rule.
 
 **Suppress with a reason, never disable the rule.** Each tool ships a per-site escape hatch, and the discipline is identical: record the human judgment next to the code rather than turning the check off for everyone. Checkstyle honours `@SuppressWarnings("checkstyle:ConstantName")` (via `SuppressWarningsFilter`) and comment filters (`// CHECKSTYLE:OFF`). PMD takes `@SuppressWarnings("PMD.UnusedLocalVariable")` or a `// NOPMD` line comment. SpotBugs uses `@SuppressFBWarnings("EI_EXPOSE_REP2")` (note: from `edu.umd.cs.findbugs.annotations`, *not* a generic `@SuppressWarnings`). Error Prone uses the plain `@SuppressWarnings("CheckName")`; the check name *is* the token. A suppression is a debt that documents a decision; PMD's experimental `UnnecessaryWarningSuppression` (since 7.14.0) even flags suppressions that no longer suppress anything.
 
@@ -214,12 +216,12 @@ The unifying thread: these are not four contestants for one slot. They are four 
 
 ## Limitations & when NOT to reach for it
 
-- **Checkstyle sees style, not semantics.** Single-file, no types, no cross-file knowledge (its own docs). It cannot find type errors, unused public methods, or real bug patterns — and a style-clean build is not a correct build. Do not use it as proof of quality, or for anything needing types/flow.
+- **Checkstyle sees style, not semantics.** Single-file, no types, no cross-file knowledge (its own docs). It cannot find type errors, unused public methods, or real bug patterns, and a style-clean build is not a correct build. Do not use it as proof of quality, or for anything needing types/flow.
 - **PMD rules are a syntactic proxy.** `UnusedPrivateField` cannot know a field is read by reflection or a framework (false positives on Jackson/JPA/Spring); metric thresholds are heuristics, not laws. **CPD finds textual clones only** and its `--minimum-tokens` has no safe universal value — too low floods, too high misses; wrap intentional duplication in `CPD-START`/`CPD-END`, do not lower the threshold globally.
-- **SpotBugs reads bytecode**, so it is blind to formatting/comments, its messages are source-distant, and several detectors are heuristic (it says so). FindSecBugs is a *pattern/signature* detector — strong on known sink shapes, not a substitute for a full taint-tracking SAST or review of novel flows; fb-contrib raises finding volume, so add it after the core gate is stable. Java 11+ bytecode support is labelled "experimental" — verify on the 21/25 targets.
+- **SpotBugs reads bytecode**, so it is blind to formatting/comments, its messages are source-distant, and several detectors are heuristic (it says so). FindSecBugs is a *pattern/signature* detector, strong on known sink shapes but not a substitute for a full taint-tracking SAST or review of novel flows; fb-contrib raises finding volume, so add it after the core gate is stable. Java 11+ bytecode support is labelled "experimental"; verify on the 21/25 targets.
 - **Error Prone couples to the compiler and the JDK.** It adds time to *every* compile, requires JDK 21+, and its required `javac` flags plus annotation-processor wiring can interact with other processors. Build-failing defaults can stall adoption on legacy code without the on-ramp levers. **Refaster matches syntactic templates**, not arbitrary semantics — complex migrations exceed it.
-- **All four catch patterns, not arbitrary logic bugs** — passing every one is necessary, not sufficient (Chapter 15). Wrong business logic and missing requirements are out of scope.
-- **Each adds build time and a triage burden.** An un-tuned full stack (all rules, `max` effort, every plugin) slows CI and floods findings — the trust-eroding failure mode. Curate the ruleset; do not run everything.
+- **All four catch patterns, not arbitrary logic bugs.** Passing every one is necessary, not sufficient (Chapter 15). Wrong business logic and missing requirements are out of scope.
+- **Each adds build time and a triage burden.** An un-tuned full stack (all rules, `max` effort, every plugin) slows CI and floods findings, the trust-eroding failure mode. Curate the ruleset; do not run everything.
 - **When NOT to add another tool:** if a concern is already covered by a tool in the pipeline *and* by a formatter (typography) or a type-system feature (nullness, Chapter 9), adding a second analyzer for the same concern duplicates findings — the layering decision (Chapter 17) should *remove* redundancy, not pile it on.
 
 ## Alternatives & adjacent approaches
@@ -243,7 +245,7 @@ These layer rather than compete: the formatter owns typography, the four analyze
 
 ## Hand-off to the next chapter
 
-The four workhorse analyzers are now placed by where each reads the program and what that vantage point lets it see. What remains unanswered is the question they keep raising: with four overlapping catalogues, which to run, how to stop them double-reporting, and how it all rolls up into one signal a team can act on. The next chapter takes that on. It adds **SonarQube** — the platform that aggregates analyzers (these four included), tracks quality over time, and enforces a server-side **quality gate** — and **IDE inspections**, which shift the same checks to author-time, and then makes the **layered-stack** decision this chapter deliberately deferred: composing analyzers into a coherent pipeline without redundancy, and choosing which tool owns which overlapping concern.
+The four workhorse analyzers are now placed by where each reads the program and what that vantage point lets it see. What remains unanswered is the question they keep raising: with four overlapping catalogues, which to run, how to stop them double-reporting, and how it all rolls up into one signal a team can act on. The next chapter takes that on. It adds **SonarQube**, the platform that aggregates analyzers (these four included), tracks quality over time, and enforces a server-side **quality gate**, alongside **IDE inspections**, which shift the same checks to author-time. It then makes the **layered-stack** decision this chapter deliberately deferred: composing analyzers into a coherent pipeline without redundancy, and choosing which tool owns which overlapping concern.
 
 ## Back matter — sources & traceability
 

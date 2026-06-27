@@ -101,7 +101,7 @@ DRAFT v1 — gates manual; substrate×moment-matrix + platform=engine+layer-abov
 
 ## Hook
 
-Two facts sit in tension, and resolving them is this chapter. First: independent studies find that Java static analyzers **barely agree**. Point several at the same 47 projects and they flag mostly *different* things (Lenarduzzi et al., 2021). That argues for running several: their coverage is additive, not redundant. Second: a team that acts on that by bolting on Checkstyle *and* PMD *and* SpotBugs *and* Sonar with default rulesets gets a twenty-minute CI build, the same style nit reported by three tools, and developers who have learned to ignore the gate. That argues for running fewer.
+Two facts sit in tension. First: independent studies find that Java static analyzers **barely agree**. Point several at the same 47 projects and they flag mostly *different* things (Lenarduzzi et al., 2021). That argues for running several: their coverage is additive, not redundant. Second: a team that acts on that by bolting on Checkstyle *and* PMD *and* SpotBugs *and* Sonar with default rulesets gets a twenty-minute CI build, the same style nit reported by three tools, and developers who have learned to ignore the gate. That argues for running fewer.
 
 Both are right, and the resolution is neither "more tools" nor "fewer tools" but **composition**: each analyzer reads a *different substrate* (source text, source AST, compiled bytecode, the `javac` tree during compilation, or an aggregating platform) at a *different moment* (while editing, at compile, after compile, in CI), so each sees a class of defect the others cannot — and a coherent stack assigns *one owner per concern*, runs each at its cheapest moment, and rolls the whole thing up into one signal a team can act on. This chapter builds that stack. It leads with **SonarQube** (the platform that aggregates and gates), adds the **IDE** (the author-time first line), and closes with the **layering verdict** the previous chapter deferred: which tool owns what, and how to stop them drowning each other.
 
@@ -120,6 +120,8 @@ Both are right, and the resolution is neither "more tools" nor "fewer tools" but
 
 ## How it works
 
+One picture carries the chapter's whole argument: which tool reads which substrate, at which moment, and the single cell each one covers that no other tool reaches. Figure 17.1 lays that grid out before the prose walks each cell.
+
 ![Fig 17.1 &mdash; The substrate &times; moment matrix: one owner per concern — Each tool reads one substrate at one moment &mdash; covering a cell no other tool reaches. Compose by assigning each concern exactly once.](../../05-figures/35_sonarqube_ide_layered_stack/fig35_1.png)
 
 *Fig 17.1 &mdash; The substrate &times; moment matrix: one owner per concern — Each tool reads one substrate at one moment &mdash; covering a cell no other tool reaches. Compose by assigning each concern exactly once.*
@@ -135,7 +137,7 @@ Every analyzer reads exactly one substrate, and that choice fixes both *what it 
 | Error Prone | **`javac` AST during compilation** | **compile** (fails the build) | type-aware bugs, with the compiler's own type info + auto-fixes |
 | Checkstyle / PMD | **source text / source AST** | source pass | layout, naming, Javadoc, smells, duplication — things erased by compilation |
 | SpotBugs | **compiled bytecode** | **post-compile** | impossible casts, `volatile++`, null-on-exception-path — only visible after `javac` |
-| SonarQube | source + bytecode, its own engine (+ can ingest others) | IDE + CI + **platform** | trend over time, a server-side gate, PR decoration — a role, not just a check |
+| SonarQube | source + bytecode, its own engine (+ can ingest others) | IDE + CI + **platform** | trend over time, a server-side gate, PR decoration — a role above a single check |
 
 > **CONCEPT** *Substrate determines reach; moment determines latency.* SpotBugs sees the bytecode `javac` emits that Checkstyle never reads; Checkstyle sees source layout SpotBugs has discarded; Error Prone has the compiler's resolved types the source linters lack. None is "smarter" — each stands somewhere different. The "coherent stack" is the deliberate choice of which cells to cover, *once each*. (This is Chapter 15's technique ladder turned into a composition rule.)
 

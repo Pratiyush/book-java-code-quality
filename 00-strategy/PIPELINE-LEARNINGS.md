@@ -2655,3 +2655,33 @@ Levers (a) em-dash density, (b) hype-word removal, (c) gloss-before-first-use, (
    property" is the precise computability term (Rice's theorem) and must stay; the banned sense is
    "trivial/trivially" as a difficulty dismissal. A naive grep flags both — the filler scan should match
    `trivial` only when not preceded by `non-`.
+
+## 2026-06-27 — Ch 19 (key 39) READABILITY lift: measure the em-dash density BEFORE pulling the lever
+- **Trigger:** a "toward the voice + readability bar" lift on `39_managing_findings_v1.md` arrived with a
+  default lever list led by "reduce em-dash density to ~8/1000." Measuring the prose body first (Hook →
+  Hand-off, tables/figure/front-matter excluded) showed **3.22/1000** — already far UNDER the ceiling.
+  The em-dash lever was a no-op; pulling it would have been padding-by-subtraction on a chapter that
+  did not over-use the appositive.
+- **Lesson:** the em-dash target is a **ceiling, not a setpoint**. A lift brief must MEASURE the prose-body
+  density before acting; a chapter under the ceiling spends its bounded pass on the OTHER levers
+  (gloss-before-first-use, figure-intro, throat-clearing) instead. Recommend the lift loop always print
+  the measured before-figure so an already-clean lever is visibly skipped, not blindly "applied."
+- **Lesson (scan false positives):** the contraction / second-person / first-person scans on this chapter
+  were ALL false positives — possessives (`Checkstyle's`, `today's`, `class's`), quoted source strings
+  (the epigraph `doesn't`, the SpotBugs doc `won't be reported`, the literal Sonar transition `Won't Fix`),
+  the pinned product term `clean as you code` / `Clean-as-You-Code` (a verified atom, not 2nd-person
+  narration), and quoted illustrative comments (`"I know this one is non-null"`, the CI utterance
+  `"just until we clean this up"`). A voice lift must classify each hit as possessive / quoted-atom /
+  narration before editing — only the last is a target, and editing a quoted atom would break FLOOR C.
+- **Lesson (the real lever was gloss-before-first-use):** the three load-bearing terms — *baseline*,
+  *ratchet*, *gate health* — first appeared bare in the title + Overview and were not glossed in plain
+  language until deep in "How it works". Adding a one-clause plain gloss at the first DEFINING use
+  (Lever 3 / Lever 4 / the debt-about-debt paragraph) and a one-sentence figure lead-in before the cold
+  image moved READABILITY 8→9 with no new facts and no atom/snippet/tag change. Plus-1 aggregate (42→43).
+- **Lesson (an in-bounds prose lift has a real ceiling):** after the pass the chapter sits at **43/50**,
+  one point under the 44 auto-approval bar. The two clusters still at 8 (ACCURACY, DEPTH) are **un-liftable
+  by prose**: ACCURACY is pinned by flagged `⚠ verify-at-pin` atoms (raising it is a SOURCE-VERIFY / re-pin
+  action, or a FLOOR-C violation if asserted), DEPTH is structural (single-dossier scope; padding is
+  out-of-bounds). Same shape as the key-39 research learning above (#4): name the un-liftable cluster on
+  the scorecard so a lift pass is not wasted on it; the gap to 44 needs a non-prose action, not another
+  loop.

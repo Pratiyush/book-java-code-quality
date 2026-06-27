@@ -123,6 +123,8 @@ The stack was not wrong. The mistake was treating its output as a binary (green 
 
 ## How it works
 
+Two pieces govern everything that follows: the one triage decision a finding forces, and the four levers that act on it, ordered narrowest to broadest. Figure 19.1 lays both out on a single ladder — the decision on the left, the lever it maps to on the right, breadth increasing downward.
+
 ![Fig 19.1 — Finding triage and the four-lever scope ladder — Every finding demands one triage decision; each decision maps to exactly one lever ordered narrow&rarr;broad. Breadth is always a smell.](../../05-figures/39_managing_findings/fig39_1.png)
 
 *Fig 19.1 — Finding triage and the four-lever scope ladder — Every finding demands one triage decision; each decision maps to exactly one lever ordered narrow&rarr;broad. Breadth is always a smell.*
@@ -168,7 +170,7 @@ And the Checkstyle wiring that makes `@SuppressWarnings("checkstyle:...")` honou
 
 **Lever 2 — rule/ruleset tuning.** When a rule is wrong for *this* project everywhere, tune the rule once rather than scattering site suppressions. Checkstyle: drop the module or set its `severity`. PMD: `<exclude name="RuleName"/>`, or `violationSuppressRegex` / `violationSuppressXPath` to suppress a systematic misfire by message or AST shape. SpotBugs: a `FindBugsFilter` `Match` on a bug pattern with no class/method narrowing means "never report this pattern." Error Prone: `-Xep:CheckName:OFF` (last flag for a check wins). Sonar: deactivate the rule in the Quality Profile.
 
-**Lever 3 — baseline.** Freeze the findings that exist *today* so the gate reacts only to *change*. That is the precondition for turning a gate on over a noisy codebase at all. SpotBugs has a true baseline: `baselineFiles` ("bugs found in the baseline files won't be reported"). Checkstyle's external `suppressions.xml` (one `<suppress>` row per frozen finding) is the de-facto baseline, and `maxAllowedViolations` caps by count. Sonar's baseline is implicit: anything outside the **New Code** window is tracked but excluded from the default gate.
+**Lever 3 — baseline.** A *baseline* is a recorded snapshot of the findings already present, the tool agrees to ignore from now on. Freeze the findings that exist *today* so the gate reacts only to *change*. That is the precondition for turning a gate on over a noisy codebase at all. SpotBugs has a true baseline: `baselineFiles` ("bugs found in the baseline files won't be reported"). Checkstyle's external `suppressions.xml` (one `<suppress>` row per frozen finding) is the de-facto baseline, and `maxAllowedViolations` caps by count. Sonar's baseline is implicit: anything outside the **New Code** window is tracked but excluded from the default gate.
 
 In the companion module, a SpotBugs `FindBugsFilter` freezes the legacy class's finding by bug pattern, narrowed to that one class:
 
@@ -178,7 +180,7 @@ Checkstyle's file-based form is a `SuppressionFilter` over an external `suppress
 
 <!-- include: 39_managing_findings/config/checkstyle/checkstyle.xml#checkstyle-baseline -->
 
-**Lever 4 — ratchet ("clean as you code").** Let existing findings persist but **block new ones**, so debt only goes down. Sonar is the reference articulation: the **New Code Definition** marks what is "new," and the default gate applies its conditions *only to new code*. Legacy does not block the build, but new code must be clean, and debt decays as files are touched. Without a new-code engine, a count cap (`maxAllowedViolations` set to today's number, then lowered over time) blocks any *increase*; regenerating a SpotBugs baseline plays the same role at the finding-set level.
+**Lever 4 — ratchet ("clean as you code").** A *ratchet* is a gate that turns one way only: it lets existing findings persist but **blocks new ones**, so debt only goes down, never up. Sonar is the reference articulation: the **New Code Definition** marks what is "new," and the default gate applies its conditions *only to new code*. Legacy does not block the build, but new code must be clean, and debt decays as files are touched. Without a new-code engine, a count cap (`maxAllowedViolations` set to today's number, then lowered over time) blocks any *increase*; regenerating a SpotBugs baseline plays the same role at the finding-set level.
 
 At the finding-set level the rule is one filter: keep what the baseline froze, fail on whatever is left.
 
@@ -192,7 +194,7 @@ The through-line of all four levers: the tools can *record* "false positive," bu
 
 Suppressions and baselines are therefore a peculiar kind of artifact: **debt about debt.** They are claims the team made at one moment, and they rot. The code under a suppression changes and the original reason no longer holds, but the suppression stays. A baselined finding gets refactored and a real bug slips in under the stale match. The suppression set itself needs review (it is version-controlled and shows up in PRs precisely so it *can* be reviewed) and periodic decay. Delete the suppressions periodically and see what comes back. A gate full of stale, unexamined suppressions is the same theatre as a skipped gate, only better disguised.
 
-One way to keep that debt visible is to report on it: surface the silenced count as a health signal that degrades when it grows past an agreed budget, without ever changing the build's verdict.
+One way to keep that debt visible is to report on it. *Gate health* is a read-only signal over the suppression set — a plain count of what the gate is silencing — that degrades from healthy to degraded once the count grows past an agreed budget, while never changing the build's verdict.
 
 <!-- include: 39_managing_findings/src/main/java/org/acme/findings/GateHealth.java#gate-health -->
 
