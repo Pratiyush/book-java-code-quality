@@ -53,7 +53,7 @@ What changes between tools is the *artifact* each reasons over, and that, exactl
 | SpotBugs | compiled bytecode | opcode / annotation visit | `BugInstance` → `reportBug` | no | post-compile |
 | ArchUnit | imported class graph | `classes().that(pred)` | `ArchCondition.check` → `violated` | no | test phase |
 
-> **CONCEPT** *One shape, five artifacts.* A custom rule inherits its host's substrate and moment — and so its strengths and blind spots. Pick the tool whose artifact the invariant naturally lives in: a *textual/structural* convention fits Checkstyle/PMD; a *type-aware* rule fits Error Prone; a *bytecode-only* pattern fits SpotBugs; an *architectural* law (who may depend on whom) fits ArchUnit. The choice follows the artifact, not a ranking.
+> **CONCEPT** *One shape, five artifacts.* A custom rule inherits its host's substrate and moment, and so its strengths and blind spots. Pick the tool whose artifact the invariant naturally lives in: a *textual/structural* convention fits Checkstyle/PMD; a *type-aware* rule fits Error Prone; a *bytecode-only* pattern fits SpotBugs; an *architectural* law (who may depend on whom) fits ArchUnit. The choice follows the artifact, not a ranking.
 
 ### Three realizations, briefly
 
@@ -63,7 +63,7 @@ What changes between tools is the *artifact* each reasons over, and that, exactl
 
 **ArchUnit (the imported class graph, as a unit test).** Beyond its fluent DSL, ArchUnit exposes two extension points: a `DescribedPredicate<JavaClass>` (the filter; override `test(JavaClass)`) and an `ArchCondition<JavaClass>` (the constraint; override `check(item, events)` and add `SimpleConditionEvent.violated(origin, message)`). Combine them: `classes().that(myPredicate).should(myCondition)`. The rule runs as a JUnit test (`@AnalyzeClasses` + `@ArchTest`) and **throws `AssertionError` on violation**, like any failing test. (PMD adds a second authoring mode worth knowing: a rule can be a Java `AbstractJavaRule` visitor *or* a declarative **XPath** expression in the ruleset XML; XPath needs no compilation but hits an expressive ceiling. SpotBugs detectors, working on bytecode at the opcode level via `OpcodeStackDetector`, are the lowest-level and most effortful, reserved for patterns only visible after compilation.)
 
-The honest first question before writing any of them: *does a stock rule with tuned config already cover this, or is this really a review judgment?* A custom rule is code the team now owns — tested, documented, and re-validated on every tool upgrade. Ship it as a `WARNING` first to gather signal, then promote to `ERROR`; a bespoke rule has had far less field-testing than a stock one, and a noisy custom gate teaches the team to ignore the gate (Chapter 19).
+The honest first question before writing any of them: *does a stock rule with tuned config already cover this, or is this really a review judgment?* A custom rule is code the team now owns: tested, documented, and re-validated on every tool upgrade. Ship it as a `WARNING` first to gather signal, then promote to `ERROR`; a bespoke rule has had far less field-testing than a stock one, and a noisy custom gate teaches the team to ignore the gate (Chapter 19).
 
 ### Compile-time codegen: the boilerplate conventions generate
 
@@ -86,9 +86,9 @@ Lombok is the most widely deployed of these, and the most contested, because of 
 
 **Its hardest objection**, also from its own behavior:
 
-- *Dependence on non-standard compiler internals.* The same edit-the-AST move couples Lombok to `com.sun.tools.javac.*` — packages the `jdk.compiler` module does not export. Since JDK 16 this requires `--add-opens`/`--add-exports`, and each JDK can change those internals, so every new JDK is a compatibility event (Lombok ships the incantations so supported versions keep working, but the *dependence* is the point).
-- *Invisibility and tool friction.* Because the generated members exist only in the mutated AST, the source the developer reads is not the code that runs: IDEs need a Lombok plugin to resolve the members, other annotation processors may not see Lombok's changes (hence the `lombok-mapstruct-binding` ordering dependency), and coverage/analysis tools need the `@lombok.Generated` marker (enabled by `lombok.addLombokGeneratedAnnotation = true`, which JaCoCo honors to skip generated members) to avoid distortion. The documented remedy is `delombok`, which pretty-prints the transformed AST back to standard Java source — or a committed form, to drop the dependency.
-- *The records overlap.* For the value-object slice that `@Value`/`@Data` historically served, `record` now offers a language-level answer with no dependency — the live question of whether a project still needs Lombok for that slice.
+- *Dependence on non-standard compiler internals.* The same edit-the-AST move couples Lombok to `com.sun.tools.javac.*`, packages the `jdk.compiler` module does not export. Since JDK 16 this requires `--add-opens`/`--add-exports`, and each JDK can change those internals, so every new JDK is a compatibility event. Lombok ships the incantations so supported versions keep working, but the dependence is the point.
+- *Invisibility and tool friction.* Because the generated members exist only in the mutated AST, the source the developer reads is not the code that runs. IDEs need a Lombok plugin to resolve the members. Other annotation processors may not see Lombok's changes (hence the `lombok-mapstruct-binding` ordering dependency), and coverage/analysis tools need the `@lombok.Generated` marker (enabled by `lombok.addLombokGeneratedAnnotation = true`, which JaCoCo honors to skip generated members) to avoid distortion. The documented remedy is `delombok`, which pretty-prints the transformed AST back to standard Java source, or a committed form, to drop the dependency.
+- *The records overlap.* For the value-object slice that `@Value`/`@Data` historically served, `record` now offers a language-level answer with no dependency, which keeps live the question of whether a project still needs Lombok for that slice.
 
 Framed neutrally: `record`, the generate-new-files processors, and Lombok are **different approaches to the same boilerplate problem**, and a codebase may use several at once (records for DTOs, MapStruct for mapping, Lombok for logging). Each states its trade-off; none is crowned. (One build-wiring fact teams hit: registering processors via `annotationProcessorPaths` becomes **mandatory at JDK 23**; before that, a processor on the plain classpath was discovered implicitly.)
 
@@ -110,7 +110,7 @@ The companion module realizes this with only the dependencies the book has pinne
     }
 ```
 
-The same four steps — select, predicate, report — written over the reflection artifact stand in for a source-AST or bytecode custom check:
+The same four steps (select, predicate, report) written over the reflection artifact stand in for a source-AST or bytecode custom check:
 
 ```java
     public List<MoneyViolation> inspect(Class<?> type) {
@@ -137,7 +137,7 @@ The Error Prone-style form needs no runtime code at all: the banned floating-poi
     }
 ```
 
-The architectural form is a custom ArchUnit predicate and condition — the filter and the constraint — combined into a rule that runs as an ordinary test:
+The architectural form is a custom ArchUnit predicate and condition (the filter and the constraint), combined into a rule that runs as an ordinary test:
 
 ```java
     public static final DescribedPredicate<JavaClass> IN_DOMAIN =

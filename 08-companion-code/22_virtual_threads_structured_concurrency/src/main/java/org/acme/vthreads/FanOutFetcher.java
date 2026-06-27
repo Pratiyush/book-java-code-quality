@@ -169,7 +169,10 @@ public final class FanOutFetcher {
     }
 
     /**
-     * A readiness probe: the fetcher is ready when its backend port is wired.
+     * A readiness probe: the fetcher is ready when its backend port is wired. The backend is required at
+     * construction (see the constructor's {@code requireNonNull}), so this seam is always ready once the
+     * object exists; a production probe would additionally check the downstream connection (a ping or a
+     * pooled-connection check), which is out of scope for this teaching module.
      *
      * @return {@code true} when the fetcher can serve a fan-out
      */
