@@ -28,7 +28,7 @@ class DiscountServiceTest {
     void seed() {
         catalog = new InMemoryPromoCatalog();
         catalog.register(new Discount("WELCOME10", 1_000L));
-        service = new DiscountService(catalog, Optional.of("WELCOME10"));
+        service = new DiscountService(catalog, "WELCOME10");
     }
 
     @Test
@@ -52,20 +52,21 @@ class DiscountServiceTest {
     @Test
     void constructorRejectsNullCatalogFailFast() {
         assertThatNullPointerException()
-            .isThrownBy(() -> new DiscountService(null, Optional.empty()))
+            .isThrownBy(() -> new DiscountService(null, "WELCOME10"))
             .withMessageContaining("catalog");
     }
 
     @Test
-    void constructorRejectsNullDefaultCodeFailFast() {
-        assertThatNullPointerException()
-            .isThrownBy(() -> new DiscountService(catalog, null))
-            .withMessageContaining("defaultCode");
+    void constructorAcceptsNoDefaultCode() {
+        // the default code is genuinely optional: a null default is a valid configuration, not a
+        // fail-fast violation — only the required catalog port is requireNonNull-guarded
+        DiscountService noDefault = new DiscountService(catalog, null);
+        assertThat(noDefault.defaultCodeOrNull()).isNull();
     }
 
     @Test
     void priceWithDiscountSubtractsAPresentDiscountWithoutGet() {
-        Money total = service.priceWithDiscount(Optional.of("WELCOME10"), new Money(5_000L, "USD"));
+        Money total = service.priceWithDiscount("WELCOME10", new Money(5_000L, "USD"));
 
         assertThat(total.minorUnits()).isEqualTo(4_000L);
         assertThat(service.discountsAppliedCount()).isEqualTo(1L);
@@ -74,7 +75,7 @@ class DiscountServiceTest {
 
     @Test
     void priceWithDiscountChargesFullTotalWhenCodeUnknown() {
-        Money total = service.priceWithDiscount(Optional.of("NOPE"), new Money(5_000L, "USD"));
+        Money total = service.priceWithDiscount("NOPE", new Money(5_000L, "USD"));
 
         assertThat(total.minorUnits()).isEqualTo(5_000L);
         assertThat(service.discountsAppliedCount()).isEqualTo(0L);
@@ -83,7 +84,7 @@ class DiscountServiceTest {
 
     @Test
     void priceWithDiscountFallsBackToTheConfiguredDefaultCode() {
-        Money total = service.priceWithDiscount(Optional.empty(), new Money(5_000L, "USD"));
+        Money total = service.priceWithDiscount(null, new Money(5_000L, "USD"));
 
         assertThat(total.minorUnits()).isEqualTo(4_000L);
     }
@@ -91,7 +92,7 @@ class DiscountServiceTest {
     @Test
     void defaultCodeOrNullExposesTheNullMarkedOptOut() {
         assertThat(service.defaultCodeOrNull()).isEqualTo("WELCOME10");
-        DiscountService noDefault = new DiscountService(catalog, Optional.empty());
+        DiscountService noDefault = new DiscountService(catalog, null);
         assertThat(noDefault.defaultCodeOrNull()).isNull();
     }
 

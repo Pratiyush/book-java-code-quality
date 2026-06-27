@@ -14,7 +14,8 @@ inherits the runtime and test-library pins from the aggregator.
 | Cycle-freedom across slices | `SlicesRuleDefinition.slices()…beFreeOfCycles()` | `ArchitectureFitnessTest#featureSlicesAreFreeOfCycles` |
 | A predefined coding rule | `GeneralCodingRules.NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS` | `ArchitectureFitnessTest#noClassReachesForStandardStreams` |
 | Legacy-adoption ratchet | `FreezingArchRule.freeze(rule)` | `ArchitectureFitnessTest#freezingReportsOnlyNewViolationsOverALegacyBaseline` |
-| A seeded breach the rule catches | a `..web..` field + `System.out` write | `governance/LegacyReportWriter` |
+| A seeded `System.out` breach a rule catches | a `System.out` write | `ArchitectureFitnessTest#seededConsoleBreachIsDetectedButDoesNotFailTheBuild` |
+| A seeded layering breach a rule catches | a `..web..` field from outside the layers | `ArchitectureFitnessTest#seededLayeringBreachIsRejectedByTheLayeredRule` |
 
 The rules are driven through `ClassFileImporter` and `rule.check(...)` from plain JUnit tests, so the
 module stays on one JUnit platform version (the engine-agnostic ArchUnit core artifact rather than
@@ -39,11 +40,15 @@ A green run reports the tests passing, zero Checkstyle violations, and zero Spot
 
 `LegacyReportWriter` is a deliberately non-conforming class: it holds a field of a `..web..` type from
 outside the layers and writes to `System.out`, both of which the rules reject. It lives in its own
-`..governance..` package, outside the layered rule's scope, so the rules that run over the clean layers
-pass. A separate test runs the coding rule over an import that includes `..governance..` and asserts the
-breach is reported with the offending class named. The breach is therefore observable — the failure
-message a real violation would produce — without making the module red. Moving the class into one of the
-layers would make a passing rule fail instead, which is the build failure the chapter describes.
+`..governance..` package, which the rules over the clean layers leave out of scope, so those rules pass.
+Each breach is then proven by its own test over an import that includes `..governance..`:
+`seededConsoleBreachIsDetectedButDoesNotFailTheBuild` runs the coding rule and asserts the `System.out`
+breach is reported by name; `seededLayeringBreachIsRejectedByTheLayeredRule` runs a `layeredArchitecture()`
+rule that declares `..governance..` a layer and uses `consideringAllDependencies()` (so an origin outside
+the core layers still counts), and asserts the upward `..governance.. -> ..web..` edge is reported with
+the offending class named. Both breaches are therefore observable — the failure message a real violation
+would produce — without making the module red. Moving the class into one of the core layers would make a
+passing rule fail instead, which is the build failure the chapter describes.
 
 ## The ratchet
 

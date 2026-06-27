@@ -11,11 +11,13 @@ import org.jspecify.annotations.Nullable;
  * of null-safety from the chapter in one service.
  *
  * <p>Absence is modelled three ways on purpose, so each idiom is visible: the lookup returns an
- * {@link Optional} (a result that may not exist), the constructor {@code requireNonNull}s its required
- * collaborator (a value that must never be absent), and a single accessor opts out of the package's
- * {@code @NullMarked} default with an explicit {@code @Nullable} return (the rare place null is the
- * honest answer). The service holds only an injected {@link PromoCatalog} port — an interface, shared
- * collaborator state, not a mutable representation to defend by copying.
+ * {@link Optional} (the result of a method that may genuinely have none — Item 55's one sanctioned
+ * use of {@code Optional}), the constructor {@code requireNonNull}s its required collaborator (a value
+ * that must never be absent), and the configured default code is held as a {@code @Nullable String}
+ * field — not an {@code Optional} field or parameter, which Item 55 advises against — so the absence
+ * is part of the contract the {@code @NullMarked} package and a checker can read. The service holds
+ * only an injected {@link PromoCatalog} port — an interface, shared collaborator state, not a mutable
+ * representation to defend by copying.
  */
 public final class DiscountService {
 
@@ -24,11 +26,13 @@ public final class DiscountService {
     private final PromoCatalog catalog;
 
     /**
-     * The configured default promo code, or empty when the deployment sets none. Held as an
-     * {@link Optional} field's resolved form — a non-null reference that is either a code or empty —
-     * rather than a {@code @Nullable String}, so the absence decision is made once at construction.
+     * The configured default promo code, or {@code null} when the deployment sets none. Held as a
+     * plain {@code @Nullable String} — not an {@code Optional} field, which Item 55 advises against —
+     * so the field stays a single reference and the explicit {@code @Nullable} states the absence in
+     * the contract a {@code @NullMarked} checker reads. The absence is lifted into an {@link Optional}
+     * locally, only where the value is consumed.
      */
-    private final Optional<String> defaultCode;
+    private final @Nullable String defaultCode;
 
     /** Observability: how many lookups resolved to the present (discount-found) branch. */
     private long discountsApplied;
@@ -40,14 +44,14 @@ public final class DiscountService {
      * Creates a service over the given promo catalog and an externally-configured default code.
      *
      * @param catalog     the promo lookup port, never {@code null}
-     * @param defaultCode the deployment's default code, or empty when none is configured
-     * @throws NullPointerException if {@code catalog} or {@code defaultCode} is {@code null}
+     * @param defaultCode the deployment's default code, or {@code null} when none is configured
+     * @throws NullPointerException if {@code catalog} is {@code null}
      */
     // tag::require-nonnull[]
-    public DiscountService(PromoCatalog catalog, Optional<String> defaultCode) {
-        // fail fast at the boundary: a missing collaborator throws here, not frames later
+    public DiscountService(PromoCatalog catalog, @Nullable String defaultCode) {
+        // fail fast at the boundary: a missing required collaborator throws here, not frames later
         this.catalog = Objects.requireNonNull(catalog, "catalog");
-        this.defaultCode = Objects.requireNonNull(defaultCode, "defaultCode");
+        this.defaultCode = defaultCode;   // genuinely optional: absence is part of the contract
     }
     // end::require-nonnull[]
 
@@ -70,22 +74,24 @@ public final class DiscountService {
      * Applies the best discount available for a code to an order total, falling back to the configured
      * default code when the caller supplies none.
      *
-     * <p>The result is computed without ever calling {@link Optional#get()}: {@code map} transforms
-     * the present case and {@code orElse} supplies the absent one, so there is no unguarded access to
-     * defend against. A present discount increments one counter and an absent lookup the other, so the
-     * branch the code took is observable.
+     * <p>Both code arguments are plain {@code @Nullable String}s — not {@code Optional} parameters,
+     * which Item 55 advises against. Absence is lifted into an {@link Optional} <em>locally</em>, where
+     * it is consumed, so the result is computed without ever calling {@link Optional#get()}: {@code map}
+     * transforms the present case and {@code orElseGet} supplies the absent one, so there is no
+     * unguarded access to defend against. A present discount increments one counter and an absent
+     * lookup the other, so the branch the code took is observable.
      *
-     * @param requestedCode the code the customer entered, or empty to use the configured default
+     * @param requestedCode the code the customer entered, or {@code null} to use the configured default
      * @param orderTotal    the order total before any discount, never {@code null}
      * @return the order total after any applicable discount, never {@code null}
-     * @throws NullPointerException if {@code requestedCode} or {@code orderTotal} is {@code null}
+     * @throws NullPointerException if {@code orderTotal} is {@code null}
      */
-    public Money priceWithDiscount(Optional<String> requestedCode, Money orderTotal) {
-        Objects.requireNonNull(requestedCode, "requestedCode");
+    public Money priceWithDiscount(@Nullable String requestedCode, Money orderTotal) {
         Objects.requireNonNull(orderTotal, "orderTotal");
-        Optional<String> code = requestedCode.or(() -> defaultCode);
+        String code = requestedCode != null ? requestedCode : defaultCode;
         // tag::optional-map[]
-        return code.flatMap(catalog::lookup)
+        return Optional.ofNullable(code)        // lift the nullable code into an Optional locally
+            .flatMap(catalog::lookup)
             .map(discount -> applyDiscount(orderTotal, discount))
             .orElseGet(() -> noDiscount(orderTotal));
         // end::optional-map[]
@@ -100,7 +106,7 @@ public final class DiscountService {
      */
     // tag::nullable-return[]
     public @Nullable String defaultCodeOrNull() {   // explicit opt-out of the @NullMarked default
-        return defaultCode.orElse(null);
+        return defaultCode;
     }
     // end::nullable-return[]
 
@@ -135,11 +141,15 @@ public final class DiscountService {
     }
 
     /**
-     * A readiness probe: the service is ready when its catalog port is wired.
+     * A readiness probe: the service is ready as soon as it is constructed, because the constructor's
+     * fail-fast {@code requireNonNull} guarantees the catalog port is wired — so no {@code != null}
+     * check on a {@code @NullMarked}, constructor-guarded field is needed (such a check is dead code a
+     * nullness checker rejects). A service backed by a remote catalog would instead delegate to a real
+     * catalog readiness signal here.
      *
-     * @return {@code true} when the service can resolve discounts
+     * @return {@code true} — a constructed service can resolve discounts
      */
     public boolean isReady() {
-        return catalog != null;
+        return true;
     }
 }
