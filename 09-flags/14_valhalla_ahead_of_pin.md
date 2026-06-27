@@ -20,3 +20,11 @@ not promise reified generics, and do not let it weaken the erasure-is-permanent 
 
 ## Proposed Folklore-list addition
 "Java will get reified generics soon" — Project Valhalla is exploratory; never assert as imminent fact.
+
+## Update — 2026-06-27 (deferred-marker resolution pass, draft v1)
+Re-confirmed against the corrected SOURCE-PIN.md (anchor **JDK 21.0.11**, forward **JDK 25.0.3**):
+Valhalla reified/specialized generics ship in **neither** LTS. STILL **AHEAD-OF-PIN** — kept as an
+accurately-noted horizon, not raw-marked. The draft carries it in two places, both traced to this
+flag and the SOURCE-PIN moving-target policy: the in-prose `> **AHEAD-OF-PIN**` callout in
+"Limitations & when NOT to reach for it" (frames it as direction, never as shipped), and the
+back-matter "AHEAD-OF-PIN" sources row. No reified-generics claim is asserted as fact.
