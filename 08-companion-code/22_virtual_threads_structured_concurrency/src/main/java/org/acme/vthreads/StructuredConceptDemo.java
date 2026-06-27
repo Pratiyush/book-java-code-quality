@@ -51,8 +51,8 @@ public final class StructuredConceptDemo {
                 results.add(fork.get());          // a failed fork surfaces here as ExecutionException
             }
         } catch (ExecutionException e) {
-            // end::structured-preview[]
             throw new StructuredFailureException("subtask-failed", e.getCause());
+            // end::structured-preview[]
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new StructuredFailureException("interrupted", e);
