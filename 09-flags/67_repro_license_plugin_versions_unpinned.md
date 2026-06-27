@@ -65,3 +65,44 @@ re-confirm green, and rebuild twice to re-confirm bit-identical output.
 same plugin/spec split pattern).
 
 **Filed by:** example-builder, Chapter 29 (key 67) EXAMPLE-BUILD (2026-06-26).
+
+---
+
+## VERIFY addendum (source-verifier, 2026-06-27) — residual deferred-verification atoms
+
+The chapter's `verify-at-pin` ledger names atoms beyond the two plugin GAVs above. At SOURCE-VERIFY they
+were adjudicated against SOURCE-PIN.md (corrected 2026-06-27) and the BUILT module. Two **resolved** (now
+confirmed in the draft, markers removed); the rest stay `⚠ verify-at-pin` and are recorded here so each
+unconfirmable atom has a flag home:
+
+**Resolved at build (markers removed from the draft):**
+- `project.build.outputTimestamp` — present in the companion `pom.xml` (`2026-06-20T00:00:00Z`) and drives
+  the proven bit-identical jar (Maven 3.9.16 is pinned, SOURCE-PIN §4). Verified.
+- The **build-twice-and-diff / `artifact:compare`** verification *mechanism* — demonstrated empirically
+  (two fresh `clean package` builds → same SHA-256 `b5b3d7be…`; the in-code analogue is
+  `ReproducibleArtifact.matches`). Verified.
+- **Build status** — the module is **built green** (`mvn -B -Pquality verify`, 7 tests, license gate passes,
+  `THIRD-PARTY.txt` generated). Stale `EXAMPLE-BUILD = PENDING` / `pending` strings in the draft header were
+  corrected to built-green.
+
+**Still `⚠ verify-at-pin` (UNCONFIRMABLE — SOURCE-PIN does not separately pin these):**
+- **Individual SPDX license-id specifics** (`Apache-2.0`, `MIT`, `GPL-3.0-only`, `LGPL-2.1`, `BSD-2/3-Clause`,
+  `ISC`, `AGPL-3.0-only`, `EPL-2.0`, `MPL-2.0`). SPDX-as-standard = ISO/IEC 5962:2021 IS pinned (§4), but the
+  SOURCE-PIN note records the full id sub-tree as pending; confirm each exact id vs `spdx.org/licenses` at
+  `/pin-source`. (The allow-list file the module ships uses these ids; they are not asserted as pinned facts.)
+- **Gradle archive flags** (`preserveFileTimestamps=false`, `reproducibleFileOrder=true`). Gradle 9.6.0 is
+  pinned (§4) but the companion is **Maven-only** — these flags are mentioned in the prose, not exercised by
+  any built module, so they are not source-traced here. Confirm vs the pinned Gradle docs at `/pin-source`.
+- **SLSA-level dependence on reproducibility / hermeticity** (the claim that reproducibility + hermeticity
+  underpin the *higher* SLSA levels). SLSA v1.0 IS pinned (§4), but the specific level-mapping is a
+  *synthesized* claim not traced to a named SLSA section. Confirm vs `slsa.dev/spec/v1.0` at `/pin-source`,
+  or qualify to what the spec states.
+- **Obligation summaries** (LGPL/MPL/EPL weak-copyleft; GPL/AGPL strong-copyleft; AGPL reaching network/SaaS
+  use). Stated **factually, NOT legal advice** (LEGAL-IP-RULES); the named license texts are not pinned
+  sources. The categories are kept as factual generalizations with the standing "not legal advice"
+  disclaimer; confirm category framing vs the license texts / SPDX at `/pin-source`. Not a legal conclusion.
+
+**Status:** `⚠ verify at pin` (residual atoms). Re-confirm all of the above at the next `/pin-source` pass,
+alongside the two plugin GAV lines.
+
+**Addendum filed by:** source-verifier, Chapter 29 (key 67) SOURCE-VERIFY (2026-06-27).

@@ -42,3 +42,36 @@ properties to the pinned values and re-run `mvn -B -Pquality -f 08-companion-cod
 pattern).
 
 **Filed by:** example-builder, Chapter 27 (key 62) EXAMPLE-BUILD (2026-06-26).
+
+---
+
+## Addendum (2026-06-27, deferred-verification resolution pass)
+
+The deferred-verification markers in `03-drafts/62_build_dependency_hygiene/62_build_dependency_hygiene_v1.md`
+were resolved against (a) SOURCE-PIN (corrected 2026-06-27: Maven **3.9.16**; enforcer/versions plugins NOT
+separately pinned) and (b) the green Maven companion build. **Confirmed and converted to fact** (marker
+removed): Maven 3.9.16; Maven lifecycle phases `validate→compile→test→verify`; Enforcer rule names
+`dependencyConvergence`/`requireUpperBoundDeps`/`bannedDependencies` (class names in the resolved
+`enforcer-rules-3.5.0.jar` + all five rules executed and passed on the resolved graph); Maven BOM-import
+syntax (`<type>pom</type>`+`<scope>import</scope>`, resolved+built); Maven `versions:display-dependency-updates`
+goal (ran during `verify`).
+
+The following chapter-62 atoms remain **`⚠ verify-at-pin` (left marked in the draft)** because the
+companion module is **Maven-only** and SOURCE-PIN treats some sources as rolling/SaaS — they are NOT
+confirmed by the build, and must not read as settled facts:
+
+| Atom | Why still flagged |
+|---|---|
+| `maven-enforcer-plugin:3.5.0` / `versions-maven-plugin:2.18.0` version literals | Not separately pinned in SOURCE-PIN §4 (covered above). |
+| Gradle `check` task semantics; version-catalog `gradle/libs.versions.toml` format; resolution strategies / `dependencyInsight`; `dependencyUpdates` goal | Gradle (SOURCE-PIN §4 = 9.6.0) was NOT exercised — the module is Maven-only; Gradle docs not fetched. Verify against Gradle 9.6.0 docs at SOURCE-VERIFY / a Gradle companion. |
+| Renovate config keys (`packageRules`, `matchUpdateTypes`, `automerge`, `groupName`, `schedule`, `vulnerabilityAlerts`); Dependabot keys (`version: 2`, `package-ecosystem`, `schedule.interval`, `groups`) | SOURCE-PIN §4 marks Renovate/Dependabot **⚠ rolling** (hosted/SaaS). Pin the config schema **dated-at-use**; never timeless. (`renovate.json`/`dependabot.yml` in the module use only documented schema keys.) |
+| Security-alert sources NVD / OSV / GitHub Advisory | SaaS/rolling vulnerability feeds; dated-at-use. Cross-refs key 65 (vuln scanning). |
+| Maven "nearest-wins" resolution wording; `mvn dependency:tree` / `dependency:analyze` goal names | Documentation claim / goals not exercised by this build's gate path; confirm against Maven 3.9.16 docs at SOURCE-VERIFY. |
+
+The two stale `BUILD STATUS: PENDING` strings (front-matter comment, lines ~5 and ~12) and the two stale
+`SOURCE-PIN ... TO-PIN` strings (lines ~11 and ~141) were corrected to **built-green** / **§4 PINNED** to
+match `_EXAMPLE.md` (2026-06-26) and the corrected SOURCE-PIN. No verified fact was altered; no value was
+invented.
+
+**Status:** OPEN — resolve the table rows at `/pin-source` / SOURCE-VERIFY (Step 5); SaaS rows revisited at
+public-push sign-off. Updated by deferred-verification resolution pass, 2026-06-27.
