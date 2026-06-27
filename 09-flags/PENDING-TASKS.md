@@ -32,17 +32,17 @@ The book cannot *finish* without the user's external-LLM independent scores ≥8
 
 ## The one-by-one sequence (each = feature-branch → PR → merge → `status.py` regen → drift clean)
 
-- [ ] **G1 — Durable tracker + small gaps.** This file; `00-strategy/Java Quality-BOOK-STRATEGY.md`
+- [x] **G1 — Durable tracker + small gaps.** This file; `00-strategy/Java Quality-BOOK-STRATEGY.md`
   charter; seed `10-logs/activity.jsonl`.
-- [ ] **G2 — Ch22 over-quote trim.** Trim JEP 444 / >15-word verbatims to LEGAL-IP §2 ceiling per
+- [x] **G2 — Ch22 over-quote trim.** Trim JEP 444 / >15-word verbatims to LEGAL-IP §2 ceiling per
   `09-flags/22_quoted_spans_verbatim_and_length.md`; re-verify; update flag.
-- [ ] **G3 — CODE-REVIEW FLOOR-C (45 modules).** `code-reviewer` per built module →
+- [x] **G3 — CODE-REVIEW FLOOR-C (45 modules).** `code-reviewer` per built module →
   `03-drafts/NN_slug/NN_slug_CODEREVIEW.md`; fix MAJORs + rebuild green; batched by Part (~8 PRs).
-- [ ] **G4 — WS-F machinery scaffold.** `06-assembly/00_front-matter.md`; `06-assembly/AI-DISCLOSURE.md`
+- [x] **G4 — WS-F machinery scaffold.** `06-assembly/00_front-matter.md`; `06-assembly/AI-DISCLOSURE.md`
   + refresh `PROVENANCE-LOG.md`; `06-assembly/README.md` + `/assemble` dry-run (0/47 → MANUSCRIPT pending).
-- [ ] **G5 — Manuscript-gate dry-runs.** ORIGINALITY + PROOF book-wide; RED-TEAM + READER-SIM batched by
+- [x] **G5 — Manuscript-gate dry-runs.** ORIGINALITY + PROOF book-wide; RED-TEAM + READER-SIM batched by
   Part → `06-assembly/*REPORT.md` (labelled DRY-RUN). Findings feed the lift loop.
-- [ ] **G6 — Prime approval handoff.** Refresh `09-flags/external-review/QUEUE.md` with batch order +
+- [x] **G6 — Prime approval handoff.** Refresh `09-flags/external-review/QUEUE.md` with batch order +
   lift targets from G2/G3/G5; update `LEDGER.md` §1 + `RESUME.md`.
 
 ## Blocked — needs the user / a networked env (not Claude-solo)

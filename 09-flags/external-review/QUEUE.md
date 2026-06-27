@@ -1,66 +1,68 @@
 # External-review queue
 
-> Status as of 2026-06-21. **Voice lift is complete on all 47 chapters.** Figures are done through
-> Ch 24 (+ the eight Part XII–XIV chapters); Claude is finishing the rest. The independent score is
-> what unlocks routing to the human gate (≥80% + content floors PASS).
+> **Status 2026-06-27 — Phase G complete.** All 47 chapters are drafted, voice-lifted, figured,
+> source-verified, and now **CODE-REVIEWED** (FLOOR-C second half: 45/45 companion modules have a
+> `_CODEREVIEW.md`; 2 are N/A). Four **manuscript-level gate dry-runs** ran (independent Sonnet):
+> `06-assembly/{ORIGINALITY,PROOF,REDTEAM,READERSIM}-REPORT.md` — ORIGINALITY clean (0 regurgitation),
+> the others PASS-WITH-FIXES/FIX. Book-wide cross-references were renumbered to FINAL_INDEX numbers.
 >
-> Attach the chapter draft at the path shown to your LLM together with `REVIEW-PROMPT.md`. Save the
-> reply as `<draft-dir>/<slug>_SCORE_INDEP.md` (or drop it in `inbox/ch-<N>.md`).
+> **What unlocks a chapter:** an **independent score ≥ 88%** (44/50) + content-floors A/B/C-source PASS
+> → `status.py` auto-promotes it to `04-approved/`. The only human gate left is Step-16 (whole-book).
+> Attach the chapter draft + `REVIEW-PROMPT.md` to your LLM; save the reply as
+> `<draft-dir>/<slug>_SCORE_INDEP.md`. Claude applies the lifts each one-pager calls for, then you re-score.
 
-## ▶ Ready for external review NOW (voice + figure done, awaiting an independent score)
+## How to read this queue
 
-| Ch | Draft to attach |
-|---|---|
-| 1 | `03-drafts/01_what_is_code_quality/01_what_is_code_quality_v1.md` |
-| 2 | `03-drafts/03_readability_maintainability/03_readability_maintainability_v1.md` |
-| 3 | `03-drafts/05_java_quality_toolchain/05_java_quality_toolchain_v1.md` |
-| 4 | `03-drafts/06_quality_culture_ownership/06_quality_culture_ownership_v1.md` |
-| 5 | `03-drafts/08_effective_java/08_effective_java_v1.md` |
-| 6 | `03-drafts/07_naming_structure_formatting/07_naming_structure_formatting_v1.md` |
-| 7 | `03-drafts/09_api_method_contracts/09_api_method_contracts_v1.md` |
-| 8 | `03-drafts/10_immutability_value_design/10_immutability_value_design_v1.md` |
-| 9 | `03-drafts/11_null_safety_optional/11_null_safety_optional_v1.md` |
-| 10 | `03-drafts/12_error_handling_exceptions/12_error_handling_exceptions_v1.md` |
-| 11 | `03-drafts/14_generics_type_safety/14_generics_type_safety_v1.md` |
-| 12 | `03-drafts/19_code_smells_antipatterns/19_code_smells_antipatterns_v1.md` |
-| 13 | `03-drafts/20_thread_safety_jmm/20_thread_safety_jmm_v1.md` |
-| 14 | `03-drafts/22_virtual_threads_structured_concurrency/22_virtual_threads_structured_concurrency_v1.md` |
-| 15 | `03-drafts/26_how_static_analysis_works/26_how_static_analysis_works_v1.md` |
-| 16 | `03-drafts/27_checkstyle/27_checkstyle_v1.md` |
-| 17 | `03-drafts/35_sonarqube_ide_layered_stack/35_sonarqube_ide_layered_stack_v1.md` |
-| 18 | `03-drafts/38_custom_rules_codegen_lombok/38_custom_rules_codegen_lombok_v1.md` |
-| 19 | `03-drafts/39_managing_findings/39_managing_findings_v1.md` |
-| 20 | `03-drafts/41_testing_landscape_quality/41_testing_landscape_quality_v1.md` |
-| 21 | `03-drafts/42_unit_testing_assertions_mocking/42_unit_testing_assertions_mocking_v1.md` |
-| 22 | `03-drafts/45_integration_property_based_testing/45_integration_property_based_testing_v1.md` |
-| 23 | `03-drafts/48_coverage_mutation_effectiveness/48_coverage_mutation_effectiveness_v1.md` |
-| 24 | `03-drafts/50_contract_approval_testing/50_contract_approval_testing_v1.md` |
+Every chapter is ready to score now. The **Lift target** column is the dominant pre-approval fix already
+surfaced by CODE-REVIEW + the dry-run gates — score the chapter as-is, but know Claude will lift these
+before/after your score. Chapters with **no entry** came through CODE-REVIEW + red-team clean (minor nits
+only) and are the **best first batch** (most likely to clear 88% immediately).
 
-## ▶ Also ready now (voice + figure done as of 2026-06-21)
+## ▶ Batch A — cleanest first (PASS code-review, no major gate findings)
 
-| Ch | Draft to attach |
-|---|---|
-| 25 | `03-drafts/53_solid_coupling_cohesion_packages/53_solid_coupling_cohesion_packages_v1.md` |
-| 26 | `03-drafts/55_enforcing_architecture_fitness_functions/55_enforcing_architecture_fitness_functions_v1.md` |
-| 27 | `03-drafts/62_build_dependency_hygiene/62_build_dependency_hygiene_v1.md` |
-| 28 | `03-drafts/65_dependency_scanning_sbom_supply_chain/65_dependency_scanning_sbom_supply_chain_v1.md` |
-| 29 | `03-drafts/67_reproducible_builds_license_compliance/67_reproducible_builds_license_compliance_v1.md` |
-| 30 | `03-drafts/69_secure_coding_owasp/69_secure_coding_owasp_v1.md` |
-| 31 | `03-drafts/70_sast_secrets_detection/70_sast_secrets_detection_v1.md` |
-| 32 | `03-drafts/73_security_in_ci/73_security_in_ci_v1.md` |
-| 33 | `03-drafts/75_ci_pipeline_quality_gates/75_ci_pipeline_quality_gates_v1.md` |
-| 34 | `03-drafts/80_coverage_pr_automation_platforms/80_coverage_pr_automation_platforms_v1.md` |
-| 35 | `03-drafts/81_branch_protection_precommit_parity/81_branch_protection_precommit_parity_v1.md` |
-| 36 | `03-drafts/83_release_quality/83_release_quality_v1.md` |
-| 37 | `03-drafts/84_code_review_standards_documentation/84_code_review_standards_documentation_v1.md` |
-| 40 | `03-drafts/96_remediation_playbook_automated_change/96_remediation_playbook_automated_change_v1.md` |
-| 44 | `03-drafts/105_performance_regression_gates/105_performance_regression_gates_v1.md` |
+Score these first; they carry only minor/nit lift items. Printed-chapter order:
+Ch3 (toolchain), Ch4 (culture), Ch5 (Effective Java), Ch6 (naming), Ch8 (immutability), Ch11 (generics),
+Ch12 (code smells), Ch15 (static analysis), Ch16 (Checkstyle), Ch17 (Sonar), Ch19 (managing findings),
+Ch20 (testing landscape), Ch21 (unit testing), Ch22 (integration/PBT), Ch23 (coverage/mutation),
+Ch27 (build hygiene), Ch28 (dep scanning/SBOM), Ch29 (reproducible builds), Ch31 (SAST), Ch32 (security CI),
+Ch33 (CI gates), Ch34 (coverage/PR), Ch35 (branch protection), Ch36 (release), Ch37 (code review),
+Ch38 (metrics), Ch39 (refactoring), Ch43 (performance), Ch44 (perf-regression), Ch45 (observability),
+Ch46 (reference stack).
 
-**Voice + figures are now COMPLETE on all 47 chapters.** Every chapter above is ready for an external
-independent review whenever you are; Claude applies the lifts the one-pagers call for.
+## ▶ Batch B — score, but these carry a named lift target
 
-## ✓ Already independently scored (Sonnet lift-1, 70–80%) — a fresh external pass is welcome
+| Printed Ch | Draft (dossier key) | Lift target (from CODE-REVIEW / dry-run gates) |
+|---|---|---|
+| 1 | `01_what_is_code_quality` | LEGAL-IP quote density (Fowler/Cunningham stacked >15-word quotes); ISO 25010:2023 finer-name + SonarQube "30-min/line" lineage = source-verify at pin |
+| 7 | `09_api_method_contracts` | `@throws NullPointerException` Javadoc consistency in the displayed contract exemplar; soften the "thread-safe" repo comment (non-atomic transfer) |
+| **9** | `11_null_safety_optional` | **MAJOR** — `DiscountService`/`PricingConfig` use `Optional` as a field+parameter, the exact shape the chapter's own Item-55 prose forbids; + a dead `catalog != null` check the chapter's recommended checker rejects. Reconcile code to the chapter's rule. |
+| 13 | `20_thread_safety_jmm` | the racy-counter test asserts only the safe direction yet prose says it "proves the lost update" — reconcile; reader-sim: gloss *atomicity*/*CAS* before first use |
+| 24 | `50_contract_approval_testing` | **MAJOR** — `rubberStampingAWrongBaselineHidesABug` asserts the *opposite* of its name (it proves a mismatch is caught). Rewrite: approve a wrong baseline, then verify it passes. |
+| 26 | `55_enforcing_architecture_fitness_functions` | prose/Javadoc claim `layeredArchitecture()` rejects the seeded edge, but no test runs the layered rule over the breach (only the coding-rule breach is proven). Claim only what's tested, or add the test. |
+| 30 | `69_secure_coding_owasp` | Javadoc/README claim the body-cap + PBKDF2 work-factor are externalized config, but the running path uses baked-in literals (`SecurityProfile` is test-only). Wire it in or soften the claim. |
+| 40 | `96_remediation_playbook_automated_change` | "finds every reference without false positives" over-states OpenRewrite LST type-attribution — soften to its real guarantee |
+| 41 | `97_ai_generated_code_quality` | keep every AI statistic dated+attributed (already enforced in code); LEGAL-IP: confirm the one unattributed near-quote at `/pin-source` |
+| **47** | `110_maturity_model_roadmap` | **VERIFY** — the DORA "capabilities over levels" framing is still UNVERIFIED (no pinned source) yet called "the single most important framing"; confirm at `/pin-source` or reframe. Reader-sim priority: this chapter is the book's map. |
 
-Ch 38, 39, 41, 42, 43, 45, 46, 47. An external one-pager would replace the Sonnet score and likely
-give a sharper, different-vendor read. Their existing `_SCORE_INDEP.md` lists the open items
-(mostly SaaS-atom source-verify + a couple of prose nits).
+## Cross-cutting lifts (apply during the lift pass, all chapters)
+
+- **Gloss-before-use** (READER-SIM): define load-bearing terms in plain words *before* first use — recurring
+  misses: sound/unsound, atomicity, gadget chain, CAS, ECB block-equality.
+- **Two-tier Sources** (lint_citations, most drafts): restructure back-matter into "Primary / Official" +
+  "Accessible / Further reading" with per-row URL + date-verified (LEGAL-IP §4).
+- **Add a reproduce step**: surface the `mvn -B -Pquality verify` run command as a clean step, not buried.
+- Optional: a "Your Turn" beat per chapter (no sampled chapter has one).
+
+## ✓ Already independently scored (Sonnet, 68–80% — below the 88% bar)
+
+Printed Ch 38, 39, 41, 42, 43, 45, 46, 47 (keys 85, 91, 97, 100, 101, 106, 109, 110). A fresh
+different-vendor external pass is welcome and will replace the Sonnet score. Their `_SCORE_INDEP.md`
+lists the open items (mostly SaaS-atom source-verify + the lift targets above).
+
+## Out of scope for scoring (tracked elsewhere)
+
+- ~182 flagged `@pin` residuals (copyrighted-book verbatims, SaaS rule defaults, JLS/JEP spec text) →
+  need a networked `/pin-source`; all dated-at-use + flagged, not unverified assertions.
+- Figure-caption-by-key normalization (~22 ≤47-key chapters number their own figures by dossier key) →
+  a coordinated caption+sidecar+png-filename pass, deferred.
+- Engine-version bump (Checkstyle/SpotBugs cached vs pinned) + env-gated REPRO scans → need networked Maven.
