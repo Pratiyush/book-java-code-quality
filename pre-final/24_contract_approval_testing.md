@@ -1,6 +1,6 @@
 # Correctness Against an Outside Reference
 
-*Contract testing for the agreements between services, API testing for the running endpoint, and approval testing against a reviewed baseline · 50 (folds 52) · Part V (closer)*
+*Contract testing for the agreements between services, API testing for the running endpoint, and approval testing against a reviewed baseline · Part V (closer)*
 
 > A service can pass every test it owns, hit 100% coverage, kill every mutant, and still break the team downstream, because nothing in the suite encoded what they depend on.
 

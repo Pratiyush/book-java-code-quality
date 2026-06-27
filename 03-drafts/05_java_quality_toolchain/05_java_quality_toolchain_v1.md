@@ -9,7 +9,7 @@ DRAFT v1 — map chapter; gates manual; EXAMPLE-BUILD GREEN at JDK 21.0.11 (see 
 
 # A Map of the Territory
 
-*The Java quality toolchain at a glance — linters, analyzers, formatters, coverage, gates · 05 · Part I*
+*The Java quality toolchain at a glance — linters, analyzers, formatters, coverage, gates · Part I*
 
 ## Hook
 

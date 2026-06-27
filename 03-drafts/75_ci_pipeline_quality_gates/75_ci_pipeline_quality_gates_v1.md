@@ -14,7 +14,7 @@ DRAFT v1 — gates manual; pipeline-is-the-fitness-function-portfolio + fail-fas
 
 # A Gate the Team Keeps On
 
-*Designing the CI pipeline that runs every gate in the book — ordered for fast feedback, scoped to new code, and kept fast enough that nobody routes around it · 75 (folds 76, 79) · Part IX (opener)*
+*Designing the CI pipeline that runs every gate in the book — ordered for fast feedback, scoped to new code, and kept fast enough that nobody routes around it · Part IX (opener)*
 
 > Wire up every gate the team has built and run them all, blocking, on every pull request, and within a month the slow ones are skipped with `[skip ci]` and the strict ones are set to `continue-on-error`. The gates did not fail. The pipeline did.
 

@@ -1,6 +1,6 @@
 # Let the Compiler Carry It
 
-*Generics, type erasure, and writing code where a runtime cast can never occur · 14 · Part II*
+*Generics, type erasure, and writing code where a runtime cast can never occur · Part II*
 
 > The unchecked warning is the compiler's report that it has done all it can. The rest of the proof belongs to the developer.
 

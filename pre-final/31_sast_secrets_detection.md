@@ -1,6 +1,6 @@
 # Catching What You Forgot
 
-*SAST that traces untrusted input to a dangerous sink, and secrets detection for the credentials that leak — with the hard truth that finding one is already too late · 70 (folds 71) · Part VIII*
+*SAST that traces untrusted input to a dangerous sink, and secrets detection for the credentials that leak — with the hard truth that finding one is already too late · Part VIII*
 
 > A developer hardcodes an AWS key and pushes. Ninety seconds later an attacker's bot scraping public commits has it. Deleting it in the next commit changes nothing — it is in the history, it is gone, it is compromised.
 

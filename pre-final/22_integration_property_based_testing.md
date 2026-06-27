@@ -1,6 +1,6 @@
 # The Database That Does Not Exist in Production
 
-*Integration testing against real dependencies, and the inputs no example imagined · 45 (folds 46) · Part V*
+*Integration testing against real dependencies, and the inputs no example imagined · Part V*
 
 > A unit test is only as good as the doubles it exercises against and the inputs it was given. Two techniques close exactly those two blind spots.
 

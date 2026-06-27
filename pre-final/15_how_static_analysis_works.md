@@ -1,6 +1,6 @@
 # Wrong in Both Directions
 
-*How a linter actually reads a program (AST, data-flow, taint), and why no tool can be perfect · 26 · Part IV*
+*How a linter actually reads a program (AST, data-flow, taint), and why no tool can be perfect · Part IV*
 
 > A static analyzer is a machine that approximates an unanswerable question. Its false alarms and its blind spots are not bugs in the tool. They are mathematics.
 

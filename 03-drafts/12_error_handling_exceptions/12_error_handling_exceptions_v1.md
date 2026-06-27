@@ -10,7 +10,7 @@ DRAFT v1 — gates manual; throwable-decision + item-to-rule crosswalk + two-pat
 
 # When Things Go Wrong
 
-*Exceptions, resource cleanup, and not trusting inputs: the failure paths done right · 12 (folds 16, 18) · Part II*
+*Exceptions, resource cleanup, and not trusting inputs: the failure paths done right · Part II*
 
 > The happy path is where the program does its job. The failure paths are where it earns trust.
 

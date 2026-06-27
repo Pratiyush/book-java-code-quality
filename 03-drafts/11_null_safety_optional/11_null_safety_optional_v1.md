@@ -11,7 +11,7 @@ DRAFT v1 — gates manual; four-levers layered-defense + family×guarantee shape
 
 # The Value That Isn't There
 
-*Designing NullPointerExceptions out — at design time, at the boundary, at build time, and at runtime · 11 (folds 31, 32) · Part II*
+*Designing NullPointerExceptions out — at design time, at the boundary, at build time, and at runtime · Part II*
 
 > `null` is a value of every reference type and a member of none of them. The compiler will not catch it — until told to.
 

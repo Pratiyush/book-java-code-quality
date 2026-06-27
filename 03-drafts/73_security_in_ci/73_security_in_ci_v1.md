@@ -12,7 +12,7 @@ DRAFT v1 — gates manual; security-gate-as-fitness-function + five-testing-type
 
 # Making the Security Gate Stick
 
-*Assembling SAST, SCA, secrets, and DAST into one automated gate — and the block-versus-warn policy that keeps it from being disabled · 73 · Part VIII (closer)*
+*Assembling SAST, SCA, secrets, and DAST into one automated gate — and the block-versus-warn policy that keeps it from being disabled · Part VIII (closer)*
 
 > Turn every security tool on as a hard blocker and within two weeks the build is permanently red and someone has added `continue-on-error: true`. A security gate the team routes around protects nothing.
 

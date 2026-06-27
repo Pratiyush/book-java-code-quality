@@ -9,7 +9,7 @@ DRAFT v1 — gates run as documented manual passes (cheaper mode); EXAMPLE-BUILD
 
 # Quality Is a Word No Team Can Manage
 
-*What code quality is, what poor quality costs, and why "internal quality" is the half no one can see · 01 · Part I*
+*What code quality is, what poor quality costs, and why "internal quality" is the half no one can see · Part I*
 
 > "The 'cost' of high internal quality software is negative." — Martin Fowler, *Is High Quality Software Worth the Cost?*
 

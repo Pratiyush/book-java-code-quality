@@ -1,6 +1,6 @@
 # The Bug That Passes Every Test
 
-*Thread-safety, the Java Memory Model, and publishing shared state so other threads can actually see it · 20 (folds 21, 23) · Part III*
+*Thread-safety, the Java Memory Model, and publishing shared state so other threads can actually see it · Part III*
 
 > Correctly synchronized means data-race-free. Get the program there, and the simple, intuitive reading of it is the one the spec guarantees.
 

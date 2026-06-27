@@ -1,6 +1,6 @@
 # The Base of the Pyramid
 
-*JUnit as the harness, assertion libraries that diagnose, and test doubles done with discipline · 42 (folds 43, 44) · Part V*
+*JUnit as the harness, assertion libraries that diagnose, and test doubles done with discipline · Part V*
 
 > Two tests of the same code: one asserts what the code produced and survives a refactor; the other mocks everything, checks call order, and shatters when a private method is renamed. Same coverage. One is an asset.
 

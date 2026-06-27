@@ -1,6 +1,6 @@
 # The Thousand Cuts
 
-*Load and macro testing for the system-level truth a microbenchmark cannot give, and a performance-regression gate built honestly enough to survive the noise · 105 · Part XIII*
+*Load and macro testing for the system-level truth a microbenchmark cannot give, and a performance-regression gate built honestly enough to survive the noise · Part XIII*
 
 > No single pull request made the service slow. Each added three milliseconds — invisible, defensible, below any reviewer's notice — and a hundred PRs later the p99 latency had tripled. The first anyone heard of it was a customer complaint.
 

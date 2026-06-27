@@ -1,6 +1,6 @@
 # A Build You Can Stand Behind
 
-*Reproducible builds that prove the artifact matches the source, and the licenses hiding in the dependency tree · 67 (folds 68) · Part VII (closer)*
+*Reproducible builds that prove the artifact matches the source, and the licenses hiding in the dependency tree · Part VII (closer)*
 
 > The build's provenance was signed last chapter. But a signature over an artifact means nothing if rebuilding the same source produces a different artifact — the attestation covers a moving target.
 

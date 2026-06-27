@@ -1,6 +1,6 @@
 # Only Policy Can Ship It
 
-*Governing AI in the development workflow — sanctioned tools, mandatory verification, an accountable human, and AI code review as an augmentation that never replaces the gate · 100 (folds 98) · Part XII (closer)*
+*Governing AI in the development workflow — sanctioned tools, mandatory verification, an accountable human, and AI code review as an augmentation that never replaces the gate · Part XII (closer)*
 
 > A developer ships a pull request that takes down production, and explains in the post-mortem: "the AI generated that part." It is not a defense. The commit has their name on it. When a machine writes the code, someone still has to own its quality.
 

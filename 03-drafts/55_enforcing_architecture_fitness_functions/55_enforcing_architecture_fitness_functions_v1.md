@@ -14,7 +14,7 @@ DRAFT v1 — gates manual; executable-architecture + enforcement-spectrum(conven
 
 # Giving the Diagram Teeth
 
-*Making architecture rules executable with ArchUnit and JPMS — and the fitness-function frame that unifies every gate in the book · 55 (folds 33, 56) · Part VI (closer)*
+*Making architecture rules executable with ArchUnit and JPMS — and the fitness-function frame that unifies every gate in the book · Part VI (closer)*
 
 > The team drew the architecture, nodded, and six months later it is a ball of mud again — not by anyone's decision, but by a thousand small imports nobody stopped.
 

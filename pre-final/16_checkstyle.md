@@ -1,6 +1,6 @@
 # Four Tools, Four Different Bugs
 
-*Checkstyle, PMD, SpotBugs, Error Prone — what each one sees, and why a pipeline runs more than one · 27 (folds 28, 29, 30) · Part IV*
+*Checkstyle, PMD, SpotBugs, Error Prone — what each one sees, and why a pipeline runs more than one · Part IV*
 
 > They all "find bugs." They find *different* bugs, because each reads the program at a different moment in the build.
 

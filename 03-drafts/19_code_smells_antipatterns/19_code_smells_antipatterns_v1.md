@@ -10,7 +10,7 @@ DRAFT v1 — gates manual; smell-card + canon-dating + two-schools + item-to-rul
 
 # Names for What's Wrong
 
-*Code smells, the refactor for each, and design patterns read through modern Java · 19 (folds 61) · Part II*
+*Code smells, the refactor for each, and design patterns read through modern Java · Part II*
 
 > A smell is not a bug. It is the code signaling that the next change will cost more than it should.
 

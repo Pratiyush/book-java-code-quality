@@ -13,7 +13,7 @@ DRAFT v1 — gates manual; gate-needs-teeth-and-speed + branch-protection-makes-
 
 # Teeth and Speed
 
-*Branch protection and merge queues that make the gate unbypassable, trunk-based development that keeps it fast, and pre-commit hooks that move the feedback to the keyboard · 81 (folds 82) · Part IX*
+*Branch protection and merge queues that make the gate unbypassable, trunk-based development that keeps it fast, and pre-commit hooks that move the feedback to the keyboard · Part IX*
 
 > A quality gate that is not a *required* check is a suggestion. A gate that runs only in CI is a ten-minute gotcha. The workflow has to give the gate both teeth and speed, or developers route around it.
 

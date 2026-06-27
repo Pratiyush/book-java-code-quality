@@ -1,6 +1,6 @@
 # Keeping the Gate Honest
 
-*False positives, suppression with a reason, baselines, and the ratchet — how a static-analysis gate survives contact with a real codebase · 39 · Part IV (closer)*
+*False positives, suppression with a reason, baselines, and the ratchet — how a static-analysis gate survives contact with a real codebase · Part IV (closer)*
 
 > A gate that fails the build on a finding the team has judged wrong, or on four thousand findings in legacy code, doesn't get fixed. It gets disabled.
 

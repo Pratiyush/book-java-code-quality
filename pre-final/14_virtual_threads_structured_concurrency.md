@@ -1,6 +1,6 @@
 # Cheap Threads, Same Rules
 
-*Virtual threads, structured concurrency (still preview), and how concurrent code is actually verified · 22 (folds 24, 25) · Part III*
+*Virtual threads, structured concurrency (still preview), and how concurrent code is actually verified · Part III*
 
 > A thread per request became cheap. Every obligation the memory model imposed on it stayed exactly as expensive.
 

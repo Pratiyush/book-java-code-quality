@@ -1,6 +1,6 @@
 # Composition, Not Accumulation
 
-*SonarQube as the platform, the IDE as the first line, and how to layer analyzers into one coherent stack · 35 (folds 36, 37) · Part IV*
+*SonarQube as the platform, the IDE as the first line, and how to layer analyzers into one coherent stack · Part IV*
 
 > Bolting on every analyzer produces a slow build and a flood of duplicate findings. The skill is composing a few that each watch a different blind spot.
 

@@ -1,6 +1,6 @@
 # The Draft That Looks Like a Deliverable
 
-*The quality of AI-generated Java — its characteristic risks, the guardrails for AI-assisted refactoring and test generation, and the one stance that makes AI safe to use · 97 (folds 99) · Part XII (opener / umbrella)*
+*The quality of AI-generated Java — its characteristic risks, the guardrails for AI-assisted refactoring and test generation, and the one stance that makes AI safe to use · Part XII (opener / umbrella)*
 
 > An AI assistant writes a clean, idiomatic, well-tested pull request in thirty seconds. It also has a SQL injection it learned from its training data, imports a package that does not exist, and passes its own tests because they were generated from the buggy code. Nothing looks wrong.
 

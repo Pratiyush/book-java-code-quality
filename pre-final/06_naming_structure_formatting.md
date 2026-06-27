@@ -1,6 +1,6 @@
 # Three Things You Should Never Argue About Twice
 
-*Naming, structure, formatting — and the one of them a tool cannot do for you · 07 (folds 17, 34) · Part II*
+*Naming, structure, formatting — and the one of them a tool cannot do for you · Part II*
 
 > A formatter settles where the braces go. Nothing settles whether the name is true.
 

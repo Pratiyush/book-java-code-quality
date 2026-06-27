@@ -12,7 +12,7 @@ DRAFT v1 — gates manual; the-staged-roadmap(Monday→governance) + start-where
 
 # Where to Start, and How to Keep Going
 
-*A staged adoption roadmap that turns the whole book into a plan — offered as a guide to outcomes, not a ladder to climb for its own sake · 110 · Part XIV (the final chapter)*
+*A staged adoption roadmap that turns the whole book into a plan — offered as a guide to outcomes, not a ladder to climb for its own sake · Part XIV (the final chapter)*
 
 > A team proudly reports it has reached "Level 4 maturity": every gate, every tool, a dashboard of solid green. Its codebase is still miserable to work in, its best engineers are leaving, and Mondays are still dreaded. They climbed the ladder and arrived nowhere.
 
