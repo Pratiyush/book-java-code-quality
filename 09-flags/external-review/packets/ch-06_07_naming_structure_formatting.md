@@ -121,7 +121,7 @@ One axis runs under all of it: a tool checks typography (regex-enforceable); a h
 
 One axis carries this chapter. Figure 6.1 sets it out: on one side, the part a tool settles once and for all; on the other, the part only a human with domain knowledge can judge. Every concern below sorts onto that axis.
 
-![Fig 6.1 — the typography / meaning axis: what a tool settles once versus what only a human with domain knowledge can judge, the spine of Chapter 6](../../05-figures/07_naming_structure_formatting/fig07_1.png)
+![Figure 6.1 — the typography / meaning axis: what a tool settles once versus what only a human with domain knowledge can judge, the spine of Chapter 6](../../05-figures/07_naming_structure_formatting/fig07_1.png)
 
 *Figure 6.1 — the typography / meaning axis: what a tool settles once versus what only a human with domain knowledge can judge.*
 

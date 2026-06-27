@@ -120,10 +120,10 @@ The assumption does not hold, and this closing chapter of Part IX is the layer t
 
 Release quality is one loop with three moving parts. Figure 36.1 traces it: the shift-left gates of the prior chapters reduce what reaches production, progressive delivery limits the blast radius of whatever slips, and the feedback loop turns each escape back into a stronger gate. Read it as a cycle, not two phases.
 
-![Fig 36.1 &mdash; The release-quality loop: shift-left gates &harr; shift-right release quality — Every gate lowers the odds a defect ships; none reaches zero. Release quality assumes one slips, limits its
+![Figure 36.1 &mdash; The release-quality loop: shift-left gates &harr; shift-right release quality — Every gate lowers the odds a defect ships; none reaches zero. Release quality assumes one slips, limits its
     blast radius, and feeds the lesson back into the gates &mdash; one continuous cycle, not two phases.](../../05-figures/83_release_quality/fig83_1.png)
 
-*Fig 36.1 &mdash; The release-quality loop: shift-left gates &harr; shift-right release quality — Every gate lowers the odds a defect ships; none reaches zero. Release quality assumes one slips, limits its
+*Figure 36.1 &mdash; The release-quality loop: shift-left gates &harr; shift-right release quality — Every gate lowers the odds a defect ships; none reaches zero. Release quality assumes one slips, limits its
     blast radius, and feeds the lesson back into the gates &mdash; one continuous cycle, not two phases.*
 
 

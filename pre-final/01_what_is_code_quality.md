@@ -33,9 +33,9 @@ Three pictures carry this chapter. Figure 01.1 shows the standards lens: the ISO
 
 The reason "improve quality" is unarguable is that *quality* is an umbrella over many distinct properties. The international standard for software quality, **ISO/IEC 25010**, makes the decomposition explicit. Its **product quality model** breaks quality into top-level *characteristics*, each with sub-characteristics. Figure 01.1 lays out the whole model, with Maintainability, this book's territory, highlighted.
 
-![Fig 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.](figures/fig01_1.png)
+![Figure 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.](figures/fig01_1.png)
 
-*Fig 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.*
+*Figure 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.*
 
 > **CONCEPT** *Product quality* is the set of static and dynamic properties of the software itself. It is distinct from *quality in use*, which is about outcomes when real people use it in a real context. ISO/IEC 25010 defines the product model; its companion ISO/IEC 25019 now holds the quality-in-use model.
 
@@ -77,9 +77,9 @@ The cost of that invisible half shows up over time, not on any one day. Figure 0
             expensive ─────────────┴───────────────────────────────▶ time
 ```
 
-![Fig 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).](figures/fig01_2.png)
+![Figure 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).](figures/fig01_2.png)
 
-*Fig 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).*
+*Figure 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).*
 
 ### Why internal quality has negative cost
 
@@ -111,9 +111,9 @@ Martin Fowler sharpens the misuse into a quadrant: debt is **deliberate or inadv
 | **Deliberate** | "We don't have time for design." | "We must ship now and will deal with the consequences — knowingly." |
 | **Inadvertent** | "What's layering?" | "Now we know how we should have done it." |
 
-![Fig 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.](figures/fig01_3.png)
+![Figure 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.](figures/fig01_3.png)
 
-*Fig 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.*
+*Figure 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.*
 
 The quadrant matters because "technical debt" is routinely used to launder reckless work. This book holds the line: *prudent, tracked* debt is a tool; *reckless* debt is damage with a respectable name.
 

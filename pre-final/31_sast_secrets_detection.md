@@ -27,15 +27,15 @@ This chapter is the automated detection that the last one's secure-coding princi
 
 Two figures frame this chapter. Figure 31.1 maps the three security lenses this part draws on, SAST, SCA, and DAST, and the two techniques SAST uses inside that lens.
 
-![Fig 31.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.](figures/fig70_1.png)
+![Figure 31.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.](figures/fig70_1.png)
 
-*Fig 31.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.*
+*Figure 31.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.*
 
 Figure 31.2 lays out the secrets-detection ladder, from pre-commit to history scan, and marks the point past which finding a secret is already too late.
 
-![Fig 31.2 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents](figures/fig71_1.png)
+![Figure 31.2 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents](figures/fig71_1.png)
 
-*Fig 31.2 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents*
+*Figure 31.2 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents*
 
 ### SAST: tracing untrusted input to a dangerous sink
 

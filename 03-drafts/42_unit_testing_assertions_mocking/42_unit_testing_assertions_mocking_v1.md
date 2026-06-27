@@ -41,15 +41,15 @@ That gap between a unit test that helps and one that rots is decided by three sm
 
 Two structures carry the rest of the chapter, and Figure 21.1 draws the first. It shows JUnit's layering: one `TestEngine` API on a shared Platform, with Jupiter and other engines plugging into it. That single API is the reason one runner can execute several kinds of test side by side.
 
-![Fig 21.1 — JUnit Platform: three-module architecture — One TestEngine API lets build tools run Jupiter, jqwik, and others on a single Platform. JUnit 6.1.0 current (min Java 17).](../../05-figures/42_unit_testing_assertions_mocking/fig42_1.png)
+![Figure 21.1 — JUnit Platform: three-module architecture — One TestEngine API lets build tools run Jupiter, jqwik, and others on a single Platform. JUnit 6.1.0 current (min Java 17).](../../05-figures/42_unit_testing_assertions_mocking/fig42_1.png)
 
-*Fig 21.1 — JUnit Platform: three-module architecture — One TestEngine API lets build tools run Jupiter, jqwik, and others on a single Platform. JUnit 6.1.0 current (min Java 17).*
+*Figure 21.1 — JUnit Platform: three-module architecture — One TestEngine API lets build tools run Jupiter, jqwik, and others on a single Platform. JUnit 6.1.0 current (min Java 17).*
 
 Figure 21.2 draws the second: the five kinds of test double laid out from inert to behaviour-checking, with the state-verification-versus-behaviour-verification hinge marked at the centre. The sections that follow walk both structures in turn.
 
-![Fig 21.2 — The five test-double taxonomy — Fowler / Meszaros spectrum: Dummy → Mock. The hinge: state verification (stub) vs. behaviour verification (mock).](../../05-figures/42_unit_testing_assertions_mocking/fig42_2.png)
+![Figure 21.2 — The five test-double taxonomy — Fowler / Meszaros spectrum: Dummy → Mock. The hinge: state verification (stub) vs. behaviour verification (mock).](../../05-figures/42_unit_testing_assertions_mocking/fig42_2.png)
 
-*Fig 21.2 — The five test-double taxonomy — Fowler / Meszaros spectrum: Dummy → Mock. The hinge: state verification (stub) vs. behaviour verification (mock).*
+*Figure 21.2 — The five test-double taxonomy — Fowler / Meszaros spectrum: Dummy → Mock. The hinge: state verification (stub) vs. behaviour verification (mock).*
 
 
 ### JUnit: the substrate everything plugs into

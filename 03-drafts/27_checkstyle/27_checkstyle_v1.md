@@ -43,9 +43,9 @@ That is the organizing fact of this chapter, and the reason teams run several an
 
 The whole chapter hangs on one axis: the moment in the build at which each tool reads the program. Figure 16.1 places the four analyzers on that axis, from source text through the type-attributed tree inside the compiler to the emitted bytecode, and names the distinctive reach each position grants.
 
-![Fig 16.1 — The detection-time axis: where each analyzer reads the program — Four tools, four vantage points — where a tool stands determines what it can see](../../05-figures/27_checkstyle/fig27_1.png)
+![Figure 16.1 — The detection-time axis: where each analyzer reads the program — Four tools, four vantage points — where a tool stands determines what it can see](../../05-figures/27_checkstyle/fig27_1.png)
 
-*Fig 16.1 — The detection-time axis: where each analyzer reads the program — Four tools, four vantage points — where a tool stands determines what it can see*
+*Figure 16.1 — The detection-time axis: where each analyzer reads the program — Four tools, four vantage points — where a tool stands determines what it can see*
 
 
 ### The organizing axis: where each tool stands

@@ -42,9 +42,9 @@ Three pictures carry this chapter. Figure 01.1 shows the standards lens: the ISO
 
 The reason "improve quality" is unarguable is that *quality* is an umbrella over many distinct properties. The international standard for software quality, **ISO/IEC 25010**, makes the decomposition explicit. Its **product quality model** breaks quality into top-level *characteristics*, each with sub-characteristics. Figure 01.1 lays out the whole model, with Maintainability, this book's territory, highlighted.
 
-![Fig 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.](../../05-figures/01_what_is_code_quality/fig01_1.png)
+![Figure 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.](../../05-figures/01_what_is_code_quality/fig01_1.png)
 
-*Fig 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.*
+*Figure 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.*
 
 > **CONCEPT** *Product quality* is the set of static and dynamic properties of the software itself. It is distinct from *quality in use*, which is about outcomes when real people use it in a real context. ISO/IEC 25010 defines the product model; its companion ISO/IEC 25019 now holds the quality-in-use model.
 
@@ -86,9 +86,9 @@ The cost of that invisible half shows up over time, not on any one day. Figure 0
             expensive ─────────────┴───────────────────────────────▶ time
 ```
 
-![Fig 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).](../../05-figures/01_what_is_code_quality/fig01_2.png)
+![Figure 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).](../../05-figures/01_what_is_code_quality/fig01_2.png)
 
-*Fig 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).*
+*Figure 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).*
 
 ### Why internal quality has negative cost
 
@@ -120,9 +120,9 @@ Martin Fowler sharpens the misuse into a quadrant: debt is **deliberate or inadv
 | **Deliberate** | "We don't have time for design." | "We must ship now and will deal with the consequences — knowingly." |
 | **Inadvertent** | "What's layering?" | "Now we know how we should have done it." |
 
-![Fig 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.](../../05-figures/01_what_is_code_quality/fig01_3.png)
+![Figure 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.](../../05-figures/01_what_is_code_quality/fig01_3.png)
 
-*Fig 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.*
+*Figure 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.*
 
 The quadrant matters because "technical debt" is routinely used to launder reckless work. This book holds the line: *prudent, tracked* debt is a tool; *reckless* debt is damage with a respectable name.
 
@@ -254,7 +254,7 @@ RUNNABLE EXAMPLE SPEC — WITHDRAWN (EXAMPLE-BUILD = N/A (pure-concept chapter; 
 - BUILD STATUS: EXAMPLE-BUILD = N/A (pure-concept chapter; no companion module). The chapter body displays no Java code (no `java` fence, no `<!-- include: -->` marker), so there is no module to build and FLOOR C's compile clause is inapplicable — adjudicated N/A in 01_what_is_code_quality_EXAMPLE.md. The OrderDiscount demo above is a withdrawn proposal, not a built module.
 
 FIGURE PLAN (Step 9)
-- Fig 01.1 — ISO/IEC 25010:2023 product model (9 characteristics) with Maintainability's 5 sub-characteristics highlighted as "this book's territory." HTML→PNG; trace labels to the pinned ISO edition.
-- Fig 01.2 — the internal-quality / cruft-tax curve (the ASCII sketch in §How it works, rendered): cost-per-feature over time, high vs low internal quality. Qualitative axes, labelled illustrative; shape traced to Fowler.
-- Fig 01.3 — Fowler's technical-debt quadrant (the §How-it-works table, rendered), each cell with a one-line Java example. Trace to Fowler bliki.
+- Figure 01.1 — ISO/IEC 25010:2023 product model (9 characteristics) with Maintainability's 5 sub-characteristics highlighted as "this book's territory." HTML→PNG; trace labels to the pinned ISO edition.
+- Figure 01.2 — the internal-quality / cruft-tax curve (the ASCII sketch in §How it works, rendered): cost-per-feature over time, high vs low internal quality. Qualitative axes, labelled illustrative; shape traced to Fowler.
+- Figure 01.3 — Fowler's technical-debt quadrant (the §How-it-works table, rendered), each cell with a one-line Java example. Trace to Fowler bliki.
 -->

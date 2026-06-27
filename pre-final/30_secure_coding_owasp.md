@@ -27,9 +27,9 @@ That inward turn is Part VIII, and this opening chapter frames it. The reassurin
 
 The chapter's three sections share one method, and Figure 30.1 lays it out as a hierarchy: for each vulnerability class, eliminate it by construction where that is possible, mitigate it where elimination is not feasible, and detect what remains automatically. The figure reads top to bottom in order of preference, with the three Java classes this chapter covers — injection, deserialization, and cryptographic misuse — mapped onto it.
 
-![Fig 30.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically. A class addressed at the eliminate tier costs nothing to maintain; one left at the mitigate or detect tier depends on a control that can be misconfigured or bypassed.](figures/fig69_1.png)
+![Figure 30.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically. A class addressed at the eliminate tier costs nothing to maintain; one left at the mitigate or detect tier depends on a control that can be misconfigured or bypassed.](figures/fig69_1.png)
 
-*Fig 30.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically. A class addressed at the eliminate tier costs nothing to maintain; one left at the mitigate or detect tier depends on a control that can be misconfigured or bypassed.*
+*Figure 30.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically. A class addressed at the eliminate tier costs nothing to maintain; one left at the mitigate or detect tier depends on a control that can be misconfigured or bypassed.*
 
 ### Secure coding: design out the class
 

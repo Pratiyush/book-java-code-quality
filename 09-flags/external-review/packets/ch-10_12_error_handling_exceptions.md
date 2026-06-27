@@ -126,15 +126,15 @@ This chapter takes on the failure paths: how to signal an error (exceptions, and
 
 Two figures anchor the chapter. Figure 10.1 lays out the `Throwable` hierarchy that the exception-model section walks: where the checked/unchecked split falls, and which branch the compile-time catch-or-specify rule governs.
 
-![Fig 10.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java](../../05-figures/12_error_handling_exceptions/fig12_1.png)
+![Figure 10.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java](../../05-figures/12_error_handling_exceptions/fig12_1.png)
 
-*Fig 10.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java*
+*Figure 10.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java*
 
 Figure 10.2 sets up the resource-management section: it contrasts the suppressed exception that try-with-resources records against the masked exception the older `finally`-with-close idiom loses.
 
-![Fig 10.2 — try-with-resources: suppressed vs masked exceptions — JLS SE 21 §14.20.3 · Effective Java](../../05-figures/12_error_handling_exceptions/fig12_2.png)
+![Figure 10.2 — try-with-resources: suppressed vs masked exceptions — JLS SE 21 §14.20.3 · Effective Java](../../05-figures/12_error_handling_exceptions/fig12_2.png)
 
-*Fig 10.2 — try-with-resources: suppressed vs masked exceptions — JLS SE 21 §14.20.3 · Effective Java*
+*Figure 10.2 — try-with-resources: suppressed vs masked exceptions — JLS SE 21 §14.20.3 · Effective Java*
 
 
 ### The exception model: the hierarchy and the decision

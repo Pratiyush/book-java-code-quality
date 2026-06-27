@@ -40,7 +40,7 @@ This chapter is the *workflow* that fixes all three, the last piece of making th
 
 The two halves of the workflow sit on one spectrum: how quickly a check gives feedback, and how firmly it enforces. Figure 35.1 lays out that spectrum as a feedback-latency ladder, from the fast, skippable checks at the developer's keyboard to the unbypassable enforcement at the merge.
 
-![Fig 35.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable enforcement at the merge. Push each check to the leftmost rung that can catch it. The left rungs are deliberately skippable feedback; the right rungs are the enforcement that re-runs everything regardless.](../../05-figures/81_branch_protection_precommit_parity/fig81_1.png)
+![Figure 35.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable enforcement at the merge. Push each check to the leftmost rung that can catch it. The left rungs are deliberately skippable feedback; the right rungs are the enforcement that re-runs everything regardless.](../../05-figures/81_branch_protection_precommit_parity/fig81_1.png)
 
 *Figure 35.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable enforcement at the merge. Push each check to the leftmost rung that can catch it. The left rungs are deliberately skippable feedback; the right rungs are the enforcement that re-runs everything regardless.*
 

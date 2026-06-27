@@ -457,9 +457,9 @@ Three pictures carry this chapter. Figure 01.1 shows the standards lens: the ISO
 
 The reason "improve quality" is unarguable is that *quality* is an umbrella over many distinct properties. The international standard for software quality, **ISO/IEC 25010**, makes the decomposition explicit. Its **product quality model** breaks quality into top-level *characteristics*, each with sub-characteristics. Figure 01.1 lays out the whole model, with Maintainability, this book's territory, highlighted.
 
-![Fig 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.](figures/fig01_1.png)
+![Figure 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.](figures/fig01_1.png)
 
-*Fig 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.*
+*Figure 01.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.*
 
 > **CONCEPT** *Product quality* is the set of static and dynamic properties of the software itself. It is distinct from *quality in use*, which is about outcomes when real people use it in a real context. ISO/IEC 25010 defines the product model; its companion ISO/IEC 25019 now holds the quality-in-use model.
 
@@ -501,9 +501,9 @@ The cost of that invisible half shows up over time, not on any one day. Figure 0
             expensive ─────────────┴───────────────────────────────▶ time
 ```
 
-![Fig 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).](figures/fig01_2.png)
+![Figure 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).](figures/fig01_2.png)
 
-*Fig 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).*
+*Figure 01.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).*
 
 ### Why internal quality has negative cost
 
@@ -535,9 +535,9 @@ Martin Fowler sharpens the misuse into a quadrant: debt is **deliberate or inadv
 | **Deliberate** | "We don't have time for design." | "We must ship now and will deal with the consequences — knowingly." |
 | **Inadvertent** | "What's layering?" | "Now we know how we should have done it." |
 
-![Fig 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.](figures/fig01_3.png)
+![Figure 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.](figures/fig01_3.png)
 
-*Fig 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.*
+*Figure 01.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.*
 
 The quadrant matters because "technical debt" is routinely used to launder reckless work. This book holds the line: *prudent, tracked* debt is a tool; *reckless* debt is damage with a respectable name.
 
@@ -694,13 +694,13 @@ The dashboard was not lying about coverage. It was lying about *quality*, becaus
 
 Two figures anchor this chapter. Figure 2.1 sets two methods side by side: the same branch count, opposite nesting, an equal cyclomatic score, and a very different cognitive one. It is the measurement distinction the chapter turns on.
 
-![Fig 2.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting. Two methods, identical branch count, opposite nesting structure, equal cyclomatic score, very different cognitive score.](figures/fig03_1.png)
+![Figure 2.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting. Two methods, identical branch count, opposite nesting structure, equal cyclomatic score, very different cognitive score.](figures/fig03_1.png)
 
 *Figure 2.1 — Cyclomatic vs. cognitive complexity: same paths, different nesting. Two methods, identical branch count, opposite nesting structure, equal cyclomatic score, very different cognitive score.*
 
 Figure 2.2 maps the contested zone the chapter closes on: two reputable schools holding opposed positions on function size and comments, with the trade-off axis between them and no winner marked.
 
-![Fig 2.2 — Contested prescriptions: function size &amp; comments. Two reputable schools hold opposed positions; neither is universally correct, so a team chooses deliberately and applies consistently.](figures/fig03_2.png)
+![Figure 2.2 — Contested prescriptions: function size &amp; comments. Two reputable schools hold opposed positions; neither is universally correct, so a team chooses deliberately and applies consistently.](figures/fig03_2.png)
 
 *Figure 2.2 — Contested prescriptions: function size and comments. Two reputable schools hold opposed positions; neither is universally correct, so a team chooses deliberately and applies consistently.*
 
@@ -928,13 +928,13 @@ This chapter is the map. It does not cover configuring any single tool; that is 
 
 Two figures carry the territory before the prose unpacks it. Figure 3.1 lays the toolchain over the development lifecycle, placing each category of tool at the moment it runs, from the IDE through to production feedback.
 
-![Fig 3.1 — The Java quality toolchain: lifecycle map — Seven moments · tool categories placed at the moment they run · earlier = cheaper to fix](figures/fig05_1.png)
+![Figure 3.1 — The Java quality toolchain: lifecycle map — Seven moments · tool categories placed at the moment they run · earlier = cheaper to fix](figures/fig05_1.png)
 
 *Figure 3.1 — The Java quality toolchain lifecycle map. Seven moments, with each tool category placed at the moment it runs; earlier is cheaper to fix.*
 
 Figure 3.2 turns the same landscape sideways into a lookup: a routing matrix from any quality concern to the kind of tool that addresses it, the moment it runs, and the chapter that goes deep.
 
-![Fig 3.2 — Concern × tool routing matrix — Any quality concern → which tool kind → when it runs → deep chapter · (not the order — the menu)](figures/fig05_2.png)
+![Figure 3.2 — Concern × tool routing matrix — Any quality concern → which tool kind → when it runs → deep chapter · (not the order — the menu)](figures/fig05_2.png)
 
 *Figure 3.2 — The concern-by-tool routing matrix. Any quality concern maps to a tool kind, the moment it runs, and the deep chapter. The matrix is the menu, not the order.*
 
@@ -1145,9 +1145,9 @@ The difference is not tooling. It is culture: who owns quality, when they addres
 
 Culture is treated, too often, as the squishy preamble before the real technical content. The data says otherwise. Sociologist **Ron Westrum** (1988) classified organizational cultures into three types, and Figure 06.1 sets them side by side along the two axes that separate them: how information flows, and what happens when something fails.
 
-![Fig 06.1 — Westrum's three organizational culture types. Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.](figures/fig06_1.png)
+![Figure 06.1 — Westrum's three organizational culture types. Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.](figures/fig06_1.png)
 
-*Fig 06.1 — Westrum's three organizational culture types. Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.*
+*Figure 06.1 — Westrum's three organizational culture types. Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.*
 
 - **Pathological** — power-oriented; information is hoarded; failure leads to blame and scapegoating.
 - **Bureaucratic** — rule-oriented; information moves through silos.
@@ -1163,9 +1163,9 @@ The second idea is *when* quality happens. Its intellectual ancestor is **W. Edw
 
 **Larry Smith** named the software version in 2001. *Shift-left testing* moves testing and quality activities *left*, toward inception: it shortens the feedback loop and has developers and QA collaborate from the start. Figure 06.2 plots the reason the direction matters. The cost to fix a defect climbs with each lifecycle stage it survives, so the Ch-3 tool layers sit as far left as they can. In this book's terms, shift-left *is* that lifecycle map from Chapter 3: IDE inspections, then pre-commit hooks, then compile-time checks, then fast CI, each layer catching problems earlier and cheaper than the next. Culture decides whether developers *welcome* that feedback or route around it.
 
-![Fig 06.2 — Shift-left: defect cost rises with lifecycle stage. Catching a defect earlier is cheaper; the Ch 3 tool layers place quality activities as far left as possible.](figures/fig06_2.png)
+![Figure 06.2 — Shift-left: defect cost rises with lifecycle stage. Catching a defect earlier is cheaper; the Ch 3 tool layers place quality activities as far left as possible.](figures/fig06_2.png)
 
-*Fig 06.2 — Shift-left: defect cost rises with lifecycle stage. Catching a defect earlier is cheaper; the Ch 3 tool layers place quality activities as far left as possible.*
+*Figure 06.2 — Shift-left: defect cost rises with lifecycle stage. Catching a defect earlier is cheaper; the Ch 3 tool layers place quality activities as far left as possible.*
 
 ### Ownership: who is responsible for a piece of code
 
@@ -1177,9 +1177,9 @@ Diffuse responsibility kills quality; someone has to own it. *Code ownership* is
 | **Weak** | owners exist, but others may edit with courtesy | balances accountability and flow | ambiguity at the edges |
 | **Collective** | the whole team owns all the code | no bottlenecks; shared knowledge | needs strong shared standards or quality drifts |
 
-![Fig 06.3 — The three code-ownership models. Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.](figures/fig06_3.png)
+![Figure 06.3 — The three code-ownership models. Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.](figures/fig06_3.png)
 
-*Fig 06.3 — The three code-ownership models. Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.*
+*Figure 06.3 — The three code-ownership models. Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.*
 
 A direct line runs from this table to the tools in this book: **collective ownership only works if the automated standards keep everyone honest**. A team can collectively own code only when the gates (Parts IV–IX) hold the line. Mechanisms make ownership concrete. A `CODEOWNERS` file encodes ownership for review routing (Chapter 37); "you build it, you run it" (a practice popularized at Amazon) pushes operational ownership to the team that wrote the code, aligning incentives with quality.
 
@@ -1547,7 +1547,7 @@ One axis runs under all of it: a tool checks typography (regex-enforceable); a h
 
 One axis carries this chapter. Figure 6.1 sets it out: on one side, the part a tool settles once and for all; on the other, the part only a human with domain knowledge can judge. Every concern below sorts onto that axis.
 
-![Fig 6.1 — the typography / meaning axis: what a tool settles once versus what only a human with domain knowledge can judge, the spine of Chapter 6](figures/fig07_1.png)
+![Figure 6.1 — the typography / meaning axis: what a tool settles once versus what only a human with domain knowledge can judge, the spine of Chapter 6](figures/fig07_1.png)
 
 *Figure 6.1 — the typography / meaning axis: what a tool settles once versus what only a human with domain knowledge can judge.*
 
@@ -1812,9 +1812,9 @@ The one idea worth holding: *push as much of the contract into the type system a
 
 Figure 7.1 lays the contract out as two columns: the type-carried half the compiler enforces, and the doc/runtime-carried half a Javadoc clause states and a fail-fast check defends. Read it left to right; it is the map the rest of the chapter fills in.
 
-![Fig 7.1 — The two halves of a method contract — Push as much of the contract into the type system as possible — the cheapest feedback on a broken contract is "it didn't compile"](figures/fig09_1.png)
+![Figure 7.1 — The two halves of a method contract — Push as much of the contract into the type system as possible — the cheapest feedback on a broken contract is "it didn't compile"](figures/fig09_1.png)
 
-*Fig 7.1 — The two halves of a method contract — Push as much of the contract into the type system as possible — the cheapest feedback on a broken contract is "it didn't compile"*
+*Figure 7.1 — The two halves of a method contract — Push as much of the contract into the type system as possible — the cheapest feedback on a broken contract is "it didn't compile"*
 
 ### The two halves of a contract
 
@@ -2321,7 +2321,7 @@ Java's type system, by itself, cannot help. The language specification makes `nu
 
 The four levers sit at different points in a program's lifecycle, and Figure 9.1 lays them out along that timeline: each lever catches the null the earlier one cannot reach, with detection moving left, toward design time, across the lifecycle.
 
-![Fig 9.1 — Null-safety: four levers of layered defense. Each lever catches the null the earlier one cannot reach; detection moves left (earlier) across the lifecycle.](figures/fig11_1.png)
+![Figure 9.1 — Null-safety: four levers of layered defense. Each lever catches the null the earlier one cannot reach; detection moves left (earlier) across the lifecycle.](figures/fig11_1.png)
 
 *Figure 9.1 — Null-safety: the four levers of layered defense. Each lever catches the null the earlier one cannot reach; detection moves left (earlier) across the lifecycle.*
 
@@ -2552,15 +2552,15 @@ This chapter takes on the failure paths: how to signal an error (exceptions, and
 
 Two figures anchor the chapter. Figure 10.1 lays out the `Throwable` hierarchy that the exception-model section walks: where the checked/unchecked split falls, and which branch the compile-time catch-or-specify rule governs.
 
-![Fig 10.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java](figures/fig12_1.png)
+![Figure 10.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java](figures/fig12_1.png)
 
-*Fig 10.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java*
+*Figure 10.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java*
 
 Figure 10.2 sets up the resource-management section: it contrasts the suppressed exception that try-with-resources records against the masked exception the older `finally`-with-close idiom loses.
 
-![Fig 10.2 — try-with-resources: suppressed vs masked exceptions — JLS SE 21 §14.20.3 · Effective Java](figures/fig12_2.png)
+![Figure 10.2 — try-with-resources: suppressed vs masked exceptions — JLS SE 21 §14.20.3 · Effective Java](figures/fig12_2.png)
 
-*Fig 10.2 — try-with-resources: suppressed vs masked exceptions — JLS SE 21 §14.20.3 · Effective Java*
+*Figure 10.2 — try-with-resources: suppressed vs masked exceptions — JLS SE 21 §14.20.3 · Effective Java*
 
 ### The exception model: the hierarchy and the decision
 
@@ -2841,13 +2841,13 @@ Generics encode element and parameter types in the type system, so the compiler 
 
 Two diagrams carry the shape of this chapter. The first, the PECS variance ladder in Figure 11.1, shows where Java generics are invariant by default at the declaration and where a wildcard restores controlled flexibility at the use site. Figure 11.2 then traces the single fact the rest of the chapter follows from: type information is a compile-time artifact, so what the JVM sees at run time is only the raw type and the casts the compiler inserted.
 
-![Fig 11.1 — PECS Variance Ladder — Java generics are invariant at declaration; wildcards restore controlled flexibility at the use site.](figures/fig14_1.png)
+![Figure 11.1 — PECS Variance Ladder — Java generics are invariant at declaration; wildcards restore controlled flexibility at the use site.](figures/fig14_1.png)
 
-*Fig 11.1 — PECS Variance Ladder — Java generics are invariant at declaration; wildcards restore controlled flexibility at the use site.*
+*Figure 11.1 — PECS Variance Ladder — Java generics are invariant at declaration; wildcards restore controlled flexibility at the use site.*
 
-![Fig 11.2 — Type Erasure: Compile Time vs. Run Time — Generic type information is a compile-time artifact. The JVM sees only raw types and the casts the compiler inserted. (JLS SE 21 §4.6)](figures/fig14_2.png)
+![Figure 11.2 — Type Erasure: Compile Time vs. Run Time — Generic type information is a compile-time artifact. The JVM sees only raw types and the casts the compiler inserted. (JLS SE 21 §4.6)](figures/fig14_2.png)
 
-*Fig 11.2 — Type Erasure: Compile Time vs. Run Time — Generic type information is a compile-time artifact. The JVM sees only raw types and the casts the compiler inserted. (JLS SE 21 §4.6)*
+*Figure 11.2 — Type Erasure: Compile Time vs. Run Time — Generic type information is a compile-time artifact. The JVM sees only raw types and the casts the compiler inserted. (JLS SE 21 §4.6)*
 
 ### Erasure: the one fact everything follows from
 
@@ -3046,9 +3046,9 @@ This chapter, the last in Part II, turns the whole part into a vocabulary. It ca
 
 The catalogue is built from one repeating unit, shown in Figure 12.1: every smell pairs with the named refactoring that resolves it and, for many, the analyzer rule that catches it. Reading the unit left to right answers a second question the figure makes explicit. Does a linter find the smell, or does a human reviewer have to?
 
-![Fig 12.1 — The smell-triple: smell → refactoring → detecting rule — Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it](figures/fig19_1.png)
+![Figure 12.1 — The smell-triple: smell → refactoring → detecting rule — Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it](figures/fig19_1.png)
 
-*Fig 12.1 — The smell-triple: smell → refactoring → detecting rule — Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it*
+*Figure 12.1 — The smell-triple: smell → refactoring → detecting rule — Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it*
 
 ### A smell is a symptom, not a defect
 
@@ -3260,9 +3260,9 @@ This chapter teaches that reasoning. It defines what "correct" even means when t
 
 The whole chapter rests on two structures, and Figure 13.1 lays them side by side: on the left, the six happens-before edges that establish cross-thread visibility; on the right, the four idioms that publish an object reference so a second thread sees it fully built. Every technique in the sections that follow is one edge or one idiom from this figure.
 
-![Fig 13.1 — Java Memory Model: happens-before edges and safe publication — JLS SE 21 §17.4.5 · six edges that establish cross-thread visibility · four idioms for safely publishing an object reference](figures/fig20_1.png)
+![Figure 13.1 — Java Memory Model: happens-before edges and safe publication — JLS SE 21 §17.4.5 · six edges that establish cross-thread visibility · four idioms for safely publishing an object reference](figures/fig20_1.png)
 
-*Fig 13.1 — Java Memory Model: happens-before edges and safe publication — JLS SE 21 §17.4.5 · six edges that establish cross-thread visibility · four idioms for safely publishing an object reference*
+*Figure 13.1 — Java Memory Model: happens-before edges and safe publication — JLS SE 21 §17.4.5 · six edges that establish cross-thread visibility · four idioms for safely publishing an object reference*
 
 ### Happens-before: the definition of "correct"
 
@@ -3491,15 +3491,15 @@ The line that closes Part III: **threads got cheap; correctness did not.** Virtu
 
 The chapter has two halves, and a figure anchors each. Figure 14.1 traces how a virtual thread mounts on a carrier, unmounts when it blocks, and pins in the one case that defeats the whole design, with the version boundary where that pin disappears. It is the map for the first half.
 
-![Fig 14.1 — Virtual thread mounting, unmounting, and the pinning trap — JEP 444 (GA, Java 21) · JEP 491 (Java 24) · Two behaviors, one version boundary](figures/fig22_1.png)
+![Figure 14.1 — Virtual thread mounting, unmounting, and the pinning trap — JEP 444 (GA, Java 21) · JEP 491 (Java 24) · Two behaviors, one version boundary](figures/fig22_1.png)
 
-*Fig 14.1 — Virtual thread mounting, unmounting, and the pinning trap — JEP 444 (GA, Java 21) · JEP 491 (Java 24) · Two behaviors, one version boundary*
+*Figure 14.1 — Virtual thread mounting, unmounting, and the pinning trap — JEP 444 (GA, Java 21) · JEP 491 (Java 24) · Two behaviors, one version boundary*
 
 Figure 14.2 is the map for the second half: the three layers that verify concurrent code, each catching defects at a different time (static detection at build time, stress sampling at verify time, deterministic reproduction at regression time) and none replacing the others.
 
-![Fig 14.2 — Three-layer concurrency verification stack — Static detection (build time) + stress sampling (verify time) + deterministic reproduction (regression time) — complementary, not substitutes](figures/fig22_2.png)
+![Figure 14.2 — Three-layer concurrency verification stack — Static detection (build time) + stress sampling (verify time) + deterministic reproduction (regression time) — complementary, not substitutes](figures/fig22_2.png)
 
-*Fig 14.2 — Three-layer concurrency verification stack — Static detection (build time) + stress sampling (verify time) + deterministic reproduction (regression time) — complementary, not substitutes*
+*Figure 14.2 — Three-layer concurrency verification stack — Static detection (build time) + stress sampling (verify time) + deterministic reproduction (regression time) — complementary, not substitutes*
 
 ### Virtual threads: mounting, carriers, the scheduler
 
@@ -3748,9 +3748,9 @@ Part IV opens here by lifting the hood. The chapter has two jobs: show *how* ana
 
 Static analysis is four moves, layered. Figure 15.1 sets them out as a ladder, from parsing source into a tree at the bottom to following tainted input to a dangerous sink at the top, with the cost and the characteristic blind spot of each rung.
 
-![Fig 15.1 — Static-analysis technique ladder — Four moves, each seeing more than the one below — at rising power and cost.](figures/fig26_1.png)
+![Figure 15.1 — Static-analysis technique ladder — Four moves, each seeing more than the one below — at rising power and cost.](figures/fig26_1.png)
 
-*Fig 15.1 — Static-analysis technique ladder — Four moves, each seeing more than the one below — at rising power and cost.*
+*Figure 15.1 — Static-analysis technique ladder — Four moves, each seeing more than the one below — at rising power and cost.*
 
 Each rung sees more than the one below it, and costs more to climb.
 
@@ -3976,9 +3976,9 @@ That is the organizing fact of this chapter, and the reason teams run several an
 
 The whole chapter hangs on one axis: the moment in the build at which each tool reads the program. Figure 16.1 places the four analyzers on that axis, from source text through the type-attributed tree inside the compiler to the emitted bytecode, and names the distinctive reach each position grants.
 
-![Fig 16.1 — The detection-time axis: where each analyzer reads the program — Four tools, four vantage points — where a tool stands determines what it can see](figures/fig27_1.png)
+![Figure 16.1 — The detection-time axis: where each analyzer reads the program — Four tools, four vantage points — where a tool stands determines what it can see](figures/fig27_1.png)
 
-*Fig 16.1 — The detection-time axis: where each analyzer reads the program — Four tools, four vantage points — where a tool stands determines what it can see*
+*Figure 16.1 — The detection-time axis: where each analyzer reads the program — Four tools, four vantage points — where a tool stands determines what it can see*
 
 ### The organizing axis: where each tool stands
 
@@ -4177,9 +4177,9 @@ Both are right, and the resolution is neither "more tools" nor "fewer tools" but
 
 One picture carries the chapter's whole argument: which tool reads which substrate, at which moment, and the single cell each one covers that no other tool reaches. Figure 17.1 lays that grid out before the prose walks each cell.
 
-![Fig 17.1 &mdash; The substrate &times; moment matrix: one owner per concern — Each tool reads one substrate at one moment &mdash; covering a cell no other tool reaches. Compose by assigning each concern exactly once.](figures/fig35_1.png)
+![Figure 17.1 &mdash; The substrate &times; moment matrix: one owner per concern — Each tool reads one substrate at one moment &mdash; covering a cell no other tool reaches. Compose by assigning each concern exactly once.](figures/fig35_1.png)
 
-*Fig 17.1 &mdash; The substrate &times; moment matrix: one owner per concern — Each tool reads one substrate at one moment &mdash; covering a cell no other tool reaches. Compose by assigning each concern exactly once.*
+*Figure 17.1 &mdash; The substrate &times; moment matrix: one owner per concern — Each tool reads one substrate at one moment &mdash; covering a cell no other tool reaches. Compose by assigning each concern exactly once.*
 
 ### The substrate × moment matrix
 
@@ -4401,13 +4401,13 @@ The stock rulesets from the last three chapters cannot help here. Checkstyle, PM
 
 ## How it works
 
-![Fig 18.1 &mdash; One shape, five artifacts: the custom-rule skeleton — Every custom rule is select &rarr; predicate &rarr; report &rarr; register. The artifact each tool reasons over fixes what the rule can see &mdash; not a ranking.](figures/fig38_1.png)
+![Figure 18.1 &mdash; One shape, five artifacts: the custom-rule skeleton — Every custom rule is select &rarr; predicate &rarr; report &rarr; register. The artifact each tool reasons over fixes what the rule can see &mdash; not a ranking.](figures/fig38_1.png)
 
-*Fig 18.1 &mdash; One shape, five artifacts: the custom-rule skeleton — Every custom rule is select &rarr; predicate &rarr; report &rarr; register. The artifact each tool reasons over fixes what the rule can see &mdash; not a ranking.*
+*Figure 18.1 &mdash; One shape, five artifacts: the custom-rule skeleton — Every custom rule is select &rarr; predicate &rarr; report &rarr; register. The artifact each tool reasons over fixes what the rule can see &mdash; not a ranking.*
 
-![Fig 18.2 &mdash; Codegen approaches by relation to the JSR&nbsp;269 standard contract — Three positions on one spectrum: compiler-derived &rarr; new-file processor (inside contract) &rarr; AST-edit processor (past contract). Each states its trade-off; none is crowned.](figures/fig38_2.png)
+![Figure 18.2 &mdash; Codegen approaches by relation to the JSR&nbsp;269 standard contract — Three positions on one spectrum: compiler-derived &rarr; new-file processor (inside contract) &rarr; AST-edit processor (past contract). Each states its trade-off; none is crowned.](figures/fig38_2.png)
 
-*Fig 18.2 &mdash; Codegen approaches by relation to the JSR&nbsp;269 standard contract — Three positions on one spectrum: compiler-derived &rarr; new-file processor (inside contract) &rarr; AST-edit processor (past contract). Each states its trade-off; none is crowned.*
+*Figure 18.2 &mdash; Codegen approaches by relation to the JSR&nbsp;269 standard contract — Three positions on one spectrum: compiler-derived &rarr; new-file processor (inside contract) &rarr; AST-edit processor (past contract). Each states its trade-off; none is crowned.*
 
 ### The shared shape of a custom rule
 
@@ -4645,9 +4645,9 @@ The stack was not wrong. The mistake was treating its output as a binary (green 
 
 Two pieces govern everything that follows: the one triage decision a finding forces, and the four levers that act on it, ordered narrowest to broadest. Figure 19.1 lays both out on a single ladder — the decision on the left, the lever it maps to on the right, breadth increasing downward.
 
-![Fig 19.1 — Finding triage and the four-lever scope ladder — Every finding demands one triage decision; each decision maps to exactly one lever ordered narrow&rarr;broad. Breadth is always a smell.](figures/fig39_1.png)
+![Figure 19.1 — Finding triage and the four-lever scope ladder — Every finding demands one triage decision; each decision maps to exactly one lever ordered narrow&rarr;broad. Breadth is always a smell.](figures/fig39_1.png)
 
-*Fig 19.1 — Finding triage and the four-lever scope ladder — Every finding demands one triage decision; each decision maps to exactly one lever ordered narrow&rarr;broad. Breadth is always a smell.*
+*Figure 19.1 — Finding triage and the four-lever scope ladder — Every finding demands one triage decision; each decision maps to exactly one lever ordered narrow&rarr;broad. Breadth is always a smell.*
 
 ### The triage tree: what a finding actually is
 
@@ -4857,10 +4857,10 @@ The two axes split the chapter. The first half maps the *how much* axis with the
 
 The **test pyramid** (Mike Cohn, *Succeeding with Agile*, 2009; restated by Ham Vocke in "The Practical Test Pyramid" on Martin Fowler's site) is the model for the *how much* axis. It rests on two rules, verbatim: *"Write tests with different granularity"* and *"The more high-level you get the fewer tests you should have."* Figure 20.1 shows the shape those two rules produce: many fast tests at the bottom, few slow ones at the top, with the two rules named on it. That shape encodes a cost/speed/confidence trade-off across three layers:
 
-![Fig 20.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
+![Figure 20.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
     &ldquo;The more high-level you get the fewer tests you should have.&rdquo;](figures/fig41_1.png)
 
-*Fig 20.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
+*Figure 20.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
     &ldquo;The more high-level you get the fewer tests you should have.&rdquo;*
 
 - **Unit tests** — *"focused, isolated tests of individual code components with the narrowest scope."* Fast, cheap, plentiful; the base.
@@ -4877,10 +4877,10 @@ Two of Vocke's framings carry into the rest of Part V. **Solitary versus sociabl
 
 Granularity is the *how much*. The harder, more valuable axis is *how good*, and it has two distinct measurements that teams routinely conflate. Figure 20.2 sets them side by side: coverage on one axis, mutation score on the other, with the corner that exposes the gap marked — full coverage, zero mutants killed.
 
-![Fig 20.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
+![Figure 20.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
     A suite can reach 100% coverage and kill zero mutants.](figures/fig41_2.png)
 
-*Fig 20.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
+*Figure 20.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
     A suite can reach 100% coverage and kill zero mutants.*
 
 **Coverage** measures *execution*: which instructions, branches, and lines ran while the tests executed. JaCoCo, the standard Java coverage tool, reports six counters (instructions, branches, lines, methods, classes, and cyclomatic complexity), and branch coverage (every `if` and `switch` arm) is a stronger floor than line coverage. Coverage is precise, reproducible, and genuinely useful as a *floor*: code that never runs under test is code whose behaviour is entirely unknown.
@@ -5081,15 +5081,15 @@ That gap between a unit test that helps and one that rots is decided by three sm
 
 Two structures carry the rest of the chapter, and Figure 21.1 draws the first. It shows JUnit's layering: one `TestEngine` API on a shared Platform, with Jupiter and other engines plugging into it. That single API is the reason one runner can execute several kinds of test side by side.
 
-![Fig 21.1 — JUnit Platform: three-module architecture — One TestEngine API lets build tools run Jupiter, jqwik, and others on a single Platform. JUnit 6.1.0 current (min Java 17).](figures/fig42_1.png)
+![Figure 21.1 — JUnit Platform: three-module architecture — One TestEngine API lets build tools run Jupiter, jqwik, and others on a single Platform. JUnit 6.1.0 current (min Java 17).](figures/fig42_1.png)
 
-*Fig 21.1 — JUnit Platform: three-module architecture — One TestEngine API lets build tools run Jupiter, jqwik, and others on a single Platform. JUnit 6.1.0 current (min Java 17).*
+*Figure 21.1 — JUnit Platform: three-module architecture — One TestEngine API lets build tools run Jupiter, jqwik, and others on a single Platform. JUnit 6.1.0 current (min Java 17).*
 
 Figure 21.2 draws the second: the five kinds of test double laid out from inert to behaviour-checking, with the state-verification-versus-behaviour-verification hinge marked at the centre. The sections that follow walk both structures in turn.
 
-![Fig 21.2 — The five test-double taxonomy — Fowler / Meszaros spectrum: Dummy → Mock. The hinge: state verification (stub) vs. behaviour verification (mock).](figures/fig42_2.png)
+![Figure 21.2 — The five test-double taxonomy — Fowler / Meszaros spectrum: Dummy → Mock. The hinge: state verification (stub) vs. behaviour verification (mock).](figures/fig42_2.png)
 
-*Fig 21.2 — The five test-double taxonomy — Fowler / Meszaros spectrum: Dummy → Mock. The hinge: state verification (stub) vs. behaviour verification (mock).*
+*Figure 21.2 — The five test-double taxonomy — Fowler / Meszaros spectrum: Dummy → Mock. The hinge: state verification (stub) vs. behaviour verification (mock).*
 
 ### JUnit: the substrate everything plugs into
 
@@ -5303,12 +5303,12 @@ Those are the two blind spots this chapter closes, and they are the two limits o
 
 ## How it works
 
-The two blind spots sit on two independent axes, and Fig 22.1 places them side by side: fidelity (how real the collaborator under test is) on one, and input coverage (how much of the input space the test actually reaches) on the other. A unit test sits low on both; integration testing raises the first axis and property-based testing widens the second.
+The two blind spots sit on two independent axes, and Figure 22.1 places them side by side: fidelity (how real the collaborator under test is) on one, and input coverage (how much of the input space the test actually reaches) on the other. A unit test sits low on both; integration testing raises the first axis and property-based testing widens the second.
 
-![Fig 22.1 — Two blind-spot axes: fidelity &times; input coverage — A unit test has two structural limits — the collaborator it models, and the inputs it chose.
+![Figure 22.1 — Two blind-spot axes: fidelity &times; input coverage — A unit test has two structural limits — the collaborator it models, and the inputs it chose.
     Integration testing and property-based testing each close one.](figures/fig45_1.png)
 
-*Fig 22.1 — Two blind-spot axes: fidelity &times; input coverage — A unit test has two structural limits — the collaborator it models, and the inputs it chose.
+*Figure 22.1 — Two blind-spot axes: fidelity &times; input coverage — A unit test has two structural limits — the collaborator it models, and the inputs it chose.
     Integration testing and property-based testing each close one.*
 
 ### Integration testing: use the real collaborator
@@ -5480,9 +5480,9 @@ That gap is the subject of this chapter, and it is the payoff of the two-axis fr
 
 Figure 23.1 puts the two measures side by side on a single covered line: line coverage holds at 100% while assertions are added, and only the mutation score moves. Coverage records execution; the mutation score records detection.
 
-![Fig 23.1 — Coverage vs mutation: the assertion gap on the same covered line — 100% line coverage does not move when assertions are added — mutation score does. Coverage records execution; mutation score records detection.](figures/fig48_1.png)
+![Figure 23.1 — Coverage vs mutation: the assertion gap on the same covered line — 100% line coverage does not move when assertions are added — mutation score does. Coverage records execution; mutation score records detection.](figures/fig48_1.png)
 
-*Fig 23.1 — Coverage vs mutation: the assertion gap on the same covered line — 100% line coverage does not move when assertions are added — mutation score does. Coverage records execution; mutation score records detection.*
+*Figure 23.1 — Coverage vs mutation: the assertion gap on the same covered line — 100% line coverage does not move when assertions are added — mutation score does. Coverage records execution; mutation score records detection.*
 
 ### Coverage: what the tests touched
 
@@ -5650,15 +5650,15 @@ That is the gap this final chapter of Part V closes, and it generalizes. Everyth
 
 Contract testing runs as a sequence, and the guarantee holds only when every step runs. Figure 24.1 lays out that sequence as Pact's four-stage pipeline, from the consumer test that records the contract to the `can-i-deploy` gate that reads the results, and marks why any half-pipeline gives false confidence.
 
-![Fig 24.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.](figures/fig50_1.png)
+![Figure 24.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.](figures/fig50_1.png)
 
-*Fig 24.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.*
+*Figure 24.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.*
 
 The three techniques in this chapter divide one boundary and its output between them. Figure 24.2 maps each to the question it answers (do the sides agree, does the endpoint behave, does the output still match the baseline) and to the reference whose failure breaks it.
 
-![Fig 24.2 — Three techniques, three questions on the service boundary and its output — Each answers what the others cannot; each fails when its own reference goes wrong.](figures/fig50_2.png)
+![Figure 24.2 — Three techniques, three questions on the service boundary and its output — Each answers what the others cannot; each fails when its own reference goes wrong.](figures/fig50_2.png)
 
-*Fig 24.2 — Three techniques, three questions on the service boundary and its output — Each answers what the others cannot; each fails when its own reference goes wrong.*
+*Figure 24.2 — Three techniques, three questions on the service boundary and its output — Each answers what the others cannot; each fails when its own reference goes wrong.*
 
 ### Contract testing: do the two sides still agree?
 
@@ -5872,13 +5872,13 @@ Hitting the middle is the subject of Part VI, and this opening chapter lays its 
 
 Two figures anchor the chapter. Figure 25.1 lays out the five SOLID principles side by side, each with its intent and the over-application trap that follows from pushing it too far, and crowns none of them. Figure 25.2 draws the module-strength ladder taken up later in this section: the rungs of increasing enforcement, from a naming convention to a separate build module, each trading ceremony for a stronger guarantee.
 
-![Fig 25.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.](figures/fig53_1.png)
+![Figure 25.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.](figures/fig53_1.png)
 
-*Fig 25.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.*
+*Figure 25.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.*
 
-![Fig 25.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.](figures/fig53_2.png)
+![Figure 25.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.](figures/fig53_2.png)
 
-*Fig 25.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.*
+*Figure 25.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.*
 
 ### SOLID: useful vocabulary, not a law to maximize
 
@@ -6082,9 +6082,9 @@ That erosion is inevitable for any architecture a team merely *agrees* to, and t
 
 The enforcement mechanisms line up on a single axis, and Figure 26.1 sets them out: from a naming convention through an ArchUnit rule to a JPMS compiler boundary, enforcement strength rises and so does the cost of adoption. The figure frames the choice as a trade-off across that axis, not a ladder a team is meant to climb to the top of.
 
-![Fig 26.1 &mdash; Architecture-enforcement spectrum — Convention &rarr; ArchUnit rule &rarr; JPMS compiler boundary: enforcement strength rises with adoption cost. Choice is a trade-off, not an upgrade path.](figures/fig55_1.png)
+![Figure 26.1 &mdash; Architecture-enforcement spectrum — Convention &rarr; ArchUnit rule &rarr; JPMS compiler boundary: enforcement strength rises with adoption cost. Choice is a trade-off, not an upgrade path.](figures/fig55_1.png)
 
-*Fig 26.1 &mdash; Architecture-enforcement spectrum — Convention &rarr; ArchUnit rule &rarr; JPMS compiler boundary: enforcement strength rises with adoption cost. Choice is a trade-off, not an upgrade path.*
+*Figure 26.1 &mdash; Architecture-enforcement spectrum — Convention &rarr; ArchUnit rule &rarr; JPMS compiler boundary: enforcement strength rises with adoption cost. Choice is a trade-off, not an upgrade path.*
 
 ### Enforcement: from documented to executable
 
@@ -6279,9 +6279,9 @@ Both failures live in the **build**, and the build is the subject of this openin
 
 Every quality gate runs inside the build, so the shape of the build decides the shape of the gating. Figure 27.1 lays out that shape: the build lifecycle as the host the gates hang off, with Maven's phases on one side and Gradle's `check` task on the other, and the checks bound cheapest-first so the build fails on the smallest offense before it spends time on the expensive ones. The diagram crowns neither tool; it shows the same gate-host role expressed two ways.
 
-![Fig 27.1 — The build lifecycle as quality-gate host — Maven phases and Gradle check task · bind checks cheapest-first · no winner between the two tools](figures/fig62_1.png)
+![Figure 27.1 — The build lifecycle as quality-gate host — Maven phases and Gradle check task · bind checks cheapest-first · no winner between the two tools](figures/fig62_1.png)
 
-*Fig 27.1 — The build lifecycle as quality-gate host — Maven phases and Gradle check task · bind checks cheapest-first · no winner between the two tools*
+*Figure 27.1 — The build lifecycle as quality-gate host — Maven phases and Gradle check task · bind checks cheapest-first · no winner between the two tools*
 
 ### The build as the gate host
 
@@ -6435,9 +6435,9 @@ That gap is the subject of this chapter, the security half of Part VII. The last
 
 The three questions form a pipeline, not a checklist: each stage answers one of them and feeds the next. Figure 28.1 lays out that chain, from inventorying the components, to scanning the inventory, to attesting how the whole thing was built. The sections that follow walk it one stage at a time.
 
-![Fig 28.1 — Supply-chain pipeline: three questions, one chain — Ch 28 · dossier key 65 (folds 66) · Part VII · each stage answers one question and enables the next](figures/fig65_1.png)
+![Figure 28.1 — Supply-chain pipeline: three questions, one chain — Ch 28 · dossier key 65 (folds 66) · Part VII · each stage answers one question and enables the next](figures/fig65_1.png)
 
-*Fig 28.1 — Supply-chain pipeline: three questions, one chain — Ch 28 · dossier key 65 (folds 66) · Part VII · each stage answers one question and enables the next*
+*Figure 28.1 — Supply-chain pipeline: three questions, one chain — Ch 28 · dossier key 65 (folds 66) · Part VII · each stage answers one question and enables the next*
 
 ### SCA: is anything known-vulnerable?
 
@@ -6618,15 +6618,15 @@ That is the first of two ways a build can betray a project even when the code is
 
 The chapter has two mechanisms, and two figures map them. Figure 29.1 traces the reproducibility chain: the five sources of Java build non-determinism, the fix for each, and the verify step that closes the loop.
 
-![Fig 29.1 &mdash; The reproducibility chain — Five sources of Java build non-determinism, their fixes, and the verify step that closes the chain.](figures/fig67_1.png)
+![Figure 29.1 &mdash; The reproducibility chain — Five sources of Java build non-determinism, their fixes, and the verify step that closes the chain.](figures/fig67_1.png)
 
-*Fig 29.1 &mdash; The reproducibility chain — Five sources of Java build non-determinism, their fixes, and the verify step that closes the chain.*
+*Figure 29.1 &mdash; The reproducibility chain — Five sources of Java build non-determinism, their fixes, and the verify step that closes the chain.*
 
 Figure 29.2 maps the second mechanism: the license-obligation spectrum read against distribution mode, showing how the same SPDX license carries a different obligation depending on how the artifact ships.
 
-![Fig 29.2 &mdash; The license-obligation spectrum, by distribution mode — The same SPDX license carries a different obligation depending on how the artifact is distributed &mdash; tune the policy gate to the distribution mode. Categories are factual; tools report declared](figures/fig67_2.png)
+![Figure 29.2 &mdash; The license-obligation spectrum, by distribution mode — The same SPDX license carries a different obligation depending on how the artifact is distributed &mdash; tune the policy gate to the distribution mode. Categories are factual; tools report declared](figures/fig67_2.png)
 
-*Fig 29.2 &mdash; The license-obligation spectrum, by distribution mode — The same SPDX license carries a different obligation depending on how the artifact is distributed &mdash; tune the policy gate to the distribution mode. Categories are factual; tools report declared*
+*Figure 29.2 &mdash; The license-obligation spectrum, by distribution mode — The same SPDX license carries a different obligation depending on how the artifact is distributed &mdash; tune the policy gate to the distribution mode. Categories are factual; tools report declared*
 
 ### Reproducible builds: the artifact as a pure function of source
 
@@ -6804,9 +6804,9 @@ That inward turn is Part VIII, and this opening chapter frames it. The reassurin
 
 The chapter's three sections share one method, and Figure 30.1 lays it out as a hierarchy: for each vulnerability class, eliminate it by construction where that is possible, mitigate it where elimination is not feasible, and detect what remains automatically. The figure reads top to bottom in order of preference, with the three Java classes this chapter covers — injection, deserialization, and cryptographic misuse — mapped onto it.
 
-![Fig 30.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically. A class addressed at the eliminate tier costs nothing to maintain; one left at the mitigate or detect tier depends on a control that can be misconfigured or bypassed.](figures/fig69_1.png)
+![Figure 30.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically. A class addressed at the eliminate tier costs nothing to maintain; one left at the mitigate or detect tier depends on a control that can be misconfigured or bypassed.](figures/fig69_1.png)
 
-*Fig 30.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically. A class addressed at the eliminate tier costs nothing to maintain; one left at the mitigate or detect tier depends on a control that can be misconfigured or bypassed.*
+*Figure 30.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically. A class addressed at the eliminate tier costs nothing to maintain; one left at the mitigate or detect tier depends on a control that can be misconfigured or bypassed.*
 
 ### Secure coding: design out the class
 
@@ -7076,15 +7076,15 @@ This chapter is the automated detection that the last one's secure-coding princi
 
 Two figures frame this chapter. Figure 31.1 maps the three security lenses this part draws on, SAST, SCA, and DAST, and the two techniques SAST uses inside that lens.
 
-![Fig 31.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.](figures/fig70_1.png)
+![Figure 31.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.](figures/fig70_1.png)
 
-*Fig 31.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.*
+*Figure 31.1 &mdash; SAST, SCA, and DAST: three security lenses, layered — Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.*
 
 Figure 31.2 lays out the secrets-detection ladder, from pre-commit to history scan, and marks the point past which finding a secret is already too late.
 
-![Fig 31.2 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents](figures/fig71_1.png)
+![Figure 31.2 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents](figures/fig71_1.png)
 
-*Fig 31.2 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents*
+*Figure 31.2 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late — Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage prevents*
 
 ### SAST: tracing untrusted input to a dangerous sink
 
@@ -7274,9 +7274,9 @@ That failure, and how to avoid it, is this closing chapter of Part VIII. The too
 
 The whole gate fits one picture: the five testing types laid out left-to-right in the order they run, the fast static checks at pre-commit and the pull request, the slow dynamic checks deferred to a stage against staging, and one block-versus-warn line drawn through all of them. Figure 32.1 is that map; the sections below walk it lens by lens.
 
-![Fig 32.1 — The security gate: five testing types ordered fast-to-slow — Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.](figures/fig73_1.png)
+![Figure 32.1 — The security gate: five testing types ordered fast-to-slow — Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.](figures/fig73_1.png)
 
-*Fig 32.1 — The security gate: five testing types ordered fast-to-slow — Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.*
+*Figure 32.1 — The security gate: five testing types ordered fast-to-slow — Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.*
 
 ### The five testing types
 
@@ -7461,9 +7461,9 @@ Designing the pipeline so the team *keeps it on* is the subject of Part IX, and 
 
 The shape of the whole pipeline fits one picture. Figure 33.1 lays the stages out as a fail-fast portfolio split by feedback latency, with the cheap blocking checks on the pull request and the slow, expensive ones deferred to main and nightly.
 
-![Fig 33.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by feedback latency — Each stage is one fitness function; the pipeline is the portfolio. Order cheap → expensive so the most-likely-to-fail checks fail first. Keep the blocking PR path short; defer the slow, expensive checks to main and nightly so they never fall on a developer waiting to merge.](figures/fig75_1.png)
+![Figure 33.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by feedback latency — Each stage is one fitness function; the pipeline is the portfolio. Order cheap → expensive so the most-likely-to-fail checks fail first. Keep the blocking PR path short; defer the slow, expensive checks to main and nightly so they never fall on a developer waiting to merge.](figures/fig75_1.png)
 
-*Fig 33.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by feedback latency — Each stage is one fitness function; the pipeline is the portfolio. Order cheap → expensive so the most-likely-to-fail checks fail first. Keep the blocking PR path short; defer the slow, expensive checks to main and nightly so they never fall on a developer waiting to merge.*
+*Figure 33.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by feedback latency — Each stage is one fitness function; the pipeline is the portfolio. Order cheap → expensive so the most-likely-to-fail checks fail first. Keep the blocking PR path short; defer the slow, expensive checks to main and nightly so they never fall on a developer waiting to merge.*
 
 ### Pipeline design: order for fast feedback
 
@@ -7664,9 +7664,9 @@ The last chapter set the pipeline's shape and left two things as promises: clean
 
 One discipline runs through all three sections, and Figure 34.1 shows it in one frame: the same diff-scoping focus applied to the coverage metric, the platform's required check, and the PR feedback alike, each narrowed to the code this change actually touches.
 
-![Fig 34.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback — Focus everything on the code this change](figures/fig80_1.png)
+![Figure 34.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback — Focus everything on the code this change](figures/fig80_1.png)
 
-*Fig 34.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback — Focus everything on the code this change*
+*Figure 34.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback — Focus everything on the code this change*
 
 ### Coverage strategy: gate new code, ratchet, back with mutation
 
@@ -7855,7 +7855,7 @@ This chapter is the *workflow* that fixes all three, the last piece of making th
 
 The two halves of the workflow sit on one spectrum: how quickly a check gives feedback, and how firmly it enforces. Figure 35.1 lays out that spectrum as a feedback-latency ladder, from the fast, skippable checks at the developer's keyboard to the unbypassable enforcement at the merge.
 
-![Fig 35.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable enforcement at the merge. Push each check to the leftmost rung that can catch it. The left rungs are deliberately skippable feedback; the right rungs are the enforcement that re-runs everything regardless.](figures/fig81_1.png)
+![Figure 35.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable enforcement at the merge. Push each check to the leftmost rung that can catch it. The left rungs are deliberately skippable feedback; the right rungs are the enforcement that re-runs everything regardless.](figures/fig81_1.png)
 
 *Figure 35.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable enforcement at the merge. Push each check to the leftmost rung that can catch it. The left rungs are deliberately skippable feedback; the right rungs are the enforcement that re-runs everything regardless.*
 
@@ -8025,10 +8025,10 @@ The assumption does not hold, and this closing chapter of Part IX is the layer t
 
 Release quality is one loop with three moving parts. Figure 36.1 traces it: the shift-left gates of the prior chapters reduce what reaches production, progressive delivery limits the blast radius of whatever slips, and the feedback loop turns each escape back into a stronger gate. Read it as a cycle, not two phases.
 
-![Fig 36.1 &mdash; The release-quality loop: shift-left gates &harr; shift-right release quality — Every gate lowers the odds a defect ships; none reaches zero. Release quality assumes one slips, limits its
+![Figure 36.1 &mdash; The release-quality loop: shift-left gates &harr; shift-right release quality — Every gate lowers the odds a defect ships; none reaches zero. Release quality assumes one slips, limits its
     blast radius, and feeds the lesson back into the gates &mdash; one continuous cycle, not two phases.](figures/fig83_1.png)
 
-*Fig 36.1 &mdash; The release-quality loop: shift-left gates &harr; shift-right release quality — Every gate lowers the odds a defect ships; none reaches zero. Release quality assumes one slips, limits its
+*Figure 36.1 &mdash; The release-quality loop: shift-left gates &harr; shift-right release quality — Every gate lowers the odds a defect ships; none reaches zero. Release quality assumes one slips, limits its
     blast radius, and feeds the lesson back into the gates &mdash; one continuous cycle, not two phases.*
 
 ### Release gates: the final checks on the artifact
@@ -9481,9 +9481,9 @@ But a performance gate is uniquely treacherous to build, and the reason is the l
 
 Figure 44.1 traces a measurement through the gate: a fresh run is compared against the stored baseline, and the relative move decides one of three verdicts. The pieces that follow — the load-and-macro measurement, the baseline, the relative comparison, and the three-way verdict that fails safe under noise — are the moving parts the figure lays out.
 
-![Fig 44.1 — The performance-regression gate: a fitness function that knows its own noise — Measure against a baseline, compare relative](figures/fig105_1.png)
+![Figure 44.1 — The performance-regression gate: a fitness function that knows its own noise — Measure against a baseline, compare relative](figures/fig105_1.png)
 
-*Fig 44.1 — The performance-regression gate: a fitness function that knows its own noise — Measure against a baseline, compare relative*
+*Figure 44.1 — The performance-regression gate: a fitness function that knows its own noise — Measure against a baseline, compare relative*
 
 ### Load and macro testing: the system-level truth
 

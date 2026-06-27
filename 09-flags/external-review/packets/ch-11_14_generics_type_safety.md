@@ -127,13 +127,13 @@ Generics encode element and parameter types in the type system, so the compiler 
 
 Two diagrams carry the shape of this chapter. The first, the PECS variance ladder in Figure 11.1, shows where Java generics are invariant by default at the declaration and where a wildcard restores controlled flexibility at the use site. Figure 11.2 then traces the single fact the rest of the chapter follows from: type information is a compile-time artifact, so what the JVM sees at run time is only the raw type and the casts the compiler inserted.
 
-![Fig 11.1 — PECS Variance Ladder — Java generics are invariant at declaration; wildcards restore controlled flexibility at the use site.](../../05-figures/14_generics_type_safety/fig14_1.png)
+![Figure 11.1 — PECS Variance Ladder — Java generics are invariant at declaration; wildcards restore controlled flexibility at the use site.](../../05-figures/14_generics_type_safety/fig14_1.png)
 
-*Fig 11.1 — PECS Variance Ladder — Java generics are invariant at declaration; wildcards restore controlled flexibility at the use site.*
+*Figure 11.1 — PECS Variance Ladder — Java generics are invariant at declaration; wildcards restore controlled flexibility at the use site.*
 
-![Fig 11.2 — Type Erasure: Compile Time vs. Run Time — Generic type information is a compile-time artifact. The JVM sees only raw types and the casts the compiler inserted. (JLS SE 21 §4.6)](../../05-figures/14_generics_type_safety/fig14_2.png)
+![Figure 11.2 — Type Erasure: Compile Time vs. Run Time — Generic type information is a compile-time artifact. The JVM sees only raw types and the casts the compiler inserted. (JLS SE 21 §4.6)](../../05-figures/14_generics_type_safety/fig14_2.png)
 
-*Fig 11.2 — Type Erasure: Compile Time vs. Run Time — Generic type information is a compile-time artifact. The JVM sees only raw types and the casts the compiler inserted. (JLS SE 21 §4.6)*
+*Figure 11.2 — Type Erasure: Compile Time vs. Run Time — Generic type information is a compile-time artifact. The JVM sees only raw types and the casts the compiler inserted. (JLS SE 21 §4.6)*
 
 
 ### Erasure: the one fact everything follows from

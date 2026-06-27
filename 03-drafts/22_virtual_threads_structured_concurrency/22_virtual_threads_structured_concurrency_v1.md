@@ -41,15 +41,15 @@ The line that closes Part III: **threads got cheap; correctness did not.** Virtu
 
 The chapter has two halves, and a figure anchors each. Figure 14.1 traces how a virtual thread mounts on a carrier, unmounts when it blocks, and pins in the one case that defeats the whole design, with the version boundary where that pin disappears. It is the map for the first half.
 
-![Fig 14.1 — Virtual thread mounting, unmounting, and the pinning trap — JEP 444 (GA, Java 21) · JEP 491 (Java 24) · Two behaviors, one version boundary](../../05-figures/22_virtual_threads_structured_concurrency/fig22_1.png)
+![Figure 14.1 — Virtual thread mounting, unmounting, and the pinning trap — JEP 444 (GA, Java 21) · JEP 491 (Java 24) · Two behaviors, one version boundary](../../05-figures/22_virtual_threads_structured_concurrency/fig22_1.png)
 
-*Fig 14.1 — Virtual thread mounting, unmounting, and the pinning trap — JEP 444 (GA, Java 21) · JEP 491 (Java 24) · Two behaviors, one version boundary*
+*Figure 14.1 — Virtual thread mounting, unmounting, and the pinning trap — JEP 444 (GA, Java 21) · JEP 491 (Java 24) · Two behaviors, one version boundary*
 
 Figure 14.2 is the map for the second half: the three layers that verify concurrent code, each catching defects at a different time (static detection at build time, stress sampling at verify time, deterministic reproduction at regression time) and none replacing the others.
 
-![Fig 14.2 — Three-layer concurrency verification stack — Static detection (build time) + stress sampling (verify time) + deterministic reproduction (regression time) — complementary, not substitutes](../../05-figures/22_virtual_threads_structured_concurrency/fig22_2.png)
+![Figure 14.2 — Three-layer concurrency verification stack — Static detection (build time) + stress sampling (verify time) + deterministic reproduction (regression time) — complementary, not substitutes](../../05-figures/22_virtual_threads_structured_concurrency/fig22_2.png)
 
-*Fig 14.2 — Three-layer concurrency verification stack — Static detection (build time) + stress sampling (verify time) + deterministic reproduction (regression time) — complementary, not substitutes*
+*Figure 14.2 — Three-layer concurrency verification stack — Static detection (build time) + stress sampling (verify time) + deterministic reproduction (regression time) — complementary, not substitutes*
 
 
 ### Virtual threads: mounting, carriers, the scheduler

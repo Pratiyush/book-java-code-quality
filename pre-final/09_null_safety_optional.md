@@ -31,7 +31,7 @@ Java's type system, by itself, cannot help. The language specification makes `nu
 
 The four levers sit at different points in a program's lifecycle, and Figure 9.1 lays them out along that timeline: each lever catches the null the earlier one cannot reach, with detection moving left, toward design time, across the lifecycle.
 
-![Fig 9.1 — Null-safety: four levers of layered defense. Each lever catches the null the earlier one cannot reach; detection moves left (earlier) across the lifecycle.](figures/fig11_1.png)
+![Figure 9.1 — Null-safety: four levers of layered defense. Each lever catches the null the earlier one cannot reach; detection moves left (earlier) across the lifecycle.](figures/fig11_1.png)
 
 *Figure 9.1 — Null-safety: the four levers of layered defense. Each lever catches the null the earlier one cannot reach; detection moves left (earlier) across the lifecycle.*
 

@@ -43,13 +43,13 @@ The stock rulesets from the last three chapters cannot help here. Checkstyle, PM
 
 ## How it works
 
-![Fig 18.1 &mdash; One shape, five artifacts: the custom-rule skeleton — Every custom rule is select &rarr; predicate &rarr; report &rarr; register. The artifact each tool reasons over fixes what the rule can see &mdash; not a ranking.](../../05-figures/38_custom_rules_codegen_lombok/fig38_1.png)
+![Figure 18.1 &mdash; One shape, five artifacts: the custom-rule skeleton — Every custom rule is select &rarr; predicate &rarr; report &rarr; register. The artifact each tool reasons over fixes what the rule can see &mdash; not a ranking.](../../05-figures/38_custom_rules_codegen_lombok/fig38_1.png)
 
-*Fig 18.1 &mdash; One shape, five artifacts: the custom-rule skeleton — Every custom rule is select &rarr; predicate &rarr; report &rarr; register. The artifact each tool reasons over fixes what the rule can see &mdash; not a ranking.*
+*Figure 18.1 &mdash; One shape, five artifacts: the custom-rule skeleton — Every custom rule is select &rarr; predicate &rarr; report &rarr; register. The artifact each tool reasons over fixes what the rule can see &mdash; not a ranking.*
 
-![Fig 18.2 &mdash; Codegen approaches by relation to the JSR&nbsp;269 standard contract — Three positions on one spectrum: compiler-derived &rarr; new-file processor (inside contract) &rarr; AST-edit processor (past contract). Each states its trade-off; none is crowned.](../../05-figures/38_custom_rules_codegen_lombok/fig38_2.png)
+![Figure 18.2 &mdash; Codegen approaches by relation to the JSR&nbsp;269 standard contract — Three positions on one spectrum: compiler-derived &rarr; new-file processor (inside contract) &rarr; AST-edit processor (past contract). Each states its trade-off; none is crowned.](../../05-figures/38_custom_rules_codegen_lombok/fig38_2.png)
 
-*Fig 18.2 &mdash; Codegen approaches by relation to the JSR&nbsp;269 standard contract — Three positions on one spectrum: compiler-derived &rarr; new-file processor (inside contract) &rarr; AST-edit processor (past contract). Each states its trade-off; none is crowned.*
+*Figure 18.2 &mdash; Codegen approaches by relation to the JSR&nbsp;269 standard contract — Three positions on one spectrum: compiler-derived &rarr; new-file processor (inside contract) &rarr; AST-edit processor (past contract). Each states its trade-off; none is crowned.*
 
 
 ### The shared shape of a custom rule

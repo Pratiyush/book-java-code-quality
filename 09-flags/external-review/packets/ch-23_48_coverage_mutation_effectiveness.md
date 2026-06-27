@@ -121,9 +121,9 @@ That gap is the subject of this chapter, and it is the payoff of the two-axis fr
 
 Figure 23.1 puts the two measures side by side on a single covered line: line coverage holds at 100% while assertions are added, and only the mutation score moves. Coverage records execution; the mutation score records detection.
 
-![Fig 23.1 — Coverage vs mutation: the assertion gap on the same covered line — 100% line coverage does not move when assertions are added — mutation score does. Coverage records execution; mutation score records detection.](../../05-figures/48_coverage_mutation_effectiveness/fig48_1.png)
+![Figure 23.1 — Coverage vs mutation: the assertion gap on the same covered line — 100% line coverage does not move when assertions are added — mutation score does. Coverage records execution; mutation score records detection.](../../05-figures/48_coverage_mutation_effectiveness/fig48_1.png)
 
-*Fig 23.1 — Coverage vs mutation: the assertion gap on the same covered line — 100% line coverage does not move when assertions are added — mutation score does. Coverage records execution; mutation score records detection.*
+*Figure 23.1 — Coverage vs mutation: the assertion gap on the same covered line — 100% line coverage does not move when assertions are added — mutation score does. Coverage records execution; mutation score records detection.*
 
 
 ### Coverage: what the tests touched

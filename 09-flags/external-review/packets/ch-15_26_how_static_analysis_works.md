@@ -120,9 +120,9 @@ Part IV opens here by lifting the hood. The chapter has two jobs: show *how* ana
 
 Static analysis is four moves, layered. Figure 15.1 sets them out as a ladder, from parsing source into a tree at the bottom to following tainted input to a dangerous sink at the top, with the cost and the characteristic blind spot of each rung.
 
-![Fig 15.1 — Static-analysis technique ladder — Four moves, each seeing more than the one below — at rising power and cost.](../../05-figures/26_how_static_analysis_works/fig26_1.png)
+![Figure 15.1 — Static-analysis technique ladder — Four moves, each seeing more than the one below — at rising power and cost.](../../05-figures/26_how_static_analysis_works/fig26_1.png)
 
-*Fig 15.1 — Static-analysis technique ladder — Four moves, each seeing more than the one below — at rising power and cost.*
+*Figure 15.1 — Static-analysis technique ladder — Four moves, each seeing more than the one below — at rising power and cost.*
 
 Each rung sees more than the one below it, and costs more to climb.
 

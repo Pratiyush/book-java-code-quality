@@ -40,9 +40,9 @@ This chapter teaches that reasoning. It defines what "correct" even means when t
 
 The whole chapter rests on two structures, and Figure 13.1 lays them side by side: on the left, the six happens-before edges that establish cross-thread visibility; on the right, the four idioms that publish an object reference so a second thread sees it fully built. Every technique in the sections that follow is one edge or one idiom from this figure.
 
-![Fig 13.1 — Java Memory Model: happens-before edges and safe publication — JLS SE 21 §17.4.5 · six edges that establish cross-thread visibility · four idioms for safely publishing an object reference](../../05-figures/20_thread_safety_jmm/fig20_1.png)
+![Figure 13.1 — Java Memory Model: happens-before edges and safe publication — JLS SE 21 §17.4.5 · six edges that establish cross-thread visibility · four idioms for safely publishing an object reference](../../05-figures/20_thread_safety_jmm/fig20_1.png)
 
-*Fig 13.1 — Java Memory Model: happens-before edges and safe publication — JLS SE 21 §17.4.5 · six edges that establish cross-thread visibility · four idioms for safely publishing an object reference*
+*Figure 13.1 — Java Memory Model: happens-before edges and safe publication — JLS SE 21 §17.4.5 · six edges that establish cross-thread visibility · four idioms for safely publishing an object reference*
 
 
 ### Happens-before: the definition of "correct"

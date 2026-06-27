@@ -25,12 +25,12 @@ Those are the two blind spots this chapter closes, and they are the two limits o
 
 ## How it works
 
-The two blind spots sit on two independent axes, and Fig 22.1 places them side by side: fidelity (how real the collaborator under test is) on one, and input coverage (how much of the input space the test actually reaches) on the other. A unit test sits low on both; integration testing raises the first axis and property-based testing widens the second.
+The two blind spots sit on two independent axes, and Figure 22.1 places them side by side: fidelity (how real the collaborator under test is) on one, and input coverage (how much of the input space the test actually reaches) on the other. A unit test sits low on both; integration testing raises the first axis and property-based testing widens the second.
 
-![Fig 22.1 — Two blind-spot axes: fidelity &times; input coverage — A unit test has two structural limits — the collaborator it models, and the inputs it chose.
+![Figure 22.1 — Two blind-spot axes: fidelity &times; input coverage — A unit test has two structural limits — the collaborator it models, and the inputs it chose.
     Integration testing and property-based testing each close one.](figures/fig45_1.png)
 
-*Fig 22.1 — Two blind-spot axes: fidelity &times; input coverage — A unit test has two structural limits — the collaborator it models, and the inputs it chose.
+*Figure 22.1 — Two blind-spot axes: fidelity &times; input coverage — A unit test has two structural limits — the collaborator it models, and the inputs it chose.
     Integration testing and property-based testing each close one.*
 
 ### Integration testing: use the real collaborator

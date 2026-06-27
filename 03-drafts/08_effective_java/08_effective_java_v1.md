@@ -194,5 +194,5 @@ RUNNABLE EXAMPLE SPEC (seeds Step 4b)
 
 FIGURE PLAN (Step 9)
 - Fig 05? (08.1) — the canon-dating table rendered: EJ principle → modern feature → verdict (Stands / Served / Reinforced-and-dated). Trace to EJ + JEPs.
-- Fig 08.2 — the records "serve not retire" decision: is it transparent immutable data with no invariants? → record; else compact-constructor record / hand-written. Trace to JEP 395 + EJ item.
+- Figure 08.2 — the records "serve not retire" decision: is it transparent immutable data with no invariants? → record; else compact-constructor record / hand-written. Trace to JEP 395 + EJ item.
 -->
