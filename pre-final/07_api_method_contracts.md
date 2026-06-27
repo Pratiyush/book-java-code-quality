@@ -15,7 +15,7 @@ A method is a *contract*: a promise about what callers must supply, what they ge
 **What this chapter covers**
 
 - The contract framing: a method's promise has a **type-carried half** (the compiler/checker enforces it) and a **doc/runtime-carried half** (Javadoc states it, a fail-fast check enforces it).
-- The *Effective Java* method-design canon (Items 49–56, plus 15–17, 50): minimize the surface, fail fast on bad input, return empty not null, use `Optional` judiciously, defend against representation exposure, document the rest.
+- The *Effective Java* method-design canon (Items 49–56, plus 15–17): minimize the surface, fail fast on bad input, return empty not null, use `Optional` judiciously, defend against representation exposure, document the rest.
 - How each design rule is **machine-checked** (by the JDK type system, by a runtime guard, or by a named analyzer: Error Prone, SpotBugs, PMD, Sonar) and where it is review-only.
 - Encoding the contract in the type system: nullness as a signature fact (JSpecify), real overrides (`@Override`), un-ignorable return values.
 - The contract across **versions**: source vs binary compatibility (JLS ch.13), semantic versioning, and the tools that compute the required bump (revapi, japicmp).
@@ -214,7 +214,3 @@ The contract framing is now in place: a promise with a type-carried half and a d
 - **SonarQube** — `java:S2201` (return-value-ignored, scoped to a fixed immutable-type list — exact list verified against the pinned Sonar release; tracked in `09-flags/09_s2201_scope_limit_unverified.md`), `java:S1226` (reassign-before-read, RSPEC-1226).
 - **JSpecify 1.0.0** — `@Nullable`/`@NonNull`/`@NullMarked`/`@NullUnmarked`; spec, not a checker. (Version per SOURCE-PIN §2; `@NullMarked`-package + explicit `@Nullable` opt-out exercised green in the companion module via `org.jspecify:jspecify:1.0.0`.)
 - **SemVer** (semver.org) — `MAJOR.MINOR.PATCH`. **revapi** 0.15.1 (revapi.org) — severity-categorized API change tracking. **japicmp** 0.25.6 (siom79.github.io/japicmp) — JAR diff, `--semantic-versioning`, `breakBuildBasedOnSemanticVersioning`. (Versions per SOURCE-PIN §6; exact CLI/Maven option names verified against each tool's docs at `/pin-source` — the compatibility sub-module is a spec here, not yet built.)
-
-## Next chapter teaser
-
-The *interface* is now honest. Next comes the *value*: immutability, and the `equals`/`hashCode`/`Comparable` contracts that determine whether objects behave correctly in a `HashMap` or a sorted set. These are the contracts the language enforces silently, and punishes silently when broken.

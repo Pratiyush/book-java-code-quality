@@ -131,9 +131,9 @@ The contracts are formal enough that static analysis catches the common breaks r
 
 | Violation | Symptom | Caught by (each cited to its own tool) |
 |---|---|---|
-| `equals` without `hashCode` (or vice versa) | `HashMap` loses the key | Sonar `java:S1206`; SpotBugs `HE_EQUALS_NO_HASHCODE`/`HE_HASHCODE_NO_EQUALS`; PMD `OverrideBothEqualsAndHashcode`; Checkstyle/EP `EqualsHashCode` |
+| `equals` without `hashCode` (or vice versa) | `HashMap` loses the key | Sonar `java:S1206`; SpotBugs `HE_EQUALS_USE_HASHCODE`/`HE_HASHCODE_NO_EQUALS`; PMD `OverrideBothEqualsAndHashcode`; Checkstyle/EP `EqualsHashCode` |
 | covariant `equals(MyType)` | collections still use identity equals | Checkstyle `CovariantEquals`; SpotBugs `EQ_SELF_NO_OBJECT` |
-| `getClass` vs `instanceof` asymmetry | subclass never equals superclass / Liskov break | EP `EqualsGetClass`; SpotBugs `EQ_OVERRIDING_EQUALS_NOT_SYMMETRIC` |
+| `getClass` vs `instanceof` asymmetry | subclass never equals superclass / Liskov break | EP `EqualsGetClass`; SpotBugs `EQ_COMPARING_CLASS_NAMES` |
 | `equals` mishandles null/wrong type | NPE/`ClassCastException` instead of `false` | SpotBugs `NP_EQUALS_SHOULD_HANDLE_NULL_ARGUMENT` |
 | caller checks `compareTo() == -1` | breaks for impls returning other magnitudes | EP `CompareToZero` |
 | `int`-subtraction or `==`-on-floats `compareTo` | overflow / NaN; `sort` throws | SpotBugs `CO_COMPARETO_INCORRECT_FLOATING`; Sonar `java:S1244` |
@@ -260,7 +260,7 @@ Value types that do not change their state and that answer equality and ordering
 - **SonarQube** (Server 2026.1 LTA, per SOURCE-PIN) — `java:S2384` (mutable members stored/returned), `java:S1206` (equals/hashCode in pairs), `java:S1210` (equals when Comparable), `java:S1244` (float equality). Cited only (not exercised by the companion build). *(⚠ rule titles/default-activation/CWE require the pinned Sonar rules source, not in-repo; `java:S2384` returned HTTP 403 to automated fetch at research — re-confirm at the pinned rules.sonarsource.com.)*
 - **PMD** (7.25.0, per SOURCE-PIN) — `ImmutableField`, `ArrayIsStoredDirectly`, `MethodReturnsInternalArray`, `OverrideBothEqualsAndHashcode`(+`…OnComparable`), `CompareObjectsWithEquals`. Cited only (not exercised by the companion build). *(⚠ rule category/casing/records-handling require the pinned PMD rule docs, not in-repo.)*
 - **Error Prone** (latest 2.x, per SOURCE-PIN) — `@Immutable`/`ImmutableChecker`, `MixedMutabilityReturnType`, `EqualsHashCode`, `EqualsGetClass`, `EqualsIncompatibleType`, `CompareToZero`. Cited only (not exercised by the companion build). *(⚠ check severities/default-presence require the pinned Error Prone bugpattern docs, not in-repo.)*
-- **SpotBugs** (4.10.2, per SOURCE-PIN) — `HE_EQUALS_NO_HASHCODE`/`HE_HASHCODE_NO_EQUALS`, `EQ_OVERRIDING_EQUALS_NOT_SYMMETRIC`, `EQ_COMPARING_CLASS_NAMES`, `CO_COMPARETO_INCORRECT_FLOATING`, `CO_COMPARETO_RESULTS_MIN_VALUE`, `NP_EQUALS_SHOULD_HANDLE_NULL_ARGUMENT`. The companion build empirically exercises `HE_EQUALS_USE_HASHCODE` (on `BrokenPrice`) and `EI_EXPOSE_REP`/`EI_EXPOSE_REP2` (on `OrderLeaky`). **Checkstyle** (13.6.0, per SOURCE-PIN) — `EqualsHashCode` (exercised by the green build), `CovariantEquals`, `EqualsAvoidNull`. *(⚠ the remaining cited-only pattern spellings/descriptions require the pinned SpotBugs + Checkstyle docs, not in-repo.)*
+- **SpotBugs** (4.10.2, per SOURCE-PIN) — `HE_EQUALS_USE_HASHCODE` (defines `equals`, uses `Object.hashCode`)/`HE_HASHCODE_NO_EQUALS`, `EQ_COMPARING_CLASS_NAMES`, `CO_COMPARETO_INCORRECT_FLOATING`, `CO_COMPARETO_RESULTS_MIN_VALUE`, `NP_EQUALS_SHOULD_HANDLE_NULL_ARGUMENT`. The companion build empirically exercises `HE_EQUALS_USE_HASHCODE` (on `BrokenPrice`) and `EI_EXPOSE_REP`/`EI_EXPOSE_REP2` (on `OrderLeaky`). **Checkstyle** (13.6.0, per SOURCE-PIN) — `EqualsHashCode` (exercised by the green build), `CovariantEquals`, `EqualsAvoidNull`. *(⚠ the remaining cited-only pattern spellings/descriptions require the pinned SpotBugs + Checkstyle docs, not in-repo.)*
 
 ## Next chapter teaser
 

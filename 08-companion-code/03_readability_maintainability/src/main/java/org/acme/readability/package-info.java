@@ -10,8 +10,8 @@
  *
  * <ul>
  *   <li><strong>Deeply nested.</strong> {@link org.acme.readability.DiscountRulesNested} packs the
- *       branches several levels deep — the shape {@code java:S3776} scores high, though its path count
- *       (cyclomatic complexity) matches the balanced form.</li>
+ *       branches several levels deep — the shape {@code java:S3776} scores high; spelling the tier out as
+ *       a branch ladder raises its cyclomatic path count above the balanced form's as well.</li>
  *   <li><strong>Over-fragmented.</strong> {@link org.acme.readability.DiscountRulesFragmented} splits the
  *       same logic across many one-line methods — low per-method cognitive score, but following one idea
  *       means hopping between fragments, the cost a philosophy of deep modules names.</li>

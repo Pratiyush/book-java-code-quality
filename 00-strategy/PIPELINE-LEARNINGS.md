@@ -2792,3 +2792,22 @@ Levers (a) em-dash density, (b) hype-word removal, (c) gloss-before-first-use, (
   running-prose sentence that names it ("Figure N.x ...") and says what it shows, placed immediately before
   the image. Added one intro sentence per figure (no em-dashes) — also nudged density down by adding clean
   prose. Worth a FIGURE-GUIDE line: every image carries a naming intro sentence in the body before it.
+
+---
+
+## Ch 6 (key 07) — independent re-score caught a JEP→JDK drift the self-score deferred (2026-06-28)
+
+- **A deferred `⚠ verify @pin` marker is not a SOURCE-TRACE pass.** The main-loop self-score saw the inline
+  marker on "Java 21's unnamed variable `_`, JEP 456", listed it as a known −2, and still passed FLOOR C and
+  scored ACCURACY 8. The independent score checked it against the openjdk JEP index: JEP 456 is **Java 22**
+  (final); the Java-21 form is **preview JEP 443**. That is a drifted version-pinned atom asserted as anchor
+  fact → FLOOR C SOURCE-TRACE FAIL, ACCURACY capped at 5. **Rule to promote (SCORING/VERIFY checklist):** a
+  `⚠ verify @pin` left on a *never-invent atom* (rule ID, JEP#, GAV, version, flag, API sig) is an automatic
+  SOURCE-TRACE FAIL until cleared; markers are allowed only on prose framing, never on the atom itself.
+- **JEP→JDK + preview/final is a recurring drift trap.** JEP 443 (21, preview) vs 456 (22, final) mirrors the
+  already-flagged JEP 467 (23). Propose a SOURCE-PIN §1 "JEP→JDK + preview/final" table for every JEP the book
+  cites (413→18, 443→21 preview, 456→22 final, 467→23) so drafts can be greped against it.
+- **A flag that names a risk should gate the draft that inherits it.** `09-flags/07_naming_defaults_unverified.md`
+  §5 predicted this exact miss ("JEP 456? … 21?/22? UNVERIFIED") and the draft shipped to scoring with it
+  unresolved. The chapter also had **no `_VERIFY.md`/`_CLARITY.md`/`_AUDIT.md`** (gates "manual") — propose a
+  chapter cannot reach the scorecard without a `_VERIFY.md` on disk.

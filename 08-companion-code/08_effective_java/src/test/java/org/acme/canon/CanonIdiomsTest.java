@@ -74,6 +74,10 @@ class CanonIdiomsTest {
         assertThat(PricingPolicy.values()).hasSize(1);
         assertThat(PricingPolicy.INSTANCE.roundUpToMajorUnit(199L, 100)).isEqualTo(200L);
         assertThat(PricingPolicy.INSTANCE.roundUpToMajorUnit(200L, 100)).isEqualTo(200L);
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> PricingPolicy.INSTANCE.roundUpToMajorUnit(100L, 0));
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> PricingPolicy.INSTANCE.roundUpToMajorUnit(-1L, 100));
     }
 
     @Test

@@ -17,8 +17,16 @@ default can be confirmed yet.
 3. **PMD `ShortVariable.minimum` and `LongVariable` thresholds** — defaults UNVERIFIED; read at pinned PMD version.
 4. **JLS §6.1 naming-conventions wording + exact section number** for SE 21 / SE 25 — not yet read against the
    spec text (Durable principle #1: spec-edition claims need the edition's own text).
-5. **Unnamed variables `_`** — JEP number (JEP 456?) and finalization JDK (21? / 22?) UNVERIFIED — confirm
-   against the JEP index before asserting; interacts with `ShortVariable`/local naming rules.
+5. **Unnamed variables `_`** — ✅ **RESOLVED 2026-06-28** (LIFT, FLOOR-C SOURCE-TRACE fix). Confirmed
+   against the openjdk.org JEP index (SOURCE-PIN §1 authority; fetched HTTP 200 with browser UA, the
+   default-UA 403 workaround). Ground truth: **JEP 443** "Unnamed Patterns and Variables (Preview)" =
+   Closed/Delivered, **Release 21** (preview); **JEP 456** "Unnamed Variables & Patterns" =
+   Closed/Delivered, **Release 22** (final). The two cross-reference each other ("Relates to"). The draft
+   had asserted "Java 21's unnamed variable `_`, JEP 456" — wrong twice (456 is Java **22**, not 21; and at
+   the 21 anchor the feature was preview JEP **443**). Draft line 194 rewritten to the accurate framing
+   (previewed in 21 as JEP 443, finalized in 22 as JEP 456) and handled as a Java 22-era AHEAD-OF-PIN delta
+   per the runtime-baseline convention; the inline `⚠ verify number/JDK @pin` marker removed. Interacts with
+   `ShortVariable`/local naming rules (exempt `_` only on 22+).
 
 ## Verified (no flag needed, for contrast)
 Checkstyle `ConstantName` = `^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$`, `MethodName` = `^[a-z][a-zA-Z0-9]*$`;

@@ -117,7 +117,7 @@ public sealed interface Shape permits Shape.Circle, Shape.Rectangle, Shape.Squar
 ```
 
 - **Text blocks** are multi-line strings (SQL, JSON) that read as themselves.
-- **`var`** is local type inference that cuts redundant noise (used judiciously; Chapter 2's caveat).
+- **`var`** is local type inference that cuts redundant noise (used judiciously; Chapter 6's caveat).
 
 *(Every JEP number and since-version here is confirmed against the pinned JDK (dossier 13 VERIFY checked them against the JEP head tables; the companion module compiles each idiom green on JDK 21.0.11); preview/exploratory features are flagged AHEAD-OF-PIN below.)*
 
@@ -162,11 +162,13 @@ The same discipline applies to every named-book source in this book (Fowler's *R
 
   ```java
     INSTANCE;
-
-    /** Rounds a price in minor units up to the nearest whole major unit (cents to dollars, say). */
+    /** Rounds a non-negative price (minor units) up to the next whole major unit; Item 49: check params. */
     public long roundUpToMajorUnit(long minorUnits, int minorUnitsPerMajor) {
+        if (minorUnits < 0 || minorUnitsPerMajor <= 0) {
+            throw new IllegalArgumentException("minorUnits >= 0 and minorUnitsPerMajor > 0 required");
+        }
         long remainder = minorUnits % minorUnitsPerMajor;
-        return remainder == 0 ? minorUnits : minorUnits + (minorUnitsPerMajor - remainder);
+        return remainder == 0 ? minorUnits : Math.addExact(minorUnits, minorUnitsPerMajor - remainder);
     }
 ```
 

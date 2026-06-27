@@ -15,7 +15,7 @@ package org.acme.immutability;
  * HE_EQUALS_USE_HASHCODE}, Sonar {@code java:S1206}, PMD {@code OverrideBothEqualsAndHashcode}). The
  * build keeps those findings quiet only through reviewed, narrowly-scoped suppressions naming this
  * class as an intentional teaching artifact — the {@code javac -Xlint:overrides} warning here, and
- * the SpotBugs {@code HE_EQUALS_NO_HASHCODE} finding in the analysis filter. The fix the chapter
+ * the SpotBugs {@code HE_EQUALS_USE_HASHCODE} finding in the analysis filter. The fix the chapter
  * recommends is to derive both contracts by making the type a record, as {@link Money} does — never
  * to ship this class.
  */

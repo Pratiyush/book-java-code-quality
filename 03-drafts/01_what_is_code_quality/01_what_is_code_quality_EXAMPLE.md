@@ -18,7 +18,7 @@
 
 ## Verdict rationale
 
-Chapter 01 ("Quality Is a Word You Can't Manage") is the book's **opening, pure-concept,
+Chapter 01 ("Quality Is a Word No Team Can Manage") is the book's **opening, pure-concept,
 definitional** chapter (Part I, Foundations). Its job is to install vocabulary — the ISO/IEC 25010
 decomposition, Fowler's internal/external split and negative-cost argument, the technical-debt
 metaphor and quadrant, the SQALE/SonarQube heuristic, the DORA speed-vs-stability finding. The draft

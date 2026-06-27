@@ -480,7 +480,7 @@ The bolded row is the one this book lives in. **Maintainability**, with its five
 
 > **NOTE** ISO/IEC 25010 was revised in **2023** (the current edition). It adds **Safety** as a ninth top-level characteristic and renames Usability to *Interaction Capability* and Portability to *Flexibility*. The 2023 edition also reworks several sub-characteristic names. Secondary summaries describe Reliability's *maturity* being renamed to *faultlessness*, for example. The complete 2023 sub-characteristic tree is confirmed against the standard's own text at the pin, not asserted here from a secondary (verify-at-pin; tracked in `09-flags/01_iso25010_2023_subtree_unverified.md`). A caution that this book practises and preaches: many articles titled "ISO 25010:2023" actually print the 2011 model. Edition-specific names trace to the standard's own text, never to a blog (see *Sources*).
 
-The point is not to memorize the tree. It is that "improve quality" decomposes into nameable, separable targets. A lead who says "our **analysability** and **testability** are below bar, and here are the two gates that move them" has a program. A lead who says "improve quality" has a wish.
+Memorizing the tree is beside the point; what matters is that "improve quality" decomposes into nameable, separable targets. A lead who says "our **analysability** and **testability** are below bar, and here are the two gates that move them" has a program. A lead who says "improve quality" has a wish.
 
 ### The half users see and the half they cannot
 
@@ -520,7 +520,7 @@ This inverts the instinct that quality is something a team buys with time. For i
 
 ### Why readability is the highest-leverage internal attribute
 
-Of the five Maintainability sub-characteristics, **analysability** (can a developer understand and locate things?) carries the most weight, because reading dominates how developers spend their time. *Clean Code* puts the reading-to-writing ratio at "well over **10 to 1**," and draws the conclusion that follows: optimize code for reading even when that makes it harder to write. Optimize the operation performed ten times, not the one performed once. That is why Chapters 2, 3, 6, and 17 keep returning to readability.
+Of the five Maintainability sub-characteristics, **analysability** (can a developer understand and locate things?) carries the most weight, because reading dominates how developers spend their time. *Clean Code* puts the reading-to-writing ratio at "well over **10 to 1**," and draws the conclusion that follows: optimize code for reading even when that makes it harder to write. Optimize the operation performed ten times, not the one performed once. That is why Chapters 2 and 6 keep returning to readability.
 
 ### What poor quality costs: technical debt
 
@@ -546,7 +546,7 @@ The quadrant matters because "technical debt" is routinely used to launder reckl
 A metaphor that cannot be measured stays an argument. The **SQALE** method (Software Quality Assessment based on Lifecycle Expectations), defined by Jean-Louis Letouzey and implemented directly by **SonarQube**, is how most Java teams actually *see* their debt:
 
 - Each rule carries an estimated **remediation cost in minutes**. A project's **technical debt** is the sum of those costs across all maintainability issues.
-- The **Technical Debt Ratio** is `remediation effort ÷ development effort × 100`, where development effort is `lines of code × cost-to-develop-one-line` (SonarQube documents a configurable default of **30 minutes per line**; verify the exact figure against the pinned SonarQube release; the model is owned in Chapter 38).
+- The **Technical Debt Ratio** is `remediation effort ÷ development effort × 100`, where development effort is `lines of code × cost-to-develop-one-line` (SonarQube documents a configurable default of **30 minutes per line**; verify the exact figure against the pinned SonarQube release; the model is owned in Chapter 17).
 - A **Maintainability Rating** (A–E) is derived from that ratio.
 
 > **WARNING** A SQALE debt number is a *model output*, not ground truth. The "30 minutes per line" default and the per-rule estimates are heuristics; two teams' debt numbers are not comparable unless their model configuration matches. Treat the ratio as a **trend** to watch, never a target to hit. Chapter 2 explains why a metric that becomes a target stops measuring anything.
@@ -557,7 +557,7 @@ At national scale, the cost is real enough to quote, with one caveat. The Consor
 
 The intuition behind "skip quality to ship faster" is contradicted by the strongest dataset in the field. The **DORA** research program (the *State of DevOps* reports, and the book *Accelerate*) finds, across more than six years, that **throughput** (deployment frequency, lead time for changes) and **stability** (change-failure rate, failed-deployment recovery time) are **not a trade-off**: they correlate and reinforce each other. Elite teams are fast *and* stable.
 
-The mechanism is exactly the one from §Why internal quality has negative cost: high internal quality is what *lets* a team move fast without breaking things. So "skip quality to go faster" buys a brief speed-up and sells the team's future velocity, the opposite of the stated goal.
+The mechanism is the cruft tax again: high internal quality is what *lets* a team move fast without breaking things, because there is no accumulated cruft to slow each change down. So "skip quality to go faster" buys a brief speed-up and sells the team's future velocity, the opposite of the stated goal.
 
 ## Deep dive
 
@@ -567,7 +567,7 @@ The abstraction earns its keep only when it maps to things a developer can chang
 
 | Maintainability sub-characteristic | In Java, it means… | A signal of *low* quality | Where the book moves it |
 |---|---|---|---|
-| **Analysability** | readable names, small methods, low nesting | a 300-line method nested six deep with `tmp2` variables | Ch 2, 3, 6 (Cognitive Complexity, Checkstyle) |
+| **Analysability** | readable names, small methods, low nesting | a 300-line method nested six deep with `tmp2` variables | Ch 2, 6, 16 (Cognitive Complexity, Checkstyle) |
 | **Modifiability** | low coupling, single-responsibility classes | one config change forces edits in twelve files | Ch 25 (coupling, ArchUnit) |
 | **Testability** | dependency injection over `new`, seams | a class that `new`s a database connection in its constructor | Ch 21, 23, 39 (JUnit, coverage, seams) |
 | **Modularity** | clean package/module boundaries, no cycles | a dependency cycle between `service` and `repository` | Ch 25, 26 (ArchUnit, JPMS) |
@@ -635,7 +635,7 @@ The vocabulary is now in place: quality decomposes into ISO characteristics; the
 **Reference (exact, traced to the pin)**
 
 - ISO/IEC 25010 Maintainability sub-characteristics: modularity, reusability, analysability, modifiability, testability.
-- SonarQube SQALE defaults: cost-to-develop = 30 min/line; 8-hour day for debt-in-days; Maintainability Rating A–E from the debt ratio. *(These SQALE defaults and the exact rating thresholds are configurable conventions; verify each against the pinned SonarQube 2026.1 LTA; the model is owned in Chapter 38. Tracked in `09-flags/01_named_canon_verbatims_and_cisq_stat_verify_at_pin.md`.)*
+- SonarQube SQALE defaults: cost-to-develop = 30 min/line; 8-hour day for debt-in-days; Maintainability Rating A–E from the debt ratio. *(These SQALE defaults and the exact rating thresholds are configurable conventions; verify each against the pinned SonarQube 2026.1 LTA; the model is owned in Chapter 17. Tracked in `09-flags/01_named_canon_verbatims_and_cisq_stat_verify_at_pin.md`.)*
 
 **Sources and further reading**
 
@@ -977,7 +977,7 @@ Three distinctions explain the apparent redundancy, and a senior reader should h
 
 ### How they compose in a real build
 
-The map becomes a build through Maven or Gradle plugins (`maven-checkstyle-plugin`, `spotbugs-maven-plugin`, `spotless-maven-plugin`, `jacoco-maven-plugin`, and Gradle equivalents). **Ordering matters:** fast, cheap checks first (format, fast linters to fail fast), heavier analysis (SpotBugs, Sonar) later, coverage and mutation gates near the end (Chapters 33, 34). The same checks run at pre-commit (Chapter 35) and in CI (Chapter 34) so developers are not surprised at the gate.
+The map becomes a build through Maven or Gradle plugins (`maven-checkstyle-plugin`, `spotbugs-maven-plugin`, `spotless-maven-plugin`, `jacoco-maven-plugin`, and Gradle equivalents). **Ordering matters:** fast, cheap checks first (format, fast linters to fail fast), heavier analysis (SpotBugs, Sonar) later, coverage and mutation gates near the end (Chapter 23). The same checks run at pre-commit (Chapter 35) and in CI (Chapter 34) so developers are not surprised at the gate.
 
 The companion module assembles that order in one build. The cheapest layer is the compiler itself, held to every warning and made fatal:
 
@@ -1032,7 +1032,7 @@ And coverage over the test run, last:
 
 ### The menu is not the order
 
-The critical caveat: the map is the *menu*, not the *order*, and running everything is not the goal. Running every tool maximizes noise and build time and produces overlapping findings; Checkstyle, PMD, and SonarQube will all flag some of the same things. Independent studies of Java static-analysis tools find their findings *overlap surprisingly little*, which is the empirical case for layering a few complementary tools, and also the warning that piling on redundant ones multiplies noise.
+The critical caveat: the map is the *menu*, not the *order*, and running everything is not the goal. Running every tool maximizes noise and build time and produces overlapping findings; Checkstyle, PMD, and SonarQube will all flag some of the same things. The case for layering is the mechanism already established above, not a count: because a source linter, a bytecode analyzer, and a compile-integrated checker reason over different artefacts, a few *complementary* tools each catch what the others structurally cannot — while piling on tools that share a vantage mostly multiplies redundant findings and noise.
 
 **Chapter 17** covers combining and de-duplicating the analyzers into a coherent layered stack; **Chapter 46** builds one concrete reference stack end to end.
 
@@ -1092,7 +1092,7 @@ The territory is mapped. Tools only stick in a team that wants them, and quality
 - The Checkstyle wiki's curated "Java static code analysis tools" list.
 
 *Tier 2 — Accessible / further reading*
-- "A critical comparison on six static analysis tools" (ScienceDirect). Finding-overlap and precision evidence for layering.
+- "A critical comparison on six static analysis tools" (ScienceDirect). Further reading on how analyzers differ in what they catch (not pinned; read as background, not as a cited figure).
 - Maven / Gradle plugin references for build integration.
 
 ## Next chapter teaser
@@ -1269,7 +1269,7 @@ Part I has built the foundation: quality is a nameable, priceable set of attribu
 *Tier 1 — Primary / official*
 - DORA, *Generative organizational culture* capability + *State of DevOps* (dora.dev); Forsgren/Humble/Kim, *Accelerate* (2018).
 - Ron Westrum, organizational-culture typology (1988).
-- Larry Smith, "Shift-Left Testing," *Dr. Dobb's* (2001).
+- Larry Smith, "Shift-Left Testing," *Dr. Dobb's* (2001) — *attributed; ⚠ verify-at-pin (no SOURCE-PIN row yet — to be added as a named-article source at `/pin-source`; see `09-flags/06_culture_named_source_verbatims_verify_at_pin.md` atom 4).*
 - Martin Fowler, *CodeOwnership* (bliki).
 
 *Tier 2 — Accessible / further reading*
@@ -1407,7 +1407,7 @@ public sealed interface Shape permits Shape.Circle, Shape.Rectangle, Shape.Squar
 ```
 
 - **Text blocks** are multi-line strings (SQL, JSON) that read as themselves.
-- **`var`** is local type inference that cuts redundant noise (used judiciously; Chapter 2's caveat).
+- **`var`** is local type inference that cuts redundant noise (used judiciously; Chapter 6's caveat).
 
 *(Every JEP number and since-version here is confirmed against the pinned JDK (dossier 13 VERIFY checked them against the JEP head tables; the companion module compiles each idiom green on JDK 21.0.11); preview/exploratory features are flagged AHEAD-OF-PIN below.)*
 
@@ -1452,11 +1452,13 @@ The same discipline applies to every named-book source in this book (Fowler's *R
 
   ```java
     INSTANCE;
-
-    /** Rounds a price in minor units up to the nearest whole major unit (cents to dollars, say). */
+    /** Rounds a non-negative price (minor units) up to the next whole major unit; Item 49: check params. */
     public long roundUpToMajorUnit(long minorUnits, int minorUnitsPerMajor) {
+        if (minorUnits < 0 || minorUnitsPerMajor <= 0) {
+            throw new IllegalArgumentException("minorUnits >= 0 and minorUnitsPerMajor > 0 required");
+        }
         long remainder = minorUnits % minorUnitsPerMajor;
-        return remainder == 0 ? minorUnits : minorUnits + (minorUnitsPerMajor - remainder);
+        return remainder == 0 ? minorUnits : Math.addExact(minorUnits, minorUnitsPerMajor - remainder);
     }
 ```
 
@@ -1724,7 +1726,7 @@ Adoption cost is real: introducing a formatter to an existing codebase rewrites 
 - **Tools check typography, not meaning.** Passing every naming linter says nothing about whether the names are good. Do not report "Checkstyle is green" as "our code is readable."
 - **Member order is judgment, not a rule.** Google Java Style declines a single recipe on purpose. Gating member order mechanically (beyond overload contiguity) fights the guide and generates noise.
 - **Style values are choices, not truths.** Two-space vs four-space, 80 vs 100 vs 120 columns: Google uses 2/100, AOSP 4, palantir 120, Checkstyle `LineLength` defaults to 80. There is no *correct* value; the value is in picking one. Stating any single value as "right" is the neutrality landmine of this whole topic.
-- **Over-strict naming regexes cause false positives.** `java:S101`'s default can reject legitimate names; a rigid `ShortVariable` flags idiomatic `i`/`x` loop and lambda names. Naming rules need per-project tuning and suppression discipline (Chapter 18), or developers learn to ignore the linter. (Java 21's unnamed variable `_`, JEP 456 — ⚠ verify number/JDK @pin — interacts directly with short-name rules.)
+- **Over-strict naming regexes cause false positives.** `java:S101`'s default can reject legitimate names; a rigid `ShortVariable` flags idiomatic `i`/`x` loop and lambda names. Naming rules need per-project tuning and suppression discipline (Chapter 18), or developers learn to ignore the linter. (The unnamed variable `_` interacts directly with short-name rules: Java 21 *previewed* it as JEP 443 ("Unnamed Patterns and Variables (Preview)"), and it was finalized in Java 22 as JEP 456 ("Unnamed Variables & Patterns") — past the anchor, so treat `_` as a Java 22-era delta, not anchor fact, and configure naming rules to exempt it only once on 22+.)
 - **Over-enforced Javadoc breeds vacuous comments.** Forcing `@param`/`@return` on every no-logic getter (`-Xdoclint:all` with `missing`, or PMD `CommentRequired` everywhere) produces `@param name the name`, which satisfies the linter and informs no one. Use `all,-missing`.
 - **Formatter output shifts between versions, and couples to the JDK.** A formatter's rendering can change across its own versions, so pin the formatter GAV (do not float it). Because the engines parse Java source, a given formatter version is coupled to a JDK range: the *same* `spotless:check` can pass on one JDK and fail to launch on another (⚠ exact version↔JDK matrix and any `--add-exports` args verify @pin). 
 - **`.editorconfig` is a baseline, not a formatter.** It carries whitespace settings to editors but has no concept of line-wrapping or import order, and `max_line_length` is widely supported but not in the core spec's listed properties. Do not rely on it as a hard column gate.
@@ -1792,7 +1794,7 @@ A method is a *contract*: a promise about what callers must supply, what they ge
 **What this chapter covers**
 
 - The contract framing: a method's promise has a **type-carried half** (the compiler/checker enforces it) and a **doc/runtime-carried half** (Javadoc states it, a fail-fast check enforces it).
-- The *Effective Java* method-design canon (Items 49–56, plus 15–17, 50): minimize the surface, fail fast on bad input, return empty not null, use `Optional` judiciously, defend against representation exposure, document the rest.
+- The *Effective Java* method-design canon (Items 49–56, plus 15–17): minimize the surface, fail fast on bad input, return empty not null, use `Optional` judiciously, defend against representation exposure, document the rest.
 - How each design rule is **machine-checked** (by the JDK type system, by a runtime guard, or by a named analyzer: Error Prone, SpotBugs, PMD, Sonar) and where it is review-only.
 - Encoding the contract in the type system: nullness as a signature fact (JSpecify), real overrides (`@Override`), un-ignorable return values.
 - The contract across **versions**: source vs binary compatibility (JLS ch.13), semantic versioning, and the tools that compute the required bump (revapi, japicmp).
@@ -1992,10 +1994,6 @@ The contract framing is now in place: a promise with a type-carried half and a d
 - **JSpecify 1.0.0** — `@Nullable`/`@NonNull`/`@NullMarked`/`@NullUnmarked`; spec, not a checker. (Version per SOURCE-PIN §2; `@NullMarked`-package + explicit `@Nullable` opt-out exercised green in the companion module via `org.jspecify:jspecify:1.0.0`.)
 - **SemVer** (semver.org) — `MAJOR.MINOR.PATCH`. **revapi** 0.15.1 (revapi.org) — severity-categorized API change tracking. **japicmp** 0.25.6 (siom79.github.io/japicmp) — JAR diff, `--semantic-versioning`, `breakBuildBasedOnSemanticVersioning`. (Versions per SOURCE-PIN §6; exact CLI/Maven option names verified against each tool's docs at `/pin-source` — the compatibility sub-module is a spec here, not yet built.)
 
-## Next chapter teaser
-
-The *interface* is now honest. Next comes the *value*: immutability, and the `equals`/`hashCode`/`Comparable` contracts that determine whether objects behave correctly in a `HashMap` or a sorted set. These are the contracts the language enforces silently, and punishes silently when broken.
-
 
 ---
 
@@ -2134,9 +2132,9 @@ The contracts are formal enough that static analysis catches the common breaks r
 
 | Violation | Symptom | Caught by (each cited to its own tool) |
 |---|---|---|
-| `equals` without `hashCode` (or vice versa) | `HashMap` loses the key | Sonar `java:S1206`; SpotBugs `HE_EQUALS_NO_HASHCODE`/`HE_HASHCODE_NO_EQUALS`; PMD `OverrideBothEqualsAndHashcode`; Checkstyle/EP `EqualsHashCode` |
+| `equals` without `hashCode` (or vice versa) | `HashMap` loses the key | Sonar `java:S1206`; SpotBugs `HE_EQUALS_USE_HASHCODE`/`HE_HASHCODE_NO_EQUALS`; PMD `OverrideBothEqualsAndHashcode`; Checkstyle/EP `EqualsHashCode` |
 | covariant `equals(MyType)` | collections still use identity equals | Checkstyle `CovariantEquals`; SpotBugs `EQ_SELF_NO_OBJECT` |
-| `getClass` vs `instanceof` asymmetry | subclass never equals superclass / Liskov break | EP `EqualsGetClass`; SpotBugs `EQ_OVERRIDING_EQUALS_NOT_SYMMETRIC` |
+| `getClass` vs `instanceof` asymmetry | subclass never equals superclass / Liskov break | EP `EqualsGetClass`; SpotBugs `EQ_COMPARING_CLASS_NAMES` |
 | `equals` mishandles null/wrong type | NPE/`ClassCastException` instead of `false` | SpotBugs `NP_EQUALS_SHOULD_HANDLE_NULL_ARGUMENT` |
 | caller checks `compareTo() == -1` | breaks for impls returning other magnitudes | EP `CompareToZero` |
 | `int`-subtraction or `==`-on-floats `compareTo` | overflow / NaN; `sort` throws | SpotBugs `CO_COMPARETO_INCORRECT_FLOATING`; Sonar `java:S1244` |
@@ -2263,7 +2261,7 @@ Value types that do not change their state and that answer equality and ordering
 - **SonarQube** (Server 2026.1 LTA, per SOURCE-PIN) — `java:S2384` (mutable members stored/returned), `java:S1206` (equals/hashCode in pairs), `java:S1210` (equals when Comparable), `java:S1244` (float equality). Cited only (not exercised by the companion build). *(⚠ rule titles/default-activation/CWE require the pinned Sonar rules source, not in-repo; `java:S2384` returned HTTP 403 to automated fetch at research — re-confirm at the pinned rules.sonarsource.com.)*
 - **PMD** (7.25.0, per SOURCE-PIN) — `ImmutableField`, `ArrayIsStoredDirectly`, `MethodReturnsInternalArray`, `OverrideBothEqualsAndHashcode`(+`…OnComparable`), `CompareObjectsWithEquals`. Cited only (not exercised by the companion build). *(⚠ rule category/casing/records-handling require the pinned PMD rule docs, not in-repo.)*
 - **Error Prone** (latest 2.x, per SOURCE-PIN) — `@Immutable`/`ImmutableChecker`, `MixedMutabilityReturnType`, `EqualsHashCode`, `EqualsGetClass`, `EqualsIncompatibleType`, `CompareToZero`. Cited only (not exercised by the companion build). *(⚠ check severities/default-presence require the pinned Error Prone bugpattern docs, not in-repo.)*
-- **SpotBugs** (4.10.2, per SOURCE-PIN) — `HE_EQUALS_NO_HASHCODE`/`HE_HASHCODE_NO_EQUALS`, `EQ_OVERRIDING_EQUALS_NOT_SYMMETRIC`, `EQ_COMPARING_CLASS_NAMES`, `CO_COMPARETO_INCORRECT_FLOATING`, `CO_COMPARETO_RESULTS_MIN_VALUE`, `NP_EQUALS_SHOULD_HANDLE_NULL_ARGUMENT`. The companion build empirically exercises `HE_EQUALS_USE_HASHCODE` (on `BrokenPrice`) and `EI_EXPOSE_REP`/`EI_EXPOSE_REP2` (on `OrderLeaky`). **Checkstyle** (13.6.0, per SOURCE-PIN) — `EqualsHashCode` (exercised by the green build), `CovariantEquals`, `EqualsAvoidNull`. *(⚠ the remaining cited-only pattern spellings/descriptions require the pinned SpotBugs + Checkstyle docs, not in-repo.)*
+- **SpotBugs** (4.10.2, per SOURCE-PIN) — `HE_EQUALS_USE_HASHCODE` (defines `equals`, uses `Object.hashCode`)/`HE_HASHCODE_NO_EQUALS`, `EQ_COMPARING_CLASS_NAMES`, `CO_COMPARETO_INCORRECT_FLOATING`, `CO_COMPARETO_RESULTS_MIN_VALUE`, `NP_EQUALS_SHOULD_HANDLE_NULL_ARGUMENT`. The companion build empirically exercises `HE_EQUALS_USE_HASHCODE` (on `BrokenPrice`) and `EI_EXPOSE_REP`/`EI_EXPOSE_REP2` (on `OrderLeaky`). **Checkstyle** (13.6.0, per SOURCE-PIN) — `EqualsHashCode` (exercised by the green build), `CovariantEquals`, `EqualsAvoidNull`. *(⚠ the remaining cited-only pattern spellings/descriptions require the pinned SpotBugs + Checkstyle docs, not in-repo.)*
 
 ## Next chapter teaser
 
