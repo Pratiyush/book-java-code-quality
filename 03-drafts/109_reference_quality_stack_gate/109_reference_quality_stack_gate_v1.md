@@ -38,15 +38,15 @@ Here is one coherent, worked, end-to-end quality stack and CI gate. Not a menu b
 
 ## How it works
 
-Two pictures carry the whole recommendation before the prose unpacks it. The first maps the stack by concern: one row per layer (build, format, style, bug-finding, null-safety, architecture, tests, security, platform), each row naming the tool, what it catches, and the equally-valid alternative that swaps in. The second maps the gate: the same checks arranged as a feedback-latency ladder, from the seconds-fast pre-commit hook through the blocking PR check and the slow nightly run to the un-bypassable merge gate. Figure 109.1 is the *what*; Figure 109.2 is the *when and where*.
+Two pictures carry the whole recommendation before the prose unpacks it. The first maps the stack by concern: one row per layer (build, format, style, bug-finding, null-safety, architecture, tests, security, platform), each row naming the tool, what it catches, and the equally-valid alternative that swaps in. The second maps the gate: the same checks arranged as a feedback-latency ladder, from the seconds-fast pre-commit hook through the blocking PR check and the slow nightly run to the un-bypassable merge gate. Figure 46.1 is the *what*; Figure 46.2 is the *when and where*.
 
 ![One defensible reference quality stack, by concern, each row naming an equally-valid alternative.](../../05-figures/109_reference_quality_stack_gate/fig109_1.png)
 
-*Figure 109.1 — One defensible reference quality stack, by concern, each row naming an equally-valid alternative.*
+*Figure 46.1 — One defensible reference quality stack, by concern, each row naming an equally-valid alternative.*
 
 ![The feedback-latency gate: pre-commit, PR-fast, main/nightly, merge.](../../05-figures/109_reference_quality_stack_gate/fig109_2.png)
 
-*Figure 109.2 — The feedback-latency gate: pre-commit, then PR-fast, then main/nightly, then merge.*
+*Figure 46.2 — The feedback-latency gate: pre-commit, then PR-fast, then main/nightly, then merge.*
 
 
 ### The reference stack: layered and de-duplicated

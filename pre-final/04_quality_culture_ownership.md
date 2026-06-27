@@ -28,11 +28,11 @@ The difference is not tooling. It is culture: who owns quality, when they addres
 
 ### Culture is causal
 
-Culture is treated, too often, as the squishy preamble before the real technical content. The data says otherwise. Sociologist **Ron Westrum** (1988) classified organizational cultures into three types, and Figure 06.1 sets them side by side along the two axes that separate them: how information flows, and what happens when something fails.
+Culture is treated, too often, as the squishy preamble before the real technical content. The data says otherwise. Sociologist **Ron Westrum** (1988) classified organizational cultures into three types, and Figure 4.1 sets them side by side along the two axes that separate them: how information flows, and what happens when something fails.
 
-![Figure 06.1 — Westrum's three organizational culture types. Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.](figures/fig06_1.png)
+![Figure 4.1 — Westrum's three organizational culture types. Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.](figures/fig06_1.png)
 
-*Figure 06.1 — Westrum's three organizational culture types. Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.*
+*Figure 4.1 — Westrum's three organizational culture types. Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.*
 
 - **Pathological** — power-oriented; information is hoarded; failure leads to blame and scapegoating.
 - **Bureaucratic** — rule-oriented; information moves through silos.
@@ -46,15 +46,15 @@ The **DORA** research program (the research behind the four delivery keys from C
 
 The second idea is *when* quality happens. Its intellectual ancestor is **W. Edwards Deming**'s manufacturing principle: **build quality into the process rather than inspecting it at the end.** A model where a separate QA phase finds defects after the fact catches them when they are most expensive (Chapter 1's economics).
 
-**Larry Smith** named the software version in 2001. *Shift-left testing* moves testing and quality activities *left*, toward inception: it shortens the feedback loop and has developers and QA collaborate from the start. Figure 06.2 plots the reason the direction matters. The cost to fix a defect climbs with each lifecycle stage it survives, so the Ch-3 tool layers sit as far left as they can. In this book's terms, shift-left *is* that lifecycle map from Chapter 3: IDE inspections, then pre-commit hooks, then compile-time checks, then fast CI, each layer catching problems earlier and cheaper than the next. Culture decides whether developers *welcome* that feedback or route around it.
+**Larry Smith** named the software version in 2001. *Shift-left testing* moves testing and quality activities *left*, toward inception: it shortens the feedback loop and has developers and QA collaborate from the start. Figure 4.2 plots the reason the direction matters. The cost to fix a defect climbs with each lifecycle stage it survives, so the Ch-3 tool layers sit as far left as they can. In this book's terms, shift-left *is* that lifecycle map from Chapter 3: IDE inspections, then pre-commit hooks, then compile-time checks, then fast CI, each layer catching problems earlier and cheaper than the next. Culture decides whether developers *welcome* that feedback or route around it.
 
-![Figure 06.2 — Shift-left: defect cost rises with lifecycle stage. Catching a defect earlier is cheaper; the Ch 3 tool layers place quality activities as far left as possible.](figures/fig06_2.png)
+![Figure 4.2 — Shift-left: defect cost rises with lifecycle stage. Catching a defect earlier is cheaper; the Ch 3 tool layers place quality activities as far left as possible.](figures/fig06_2.png)
 
-*Figure 06.2 — Shift-left: defect cost rises with lifecycle stage. Catching a defect earlier is cheaper; the Ch 3 tool layers place quality activities as far left as possible.*
+*Figure 4.2 — Shift-left: defect cost rises with lifecycle stage. Catching a defect earlier is cheaper; the Ch 3 tool layers place quality activities as far left as possible.*
 
 ### Ownership: who is responsible for a piece of code
 
-Diffuse responsibility kills quality; someone has to own it. *Code ownership* is the policy for who is responsible for a given piece of code. Martin Fowler distinguishes three models, each a legitimate choice with trade-offs, and Figure 06.3 lays them out with the cost each one carries.
+Diffuse responsibility kills quality; someone has to own it. *Code ownership* is the policy for who is responsible for a given piece of code. Martin Fowler distinguishes three models, each a legitimate choice with trade-offs, and Figure 4.3 lays them out with the cost each one carries.
 
 | Model | What it is | Strength | Cost |
 |---|---|---|---|
@@ -62,9 +62,9 @@ Diffuse responsibility kills quality; someone has to own it. *Code ownership* is
 | **Weak** | owners exist, but others may edit with courtesy | balances accountability and flow | ambiguity at the edges |
 | **Collective** | the whole team owns all the code | no bottlenecks; shared knowledge | needs strong shared standards or quality drifts |
 
-![Figure 06.3 — The three code-ownership models. Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.](figures/fig06_3.png)
+![Figure 4.3 — The three code-ownership models. Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.](figures/fig06_3.png)
 
-*Figure 06.3 — The three code-ownership models. Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.*
+*Figure 4.3 — The three code-ownership models. Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.*
 
 A direct line runs from this table to the tools in this book: **collective ownership only works if the automated standards keep everyone honest**. A team can collectively own code only when the gates (Parts IV–IX) hold the line. Mechanisms make ownership concrete. A `CODEOWNERS` file encodes ownership for review routing (Chapter 37); "you build it, you run it" (a practice popularized at Amazon) pushes operational ownership to the team that wrote the code, aligning incentives with quality.
 

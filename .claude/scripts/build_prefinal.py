@@ -78,17 +78,19 @@ def copy_figs(text, slugdir):
 def strip_internal_comments(text):
     # 1) remove HTML comment blocks (dossier/provenance header, figure-plan, spec footer)
     text = re.sub(r"<!--.*?-->\n?", "", text, flags=re.DOTALL)
-    # 2) drop blank-line-separated blocks that are pure pipeline-internal metadata
-    #    (companion-module build-status notes, figure-plan / runnable-spec / trace-it-back
-    #    artifacts) — these are QA metadata, not shipping book content. Keep everything else
-    #    incl. "Sources and further reading".
+    # 2) drop any blank-line-separated block CONTAINING pipeline-internal metadata.
+    #    Substring match (not prefix) so it also catches the companion-module build-status
+    #    notes AND fragments orphaned by a malformed comment that embeds a literal "-->"
+    #    (e.g. a back-matter comment quoting "<!-- include: -->"). Markers are unambiguous
+    #    pipeline jargon, so legit prose + "Sources and further reading" are preserved.
+    #    (09-flags/ paths deliberately NOT a marker — they appear in legit source-trace rows.)
     INTERNAL = re.compile(
-        r"^\s*(> ?\*\*Trace it back\.|"
-        r"\*\*[A-Za-z][\w /-]*module \(|"          # **Companion module ( … / **Checkstyle module (
-        r"FIGURE PLAN|RUNNABLE EXAMPLE SPEC|BUILD STATUS:|"
-        r">\s*\*\*EXAMPLE-BUILD)", re.IGNORECASE)
+        r"EXAMPLE-BUILD|FIGURE PLAN|RUNNABLE EXAMPLE|BUILD STATUS:|"
+        r"withdrawn proposal|adjudicated N/A|Snippet tags:|"
+        r"\*\*[A-Za-z][\w /-]*(module|artifact) \(|Trace it back\.",
+        re.IGNORECASE)
     blocks = re.split(r"\n\s*\n", text)
-    kept = [b for b in blocks if not INTERNAL.match(b.lstrip())]
+    kept = [b for b in blocks if not INTERNAL.search(b)]
     return "\n\n".join(kept)
 
 README = """# PRE-FINAL review copy — Java Code Quality

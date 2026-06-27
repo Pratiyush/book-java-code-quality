@@ -96,8 +96,6 @@ release.require.SIGNED_WITH_SBOM=true
 release.require.SMOKE_TESTED=true
 ```
 
-Snippet tags: `release-readiness`, `release-decision`, `semver-release`, `changelog-entry`, `release-policy` (companion module `08-companion-code/83_release_quality/`, built green via `mvn -B -Pquality verify`).
-
 ### Progressive delivery: limit the blast radius
 
 The core insight of release quality is that *some defect will slip the gates*, so the release mechanism itself should limit how much damage one can do. **Progressive delivery** is the set of techniques that do this:
@@ -120,8 +118,6 @@ A feature flag is the mechanism: code reads it on the request path, and the kill
         enabled.set(false);
     }
 ```
-
-Snippet tags: `feature-flag` (companion module `08-companion-code/83_release_quality/`; the flag must be *removed* after rollout or it becomes debt — the honest edge carried in the module's comments).
 
 ### The post-release feedback loop: shift-right closes the loop
 

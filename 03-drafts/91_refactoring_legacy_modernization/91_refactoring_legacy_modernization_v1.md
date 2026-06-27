@@ -41,7 +41,7 @@ The entire craft of this part is the alternative: **changing existing code safel
 
 ## How it works
 
-Figure 91.1 shows the safe-change loop at the center (precondition, one small transform, verify green, commit, repeat) and the same loop applied at each of the four scales: a method or class, getting untested code under test, a whole system, and the Java platform. The loop is the unit; the four scales are where it runs.
+Figure 39.1 shows the safe-change loop at the center (precondition, one small transform, verify green, commit, repeat) and the same loop applied at each of the four scales: a method or class, getting untested code under test, a whole system, and the Java platform. The loop is the unit; the four scales are where it runs.
 
 ![The safe-change refactoring loop (precondition → transform → verify green → commit → repeat), and the same invariant at method/legacy/system/platform scale.](../../05-figures/91_refactoring_legacy_modernization/fig91_1.png)
 

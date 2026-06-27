@@ -199,6 +199,6 @@ RUNNABLE EXAMPLE SPEC (seeded Step 4b; EXAMPLE-BUILD GREEN — built at JDK 21.0
 - BUILD STATUS: GREEN — built at JDK 21.0.11 / Maven 3.9.16, `mvn -B -Pquality verify` SUCCESS (4 tests pass, 0 Checkstyle, 0 SpotBugs, JaCoCo report written; see _EXAMPLE.md). This is the reusable reference-project base, not a throwaway.
 
 FIGURE PLAN (Step 9)
-- Figure 05.1 (THE chapter figure) — the lifecycle map: IDE → compile → build → pre-commit → PR/CI → platform → production, each tool category placed at its moment, arrows = feedback latency. Reused as the book's reference figure. Trace each placement to tool docs.
-- Figure 05.2 — concern × tool matrix (the routing table as a shaded grid): the reader's "which tool for which problem" lookup.
+- Figure 3.1 (THE chapter figure) — the lifecycle map: IDE → compile → build → pre-commit → PR/CI → platform → production, each tool category placed at its moment, arrows = feedback latency. Reused as the book's reference figure. Trace each placement to tool docs.
+- Figure 3.2 — concern × tool matrix (the routing table as a shaded grid): the reader's "which tool for which problem" lookup.
 -->

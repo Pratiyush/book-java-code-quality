@@ -39,11 +39,11 @@ The two obvious answers both fail. *Ban AI* and it goes underground. Developers 
 
 ## How it works
 
-Governance is a loop, not a checkpoint. Figure 100.1 traces it end to end: an organization sanctions a tool, AI assists a change, that change passes the same gates as human code plus AI-specific checks, a human gate dispositions it, the use is disclosed, and the result is measured for risk as well as productivity. The figure marks the one stage that never moves: the human gate sits on the merge path as the structural invariant, whether the AI wrote the code or reviewed it.
+Governance is a loop, not a checkpoint. Figure 42.1 traces it end to end: an organization sanctions a tool, AI assists a change, that change passes the same gates as human code plus AI-specific checks, a human gate dispositions it, the use is disclosed, and the result is measured for risk as well as productivity. The figure marks the one stage that never moves: the human gate sits on the merge path as the structural invariant, whether the AI wrote the code or reviewed it.
 
 ![Governing AI in the workflow: where AI assists, where deterministic gates decide, and where the human gate is the structural invariant.](../../05-figures/100_governing_ai_ai_review/fig100_1.png)
 
-*Figure 100.1 — Governing AI in the workflow: where AI assists, where deterministic gates decide, and where the human gate is the structural invariant.*
+*Figure 42.1 — Governing AI in the workflow: where AI assists, where deterministic gates decide, and where the human gate is the structural invariant.*
 
 ### Governing AI: sanction, verify, keep the human gate
 

@@ -225,6 +225,6 @@ RUNNABLE EXAMPLE SPEC (seeds Step 4b; EXAMPLE-BUILD = GREEN — see _EXAMPLE.md)
 - BUILD STATUS: GREEN — `mvn -B -Pquality -f 08-companion-code/03_readability_maintainability/pom.xml clean verify` on JDK 21.0.11 / Maven 3.9.16: BUILD SUCCESS, Tests run: 43 (0 failures), 0 Checkstyle violations, 0 SpotBugs findings (see _EXAMPLE.md).
 
 FIGURE PLAN (Step 9)
-- Figure 03.1 — cyclomatic vs cognitive on the same code: two snippets, same paths, different nesting → equal cyclomatic, very different cognitive. Trace to SonarSource white paper.
-- Figure 03.2 — the contested map: Clean Code vs A Philosophy of Software Design on function size & comments, as opposed positions with the trade-off axis between them (no winner). Trace to each book.
+- Figure 2.1 — cyclomatic vs cognitive on the same code: two snippets, same paths, different nesting → equal cyclomatic, very different cognitive. Trace to SonarSource white paper.
+- Figure 2.2 — the contested map: Clean Code vs A Philosophy of Software Design on function size & comments, as opposed positions with the trade-off axis between them (no winner). Trace to each book.
 -->
