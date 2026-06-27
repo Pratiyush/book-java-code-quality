@@ -40,13 +40,13 @@ Hitting the middle is the subject of Part VI, and this opening chapter lays its 
 
 ## How it works
 
-![Fig 53.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.](../../05-figures/53_solid_coupling_cohesion_packages/fig53_1.png)
+![Fig 25.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.](../../05-figures/53_solid_coupling_cohesion_packages/fig53_1.png)
 
-*Fig 53.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.*
+*Fig 25.1 — SOLID: intent and over-application trap — Five heuristics for low coupling + high cohesion — useful vocabulary, not a law to maximize. No principle is crowned.*
 
-![Fig 53.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.](../../05-figures/53_solid_coupling_cohesion_packages/fig53_2.png)
+![Fig 25.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.](../../05-figures/53_solid_coupling_cohesion_packages/fig53_2.png)
 
-*Fig 53.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.*
+*Fig 25.2 — The module-strength ladder — Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.*
 
 
 ### SOLID: useful vocabulary, not a law to maximize
@@ -55,7 +55,7 @@ SOLID is five object-oriented design principles popularized by Robert C. Martin,
 
 - **SRP — Single Responsibility.** A class should have one reason to change. It fights the God service, the 2,000-line class that does everything (Chapter 12). The trap: taken too far, it explodes into a cloud of one-method classes that scatter a single behaviour across a dozen files, the over-decomposition that hurts readability (Chapter 2).
 - **OCP — Open/Closed.** Open for extension, closed for modification — in Java, via interfaces, polymorphism, or the strategy pattern, so new behaviour is a new class rather than an edit to a tested one. The trap: speculative abstraction for a change that never comes (the YAGNI tension); every premature extension point is indirection that costs maintenance and may never be used.
-- **LSP — Liskov Substitution.** A subtype must be substitutable for its supertype without breaking callers' expectations. This is the one principle closest to a hard *correctness* rule: a subclass that strengthens preconditions or weakens the contract is a latent bug, tied directly to the `equals`/`hashCode` contract (Chapter 7) and well served by sealed types that make the permitted subtypes explicit (Chapter 5).
+- **LSP — Liskov Substitution.** A subtype must be substitutable for its supertype without breaking callers' expectations. This is the one principle closest to a hard *correctness* rule: a subclass that strengthens preconditions or weakens the contract is a latent bug, tied directly to the `equals`/`hashCode` contract (Chapter 8) and well served by sealed types that make the permitted subtypes explicit (Chapter 5).
 - **ISP — Interface Segregation.** Many focused role interfaces over one fat interface, so a client depends only on the methods it uses. Records and sealed interfaces make small, focused types cheap (Chapter 5).
 - **DIP — Dependency Inversion.** Depend on abstractions, not concretions. In Java: program to interfaces and inject implementations. This is the principle that *enables* the testability of Part V (a collaborator declared by interface is one that can be substituted) and the module boundaries of the rest of Part VI.
 

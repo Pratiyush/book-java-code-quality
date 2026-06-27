@@ -38,9 +38,9 @@ That gap is the subject of this chapter, the security half of Part VII. The last
 
 ## How it works
 
-![Fig 65.1 — Supply-chain pipeline: three questions, one chain — Ch 28 · dossier key 65 (folds 66) · Part VII · each stage answers one question and enables the next](../../05-figures/65_dependency_scanning_sbom_supply_chain/fig65_1.png)
+![Fig 28.1 — Supply-chain pipeline: three questions, one chain — Ch 28 · dossier key 65 (folds 66) · Part VII · each stage answers one question and enables the next](../../05-figures/65_dependency_scanning_sbom_supply_chain/fig65_1.png)
 
-*Fig 65.1 — Supply-chain pipeline: three questions, one chain — Ch 28 · dossier key 65 (folds 66) · Part VII · each stage answers one question and enables the next*
+*Fig 28.1 — Supply-chain pipeline: three questions, one chain — Ch 28 · dossier key 65 (folds 66) · Part VII · each stage answers one question and enables the next*
 
 
 ### SCA: is anything known-vulnerable?

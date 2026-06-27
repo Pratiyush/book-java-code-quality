@@ -33,15 +33,15 @@ The last chapter set the pipeline's shape and left two things as promises: clean
 - **PR automation**: inline diff-scoped annotations (reviewdog, Danger, Sonar PR decoration) that put findings where they get fixed.
 - The unifying discipline (diff-scoping) and the leading honesty (coverage ≠ quality; bots ≠ review).
 
-**What this chapter does NOT cover.** Pipeline design and gate policy in the abstract (the previous chapter — this makes its clean-as-you-code concrete). The coverage and mutation *tools* (Chapter 23). Branch protection, merge queues, and pre-commit (the next chapter — where required checks are enforced). Human code review in depth (Chapter 84 — what bots set up). Release (the chapter after). The platforms and PR tools are **multi-tool comparisons, crowning none**; coverage-as-target is the contested topic, led with its folklore.
+**What this chapter does NOT cover.** Pipeline design and gate policy in the abstract (the previous chapter — this makes its clean-as-you-code concrete). The coverage and mutation *tools* (Chapter 23). Branch protection, merge queues, and pre-commit (the next chapter — where required checks are enforced). Human code review in depth (Chapter 37 — what bots set up). Release (the chapter after). The platforms and PR tools are **multi-tool comparisons, crowning none**; coverage-as-target is the contested topic, led with its folklore.
 
 **The one idea to hold**: *gate coverage on new code with a ratchet and a mutation backstop (not a whole-repo percentage that gets gamed); run the pipeline on whatever platform the code lives on (the design ports); and deliver the verdict inline on the diff (where it gets fixed). Diff-scoping unifies all three, and a coverage number is a floor, never the goal.*
 
 ## How it works
 
-![Fig 80.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback — Focus everything on the code this change](../../05-figures/80_coverage_pr_automation_platforms/fig80_1.png)
+![Fig 34.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback — Focus everything on the code this change](../../05-figures/80_coverage_pr_automation_platforms/fig80_1.png)
 
-*Fig 80.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback — Focus everything on the code this change*
+*Fig 34.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback — Focus everything on the code this change*
 
 
 ### Coverage strategy: gate new code, ratchet, back with mutation
@@ -60,7 +60,7 @@ The coverage report this strategy reads is the JaCoCo report the build already p
 
 <!-- include: 80_coverage_pr_automation_platforms/pom.xml#jacoco-pr-report -->
 
-> **CONCEPT** *Coverage is a floor, not a goal.* A coverage percentage is not test quality (the folklore from Chapter 23): 100% coverage with weak assertions tests nothing, and *gating on the number alone actively incentivizes bad tests* (Goodhart). The strategy uses coverage as a *floor* (find code with no tests at all, its genuine, defensible use) and reaches for mutation testing and review (Chapter 84) for *quality*, never for a higher percentage. Pick branch over line coverage, exclude generated code, and do not chase 100%. The marginal lines cost more than they protect and invite exactly the gaming the gate is meant to prevent.
+> **CONCEPT** *Coverage is a floor, not a goal.* A coverage percentage is not test quality (the folklore from Chapter 23): 100% coverage with weak assertions tests nothing, and *gating on the number alone actively incentivizes bad tests* (Goodhart). The strategy uses coverage as a *floor* (find code with no tests at all, its genuine, defensible use) and reaches for mutation testing and review (Chapter 37) for *quality*, never for a higher percentage. Pick branch over line coverage, exclude generated code, and do not chase 100%. The marginal lines cost more than they protect and invite exactly the gaming the gate is meant to prevent.
 
 ### CI platforms: the design ports, the syntax differs
 
@@ -80,7 +80,7 @@ What matters for *quality* is the same across all three: the portable concerns a
 
 ### PR automation: put the finding where it gets fixed
 
-A gate verdict buried in a CI log gets ignored; the *same* finding shown **inline on the pull request, on the changed line**, gets fixed. PR automation surfaces analyzer, test, and coverage findings where review actually happens, scoped to the diff, so feedback is immediate and low-friction. It is the automated layer of code review, and it complements human review (Chapter 84) rather than replacing it. The platform Checks API (GitHub) and MR widgets (GitLab) render findings on the diff; three tools fill different niches, crowning none:
+A gate verdict buried in a CI log gets ignored; the *same* finding shown **inline on the pull request, on the changed line**, gets fixed. PR automation surfaces analyzer, test, and coverage findings where review actually happens, scoped to the diff, so feedback is immediate and low-friction. It is the automated layer of code review, and it complements human review (Chapter 37) rather than replacing it. The platform Checks API (GitHub) and MR widgets (GitLab) render findings on the diff; three tools fill different niches, crowning none:
 
 - **reviewdog** wraps any linter's output and posts comments *only on changed lines*, diff-filtered, which cuts the noise of an incremental PR being told about whole-repo findings it did not cause. Tool- and language-agnostic.
 - **Danger** runs rule scripts per PR for *process* checks — does the PR have a description, is the changelog updated, is it not too large, were tests touched — complementing the code linters with PR-hygiene rules.
@@ -98,7 +98,7 @@ The process check is Danger's: a pull request that changes production code must 
 
 <!-- include: 80_coverage_pr_automation_platforms/ci/coverage-pr.yml#danger-tests-touched -->
 
-> **CONCEPT** *Diff-scoping is the discipline that keeps PR automation signal, not noise.* Comment *only on what the PR changed*: the new-code focus from the coverage section, applied to feedback. Whole-repo findings posted as PR comments are noise that developers mute, and a muted bot is a disabled gate. This is also the bot/human division of labor: bots handle the *mechanical* findings (style, lint, coverage delta, PR hygiene) so human reviewers can focus on *design and logic* (whether the change is correct and whether it is the *right* change, Chapter 84). Over-relying on bots degrades review; the point is to free humans for the part only humans can do.
+> **CONCEPT** *Diff-scoping is the discipline that keeps PR automation signal, not noise.* Comment *only on what the PR changed*: the new-code focus from the coverage section, applied to feedback. Whole-repo findings posted as PR comments are noise that developers mute, and a muted bot is a disabled gate. This is also the bot/human division of labor: bots handle the *mechanical* findings (style, lint, coverage delta, PR hygiene) so human reviewers can focus on *design and logic* (whether the change is correct and whether it is the *right* change, Chapter 37). Over-relying on bots degrades review; the point is to free humans for the part only humans can do.
 
 The honest limits follow from that. **Comment overload** is the killer: un-scoped or over-eager bots spam PRs and get tuned out (Chapter 19), so diff-scoping and severity-filtering are mandatory. **Bots are not review.** They catch mechanical issues, not whether the design is sound or the change is the right one. And the three tools *overlap* (reviewdog plus Sonar plus Danger can triple-report the same finding), so de-dupe responsibilities: lint output to reviewdog, the quality gate to Sonar, process rules to Danger.
 
@@ -108,7 +108,7 @@ A metric strategy, a platform survey, a tooling roundup: three sections that con
 
 Coverage strategy gates the *new code*, not the legacy mountain. The platform's required checks run against the *PR's* changes and report a per-PR verdict. PR automation comments *only on the changed lines*. None of that is coincidence. It is the clean-as-you-code insight from Chapter 33 generalized from "what blocks a merge" to "everything the gate does to a developer." Whole-repo scope fails identically in all three forms: a whole-repo coverage gate is unreachable, a whole-repo finding report is noise, and both get the gate disabled. Scope to the diff and the gate becomes *fair* (it judges a developer only on what that developer wrote), *adoptable* (it works on a legacy codebase from day one), and *actionable* (the finding is on the line under review). Fair, adoptable, actionable: that is the difference between a gate developers respect and one they route around, and all three properties reduce to scoping to the change.
 
-The same caution generalizes across all three. Coverage stated it most sharply: *gating on a proxy incentivizes optimizing the proxy* (Goodhart). Gate on coverage percentage and the result is assertion-free tests; the fix is to treat coverage as a floor and reach for mutation and review for quality. Lean on PR bots as if they were review and the result is mechanically clean code that is badly designed; the fix is the bot/human division (bots for the mechanical, humans for the judgment). Treat the platform's green check as proof of quality and the team has mistaken "the configured checks passed" for "the code is good." In every case the metric or the automation is *necessary and useful*, a real floor, a real noise-reducer, a real executor, and in every case mistaking it for the *goal* corrupts it. The gate measures and enforces; it does not, by itself, create quality, and the human judgment it frees up (Chapter 84) is where quality actually lives. A well-run gate is scoped to the diff so it is fair, delivered to the developer so it is actionable, and understood as a floor so it is not gamed. That, not any particular threshold or platform or bot, is what makes the developer keep it on.
+The same caution generalizes across all three. Coverage stated it most sharply: *gating on a proxy incentivizes optimizing the proxy* (Goodhart). Gate on coverage percentage and the result is assertion-free tests; the fix is to treat coverage as a floor and reach for mutation and review for quality. Lean on PR bots as if they were review and the result is mechanically clean code that is badly designed; the fix is the bot/human division (bots for the mechanical, humans for the judgment). Treat the platform's green check as proof of quality and the team has mistaken "the configured checks passed" for "the code is good." In every case the metric or the automation is *necessary and useful*, a real floor, a real noise-reducer, a real executor, and in every case mistaking it for the *goal* corrupts it. The gate measures and enforces; it does not, by itself, create quality, and the human judgment it frees up (Chapter 37) is where quality actually lives. A well-run gate is scoped to the diff so it is fair, delivered to the developer so it is actionable, and understood as a floor so it is not gamed. That, not any particular threshold or platform or bot, is what makes the developer keep it on.
 
 ## Limitations & when NOT to reach for it
 
@@ -118,7 +118,7 @@ The same caution generalizes across all three. Coverage stated it most sharply: 
 - **Platform config is non-portable and rots.** Moving platforms means rewriting the pipeline (lock-in is real), and the config is code that needs ownership and *pinned* action/plugin versions. A compromised CI action is a supply-chain attack (Part VII). Treat CI config as code that requires ownership, not a set-and-forget artifact.
 - **Platform choice is usually dictated, not free.** Teams run CI where the code lives; the book crowns none, and a migration is rarely worth it on its own. Jenkins's flexibility costs ops burden; hosted platforms cost money and control.
 - **PR comment overload gets bots muted.** Un-scoped or over-eager automation spams the PR and is tuned out; diff-scoping and severity-filtering are mandatory, and overlapping tools must de-dupe their responsibilities.
-- **Bots are not review.** They catch mechanical findings, not design soundness, correctness, or whether the change is the right one; over-relying on them degrades human review (Chapter 84).
+- **Bots are not review.** They catch mechanical findings, not design soundness, correctness, or whether the change is the right one; over-relying on them degrades human review (Chapter 37).
 - **A green PR check is not good code.** It means the configured checks passed on the diff. Design and logic quality still need a human. The gate frees reviewers for that; it does not replace them.
 
 ## Alternatives & adjacent approaches
@@ -127,7 +127,7 @@ The same caution generalizes across all three. Coverage stated it most sharply: 
 - **Whole-repo coverage as a tracked trend** (not a gate) — useful as a dashboard signal showing the ratchet working, without the gaming a hard threshold induces.
 - **The three CI platforms** — GitHub Actions, GitLab CI, Jenkins; pick by where the code lives and the hosted/self-hosted trade-off, run the same gate design on each.
 - **The three PR tools** — reviewdog (lint output, diff-scoped), Danger (process rules), Sonar PR decoration (the gate) — composed by responsibility, not chosen as rivals.
-- **Human code review** (Chapter 84) — the irreplaceable layer the bots set up; design, logic, and "is this the right change" judgments no automation makes.
+- **Human code review** (Chapter 37) — the irreplaceable layer the bots set up; design, logic, and "is this the right change" judgments no automation makes.
 
 These compose into the developer-facing gate: a new-code coverage gate with a mutation backstop, running on the team's platform with a JDK matrix and caching, delivering diff-scoped findings inline, with human review for everything the bots cannot see.
 
@@ -139,7 +139,7 @@ These compose into the developer-facing gate: a new-code coverage gate with a mu
 - **To keep CI config safe:** pin action/plugin versions (supply-chain), own and review it like code.
 - **To deliver findings where they get fixed:** diff-scoped inline PR annotations: reviewdog for lint output, Sonar for the gate, Danger for process rules, de-duped.
 - **To keep PR bots from being muted:** scope to the diff, filter by severity, and split responsibilities across the tools.
-- **For design, correctness, and "is this the right change":** human review (Chapter 84). The bots set it up; they do not do it.
+- **For design, correctness, and "is this the right change":** human review (Chapter 37). The bots set it up; they do not do it.
 
 ## Hand-off to the next chapter
 

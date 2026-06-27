@@ -32,20 +32,20 @@ This chapter is the *workflow* that fixes all three — the last piece of making
 - **Pre-commit hooks**: fast checks at commit time, and the feedback-latency ladder from IDE to CI.
 - **Local↔CI parity**: the wrapper and pinned versions that make "green locally" predict "green in CI" — and why hooks are feedback, never enforcement.
 
-**What this chapter does NOT cover.** The gate's design and policy (Chapter 33) and its coverage strategy, platforms, and PR delivery (Chapter 34 — what is *being* enforced). Human code review, the *other* required check (Chapter 84). Release and continuous delivery, including feature flags in depth (Chapter 36). The format and secrets tools the hooks run (Chapters 6, 31). Branching *strategy* is the contested topic, presented with trade-offs and **crowning no model**; trunk-based is reported as DORA-evidenced for delivery performance, not decreed.
+**What this chapter does NOT cover.** The gate's design and policy (Chapter 33) and its coverage strategy, platforms, and PR delivery (Chapter 34 — what is *being* enforced). Human code review, the *other* required check (Chapter 37). Release and continuous delivery, including feature flags in depth (Chapter 36). The format and secrets tools the hooks run (Chapters 6, 31). Branching *strategy* is the contested topic, presented with trade-offs and **crowning no model**; trunk-based is reported as DORA-evidenced for delivery performance, not decreed.
 
 **The single idea to hold:** *the gate needs teeth and speed — branch protection (with merge queues and trunk-based development) makes it unbypassable and keeps `main` green, while pre-commit hooks with local↔CI parity make the feedback instant at the keyboard; but hooks are feedback, never the enforcement — CI and branch protection are the gate.*
 
 ## How it works
 
-![Fig 81.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable enforcement at the merge — Push each check to the leftmost rung that can catch it. The left rungs are deliberately skippable feedback; the right rungs are the enforcement that re-runs everything regardless.](../../05-figures/81_branch_protection_precommit_parity/fig81_1.png)
+![Fig 35.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable enforcement at the merge — Push each check to the leftmost rung that can catch it. The left rungs are deliberately skippable feedback; the right rungs are the enforcement that re-runs everything regardless.](../../05-figures/81_branch_protection_precommit_parity/fig81_1.png)
 
-*Fig 81.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable enforcement at the merge — Push each check to the leftmost rung that can catch it. The left rungs are deliberately skippable feedback; the right rungs are the enforcement that re-runs everything regardless.*
+*Fig 35.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable enforcement at the merge — Push each check to the leftmost rung that can catch it. The left rungs are deliberately skippable feedback; the right rungs are the enforcement that re-runs everything regardless.*
 
 
 ### Branch protection: giving the gate teeth
 
-A quality gate only protects `main` if the workflow *requires* it — and that requirement is **branch protection**. It makes the gate's status check a **required** one: a pull request cannot merge until the check passes, and the rules around it (require review, Chapter 84; require the branch be up-to-date with base; restrict force-push and deletion) close the ways the protection could be circumvented. This is the mechanism that turns a gate from a suggestion into a wall — the teeth the hook's first failure was missing. Without it, every gate in Parts IV–VIII is advisory, and advisory loses to deadline pressure every time. As versioned configuration, the required status check is a short list of check names a pull request must satisfy before it can merge:
+A quality gate only protects `main` if the workflow *requires* it — and that requirement is **branch protection**. It makes the gate's status check a **required** one: a pull request cannot merge until the check passes, and the rules around it (require review, Chapter 37; require the branch be up-to-date with base; restrict force-push and deletion) close the ways the protection could be circumvented. This is the mechanism that turns a gate from a suggestion into a wall — the teeth the hook's first failure was missing. Without it, every gate in Parts IV–VIII is advisory, and advisory loses to deadline pressure every time. As versioned configuration, the required status check is a short list of check names a pull request must satisfy before it can merge:
 
 <!-- include: 81_branch_protection_precommit_parity/config/branch-protection/ruleset.yml#required-checks -->
 

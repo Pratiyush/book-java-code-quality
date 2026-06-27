@@ -39,9 +39,9 @@ That erosion is inevitable for any architecture a team merely *agrees* to, and t
 
 ## How it works
 
-![Fig 55.1 &mdash; Architecture-enforcement spectrum — Convention &rarr; ArchUnit rule &rarr; JPMS compiler boundary: enforcement strength rises with adoption cost. Choice is a trade-off, not an upgrade path.](../../05-figures/55_enforcing_architecture_fitness_functions/fig55_1.png)
+![Fig 26.1 &mdash; Architecture-enforcement spectrum — Convention &rarr; ArchUnit rule &rarr; JPMS compiler boundary: enforcement strength rises with adoption cost. Choice is a trade-off, not an upgrade path.](../../05-figures/55_enforcing_architecture_fitness_functions/fig55_1.png)
 
-*Fig 55.1 &mdash; Architecture-enforcement spectrum — Convention &rarr; ArchUnit rule &rarr; JPMS compiler boundary: enforcement strength rises with adoption cost. Choice is a trade-off, not an upgrade path.*
+*Fig 26.1 &mdash; Architecture-enforcement spectrum — Convention &rarr; ArchUnit rule &rarr; JPMS compiler boundary: enforcement strength rises with adoption cost. Choice is a trade-off, not an upgrade path.*
 
 
 ### Enforcement: from documented to executable

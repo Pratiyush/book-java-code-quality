@@ -38,13 +38,13 @@ That is the gap this final chapter of Part V closes, and it generalizes. Everyth
 
 ## How it works
 
-![Fig 50.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.](../../05-figures/50_contract_approval_testing/fig50_1.png)
+![Fig 24.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.](../../05-figures/50_contract_approval_testing/fig50_1.png)
 
-*Fig 50.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.*
+*Fig 24.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.*
 
-![Fig 50.2 — Three techniques, three questions on the service boundary and its output — Each answers what the others cannot; each fails when its own reference goes wrong.](../../05-figures/50_contract_approval_testing/fig50_2.png)
+![Fig 24.2 — Three techniques, three questions on the service boundary and its output — Each answers what the others cannot; each fails when its own reference goes wrong.](../../05-figures/50_contract_approval_testing/fig50_2.png)
 
-*Fig 50.2 — Three techniques, three questions on the service boundary and its output — Each answers what the others cannot; each fails when its own reference goes wrong.*
+*Fig 24.2 — Three techniques, three questions on the service boundary and its output — Each answers what the others cannot; each fails when its own reference goes wrong.*
 
 
 ### Contract testing: do the two sides still agree?
