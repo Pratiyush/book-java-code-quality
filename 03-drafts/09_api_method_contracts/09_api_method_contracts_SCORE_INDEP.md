@@ -1,28 +1,52 @@
-# SCORECARD (INDEPENDENT) — Ch 7 "A Method Is a Promise" (key 09 + folds 60)
+# SCORECARD (INDEPENDENT, post-lift) — Ch 7 "A Method Is a Promise" (key 09 + folds 60)
 
 > **Independent, deliberately-harsh re-score** (different-model gate, per `SCORING.md` §"The ship bar":
 > a main-loop self-score never approves; only an independent re-score does). Skeptical posture: ≥44/50
 > only if a senior Java engineer finds the chapter excellent AND error-free. Unverified claims, clarity
-> gaps, and voice slips are penalized. **SCORE ONLY — no draft edits, no lift loop applied.**
+> gaps, and voice slips are penalized. **SCORE ONLY — no draft edits, no lift loop run in this pass.**
+> This pass **re-scores the just-lifted draft** and confirms the three claimed lift fixes landed on disk.
 
 ---
 
 ## Header
 
-- **Mode:** [x] Phase-3 chapter scorecard
+- **Mode:** [x] Phase-3 chapter scorecard (independent re-score, post-lift)
 - **Dossier key:** 09 (owner) + folds 60 — per `01-index/FINAL_INDEX.md` Ch 7
 - **Slug:** `09_api_method_contracts`
 - **Title:** A Method Is a Promise — designing contracts easy to keep and hard to break
 - **Part / arc position:** Part II — Writing Quality Java, Chapter 7
 - **Artifact scored:** `03-drafts/09_api_method_contracts/09_api_method_contracts_v1.md`
 - **Gate reports read in full:** `_EXAMPLE.md` (EXAMPLE-BUILD PASS), `_CODEREVIEW.md` (PASS-WITH-FIXES),
-  prior self-`_SCORE.md` (40/50). No `_VERIFY.md` / `_CLARITY.md` / `_AUDIT.md` exist for this chapter
-  (gates were run manually; their substance re-derived independently below).
-- **Verified against** the pinned authority set (`SOURCE-PIN.md`, pinned 2026-06-20; draft re-checked
-  2026-06-27).
+  prior `_SCORE_INDEP.md` (38/50, pre-lift), self-`_SCORE.md` (40/50). No `_VERIFY.md` / `_CLARITY.md` /
+  `_AUDIT.md` exist for this chapter (gates run manually; substance re-derived independently below).
+- **Verified against** the pinned authority set (`SOURCE-PIN.md`, pinned 2026-06-20; draft re-checked 2026-06-28).
 - **Scorer:** chapter-scorer agent (independent harsh pass)
 - **Date:** 2026-06-28
-- **Lift-pass #:** 0 (score only; no lift applied)
+- **Lift-pass #:** post-lift re-score (the prose lift was applied by the drafter between the prior 38/50
+  pass and this one; this pass scores the result, applies no further edit).
+
+---
+
+## Lift fixes claimed → independently confirmed on disk
+
+| Claimed fix | Prior-score defect | On-disk check | Verdict |
+|---|---|---|---|
+| Provenance JEP-GA fix (records 16 / sealed 17 / switch 21) | Header (line 6) said "JEP 395/409/441 … GA at 21" — wrong for records (16) & sealed (17); contradicted body line 61 + back-matter line 189 | Line 6 now reads `JEP 395 (records, GA 16) / 409 (sealed, GA 17) / 441 (pattern-switch, GA 21)`; body line 61 "Records, JEP 395, GA in Java 16"; back-matter line 189 "395 (records, final 16), 409 (sealed, 17), 441 (… 21)" — all three loci consistent | **FIXED** — internal-consistency defect resolved |
+| Item list reconciled | Overview (line 28) listed "Items 49–56, plus 15–17, **50**" — Item 50 redundant & outside the 49–56 range it sits inside | Line 28 now reads `Items 49–56, plus 15–17` — stray ", 50" removed | **FIXED** |
+| Duplicate hook removed | Two forward hooks: `## Hand-off to the next chapter` AND `## Next chapter teaser`, both pointing at Ch 8 | Only `## Hand-off to the next chapter` (line 180) remains; `## Next chapter teaser` is gone | **FIXED** — single forward hook |
+
+All three claimed lift fixes are present in the artifact. The two ACCURACY internal-consistency penalties
+and the READABILITY duplicate-hook penalty from the 38/50 pass are therefore retired.
+
+## What the lift did NOT touch (still standing, re-checked)
+
+| Open item | State | Effect on score |
+|---|---|---|
+| Em-dash density | **11.9 / 1,000 words** (45 body em-dashes / 3,778 body words; full-file 13.8/1000) vs the ~8/1000 soft target — ~49% over | Still caps READABILITY at 8 (soft AUDIT-flag, not a fail) |
+| "Verify-at-pin" primary-text band | EJ 3e verbatim item titles + page refs, JLS SE 21 exact §§ (§6.6/§8.4.1/§15.12.2/ch.13), revapi/japicmp exact option names — still carried as not-fetchable-in-repo | Still caps ACCURACY at 8 (harsh bar won't credit deferred facts) |
+| CODE-REVIEW F-1 (exemplar nit) | `javadoc-contract` displayed region still omits `@throws NullPointerException` for its non-null `accountId` (inconsistent with the module's own constructor/`transfer` convention, inside the very region that teaches Item 56) | MINOR; non-blocking for FLOOR C; weakens a printed teaching exemplar |
+| Compatibility companion sub-module | `v1→v2` binary-break module still "spec'd, not built" (per `_EXAMPLE.md` + back-matter line 197) | Caps UTILITY at 8 — the freshest material's CI recipe is not yet demonstrated |
+| Deep-dive show-don't-tell | source-vs-binary incompatibility (inlined constants, method moving up a hierarchy) still asserted without a concrete before/after | Caps CLARITY/DEPTH at 8 |
 
 ---
 
@@ -30,30 +54,32 @@
 
 | Check | Method | Result |
 |---|---|---|
-| Build green / test count | Read `08-companion-code/09_api_method_contracts/target/surefire-reports/TEST-*.xml` directly | `tests="11" failures="0" errors="0" skipped="0"` — confirms the draft's "11 tests" claim |
-| SpotBugs findings | `grep -c BugInstance target/spotbugsXml.xml` | **0** findings (matches `_CODEREVIEW`) |
-| Checkstyle violations | `grep -c <error> target/checkstyle-result.xml` | **0** violations |
-| Suppression filter genuinely empty | Read `config/spotbugs/spotbugs-exclude.xml` | Empty + commented — the chapter's "defend, don't suppress" thesis is true in the build, not narrated |
-| 5 displayed tag-regions resolve & match prose | `awk` extracted each `tag::` region from source | All 5 resolve, all ≤9 lines, all match what the prose claims |
+| Three lift fixes landed | `sed`/`grep` over lines 6, 28, 61, 180, 189 of the draft | All three confirmed present (table above) |
+| Em-dash density | `grep -o "—"` body (lines 11–198) ÷ body word count | 45 body em-dashes / 3,778 words = **11.9/1000** (over target; unchanged by lift) |
+| Single forward hook | `grep -nE "^## (Hand-off|Next chapter|.*teaser)"` | Exactly one (`## Hand-off…`, line 180) |
+| Build green / test count | `_CODEREVIEW.md` re-run `mvn -B -Pquality … clean verify` (JDK 21.0.11) | BUILD SUCCESS — `11 run, 0 failures, 0 errors, 0 skipped` |
+| SpotBugs / Checkstyle | `_CODEREVIEW.md` build-validation table | **0** SpotBugs findings, **0** Checkstyle violations, warning-clean `-Xlint:all` |
+| Suppression filter genuinely empty | `_CODEREVIEW.md` ("empty exclude filter, no suppressions") + `_EXAMPLE.md` | Empty + commented — "defend, don't suppress" thesis true in the build, not narrated |
+| 5 displayed tag-regions resolve & ≤9 lines | `_CODEREVIEW.md` ("5/5 resolve"; per-region line counts 7/8/8/7/4) | All 5 resolve, all ≤9 lines, all match prose claims |
 | FLOOR A banned phrases | `grep -niE` full blocklist over the draft | **Zero** banned phrases |
 | Voice: first person / narration contractions | `grep -niE` over the draft | **Zero** slips |
-| AHEAD-OF-PIN handling | Read `09-flags/09_jep467_markdown_doccomments_ahead_of_pin.md` | Real flag; web-verified (JEP 467 = JDK 23, past the Java 21 anchor); draft uses classic Javadoc, never the `///` form |
-| S2201 scoped-list claim | Compared draft line 156 against its flag | Exact match (`String, Boolean, Integer, Double, Float, Byte, Short, Character, StackTraceElement`); correctly marked verify-at-pin |
-| API signatures (`Objects`/`Optional`) | **Could NOT live-`javap`** — no JDK installed on this host (`/usr/bin/java` is the macOS stub) | Relied on the built `target/` artifacts (compiled classes + jar + green surefire) + EXAMPLE/CODE-REVIEW `javap`-on-21.0.11 evidence. The load-bearing API facts are *exercised green in the module*, the strongest available trace. |
+| AHEAD-OF-PIN handling | Draft uses classic Javadoc; JEP 467 (`///`, JDK 23) framed not-available-at-anchor + flagged | Correctly held AHEAD-OF-PIN past the Java 21 anchor |
+| S2201 scoped-list claim | Draft line 156 vs its flag | Exact match (`String, Boolean, Integer, Double, Float, Byte, Short, Character, StackTraceElement`); correctly marked verify-at-pin |
+| API signatures (`Objects`/`Optional`) | **Could NOT live-`javap`** — no JDK on this host (`/usr/bin/java` is the macOS stub) | Relied on the green build artifacts + EXAMPLE/CODE-REVIEW `javap`-on-21.0.11 evidence — the load-bearing API facts are exercised green in the module |
 
 ---
 
 ## The five clusters (score 1–10)
 
-| # | Cluster | Score | Note (specific, located) |
-|---|---|---|---|
-| 1 | **CLARITY** | 8 | The "two halves of a contract" table (§The two halves) + the "move promises leftward" thesis + the §Where-each-rule-is-enforced matrix turn an abstract topic into a reconstructable mechanism; the `Optional<Account>` hook seeds the whole chapter and pays off in the `optional-return` snippet. Held below 9 by one genuine clarity gap: the §Deep-dive asserts source-vs-binary incompatibility (inlined constants, a method moving up a hierarchy) **without a concrete before/after example** — the one place the chapter tells rather than shows, on its subtlest claim. |
-| 2 | **ACCURACY** | 7 | Load-bearing API facts (`requireNonNull`, `checkIndex`+`long`-overload-since-16, `Optional` return contract) are `javap`-verified and exercised green in the module; rule IDs each traced to their own tool; S2201 scoped list matches its flag; JEP 467 correctly held AHEAD-OF-PIN. Penalized −2 for the large band of primary-text facts the draft itself carries as *unverified-in-repo* "verify-at-pin" (EJ 3e verbatim item titles + any page ref; JLS SE 21 exact §§ §6.6/§8.4.1/§15.12.2/ch.13; revapi/japicmp exact option names `--semantic-versioning` / `breakBuildBasedOnSemanticVersioning`) — honestly disclosed, but a senior reader cannot yet confirm them, and a harsh bar does not credit unverified specifics. Penalized a further −1 for two real internal-consistency defects (below): the provenance header (line 6) states "JEP 395/409/441 … GA at 21," which is wrong for records (GA 16) and sealed (17) and contradicts the body/back-matter; and the Overview (line 28) lists "Items 49–56, plus 15–17, 50" with Item 50 redundantly placed *outside* the 49–56 range it falls inside. |
-| 3 | **UTILITY** | 8 | A senior reader gets the design canon + the machine-check map + a concrete semver/binary-compat CI recipe (japicmp `breakBuildBasedOnSemanticVersioning` against the last release). The §When-to-use list is per-surface and directly actionable. Backed by a real, green, copy-able module. Held below 9 because the compatibility half — the chapter's freshest material — is "spec'd, not yet built" in the companion (the `v1→v2` binary-break module is planned, per `_EXAMPLE.md`), so its CI recipe is not yet demonstrated the way the in-the-small contracts are. |
-| 4 | **DEPTH** | 8 | Merges code-level contract craft with cross-version evolution into one coherent "contract over time" arc; honest on tool scope limits (S2201), the source-vs-binary trap, shallow-clone defensive-copy edge, and signature-vs-behaviour breaks. Full mechanism + for + against + alternatives + when-to-use, all sourced. Not 9: the §Deep-dive stays at the level of *naming* binary-incompatible change categories rather than walking one through the JLS ch.13 mechanism. |
-| 5 | **READABILITY** | 7 | Concrete NPE hook, table-led, sparing CONCEPT/AHEAD-OF-PIN callouts, no grey wall; voice is clean (zero first-person/contraction slips, zero hype). Held to 7 by two authenticity tells the VOICE guide names explicitly: (a) **em-dash density 11.7 per 1,000 words** against the ~8/1000 soft target — ~46% over, on "the prose's most over-used cadence and a clear AI tell"; (b) a **duplicated forward hook** — both "## Hand-off to the next chapter" and "## Next chapter teaser" close the chapter pointing to the same Ch 8 material, where the guide wants one forward hook, not a syllabus echoed twice. |
+| # | Cluster | Score | Δ vs prior indep | Note (specific, located) |
+|---|---|---|---|---|
+| 1 | **CLARITY** | 8 | = (8) | Two-halves table + "move promises leftward" thesis + the §Where-each-rule-is-enforced matrix make the mechanism reconstructable; the `Optional<Account>` hook seeds the chapter and pays off in the `optional-return` snippet. Held below 9 by the one genuine clarity gap the lift did not touch: §Deep-dive asserts source-vs-binary incompatibility (inlined constants, a method moving up a hierarchy) **without a concrete before/after** — the one place it tells rather than shows, on its subtlest claim. |
+| 2 | **ACCURACY** | 8 | **+1 (was 7)** | Lift retired both internal-consistency defects the prior pass penalized −1: the header GA-at-21 claim is now correct (records 16 / sealed 17 / switch 21, consistent across header/body/back-matter) and the Item-50 mis-listing is gone. Load-bearing API facts (`requireNonNull`, `checkIndex`+`long`-overload-since-16, `Optional` return contract) exercised green in the module; rule IDs each traced to their own tool; S2201 scoped list matches its flag; JEP 467 correctly held AHEAD-OF-PIN. Still −2 from 10 for the "verify-at-pin" primary-text band (EJ 3e verbatim titles + page refs, JLS SE 21 exact §§, revapi/japicmp option names) — honestly disclosed, but a senior reader cannot yet confirm them and a harsh bar does not credit unverified specifics; the open F-1 exemplar nit also depresses prose↔example fidelity. |
+| 3 | **UTILITY** | 8 | = (8) | A senior reader gets the design canon + the machine-check map + a concrete semver/binary-compat CI recipe (japicmp `breakBuildBasedOnSemanticVersioning` against the last release). §When-to-use is per-surface and directly actionable. Backed by a real, green, copy-able module. Held below 9 because the compatibility half — the freshest material — is "spec'd, not yet built" (the `v1→v2` binary-break sub-module is planned, per `_EXAMPLE.md`), so its CI recipe is not demonstrated the way the in-the-small contracts are. |
+| 4 | **DEPTH** | 8 | = (8) | Merges in-the-small contract craft with cross-version evolution into one "contract over time" arc; honest on tool scope (S2201), the source-vs-binary trap, the shallow-clone defensive-copy edge, and signature-vs-behaviour breaks. Full mechanism + for + against + alternatives + when-to-use, all sourced. Not 9: §Deep-dive *names* binary-incompatible change categories rather than walking one through the JLS ch.13 mechanism. |
+| 5 | **READABILITY** | 8 | **+1 (was 7)** | Lift retired the duplicated forward hook the prior pass penalized — exactly one clean `## Hand-off` now closes the chapter. Concrete NPE hook, table-led, sparing CONCEPT/AHEAD-OF-PIN callouts, no grey wall; voice clean (zero first-person/contraction slips, zero hype). Held to 8 (not 9) by the one remaining authenticity tell the lift did not touch: **em-dash density 11.9/1,000 words** against the ~8/1000 soft target (~49% over) — the AUDIT-flagged appositive cadence the VOICE guide names as a clear AI tell. Soft target, not a fail, but it caps the cluster. |
 
-**Cluster subtotal: 38 / 50**
+**Cluster subtotal: 40 / 50**
 
 ---
 
@@ -63,7 +89,7 @@
 |---|---|---|
 | **A — NEUTRALITY** | **PASS** | `grep` over the full blocklist returns **zero** banned phrases. revapi vs japicmp each gets its own case + limitation, explicitly "neither is crowned" (§Deep-dive); analyzers framed as "enforcers of the same design rules, not rivals" with the layering question deferred to Ch 17 (§Where-each-rule-is-enforced); annotation packages (Error Prone / JSR-305 / JSpecify) framed neutrally, "JSpecify is the consolidation effort … adoption is partial." No section title carries a superlative; the Alternatives section is approach-based. |
 | **B — HONEST-LIMITATIONS** | **PASS** | 8 distinct per-feature when-NOT beats, each bound to a named feature: runtime checks not free → prefer `assert` for controlled callers (Item 49 caveat); `Optional` costs → anti-pattern for fields/params/boxed primitives; defensive copy → shallow-clone trap + pure overhead when the type is immutable; S2201 scoped; annotation packages not one standard; Javadoc drift; compat tools detect signature-not-behaviour breaks + setup cost; explicit "when not to invest at all" (leaf service, no consumers). Genuinely per-feature, not a generic disclaimer. |
-| **C — SOURCE-TRACE / COMPILE / CODE-REVIEW** | **PASS (source-trace + compile + code-review all green); two MINOR doc fixes open, non-blocking** | **Source-trace:** every printed rule ID / GAV / API signature traces to the pin or is flagged (`09-flags/09_jep467…`, `09-flags/09_s2201…`); independently re-verified no banned/invented atom. **Compile:** `target/` surefire confirms `mvn -B -Pquality verify` green on JDK 21.0.11 — 11 tests, 0 SpotBugs, 0 Checkstyle, empty suppression filter (re-confirmed by reading the build artifacts directly, not the prose). **Code-review:** `_CODEREVIEW.md` = **PASS-WITH-FIXES**, no BLOCKER, no security/neutrality/invention finding. The two open MINORs (F-1: the printed `javadoc-contract` exemplar omits `@throws NullPointerException` for its non-null `accountId`, inconsistent with the module's own constructor/`transfer` convention and sitting inside the very region that teaches Item 56; F-2: `InMemoryAccountRepository` Javadoc advertises multi-threaded use over a non-atomic read-check-write in `transfer`) are real and I independently confirm F-1 by reading the tag region — neither blocks FLOOR C, but both weaken a *printed teaching exemplar* and are reflected in the ACCURACY/READABILITY scores. |
+| **C — SOURCE-TRACE / COMPILE / CODE-REVIEW** | **PASS (source-trace + compile + code-review all green); two MINOR doc fixes open, non-blocking** | **Source-trace:** every printed rule ID / GAV / API signature traces to the pin or is flagged (`09-flags/09_jep467…`, `09-flags/09_s2201…`); no banned/invented atom. **Compile:** `_CODEREVIEW.md` re-run `mvn -B -Pquality … clean verify` green on JDK 21.0.11 — 11 tests, 0 SpotBugs, 0 Checkstyle, empty suppression filter. **Code-review:** `_CODEREVIEW.md` = **PASS-WITH-FIXES**, no BLOCKER, no security/neutrality/invention finding. Two MINORs still open in the draft/module (F-1: the printed `javadoc-contract` exemplar omits `@throws NullPointerException` for its non-null `accountId`, inside the region that teaches Item 56; F-2: `InMemoryAccountRepository` Javadoc advertises multi-threaded use over a non-atomic read-check-write in `transfer`) — neither blocks FLOOR C, both reflected in ACCURACY/READABILITY. |
 
 **All three floors PASS.** No floor failure; the verdict is governed by the aggregate.
 
@@ -71,49 +97,55 @@
 
 ## Verdict
 
-**Aggregate: 38 / 50. Floors A / B / C: PASS / PASS / PASS. No single cluster below 6 (lowest = 7).**
+**Aggregate: 40 / 50. Floors A / B / C: PASS / PASS / PASS. No single cluster below 6 (lowest = 8).**
 
 - [ ] **SHIP** (auto-approve) — requires ≥44/50 on the independent score.
-- [x] **LIFT-LOOP** — floors all PASS, but the aggregate (38) is **6 points under the 44/50 (88%) auto-approval bar**. Close in shape, not yet at the harsh ship bar.
+- [x] **LIFT-LOOP** — floors all PASS, but the aggregate (40) is **4 points under the 44/50 (88%) auto-approval bar**. The lift moved it 38→40; two quality ceilings remain that the three targeted fixes did not address.
 - [ ] **CUT**
 
-**One-line rationale:** A genuinely strong, correctly-neutral, build-backed contract chapter that clears
-every floor — but as an *error-free + excellent* harsh bar it is held under 44 by a real unverified-fact
-band (EJ verbatims, JLS §§, compat-tool option names), two internal-consistency defects (header JEP-GA
-claim; Item-50 mis-listing), an over-target em-dash cadence, and a duplicated forward hook.
+**One-line rationale:** The lift landed all three claimed mechanical fixes (header GA claim, Item-50 mis-listing,
+duplicate hook), correctly raising ACCURACY 7→8 and READABILITY 7→8 (aggregate 38→40); but under the
+error-free harsh bar the chapter is still held under 44 by the standing "verify-at-pin" primary-text band
+(EJ verbatims, JLS §§, compat-tool option names) capping ACCURACY at 8 and the over-target em-dash cadence
+(11.9/1000 vs ~8/1000) capping READABILITY at 8, with the spec'd-not-built compatibility module and the
+show-don't-tell Deep-dive gap holding UTILITY/CLARITY/DEPTH at 8.
 
-> **Note on disposition:** the active 88% bar is the *auto-approval* gate, scored independently. 38/50 does
-> not auto-approve and would normally enter the bounded lift loop. Per the task, **no lift loop was run and
-> no draft edit was made** — this is a score-only pass. The chapter sits above the Phase-2 inclusion floor
-> (≥35/50) comfortably; it is the auto-ship bar it misses.
+> **Note on disposition:** the active 88% bar is the *auto-approval* gate, scored independently. 40/50 does
+> not auto-approve. Per the task this is a score-only pass — no further lift loop was run and no draft edit
+> was made here. The chapter sits comfortably above the Phase-2 inclusion floor (≥35/50); it is the auto-ship
+> bar (44) it misses by 4.
 
 ---
 
 ## Flagged weakest cluster
 
-- **Weakest cluster (tie at 7):** ACCURACY and READABILITY. The single highest-leverage one is **ACCURACY — 7**.
-- **Why it is the weakest:** the chapter's printed authority rests partly on facts the draft itself cannot
-  verify in-repo (EJ 3e verbatim item titles + page refs, JLS SE 21 exact §§, revapi/japicmp exact option
-  names), and it carries two avoidable internal-consistency defects (the header's "GA at 21" for records/
-  sealed, and the Item-50 mis-placement) — exactly the kind of thing a senior reader catches and that a
-  harsh "error-free" bar will not credit as settled.
-- **Single highest-leverage move to lift it:** run the `/pin-source` primary-text pass on EJ 3e + JLS SE 21
-  and the two compat tools, converting each "verify-at-pin" caveat to a recorded citation; while there, fix
-  the header GA claim (records 16 / sealed 17 / pattern-switch 21) and drop the stray "50" from the Overview
-  enumeration. That alone would credibly move ACCURACY 7→9 and lift the aggregate toward the bar.
+- **Weakest cluster (tie at 8):** ACCURACY and READABILITY. The single highest-leverage one is **ACCURACY — 8**.
+- **Why it is the weakest:** with the two internal-consistency defects now fixed, the only thing still holding
+  ACCURACY off 9 is the band of primary-text facts the draft itself defers as not-fetchable-in-repo (EJ 3e
+  verbatim item titles + page refs, JLS SE 21 exact §§, revapi/japicmp exact option names) plus the open F-1
+  exemplar nit — exactly the class of specific a senior reader checks and a harsh "error-free" bar will not
+  credit until recorded.
+- **Single highest-leverage move to lift it:** run the `/pin-source` primary-text pass on EJ 3e + JLS SE 21 +
+  the two compat tools, converting each "verify-at-pin" caveat into a recorded citation, and (same pass) add
+  the `@throws NullPointerException` clause inside the `javadoc-contract` tag so the printed Item-56 exemplar
+  matches the module's own convention. That credibly moves ACCURACY 8→9. A second pass — convert ~12–15
+  appositive em-dashes to periods/commas/parentheses — moves READABILITY 8→9. Those two passes would put the
+  aggregate at or above the 44 bar without any new unverified fact or scope creep.
 
 ---
 
-## Line-level fixes (the lift list — for a future in-bounds pass; NOT applied here)
+## Line-level fixes (the lift list — for the NEXT in-bounds pass; NOT applied here)
 
-| # | Cluster / floor | Location (section · ¶ · line) | Issue | Fix |
+| # | Cluster / floor | Location (section · line) | Issue | Fix |
 |---|---|---|---|---|
-| 1 | ACCURACY | Provenance header, line 6 | "JEP 395/409/441 … GA at 21" is wrong for records (16) and sealed (17); contradicts body line 61 + back-matter line 189 | Rewrite as "records GA 16, sealed 17, pattern-switch 21" |
-| 2 | ACCURACY | Overview, line 28 | "Items 49–56, plus 15–17, 50" lists Item 50 redundantly and outside the 49–56 range it falls inside | Drop the stray ", 50" (it is covered in §Do-not-leak-the-representation and is within 49–56) |
-| 3 | ACCURACY | EJ verbatims / JLS §§ / compat option names (lines 84–85, 146–149, 187–195) | Primary-text facts carried as "verify-at-pin," unverifiable in-repo | `/pin-source` primary-text pass; convert each caveat to a recorded citation |
-| 4 | READABILITY | Whole body | Em-dash density 11.7/1000 vs ~8/1000 target (flagged AI tell) | Convert ~15 appositive em-dashes to periods/commas/parentheses |
-| 5 | READABILITY | §Hand-off (180) + §Next-chapter-teaser (199) | Two forward hooks to the same Ch 8 material | Merge into one forward hook |
-| 6 | ACCURACY / FLOOR-C (exemplar) | `javadoc-contract` region (CODE-REVIEW F-1) | Printed Item-56 exemplar omits `@throws NullPointerException` | Add the `@throws NullPointerException` clause inside the tag so the printed exemplar matches the module's own convention |
+| 1 | ACCURACY | EJ verbatims / JLS §§ / compat option names (lines 84–85, 146–149, 187–195) | Primary-text facts carried as "verify-at-pin," unverifiable in-repo | `/pin-source` primary-text pass; convert each caveat to a recorded citation |
+| 2 | ACCURACY / FLOOR-C (exemplar) | `javadoc-contract` region (CODE-REVIEW F-1) | Printed Item-56 exemplar omits `@throws NullPointerException` | Add the `@throws NullPointerException` clause inside the tag so the printed exemplar matches the module's convention |
+| 3 | READABILITY | Whole body | Em-dash density 11.9/1000 vs ~8/1000 target (flagged AI tell) | Convert ~12–15 appositive em-dashes to periods/commas/parentheses |
+| 4 | CLARITY / DEPTH | §Deep-dive (line 142) | source-vs-binary incompatibility asserted without a concrete before/after | Add one small before/after (e.g. an inlined `static final` constant change) walked through the JLS ch.13 mechanism |
+| 5 | UTILITY / FLOOR-C | back matter (line 197) | compatibility `v1→v2` sub-module spec'd, not built | Build the planned binary-break sub-module so the CI semver-gate recipe is demonstrated, not narrated |
+
+> Fixes 1–3 are in-bounds and would clear the bar. Fix 4 is a small show-don't-tell add. Fix 5 is the larger
+> EXAMPLE-BUILD follow-on (not a scoring-pass edit).
 
 ---
 
@@ -121,31 +153,35 @@ claim; Item-50 mis-listing), an over-target em-dash cadence, and a duplicated fo
 
 | Pass # | Date | Cluster subtotal /50 | NEUTRALITY | HONEST-LIMITATIONS | SOURCE-TRACE / COMPILE / CODE-REVIEW | Verdict | What changed since last pass |
 |---|---|---|---|---|---|---|---|
-| 0 (indep) | 2026-06-28 | 38 / 50 | PASS | PASS | PASS (2 MINOR open, non-blocking) | LIFT-LOOP | Independent harsh re-score; build/floor evidence re-verified from artifacts; no edit applied |
+| 0 (indep, pre-lift) | 2026-06-28 | 38 / 50 | PASS | PASS | PASS (2 MINOR open) | LIFT-LOOP | Independent harsh re-score; build/floor evidence re-verified from artifacts |
+| post-lift (indep) | 2026-06-28 | 40 / 50 | PASS | PASS | PASS (2 MINOR open) | LIFT-LOOP | Drafter applied the 3 mechanical fixes (header GA claim, Item-50 mis-listing, duplicate hook); re-scored — ACCURACY 7→8, READABILITY 7→8; aggregate 38→40 |
 
-> For reference, the prior main-loop self-score recorded 40/50 (CLARITY/ACCURACY/UTILITY/DEPTH/READABILITY
-> all 8). This independent pass lands 2 points lower (38) — ACCURACY 8→7 (unverified-fact band + two
-> internal-consistency defects the self-score did not flag) and READABILITY 8→7 (em-dash density + duplicate
-> forward hook) — consistent with the harsher, error-free bar.
+> For reference, the prior main-loop self-score recorded 40/50 (all clusters 8). This independent post-lift
+> pass also lands 40/50, but with a different shape: it credits the three retired defects (ACCURACY +1,
+> READABILITY +1 vs the 38) while still declining to credit the deferred "verify-at-pin" facts and the
+> over-target em-dash cadence — so it agrees with the self-score's aggregate by a stricter route, and still
+> sits 4 under the auto-ship bar.
 
 ---
 
 ## Learnings & pipeline suggestions
 
-- **Independent-score divergence was driven by checks a self-score skips.** The two ACCURACY defects (header
-  GA claim; Item-50 mis-listing) and the em-dash over-target are mechanical and greppable. Suggest the
-  drafter run a pre-score self-lint: (a) em-dash density count, (b) a consistency diff between the provenance
-  header's version/GA claims and the body/back-matter, (c) a single-forward-hook check. Cheap, and would have
-  closed most of the self↔independent gap before this gate.
-- **"Verify-at-pin" caveats are honest but cap ACCURACY under a harsh bar.** A chapter that defers EJ
-  verbatims / JLS §§ / tool option names to `/pin-source` is doing the right thing for honesty, but an
-  error-free reviewer cannot credit the deferred facts. Recommend the SOURCE-VERIFY (Step 5) primary-text
-  pass land *before* the independent score for any chapter leaning on book-canon verbatims or standards-edition
-  section numbers, so ACCURACY is scored on verified, not deferred, facts.
-- **CODE-REVIEW's "displayed-region exemplar" sub-check (F-1) is worth promoting.** A Javadoc region *printed
-  to teach documentation* (Item 56) should itself be a flawless exemplar; the `@throws NullPointerException`
-  omission is exactly that class of nit. Endorse the `_CODEREVIEW.md` suggestion to add a one-line rule to the
-  CODE-REVIEW rubric: "tag regions demonstrating a best practice are held to that practice, not merely to
-  compilation." This finding also legitimately depresses the prose-fidelity dimension of ACCURACY.
+- **The mechanical-defect fixes worked exactly as predicted; the structural ceilings did not move.** The lift
+  closed the three greppable defects the prior pass named (header GA claim, Item-50, duplicate hook) and bought
+  +2 aggregate — but the remaining 4-point gap is now entirely in *non-greppable* substance (deferred
+  primary-text facts, em-dash cadence, a spec'd-not-built module, a show-don't-tell gap). Lesson: once the cheap
+  mechanical defects are cleared, further lift requires real work (a `/pin-source` pass, an em-dash prune, an
+  EXAMPLE-BUILD follow-on), not another quick edit. The remaining two in-bounds passes (citation pass +
+  em-dash prune) are the credible route to 44.
+- **A pre-score self-lint would have caught the three mechanical defects before the first gate.** They were all
+  greppable (a header↔body GA-claim diff, an out-of-range item number, a duplicate forward-hook heading).
+  Endorse the prior pass's suggestion: have the drafter run (a) an em-dash density count, (b) a header-vs-body
+  consistency diff, (c) a single-forward-hook check before submitting to score. Cheap; would have saved a lift
+  cycle here.
+- **"Verify-at-pin" caveats remain the dominant ACCURACY cap once defects are fixed.** With the consistency
+  defects gone, the deferred EJ/JLS/compat-tool facts are now the single thing between ACCURACY 8 and 9.
+  Reaffirm: land the SOURCE-VERIFY (Step 5) primary-text pass *before* the independent score for any chapter
+  leaning on book-canon verbatims or standards-edition section numbers, so ACCURACY is scored on verified,
+  not deferred, facts.
 - **Append these to `00-strategy/PIPELINE-LEARNINGS.md`** per the continuous-improvement HARD RULE (book-
   maintainer to log in the ledger).
