@@ -41,22 +41,17 @@ One idea carries the whole chapter: *coverage shows what ran; mutation score sho
 
 ## How it works
 
+The two axes split the chapter. The first half maps the *how much* axis with the test pyramid; the second weighs the *how good* axis as coverage against mutation score.
+
+### The pyramid: how much, and where
+
+The **test pyramid** (Mike Cohn, *Succeeding with Agile*, 2009; restated by Ham Vocke in "The Practical Test Pyramid" on Martin Fowler's site) is the model for the *how much* axis. It rests on two rules, verbatim: *"Write tests with different granularity"* and *"The more high-level you get the fewer tests you should have."* Figure 20.1 shows the shape those two rules produce: many fast tests at the bottom, few slow ones at the top, with the two rules named on it. That shape encodes a cost/speed/confidence trade-off across three layers:
+
 ![Fig 20.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
     &ldquo;The more high-level you get the fewer tests you should have.&rdquo;](../../05-figures/41_testing_landscape_quality/fig41_1.png)
 
 *Fig 20.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
     &ldquo;The more high-level you get the fewer tests you should have.&rdquo;*
-
-![Fig 20.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
-    A suite can reach 100% coverage and kill zero mutants.](../../05-figures/41_testing_landscape_quality/fig41_2.png)
-
-*Fig 20.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
-    A suite can reach 100% coverage and kill zero mutants.*
-
-
-### The pyramid: how much, and where
-
-The **test pyramid** (Mike Cohn, *Succeeding with Agile*, 2009; restated by Ham Vocke in "The Practical Test Pyramid" on Martin Fowler's site) is the model for the *how much* axis. It rests on two rules, verbatim: *"Write tests with different granularity"* and *"The more high-level you get the fewer tests you should have."* The shape (many tests at the bottom, few at the top) encodes a cost/speed/confidence trade-off across three layers:
 
 - **Unit tests** — *"focused, isolated tests of individual code components with the narrowest scope."* Fast, cheap, plentiful; the base.
 - **Integration/service tests** — verify the application *"correctly interacts with external dependencies like databases, filesystems, and separate services."* Slower, fewer.
@@ -70,15 +65,21 @@ Two of Vocke's framings carry into the rest of Part V. **Solitary versus sociabl
 
 ### The two axes of test quality
 
-Granularity is the *how much*. The harder, more valuable axis is *how good*, and it has two distinct measurements that teams routinely conflate.
+Granularity is the *how much*. The harder, more valuable axis is *how good*, and it has two distinct measurements that teams routinely conflate. Figure 20.2 sets them side by side: coverage on one axis, mutation score on the other, with the corner that exposes the gap marked — full coverage, zero mutants killed.
+
+![Fig 20.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
+    A suite can reach 100% coverage and kill zero mutants.](../../05-figures/41_testing_landscape_quality/fig41_2.png)
+
+*Fig 20.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
+    A suite can reach 100% coverage and kill zero mutants.*
 
 **Coverage** measures *execution*: which instructions, branches, and lines ran while the tests executed. JaCoCo, the standard Java coverage tool, reports six counters (instructions, branches, lines, methods, classes, and cyclomatic complexity), and branch coverage (every `if` and `switch` arm) is a stronger floor than line coverage. Coverage is precise, reproducible, and genuinely useful as a *floor*: code that never runs under test is code whose behaviour is entirely unknown.
 
 **Mutation score** measures *fault detection*. A mutation tool (PITest) automatically seeds small faults into the code under test (flipping a conditional, changing a `+` to a `-`, replacing a return value), then reruns the suite against each mutated version. If a test fails, the mutant is **killed** (the fault was detected); if every test still passes, the mutant **lived** (the suite is blind to that fault). The mutation score is the percentage killed: an empirical answer to whether the tests would notice a bug.
 
-> **CONCEPT** *Coverage is execution; mutation score is detection — and they are independent.* PITest states the gap in its own words: coverage *"measures only which code is executed by your tests. It does not check that your tests are actually able to detect faults in the executed code."* The hook's vanity suite proves it by construction: 100% line coverage with zero meaningful assertions kills *zero* mutants. Coverage is **necessary, not sufficient** — a floor that finds untested code, never proof that the tested code is well tested.
+> **CONCEPT** *Coverage is execution; mutation score is detection — and they are independent.* PITest states the gap in its own words: coverage *"measures only which code is executed by your tests. It does not check that your tests are actually able to detect faults in the executed code."* The hook's vanity suite proves it by construction: 100% line coverage with zero meaningful assertions kills *zero* mutants. Coverage is **necessary, not sufficient**. It is a floor that finds untested code, never proof that the tested code is well tested.
 
-This is the most important debunking in Part V, and it is why a coverage percentage should never be reported as a test-quality number. (The deep treatment of coverage gating lives in its own chapter; mutation cost and how to scope it to changed code, in another. The folklore is corrected here; the mechanics are routed.) Alongside these quantitative measures sits the qualitative heuristic **FIRST** (Fast, Isolated, Repeatable, Self-validating, and Timely): a useful community checklist, not a formal standard.
+That gap is why a coverage percentage should never be reported as a test-quality number. (The deep treatment of coverage gating lives in its own chapter; mutation cost and how to scope it to changed code, in another. The folklore is corrected here; the mechanics are routed.) Alongside these quantitative measures sits the qualitative heuristic **FIRST** (Fast, Isolated, Repeatable, Self-validating, and Timely): a useful community checklist, not a formal standard.
 
 ### The Java test-tool landscape
 
@@ -100,7 +101,7 @@ In the build, these split along the pyramid: unit tests run under **Maven Surefi
 
 ## Deep dive: test architecture, flakiness, and test smells
 
-Coverage and mutation score show whether the tests *check* enough. Three more disciplines determine whether the suite's signal can be *trusted*: it must be well-architected (isolated), deterministic (not flaky), and clean as code (smell-free).
+Coverage and mutation score show whether the tests *check* enough. Three more disciplines determine whether the suite's signal can be *trusted*: it must be well-architected (isolated), *deterministic* (it gives the same result every run, never flaky), and clean as code (smell-free).
 
 **Isolation is the determinism foundation.** JUnit 5's default, `@TestInstance(Lifecycle.PER_METHOD)`, *"creates a new instance of each test class before executing each test method to allow individual test methods to be executed in isolation."* A fresh instance per method means instance fields cannot leak state between tests, which prevents order-dependency by construction. `Lifecycle.PER_CLASS` shares one instance across methods (convenient for a non-static `@BeforeAll`) but reintroduces exactly that leak risk; the author now owns isolation. Shared mutable state between tests is the primary engine of order-dependent flakiness, which is why JUnit also offers `MethodOrderer.Random`: running methods in a different order each build makes a hidden inter-test dependency fail visibly instead of passing by luck.
 
@@ -148,7 +149,7 @@ And an async result is awaited by polling the real condition under a hard budget
 
 Most test smells are *review-found*, not tool-gated: a vocabulary for code review (Chapter 37's territory), not automated enforcement. That is the honest boundary. A linter can flag a few patterns, but "is this test testing the right thing?" remains a human judgment.
 
-Put the axes together and "test quality" resolves into four things, only one of which has a number attached: coverage (necessary floor), effectiveness (mutation score, the real measure of detection), determinism (no flakiness), and clarity (smell-free). A suite that is 100% covered but flaky, smell-ridden, and assertion-light is the green badge that lies — the testing equivalent of the skipped gate from the last chapter. Part V is about building the other three.
+Put the axes together and "test quality" resolves into four things, only one of which has a number attached: coverage (necessary floor), effectiveness (mutation score, the real measure of detection), determinism (no flakiness), and clarity (smell-free). A suite that is 100% covered but flaky, smell-ridden, and assertion-light is the green badge that lies. It is the testing equivalent of the skipped gate from the last chapter. Part V is about building the other three.
 
 ## Limitations & when NOT to reach for it
 
