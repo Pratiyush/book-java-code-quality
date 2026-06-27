@@ -2458,3 +2458,49 @@ SpotBugs. Six tag-includes resolve (4 config, 2 Java), all 6 markers PASS in `ch
   hard-fails ("ABSENT") for a multi-authority `SOURCE-PIN.md`. Verification ran as a manual procedure (pin
   rows read directly from `SOURCE-PIN.md`; runnable atoms confirmed against the green build artifacts under
   `target/`). Suggest a multi-authority-aware mode for these scripts.
+
+---
+
+## 2026-06-27 — VERIFY (key 81): resolving deferred-verification markers post-EXAMPLE-BUILD
+
+- **A marker resolves in two directions, not one.** After a config-centric module builds green, the
+  deferred `⚠ @pin`/`verify-at-pin` cluster splits cleanly: (a) **buildable atoms** (the framework config
+  schema parses, the local hooks invoke the wrapper, the parity assertion is unit-tested) become
+  *resolved-at-build* and the marker is removed; (b) **SaaS-rolling atoms** (GitHub ruleset/branch-protection
+  setting names, a merge-queue platform feature, a hook `rev:` placeholder) can never resolve to a pinned
+  fact — they stay **dated-at-use** with a live `09-flags/` entry. Don't strip the second kind just because
+  the build went green.
+- **Stale build-status strings travel in clusters.** The same draft carried `EXAMPLE-BUILD = PENDING` in
+  three places (the header companion-module line, the DRAFT-v1 provenance line, and the footer). When the
+  EXAMPLE-BUILD report flips to BUILT GREEN, grep every `PENDING`/`EXAMPLE-BUILD =` occurrence in the draft,
+  not just the footer — the verdict must read the same everywhere.
+- **DORA-style "capability" claims trace to the book canon, not the rolling site.** Trunk-based development
+  is attributable to the pinned *Accelerate* (2018) + 2025 DORA report; the marker on it is only about the
+  rolling `dora.dev` *wording*, which the prose paraphrases (never quotes) and crowns no model. So the claim
+  is *confirmable in substance* even while its exact phrasing stays dated — record the pinned canon source
+  and keep the paraphrase.
+- **A bare in-prose SaaS assertion needs dating even when a flag exists.** "GitHub's merge queue is generally
+  available" read as a timeless fact; the flag covered the *config* fields but not the *prose* surface. When
+  leaving a SaaS atom marked, make sure the flag's "atoms affected" list names the **prose** surface too, so
+  the draft's `09-flags/` pointer is fully backed.
+- **`verify_sources.sh` is single-clone-shaped and N/A under a multi-authority pin.** It fails with
+  "pinned clone absent at /tmp/tmp"; `check_source_pin.sh` is the correct on-pin check for this book. Don't
+  read the verify_sources failure as an off-pin condition — note it ran-but-N/A.
+- **(2026-06-27, VERIFY ch 75) A resolved re-pin flag can leave residue the "swept all citations" note missed.**
+  When SOURCE-PIN JaCoCo was re-pinned 0.8.16→0.8.15 (flag `48_jacoco_pin_0816_unpublished.md`, marked
+  RESOLVED "all live citations swept"), the **companion YAML comment** (`75_ci_pipeline_quality_gates/ci/quality-gates.yml`
+  line 67) and the **`_EXAMPLE.md` source-trace** (line 152) still read `0.8.16`. A version-sweep must include
+  companion build files and gate-report source-trace tables, not only draft prose + figure sidecars. Suggest the
+  re-pin runbook step 3 explicitly `grep -rn` the old literal across `08-companion-code/`, `03-drafts/*_EXAMPLE.md`,
+  and `09-flags/` before marking a re-pin flag RESOLVED.
+- **(2026-06-27, VERIFY ch 75) Build-status strings drift between front-matter and foot-spec within one draft.**
+  Ch 75 v1 carried `EXAMPLE-BUILD = PENDING` in the header comment (lines 5, 12) while the foot-spec (line 163)
+  and the `_EXAMPLE.md` already said `✅ GREEN`. VERIFY should treat an internal build-status contradiction as a
+  must-fix and sync every status string to the `_EXAMPLE.md` verdict of record. A one-line `grep` for
+  `PENDING|GREEN|EXAMPLE-BUILD` across a draft catches it.
+- **(2026-06-27, VERIFY ch 75) CONFIG-centric chapters: split "build-confirmed" from "still-deferred" inside one
+  `⚠ @pin` marker.** A single deferred-marker line often bundles atoms the runnable companion now confirms (the
+  gate-policy mechanism: clean-as-you-code scope, block-vs-warn, the sealed `GateDecision`) with atoms that
+  genuinely stay deferred (GitHub Actions syntax = rolling SaaS dated-at-use; DORA/Sonar product wording routed
+  to other chapters). Resolve the confirmed half to fact and keep the deferred half marked, rather than clearing
+  or keeping the whole line. The body must not assert the SaaS/other-chapter atoms as settled.
