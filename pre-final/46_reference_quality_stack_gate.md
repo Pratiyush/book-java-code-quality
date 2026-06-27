@@ -14,11 +14,6 @@ Here is one coherent, worked, end-to-end quality stack and CI gate. Not a menu b
 
 **What this chapter covers**
 
-- **The reference stack**: a layered, de-duplicated set of tools — build, format, style, bug-finding, null-safety, architecture, tests, security, platform — each with its alternative named.
-- **The gate design**: the feedback-latency ladder from pre-commit to PR to nightly to merge, with what runs where and why.
-- **The capstone module**: the runnable reference project that wires the whole stack together end-to-end.
-- **The honest edges**: this is *a* stack not *the* stack, it is adopted incrementally, it is code to own, and tools do not make quality.
-
 **What this chapter does NOT cover.** The individual tools in depth, each of which has its own chapter in Parts IV–IX; this is the *synthesis* that composes them. The layering rationale lives in Chapter 3, the gate-stage mechanics in Chapters 33 and 35, and the *adoption roadmap* — how a team gets from zero to this over time — in the final chapter. All versions and GAV coordinates are verified at the pin, the stack is a *snapshot* that will age, and the capstone module is the rule-4 exception (full-file listings) that must build green before it ships.
 
 **Hold this one idea**: *one defensible, layered, de-duplicated quality stack wired into a feedback-ordered CI gate (pre-commit → PR → nightly → merge), with new-code focus so it is adoptable on legacy. Clone it, then tailor it, because it is a starting point not a verdict. Adopt it incrementally, not all at once. The stack is necessary scaffolding, not quality itself: tools catch the mechanical, humans decide the substantive.*

@@ -198,13 +198,6 @@ These layer rather than compete: types catch what they can at compile time, runt
 
 ## When to use what
 
-- **On every public method:** push the contract into the type (return `Optional` or empty, not null; mark nullness; minimize accessibility), then fail fast on what the type cannot carry, then document the remainder (Item 56).
-- **On a hot internal path with controlled callers:** prefer `assert` or skip redundant checks; do not pay runtime validation for callers already validated at the boundary.
-- **On a mutable field that must be stored or exposed:** defensive-copy in and out (*unless* the type is already immutable, in which case use immutability and skip the copy).
-- **On a return value that carries the result:** annotate it un-ignorable (`@CheckReturnValue`) so dropping it fails the build.
-- **On a published library or shared module:** wire japicmp or revapi into CI against the last release, honour the computed semver bump, and deprecate-with-migration rather than delete.
-- **On a leaf application with no library consumers:** skip the compatibility gate; spend the effort on contract clarity within the codebase instead.
-
 ## Hand-off to the next chapter
 
 The contract framing is now in place: a promise with a type-carried half and a doc/runtime half, enforced as far left as the type system allows, and held stable across versions. The next chapters apply that framing to the specific contracts a method makes when things go *wrong*: the exception and error-handling design that determines what a `@throws` clause actually promises, and the immutability and `equals`/`hashCode` contracts that determine whether value types behave correctly in collections. The fail-fast guard is the first sentence of that larger story about failure.

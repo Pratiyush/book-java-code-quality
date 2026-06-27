@@ -43,8 +43,6 @@ JUnit is the de-facto JVM unit-testing framework, and its quality relevance is t
 
 > **EDITION** *JUnit 6 is the current major line* (6.0 GA 2025-09-30; 6.1.0 GA 2026-05), raising the floor to Java 17 and unifying Platform, Jupiter, and Vintage under one version, with Vintage (the JUnit 3/4 compatibility engine) now deprecated. **JUnit 5 ("Jupiter")** is the prior, still-ubiquitous line. The Jupiter programming model is largely shared across 5 and 6, so the guidance here holds for both; the few 6-only changes (the Java-17 floor, some relocated APIs) are migration costs a Java-8/11 codebase should weigh before upgrading. Treat JUnit 6 as current, note 5 where teams remain on it — the same edition discipline the book applies to any versioned authority.
 
-That layering is the **three-module architecture**:
-
 - **JUnit Platform** — the foundation that launches test engines on the JVM and defines the `TestEngine` API that build tools and IDEs target. This is *why* one runner can execute Jupiter tests and jqwik property tests side by side: these are different engines on one platform.
 - **JUnit Jupiter** — the programming and extension model for writing tests, plus its own `TestEngine`.
 - **JUnit Vintage** — a `TestEngine` that runs legacy JUnit 3/4 tests on the Platform (deprecated in 6; migration-only).

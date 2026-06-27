@@ -168,8 +168,6 @@ The architectural form is a custom ArchUnit predicate and condition — the filt
             .should(MoneyArchRules.NOT_EXPOSE_FLOATING_POINT_MONEY);
 ```
 
-The reason Chapter 17's layering matters is that **each rule only sees its own artifact**. Smuggle a `double` in through a surface a given tool cannot see (reflection, or a generic erased before SpotBugs reads the bytecode) and that tool goes quiet. No single custom rule is a complete fence; the coverage comes from composing them, exactly as the stock analyzers compose.
-
 As **codegen**, the same `Money` is best expressed as a `record Money(BigDecimal amount, Currency currency)`. The compiler derives the value semantics, no processor, no dependency, and the type is impossible to construct with a `double` amount because the component type *is* `BigDecimal`:
 
 ```java
@@ -189,14 +187,6 @@ Where the convention needs more than a carrier (a mapper between the domain `Mon
 A custom rule and a code generator both *extend the build*: one extends what it checks, the other what it writes, and both are leverage the team now owns. The bill is upkeep: a custom rule is re-validated on every tool upgrade, and a generator ties the build to a processor or a language level. They earn their keep on invariants that are project-specific, frequently relevant, and cheaply machine-handled. Nowhere else.
 
 ## Limitations & when NOT to reach for it
-
-- **A custom rule is code the team maintains forever.** Every authoring API is tool-version-bound (PMD's 7.x line reworked its AST node names and rule model — custom PMD rules are the most upgrade-sensitive). An un-maintained custom rule rots into false positives and gets disabled. When NOT: for a one-off that will never be re-checked, or a convention a stock rule already covers with config.
-- **False positives cost trust fast.** A bespoke rule has little field-testing; ship `WARNING`, then promote to `ERROR`. A noisy custom gate trains the team to route around the gate.
-- **Some invariants are not machine-checkable.** "Is this abstraction the right one?" is a review judgment no AST can make. Do not force a semantic call into a syntactic rule.
-- **Each rule sees only its own artifact.** Checkstyle/PMD miss what is only in bytecode; SpotBugs misses source-only constructs; ArchUnit sees type-level structure, not statement-level logic. Coverage comes from composition (Chapter 17), not from one heroic rule.
-- **Codegen adds machinery between the declared source and the running code.** Generate-new-files processors add a generated symbol to reference and a build step; `record` covers only the transparent-carrier slice (no inheritance, shallow immutability, no builders/entities/mappers); processor *ordering* is unspecified, so multi-processor builds need explicit care (`lombok-mapstruct-binding`).
-- **Lombok's trade is specific.** It depends on non-standard compiler internals (`--add-opens` since JDK 16; a compatibility event each JDK), and the source the developer reads is not the code that runs (IDE plugin required; other processors may not see its edits; `@lombok.Generated` needed so coverage is not distorted). When NOT: a codebase that wants zero dependence on compiler internals or zero IDE-plugin requirement, or a value layer `record` already covers. Where it fits: broad boilerplate across many shapes where terseness is the priority and the team accepts the trade and configures the exclusion.
-- **Generated ≠ reviewed.** Generated code is only as correct as its generator; the `@Generated` exclusion hides it from coverage but does not test it. Name the marker precisely — `lombok.Generated` is a different annotation from `jakarta.annotation.Generated`.
 
 ## Alternatives & adjacent approaches
 

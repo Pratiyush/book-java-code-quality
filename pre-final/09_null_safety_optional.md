@@ -193,13 +193,6 @@ These layer rather than compete: design with `Optional`/empty, guard the boundar
 
 ## When to use what
 
-- **For a method that may have no result:** return `Optional<T>` (or an empty collection), not null, so the absence is now in the type.
-- **At every public constructor and entry point:** `Objects.requireNonNull` the required arguments, so a null fails loud and immediately.
-- **For a new codebase or module:** `@NullMarked` the packages with JSpecify annotations and run NullAway for fast, low-annotation build-time proof.
-- **For a long-lived, correctness-critical core library:** consider the Checker Framework Nullness Checker for a soundness guarantee, accepting the annotation and build cost.
-- **For a legacy tree on JSR-305:** plan a migration to JSpecify (incrementally, with `@NullUnmarked`), and mind the JPMS split-package when running on the module path.
-- **Always:** keep runtime guards and tests, because no static layer catches reflection, deserialization, or a lie to the checker.
-
 ## Hand-off to the next chapter
 
 Three invisible facts have now been lifted into the type system across Part II: the contract (Chapter 7), the value's identity (Chapter 8), and possible absence. The next chapter turns from values to *control*: how methods signal and handle failure. Null was one way to say "no result"; an exception is the other, and the same discipline applies. Make the failure path explicit, fail fast, and do not let a swallowed exception become the silent NPE of error handling.

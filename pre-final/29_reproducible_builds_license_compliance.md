@@ -157,14 +157,6 @@ These compose into build integrity: pin and resolve deterministically (Chapter 2
 
 ## When to use what
 
-- **For a publicly released or independently-verified artifact:** a reproducible build (`project.build.outputTimestamp`, pinned plugins, fixed locale/TZ), verified by build-twice-and-diff.
-- **For the higher SLSA levels:** hermetic builds — only declared, pinned inputs, no build-time network.
-- **To keep reproducibility from decaying:** a CI step that rebuilds and diffs; treat a byte difference as a build failure.
-- **To know the tree's licenses:** read SPDX identifiers off the SBOM; categorize permissive / weak-copyleft / strong-copyleft.
-- **To stop a banned license shipping:** a `license-maven-plugin` allow/deny policy gate, tuned to the product's distribution mode, scanning the full transitive graph.
-- **To meet attribution obligations:** auto-generate the `THIRD-PARTY`/`NOTICE` file from the inventory.
-- **For obligation interpretation and policy:** legal counsel — the tools surface facts; they do not give advice.
-
 ## Hand-off to the next part
 
 Part VII secured the *build and the tree it assembles* — pinned, current, scanned, inventoried, attested, reproducible, and licensed. Every one of those controls concerns code that was *not* written in-house (the dependencies) or the artifact being *shipped* (the build). Not one of them looks at the vulnerabilities in the code a team *does* write: the SQL injection in a query-builder, the unsafe deserialization in an endpoint, the broken access control in authorization logic, the crypto API reached for and misused. Software composition analysis is blind to all of it by construction — it scans dependencies, not application source. **Part VIII: Security & SAST** turns the lens inward: secure coding against the OWASP Top 10, the injection and deserialization classes that have haunted Java for decades, the Java cryptography APIs and how they are misused, and the static-analysis security testing (SAST) that finds these flaws in application source. The next chapter opens it with secure coding and the OWASP Top 10 for Java — the vulnerabilities teams introduce themselves.
