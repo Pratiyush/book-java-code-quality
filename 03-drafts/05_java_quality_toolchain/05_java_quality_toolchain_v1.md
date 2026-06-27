@@ -2,9 +2,9 @@
 Dossier key: 05 (solo) — per 01-index/FINAL_INDEX.md Ch 3
 Slug: 05_java_quality_toolchain
 Part / arc position: Part I — Foundations, Chapter 3
-Companion module: 08-companion-code/05_java_quality_toolchain/ — ⚠ EXAMPLE-BUILD = PENDING-RUNTIME (no JDK). This is also the seed of the companion reference project (capstone, Ch 46). Spec at foot.
+Companion module: 08-companion-code/05_java_quality_toolchain/ — EXAMPLE-BUILD GREEN (mvn -B -Pquality verify SUCCESS, JDK 21.0.11 / Maven 3.9.16; 4 tests pass, 0 Checkstyle, 0 SpotBugs, JaCoCo report written — see _EXAMPLE.md). This is also the seed of the companion reference project (capstone, Ch 46). Spec at foot.
 Verified against SOURCE-PIN: 2026-06-20 (each tool's pinned row; source/bytecode/compile-time distinctions; FindBugs→SpotBugs).
-DRAFT v1 — map chapter; gates manual; EXAMPLE-BUILD pending JDK.
+DRAFT v1 — map chapter; gates manual; EXAMPLE-BUILD GREEN at JDK 21.0.11 (see _EXAMPLE.md).
 -->
 
 # A Map of the Territory
@@ -168,7 +168,7 @@ The territory is mapped. Tools only stick in a team that wants them, and quality
 - Tool inventory + pinned versions: `00-strategy/SOURCE-PIN.md` (dated 2026-06-20). Maven/Gradle plugin GAVs: Chapters 16, 27.
 - Dead → current: FindBugs → SpotBugs; `findbugs-maven-plugin` → `spotbugs-maven-plugin`.
 
-**Companion module (built — EXAMPLE-BUILD green at JDK 21.0.11, `mvn -B -Pquality verify` SUCCESS; 4 tests pass, 0 Checkstyle violations, 0 SpotBugs findings, JaCoCo report written):** `08-companion-code/05_java_quality_toolchain/` — the map made concrete and the seed of the companion reference project (Chapter 46). One Maven build assembles the layered local toolchain: the compiler held to `-Xlint:all -Werror` in the default build (the cheapest layer), and Checkstyle (source), SpotBugs (bytecode) and JaCoCo (coverage) in the opt-in `-Pquality` profile (cheap checks first, heavier analysis later). The displayed snippets are tag regions inside that build: the compiler flags, the two-pin Checkstyle engine override, the SpotBugs configuration, and the JaCoCo executions live in `pom.xml`; the formatter layer is shown as a reference configuration in `config/spotless/spotless-reference.xml` (Spotless + google-java-format `1.35.0`, not wired live — the pinned `Spotless 3.6.0` is the project/Gradle line and does not resolve as a Maven-plugin coordinate; see `09-flags/34`). The small `org.acme.toolchain` package (`LineItem`, `Cart`) gives each layer something real to read and the module passes its own gate. **Failure path:** `LineItem` rejects a blank SKU, a negative price, or a non-positive quantity at construction; **observability:** `Cart.size()` is the headline metric and `Cart.isReady()` a readiness probe, with the JaCoCo report the coverage surface. Analyzer plugin/engine versions track the proven-green peer modules and are flagged where they differ from `SOURCE-PIN.md` (`09-flags/05_toolchain_plugin_versions.md`). Snippet tags: `compiler-flags`, `formatter`, `checkstyle-wire`, `spotbugs-wire`, `coverage-wire`.
+**Companion module (built — EXAMPLE-BUILD green at JDK 21.0.11, `mvn -B -Pquality verify` SUCCESS; 4 tests pass, 0 Checkstyle violations, 0 SpotBugs findings, JaCoCo report written):** `08-companion-code/05_java_quality_toolchain/` — the map made concrete and the seed of the companion reference project (Chapter 46). One Maven build assembles the layered local toolchain: the compiler held to `-Xlint:all -Werror` in the default build (the cheapest layer), and Checkstyle (source), SpotBugs (bytecode) and JaCoCo (coverage) in the opt-in `-Pquality` profile (cheap checks first, heavier analysis later). The displayed snippets are tag regions inside that build: the compiler flags, the two-pin Checkstyle engine override, the SpotBugs configuration, and the JaCoCo executions live in `pom.xml`; the formatter layer is shown as a reference configuration in `config/spotless/spotless-reference.xml` (`spotless-maven-plugin 3.6.0` + google-java-format `1.35.0`, not wired into the green build — its plugin version is carried as a property; see `09-flags/34`). The small `org.acme.toolchain` package (`LineItem`, `Cart`) gives each layer something real to read and the module passes its own gate. **Failure path:** `LineItem` rejects a blank SKU, a negative price, or a non-positive quantity at construction; **observability:** `Cart.size()` is the headline metric and `Cart.isReady()` a readiness probe, with the JaCoCo report the coverage surface. Analyzer plugin/engine versions track the proven-green peer modules and are flagged where they differ from `SOURCE-PIN.md` (`09-flags/05_toolchain_plugin_versions.md`). Snippet tags: `compiler-flags`, `formatter`, `checkstyle-wire`, `spotbugs-wire`, `coverage-wire`.
 
 **Sources and further reading**
 
@@ -187,12 +187,12 @@ If a stack of tools only works in a team that welcomes it, what does a quality c
 ---
 
 <!--
-RUNNABLE EXAMPLE SPEC (seeds Step 4b; EXAMPLE-BUILD = PENDING-RUNTIME, no JDK)
+RUNNABLE EXAMPLE SPEC (seeded Step 4b; EXAMPLE-BUILD GREEN — built at JDK 21.0.11, see _EXAMPLE.md)
 - Module: 08-companion-code/05_java_quality_toolchain/ — a small Maven module wiring the staple stack into ONE build (spotless + checkstyle + pmd + spotbugs + error_prone + jacoco), each producing one representative finding. THIS IS THE SEED OF THE COMPANION REFERENCE PROJECT reused by Ch 46 (capstone) — build once, reuse.
 - File list: pom.xml (the layered plugin config — tag-regions per tool); src/main/java/.../Sample.java (one deliberate finding per tool); src/test/java/.../SampleTest.java.
 - Run command: ./mvnw -B verify
 - Expected output: each tool reports its representative finding; after fixes, BUILD SUCCESS.
-- BUILD STATUS: PENDING-RUNTIME — install JDK 21 to run. (Flag to example-builder: this is the reusable base, not a throwaway.)
+- BUILD STATUS: GREEN — built at JDK 21.0.11 / Maven 3.9.16, `mvn -B -Pquality verify` SUCCESS (4 tests pass, 0 Checkstyle, 0 SpotBugs, JaCoCo report written; see _EXAMPLE.md). This is the reusable reference-project base, not a throwaway.
 
 FIGURE PLAN (Step 9)
 - Fig 05.1 (THE chapter figure) — the lifecycle map: IDE → compile → build → pre-commit → PR/CI → platform → production, each tool category placed at its moment, arrows = feedback latency. Reused as the book's reference figure. Trace each placement to tool docs.

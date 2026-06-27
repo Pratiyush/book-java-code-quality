@@ -2,9 +2,9 @@
 Dossier key: 01 (owner) + folds 02, 59 — per 01-index/FINAL_INDEX.md Ch 1
 Slug: 01_what_is_code_quality
 Part / arc position: Part I — Foundations, Chapter 1
-Companion module: 08-companion-code/01_what_is_code_quality/ — ⚠ EXAMPLE-BUILD = PENDING-RUNTIME (no JDK installed; FLOOR C compile clause deferred per repro-proofer toolchain-gating). Spec below.
-Verified against SOURCE-PIN: 2026-06-20 (ISO/IEC 25010:2023; Fowler; Clean Code; Cunningham; SQALE/SonarQube; CISQ 2022; DORA 2025). Atom re-trace at draft = done against the pinned rows.
-DRAFT v1 — gates run as documented manual passes (cheaper mode); EXAMPLE-BUILD pending JDK.
+Companion module: EXAMPLE-BUILD = N/A (pure-concept chapter; no companion module — adjudicated in 01_what_is_code_quality_EXAMPLE.md; FLOOR-C compile clause inapplicable, no displayed code to source-trace as a build). The trailing RUNNABLE-EXAMPLE-SPEC is a withdrawn proposal, retained for provenance only.
+Verified against SOURCE-PIN: 2026-06-27 (corrected pin; ISO/IEC 25010:2023; Fowler; Clean Code; Cunningham; SQALE/SonarQube; CISQ 2022; DORA 2025). Atom re-trace at draft = done against the pinned rows. Named-book verbatims (Fowler/Clean Code/Cunningham) + the CISQ statistic stay ⚠ verify-at-pin per 09-flags/01_named_canon_verbatims_and_cisq_stat_verify_at_pin.md.
+DRAFT v1 — gates run as documented manual passes (cheaper mode); EXAMPLE-BUILD = N/A (no toolchain dependency).
 -->
 
 # Quality Is a Word You Can't Manage
@@ -143,7 +143,7 @@ The intuition behind "skip quality to ship faster" is contradicted by the strong
 
 The mechanism is exactly the one from §Why internal quality has negative cost: high internal quality is what *lets* a team move fast without breaking things. So "skip quality to go faster" buys a brief speed-up and sells the team's future velocity — the opposite of the stated goal.
 
-> **Trace it back.** Every load-bearing fact above resolves to a pinned source in `00-strategy/SOURCE-PIN.md`: ISO/IEC 25010:2023; Fowler's *Is High Quality Software Worth the Cost?*; *Clean Code* (2008); Cunningham's debt metaphor; SonarQube's SQALE docs; the CISQ 2022 report; and the 2025 DORA report. (This book carries no companion build for this concept chapter yet — see the example spec — so the do-and-verify beat points to the sources, not a `./mvnw` run.)
+> **Trace it back.** Every load-bearing fact above resolves to a pinned source in `00-strategy/SOURCE-PIN.md`: ISO/IEC 25010:2023; Fowler's *Is High Quality Software Worth the Cost?*; *Clean Code* (2008); Cunningham's debt metaphor; SonarQube's SQALE docs; the CISQ 2022 report; and the 2025 DORA report. (This book carries no companion build for this concept chapter — EXAMPLE-BUILD is N/A, the chapter shows no code — so the do-and-verify beat points to the sources, not a `./mvnw` run.)
 
 ## Deep dive
 
@@ -244,13 +244,13 @@ Once quality can be named, the next temptation is to measure it — so why do mo
 ---
 
 <!--
-RUNNABLE EXAMPLE SPEC (seeds Step 4b; EXAMPLE-BUILD = PENDING-RUNTIME, no JDK)
+RUNNABLE EXAMPLE SPEC — WITHDRAWN (EXAMPLE-BUILD = N/A (pure-concept chapter; no companion module); retained for provenance only)
 - Module: 08-companion-code/01_what_is_code_quality/ — a tiny Maven module (pin: java.* tool versions per SOURCE-PIN; JDK 21).
 - Demo: the same small function written two ways — crufty (deep nesting, opaque names) vs clean — with a Cognitive Complexity reading on each (forward-ref Ch 2/3), illustrating "internal quality is invisible to users, visible to a tool."
 - File list: pom.xml; src/main/java/.../OrderDiscount.java (two methods, tag-regions `crufty` + `clean`); src/test/java/.../OrderDiscountTest.java (asserts identical behaviour — same external quality, different internal quality).
 - Run command: ./mvnw -B verify
 - Expected output: BUILD SUCCESS; test green (both implementations behave identically); (later) a complexity report showing the gap.
-- BUILD STATUS: PENDING-RUNTIME — install JDK 21 to run ./mvnw -B verify and lift FLOOR C.
+- BUILD STATUS: EXAMPLE-BUILD = N/A (pure-concept chapter; no companion module). The chapter body displays no Java code (no `java` fence, no `<!-- include: -->` marker), so there is no module to build and FLOOR C's compile clause is inapplicable — adjudicated N/A in 01_what_is_code_quality_EXAMPLE.md. The OrderDiscount demo above is a withdrawn proposal, not a built module.
 
 FIGURE PLAN (Step 9)
 - Fig 01.1 — ISO/IEC 25010:2023 product model (9 characteristics) with Maintainability's 5 sub-characteristics highlighted as "this book's territory." HTML→PNG; trace labels to the pinned ISO edition.
