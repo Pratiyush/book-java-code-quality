@@ -2434,3 +2434,27 @@ SpotBugs. Six tag-includes resolve (4 config, 2 Java), all 6 markers PASS in `ch
   quote per named source) — today only the ≤9-line *code* snippet ceiling is scripted.
 - **`check_source_pin.sh` needs `CLAUDE_JOB_DIR` set or it dies with `unbound variable` (set -u).** Ran it as
   `CLAUDE_JOB_DIR="$PWD" bash …`. Minor hardening: default `CLAUDE_JOB_DIR` to the repo root in the script.
+
+## 2026-06-27 — VERIFY marker-resolution, ch 25 / key 53 (SOLID, coupling, packages)
+
+- **A named-design-canon chapter needs its own `09-flags` entry even when every reader-visible fact is
+  primary- or build-confirmed.** Key 53 leans on Martin (SOLID, SDP/SAP, main sequence), North (CUPID),
+  Liskov/Wing (LSP), Constantine/Yourdon (coupling/cohesion) — none of which are SOURCE-PIN §7 pinned rows.
+  The atomic *structures* all build green and the *Instability formula* is runnable-confirmed, but the
+  named *verbatims/attributions* are unconfirmable in-repo. Filed
+  `09-flags/53_solid_canon_verbatims_and_tool_defaults_verify_at_pin.md`, modeled on the key-91 precedent.
+  Suggest SOURCE-PIN §7 grow rows for Martin (*Clean Architecture* / *Agile PPP*) and *Structured Design*
+  if the design-principles chapters keep citing them as authority.
+- **Build-status drift lives in MORE than one place.** The back-matter "Companion module (BUILT …)" line was
+  already correct, but two front-matter dossier-comment strings still said `EXAMPLE-BUILD = PENDING`. A
+  marker-resolution pass must grep the whole file for PENDING/BUILT, not just the back-matter spec.
+- **Figure cross-refs drift independently of prose and must be re-verified against FINAL_INDEX.** fig53_1.html
+  said "(Ch 15)" for records/sealed/patterns where the prose + FINAL_INDEX say Chapter 5; the figure
+  `.sources.md` had self-noted the discrepancy but it was never fixed. Corrected the HTML; the PNG still needs
+  a re-render. Suggest a `check_crossrefs.sh` extension that diffs figure-HTML chapter refs against the draft
+  prose + FINAL_INDEX so a stale figure raster cannot pass unnoticed.
+- **The source-pin scripts assume the single-repo (Quarkus-kernel) clone model and do not validate this book's
+  multi-authority pin.** `check_source_pin.sh` needs `CLAUDE_JOB_DIR` and looks for one tag/clone path; it
+  hard-fails ("ABSENT") for a multi-authority `SOURCE-PIN.md`. Verification ran as a manual procedure (pin
+  rows read directly from `SOURCE-PIN.md`; runnable atoms confirmed against the green build artifacts under
+  `target/`). Suggest a multi-authority-aware mode for these scripts.
