@@ -2528,3 +2528,32 @@ SpotBugs. Six tag-includes resolve (4 config, 2 Java), all 6 markers PASS in `ch
   "no Sources section" on the house back-matter convention `**Sources and further reading**` (bold under
   `## Back matter`) because it greps for a `#` heading — it should recognize the bold back-matter Sources
   block. Both recorded in the chapter flag.
+
+---
+
+## ORIGINALITY-SCAN dry-run (book-wide, 2026-06-27) — broad-web regurgitation gate (Step 5b)
+
+Independent (non-Opus) scanner ran a pre-assembly DRY-RUN of the broad-web regurgitation gate over
+all 47 `03-drafts/*/*_v1.md`. Report: `06-assembly/ORIGINALITY-REPORT.md` (must re-run on the
+assembled manuscript at Step 15). **Verdict: PASS — 0 broad-web verbatim/near-verbatim hits.**
+
+Learnings:
+1. **The drafter's pre-declared "verbatim"/attribution flagging keeps the regurgitation surface
+   near-zero.** Named-canon quotes (Fowler, Vocke/Cohn, Strathern, Clean Code, Cunningham, JDK
+   Javadoc, Checker manual) are all attributed in-text and web-confirmed as genuine — fair-use
+   quotes, not lifts. Vivid hooks/one-liners are original framing of shared ideas (convergent), not
+   reproductions. Promote pre-declaration as a VOICE/LEGAL practice note.
+2. **The real residual is LEGAL-IP §2 quote-density, NOT plagiarism.** Several *attributed* quotes
+   stack (>1 per source per chapter) or exceed the 15-word prose ceiling (Ch01: Fowler ×3 + a
+   ~45-word Cunningham block quote + ~35-word Clean Code quote; Ch41: Vocke ×6; Ch11: Javadoc +
+   Checker manual). Suggest a `lint_citations.sh` check flagging (a) >15-word in-text quoted spans
+   and (b) >1 quoted span per named source per chapter — catch it mechanically before AUDIT/ORIGINALITY.
+3. **Convergent technical teaching-devices are a false-positive trap** (e.g. "100% coverage, flip
+   >= to >, suite stays green"; "interface-for-every-class over-abstraction"). Treat as CONVERGENT
+   by default; only escalate on a long exact-string match.
+4. **Web-honesty paid off:** Ch97's attributed near-quote "cannot be fully fixed by prompt-tweaking
+   or post-hoc checking" could NOT be confirmed on the web → recorded as UNCONFIRMED and handed to
+   VERIFY, never asserted as an external match or given an invented URL.
+5. **Re-run obligation:** this DRY-RUN is on `_v1` drafts; the HARD Step-15 scan must run on the
+   assembled `06-assembly/` text (folds/splices may introduce new spans + cross-chapter quote dup =
+   RECONCILE's lane).
