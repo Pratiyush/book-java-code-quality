@@ -2,9 +2,9 @@
 Dossier key: 08 (owner) + folds 13 — per 01-index/FINAL_INDEX.md Ch 5
 Slug: 08_effective_java
 Part / arc position: Part II — Writing Quality Java, Chapter 5 (opens Part II)
-Companion module: 08-companion-code/08_effective_java/ — ⚠ EXAMPLE-BUILD = PENDING-RUNTIME (no JDK). Spec at foot.
-Verified against SOURCE-PIN: 2026-06-20 (Effective Java 3e, 2018; JLS/JEPs for records/sealed/pattern-matching/text-blocks/virtual-threads/var — JEP numbers carried verify-at-pin per dossier 13). ⚠ AHEAD-OF-PIN: structured concurrency / value classes are preview/exploratory — never asserted stable.
-DRAFT v1 — gates manual; canon-dating shape; EXAMPLE-BUILD pending JDK.
+Companion module: 08-companion-code/08_effective_java/ — EXAMPLE-BUILD = GREEN at JDK 21.0.11 / Maven 3.9.16 (2026-06-26; 7 tests, 0 Checkstyle, 0 SpotBugs — see 08_effective_java_EXAMPLE.md). Spec at foot.
+Verified against SOURCE-PIN: 2026-06-27 (Effective Java 3e, 2018; JEPs for records/sealed/pattern-matching/text-blocks/virtual-threads/var confirmed — see dossier 13 VERIFY + the green build). ⚠ AHEAD-OF-PIN: structured concurrency / value classes are preview/exploratory — never asserted stable.
+DRAFT v1 — gates manual; canon-dating shape; EXAMPLE-BUILD GREEN.
 -->
 
 # The Canon, Dated
@@ -68,7 +68,7 @@ These are not in dispute. What has changed is *how to satisfy them* in modern Ja
 
 Each principle gets a three-step treatment reused for every "canon" chapter (Fowler, Feathers, SOLID): state the rule, cite the **primary source** (a JEP or the JLS) that changed the terrain, and give a verdict: *Stands*, *Served by a feature*, or *Reinforced-and-dated*.
 
-| Effective Java principle | Modern Java feature (verify JEP/version @ pin) | Verdict |
+| Effective Java principle | Modern Java feature (JEP/version @ pin) | Verdict |
 |---|---|---|
 | Minimize mutability; immutable value classes | **Records** (JEP 395, final Java 16) | **Served by a feature** — a transparent immutable data carrier is one line; hand-write when invariants/validation are required |
 | Obey `equals`/`hashCode`/`toString` | Records generate all three from the components | **Served** for data carriers; **Stands** for classes with identity or custom equality |
@@ -95,9 +95,9 @@ The modern features above are the quality story of Java 21/25, and they earn the
 - **Text blocks** — multi-line strings (SQL, JSON) that read as themselves.
 - **`var`** — local type inference that cuts redundant noise (used judiciously; Chapter 2's caveat).
 
-*(Every JEP number and since-version here is carried `verify-at-pin` against the pinned JDK docs; Chapter 13 confirms each; preview/exploratory features are flagged AHEAD-OF-PIN below.)*
+*(Every JEP number and since-version here is confirmed against the pinned JDK (dossier 13 VERIFY checked them against the JEP head tables; the companion module compiles each idiom green on JDK 21.0.11); preview/exploratory features are flagged AHEAD-OF-PIN below.)*
 
-> **Trace it back.** Principles cite *Effective Java* 3e; each "changed the terrain" claim cites the JEP/JLS that introduced the feature (pinned @ JDK 21.0.11 / 25.0.3). Where a feature is preview at 25 (structured concurrency) or exploratory (Valhalla value classes), it is marked AHEAD-OF-PIN and never presented as a stable replacement. Concept chapter; the companion build is PENDING-RUNTIME.
+> **Trace it back.** Principles cite *Effective Java* 3e; each "changed the terrain" claim cites the JEP/JLS that introduced the feature (pinned @ JDK 21.0.11 / 25.0.3). Where a feature is preview at 25 (structured concurrency) or exploratory (Valhalla value classes), it is marked AHEAD-OF-PIN and never presented as a stable replacement. The companion module builds green on JDK 21.0.11.
 
 ## Deep dive
 
@@ -158,9 +158,9 @@ The canon, read forward, points at a cluster of related craft: immutability and 
 - *Compact constructor* — a record constructor that validates/normalizes components.
 - *Canon-dating* — citing an older source through the lens of the current platform.
 
-**Reference (traced to the pin; JEP numbers verify @ pinned JDK)**
+**Reference (traced to the pin; JEP numbers confirmed @ pinned JDK)**
 
-- Records JEP 395 (Java 16); sealed types JEP 409 (Java 17); pattern matching for switch JEP 441 (Java 21); text blocks JEP 378 (Java 15); `var` JEP 286 (Java 10); virtual threads JEP 444 (Java 21). Structured concurrency = preview (AHEAD-OF-PIN). *(Each confirmed in Chapter 13 against JDK 21.0.11/25.0.3.)*
+- Records JEP 395 (Java 16); sealed types JEP 409 (Java 17); pattern matching for switch JEP 441 (Java 21); record patterns JEP 440 (Java 21); text blocks JEP 378 (Java 15); `var` JEP 286 (Java 10); virtual threads JEP 444 (Java 21). Structured concurrency = preview (AHEAD-OF-PIN). *(Confirmed against the JEP head tables in dossier 13's VERIFY and by the companion module's green build on JDK 21.0.11.)*
 
 **Sources and further reading**
 

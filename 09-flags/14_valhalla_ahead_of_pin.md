@@ -28,3 +28,10 @@ accurately-noted horizon, not raw-marked. The draft carries it in two places, bo
 flag and the SOURCE-PIN moving-target policy: the in-prose `> **AHEAD-OF-PIN**` callout in
 "Limitations & when NOT to reach for it" (frames it as direction, never as shipped), and the
 back-matter "AHEAD-OF-PIN" sources row. No reified-generics claim is asserted as fact.
+
+## Update — 2026-06-27 (also applies to key 101 "Measure, Don't Guess")
+Chapter 101 references Valhalla **value types** (the *allocation* implications, not generics) as a
+reason allocation cost is unpredictable. Re-confirmed AHEAD-OF-PIN: value types/value classes ship in
+neither LTS at the pin. The draft keeps "value types remain AHEAD-OF-PIN and are not asserted here"
+in the memory-hygiene section, the "Value types are AHEAD-OF-PIN" limitation bullet, and the
+back-matter rows — all correct, all kept marked. No value-type allocation behavior is asserted as fact.
