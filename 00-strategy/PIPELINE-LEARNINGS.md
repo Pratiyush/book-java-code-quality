@@ -2504,3 +2504,27 @@ SpotBugs. Six tag-includes resolve (4 config, 2 Java), all 6 markers PASS in `ch
   genuinely stay deferred (GitHub Actions syntax = rolling SaaS dated-at-use; DORA/Sonar product wording routed
   to other chapters). Resolve the confirmed half to fact and keep the deferred half marked, rather than clearing
   or keeping the whole line. The body must not assert the SaaS/other-chapter atoms as settled.
+
+## VERIFY / deferred-marker resolution — key 06 (quality culture & ownership), 2026-06-27
+
+- **A "deferred-marker resolution" task can have zero literal markers in the draft.** Ch 06 (a
+  pure-concept culture chapter, no companion module) carried no `@pin`/`AHEAD-OF-PIN`/`UNVERIFIED`/
+  `PENDING-RUNTIME` strings — they lived in the dossier §7 verification queue. The right move is to (a)
+  confirm there is genuinely nothing to remove, (b) reconcile any stale front-matter pin date / build-claim
+  string to the corrected pin, and (c) **create the 09-flags entry the queue implies** so the named-source
+  verbatims are not silently treated as clone-verified. No key-06 flag existed before; one was created
+  (`09-flags/06_culture_named_source_verbatims_verify_at_pin.md`).
+- **Culture-chapter verbatims are the classic `⚠ verify-at-pin` shape under a multi-authority pin.** DORA is
+  web-hosted (no clone) and the named books (Westrum/Accelerate, Smith/Dr. Dobb's, Martin, Hunt & Thomas,
+  Vogels) are §7 canon cited under fair use, not fetched — so quoted spans and attributions cannot be diffed
+  character-for-character at VERIFY. They stay attributed-and-flagged, never promoted to fact. This mirrors the
+  key-85 / key-110 DORA treatment; the three flags should cross-reference (done).
+- **The draft correctly asserts NO numeric DORA band/statistic** (qualitative "associated with"/"predictive
+  of" only) — the standing key-85 DORA-bands guard held in an upstream Part-I chapter. Worth confirming this
+  qualitative-only discipline as the house pattern for every culture/metrics chapter.
+- **Two tooling gaps surfaced (no battle-test claim made):** (1) `verify_sources.sh` assumes a single pinned
+  clone and reports "clone absent" under the deliberate multi-authority/no-clone model — it must learn the
+  multi-authority case or be skipped-with-reason (never counted as a pass). (2) `lint_citations.sh` false-fails
+  "no Sources section" on the house back-matter convention `**Sources and further reading**` (bold under
+  `## Back matter`) because it greps for a `#` heading — it should recognize the bold back-matter Sources
+  block. Both recorded in the chapter flag.

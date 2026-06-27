@@ -3,8 +3,8 @@ Dossier key: 06 (owner) + folds 90 — per 01-index/FINAL_INDEX.md Ch 4
 Slug: 06_quality_culture_ownership
 Part / arc position: Part I — Foundations, Chapter 4 (closes Part I)
 Companion module: none (culture/process chapter) — carries artifacts (sample CODEOWNERS, team quality charter) verified for internal consistency, not compiled. No FLOOR-C compile clause.
-Verified against SOURCE-PIN: 2026-06-20 (Westrum; DORA 2025; Smith 2001 shift-left; Deming; Fowler CodeOwnership; Boy Scout Rule; bus/truck factor).
-DRAFT v1 — gates manual; no companion build (process chapter).
+Verified against SOURCE-PIN: 2026-06-27 (corrected pin) — atoms re-confirmed at VERIFY. The named-source culture atoms (Westrum 1988; DORA 2025 generative-culture + psychological-safety findings; Smith 2001 "shift-left"; Deming; Fowler CodeOwnership; Boy Scout Rule; Broken Windows; Vogels "you build it, you run it"; bus/truck factor) trace to SOURCE-PIN §5/§7 canon but cannot be diffed character-for-character against a pinned clone (DORA web-hosted, named books not fetched) — they remain attributed-and-flagged (⚠ verify-at-pin), never asserted as clone-verified fact. See 09-flags/06_culture_named_source_verbatims_verify_at_pin.md.
+DRAFT v1 — gates manual; EXAMPLE-BUILD = N/A (culture/process chapter; no companion module).
 -->
 
 # Whose Job Is Quality?
@@ -98,7 +98,7 @@ Generative culture is the substrate; the lever a lead actually pulls is **fricti
 - **Automate the boring parts.** Pre-commit hooks and local↔CI parity (Chapter 35) make quality automatic, not heroic; a shared formatter means style is never argued (Chapter 6).
 - **Reward asking.** Psychological safety (the generative hallmark) lets people admit a gap, ask a question, and surface a problem early. That is how knowledge actually spreads.
 
-> **Trace it back.** The claims above resolve to pinned sources in `SOURCE-PIN.md`: Westrum's typology and the DORA generative-culture + psychological-safety findings; Deming; Smith's 2001 "shift-left"; Fowler's ownership models; the Boy Scout Rule; bus/truck-factor research. This is a process chapter with no companion build. The do-and-verify beat is to read the DORA generative-culture capability page and map the team onto Westrum's three types.
+> **Trace it back.** The claims above are attributed to the pinned canon in `SOURCE-PIN.md` (§5/§7): Westrum's typology and the DORA generative-culture + psychological-safety findings; Deming; Smith's 2001 "shift-left"; Fowler's ownership models; the Boy Scout Rule; bus/truck-factor research. These are named-source attributions whose exact wording and edition are confirmed at `/pin-source`, not against a fetched clone (DORA is web-hosted; the named books are cited, not redistributed) — so the chapter attributes them and crowns nothing. This is a process chapter with no companion build. The do-and-verify beat is to read the DORA generative-culture capability page and map the team onto Westrum's three types.
 
 ## Deep dive
 

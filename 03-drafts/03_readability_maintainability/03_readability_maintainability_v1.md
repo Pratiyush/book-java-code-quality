@@ -103,7 +103,7 @@ The antidotes, which recur throughout this book:
 - **Prefer trends over absolutes.** A maintainability rating's *direction over time on new code* (Chapter 34's "clean as you code") is more honest than a whole-repo absolute that mixes legacy with new.
 - **Treat a metric as a question, not a verdict.** A spike in coupling is a prompt to look, not a failure to punish, and never a stick to rank individuals (Chapter 38).
 
-> **Trace it back.** Facts above resolve to pinned sources in `SOURCE-PIN.md`: *Clean Code* (read:write ratio); McCabe 1976 and SonarSource's Cognitive Complexity white paper (the two complexity metrics, `java:S3776`); the CK suite and Martin's package metrics; Goodhart (Strathern); DORA/SPACE. (Concept chapter — the companion build is PENDING-RUNTIME; the do-and-verify beat points to the sources.)
+> **Trace it back.** Facts above resolve to pinned sources in `SOURCE-PIN.md`: *Clean Code* (read:write ratio); McCabe 1976 and SonarSource's Cognitive Complexity white paper (the two complexity metrics, `java:S3776`); the CK suite and Martin's package metrics; Goodhart (Strathern); DORA/SPACE. (The companion module is built green — `mvn -B -Pquality verify` on JDK 21.0.11; the three discount-rule forms below are the do-and-verify beat.)
 
 ## Deep dive
 
@@ -212,13 +212,13 @@ If readable code is the goal, where do the moves that produce it come from — a
 ---
 
 <!--
-RUNNABLE EXAMPLE SPEC (seeds Step 4b; EXAMPLE-BUILD = PENDING-RUNTIME, no JDK)
+RUNNABLE EXAMPLE SPEC (seeds Step 4b; EXAMPLE-BUILD = GREEN — see _EXAMPLE.md)
 - Module: 08-companion-code/03_readability_maintainability/ (pin per SOURCE-PIN; JDK 21).
 - Demo: one method in three forms — deeply nested (high cognitive complexity), over-fragmented (School-A extreme), and balanced — each with its Cognitive Complexity score (java:S3776), plus a Goodhart demo: split a method to lower per-method complexity while raising coupling.
 - File list: pom.xml; src/main/java/.../PricingRules.java (tag-regions: nested / fragmented / balanced); src/test/java/.../PricingRulesTest.java (identical behaviour across forms).
 - Run command: ./mvnw -B verify  (+ a sonar/complexity report)
 - Expected output: BUILD SUCCESS; tests green; complexity report showing cognitive scores differ while behaviour is identical.
-- BUILD STATUS: PENDING-RUNTIME — install JDK 21 to run.
+- BUILD STATUS: GREEN — `mvn -B -Pquality -f 08-companion-code/03_readability_maintainability/pom.xml clean verify` on JDK 21.0.11 / Maven 3.9.16: BUILD SUCCESS, Tests run: 43 (0 failures), 0 Checkstyle violations, 0 SpotBugs findings (see _EXAMPLE.md).
 
 FIGURE PLAN (Step 9)
 - Fig 03.1 — cyclomatic vs cognitive on the same code: two snippets, same paths, different nesting → equal cyclomatic, very different cognitive. Trace to SonarSource white paper.
