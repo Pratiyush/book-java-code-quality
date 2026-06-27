@@ -34,6 +34,25 @@ not in the local Maven cache; the recipe **run** is network-gated → REPRO PEND
 4. **Refaster** `@BeforeTemplate` / `@AfterTemplate` and Error Prone integration (key 94 prose) — attested
    by the dossier (live-line), verify-at-pin; not used in the buildable module (prose-only).
 
+5. **The "Lossless Semantic Tree (LST)" mechanism claim** (key 94 prose; draft "How it works" §"The engine"
+   and back-matter) — that OpenRewrite parses code into an LST where every node carries full type information
+   and original formatting, so a transform finds *every* genuine reference (incl. implicit/aliased imports)
+   without text-search false positives and preserves formatting, plus the composite-recipe behavior
+   (`UpgradeToJava25 ⊇ UpgradeToJava21`). Attested by dossier 94 (`docs.openrewrite.org`, live-line);
+   verify-at-pin against `docs.openrewrite.org` at the 8.81.0 line. It is the chapter's central engine claim,
+   illustrated (not proven) by the module's behavior-preserving before/after pair, which IS runnable-confirmed
+   by the green build (the `List.of` modernization is equivalent and test-asserted) — but the LST *property*
+   itself is an OpenRewrite-documented claim, not something the offline module demonstrates.
+
+6. **The "big-bang rewrites (almost always) fail" claim and its attribution to Fowler / Spolsky** (keys 96+94
+   prose; draft Hook, Overview, Deep dive, Limitations, and both back-matter rows) — used as an *attributed*
+   technique/opinion, explicitly **not** asserted as a universal law, and the motivation cited for the
+   strangler-fig default. The attribution wording/source (Fowler's strangler-fig motivation; Spolsky's
+   "Things You Should Never Do" essay) is a named-source claim whose exact wording/attribution is
+   verify-at-pin; Spolsky's essay is **not** one of the six pinned `SOURCE-PIN.md §7` book rows (a canon gap,
+   as with the Fowler StranglerFig bliki tracked in flag 91). Presented neutrally per `NEUTRALITY.md` and
+   `LEGAL-IP §5` (attributed, paraphrased in the locked voice, not reproduced verbatim).
+
 ## Why this is safe to ship as-is
 
 - The companion module **builds green offline** (`mvn -B -Pquality verify`): the recipe **config**, the
@@ -50,3 +69,10 @@ Re-trace the recipe ID (`org.openrewrite.java.migrate.UpgradeToJava21`) and the 
 or the compatible recipe-module version differs at the pin, update `config/rewrite/rewrite.yml` and the
 `rewrite` profile in `pom.xml`, then re-confirm `mvn -Prewrite rewrite:dryRun` resolves (clears the REPRO
 PENDING-RUNTIME caveat). Reserve `☑ @pin` for post-fetch verification.
+
+For atoms 5–6: confirm the **LST mechanism** wording (type-info per node, formatting preservation,
+finds-every-reference, composite `25 ⊇ 21`) against `docs.openrewrite.org` at the 8.81.0 line; and confirm
+the **"big-bang rewrites fail" attribution** (Fowler strangler-fig motivation + Spolsky "Things You Should
+Never Do") against the pinned editions out-of-band, or promote Spolsky's essay to a `SOURCE-PIN.md §7` row to
+close the canon gap. Until then atoms 5–6 stay `⚠ verify-at-pin`; both remain attributed-and-paraphrased
+(never verbatim) in the draft, so no unverifiable text is asserted as fact.
