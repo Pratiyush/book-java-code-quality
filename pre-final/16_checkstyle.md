@@ -23,19 +23,19 @@ That is the organizing fact of this chapter, and the reason teams run several an
 
 **What this chapter does NOT cover.** The cross-tool "which to run / how to layer them without redundancy" verdict (Chapter 17: SonarQube, IDE inspections, and the layered stack). Custom rule authoring (Chapter 18). False-positive *policy*, including baselines, ratcheting, and what breaks the build (Chapter 19). The deep SAST treatment of FindSecBugs versus other security scanners (the security part). The concurrency slice of these tools (Chapters 13–14). Each tool here is cited to its own docs; no tool is crowned.
 
-**One idea to carry forward:** *a tool can only catch what its vantage point lets it see* — so the four are complementary by construction, and the question is never "which one" but "what does each add."
+**One idea to carry forward:** *a tool can only catch what its vantage point lets it see*. The four are complementary by construction, and the question is never "which one" but "what does each add."
 
 ## How it works
 
 The whole chapter hangs on one axis: the moment in the build at which each tool reads the program. Figure 16.1 places the four analyzers on that axis, from source text through the type-attributed tree inside the compiler to the emitted bytecode, and names the distinctive reach each position grants.
 
-![Figure 16.1 — The detection-time axis: where each analyzer reads the program — Four tools, four vantage points — where a tool stands determines what it can see](figures/fig27_1.png)
+![Figure 16.1: the detection-time axis, placing four analyzers from source text to bytecode and naming the distinctive reach each position grants](figures/fig27_1.png)
 
-*Figure 16.1 — The detection-time axis: where each analyzer reads the program — Four tools, four vantage points — where a tool stands determines what it can see*
+*Figure 16.1 — The detection-time axis: where each analyzer reads the program, and the distinctive reach each vantage point grants.*
 
 ### The organizing axis: where each tool stands
 
-Every finding in the hook traces to *where* the tool reads the program. This is the spine of the chapter:
+Every finding in the hook traces to *where* the tool reads the program:
 
 | Tool | Reads | When | Has types? | Distinctive reach | Characteristic blind spot |
 |---|---|---|---|---|---|
@@ -50,7 +50,7 @@ Every finding in the hook traces to *where* the tool reads the program. This is 
 
 Checkstyle is, in its own words, "a development tool to help programmers write Java code that adheres to a coding standard … to spare humans of this boring (but important) task." It parses each source file to an AST and runs `Check` modules over it. Its niche is the **style/convention layer** (naming, layout, import hygiene, Javadoc presence, and size limits): the conventions a team agrees once and stops re-litigating in review.
 
-The configuration is a fixed hierarchy: a root `Checker` module holds project-wide properties and a `TreeWalker` that builds the AST and dispatches to `Check` submodules (`LineLength`, `ConstantName`, `JavadocMethod`, …). Every violation carries a **severity** (`error` by default, `warning`, `info`, or `ignore`) that decides whether it breaks the build. Checkstyle ships ready-made configs (`google_checks.xml`, `sun_checks.xml`, `openjdk_checks.xml`, `doc_comments_checks.xml`), and its naming family already covers modern Java (`RecordComponentName`, `PatternVariableName`).
+The configuration is a fixed hierarchy: a root `Checker` module holds project-wide properties and a `TreeWalker` that builds the AST and dispatches to `Check` submodules (`LineLength`, `ConstantName`, `JavadocMethod`, …). Every violation carries a **severity** (`error` by default, `warning`, `info`, or `ignore`) that decides whether it breaks the build. Checkstyle ships ready-made configs (`google_checks.xml` and `sun_checks.xml` are bundled in the engine this module runs), and its naming family already covers modern Java (`RecordComponentName`, `PatternVariableName`).
 
 The companion module builds to a small, curated house ruleset; its naming block, including those modern-Java surfaces, is one `TreeWalker` submodule list:
 
@@ -87,7 +87,7 @@ The filter layer is what keeps the gate credible. `SuppressWarningsFilter` lets 
   <module name="SuppressWarningsFilter"/>
 ```
 
-Its hard limit is stated in its own docs: "You have access to the content of one file only … You cannot determine the type of an expression … You cannot determine the full inheritance hierarchy of type." Checkstyle reasons about *style and local structure*, never types or whole-program facts, which is exactly why a style number like `LineLength`'s default `max=80` (the Google config sets 100) is a *cited choice*, never a universal truth. A Checkstyle-clean file is consistently formatted. It is not correct.
+Its hard limit is stated in its own docs: "You have access to the content of one file only … You cannot determine the type of an expression … You cannot determine the full inheritance hierarchy of type." Checkstyle reasons about *style and local structure*, never types or whole-program facts. That is exactly why a size limit is a *cited choice* and never a universal truth. A Checkstyle-clean file is consistently formatted. It is not correct.
 
 What `ConstantName` governs is a name, never a value: its default regex `^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$` accepts the `UPPER_SNAKE` shape, so the module's constants pass it.
 
@@ -121,7 +121,7 @@ Two honest seams: the **PMD 6→7 rewrite** changed the ruleset syntax and some 
 
 ### SpotBugs (+ FindSecBugs, fb-contrib) — bug patterns over bytecode
 
-SpotBugs "looks for instances of *bug patterns* — code instances that are likely to be errors," and its defining choice is *what it reads*: compiled `.class` **bytecode**, in a separate pass after `javac`. Because it analyzes what the compiler actually emitted, it catches defects invisible at the source level: an `equals()` comparing unrelated types (`EC_UNRELATED_TYPES`), an impossible cast (`BC_IMPOSSIBLE_CAST`), a `volatile++` that compiled to a non-atomic read-modify-write (`VO_VOLATILE_INCREMENT`), a null dereference on an exception path (`NP_NULL_ON_SOME_PATH`). It is also the tool that enforces several JDK contracts from Part II: `HE_EQUALS_USE_HASHCODE` (Chapter 8), `SE_NO_SERIALVERSIONID`, `EI_EXPOSE_REP` (defensive copying, Chapter 8). One folklore guard: SpotBugs is the maintained successor to the dead **FindBugs**; never cite FindBugs or `findbugs-maven-plugin` as current. The retained `edu.umd.cs.findbugs.*` package names are lineage, not life.
+SpotBugs "looks for instances of *bug patterns*" (code instances that are likely to be errors), and its defining choice is *what it reads*: compiled `.class` **bytecode**, in a separate pass after `javac`. Because it analyzes what the compiler actually emitted, it catches defects invisible at the source level: an `equals()` comparing unrelated types (`EC_UNRELATED_TYPES`), an impossible cast (`BC_IMPOSSIBLE_CAST`), a `volatile++` that compiled to a non-atomic read-modify-write (`VO_VOLATILE_INCREMENT`), a null dereference on an exception path (`NP_NULL_ON_SOME_PATH`). It is also the tool that enforces several JDK contracts from Part II: `HE_EQUALS_USE_HASHCODE` (Chapter 8), `SE_NO_SERIALVERSIONID`, `EI_EXPOSE_REP` (defensive copying, Chapter 8). One folklore guard: SpotBugs is the maintained successor to the dead **FindBugs**, so never cite FindBugs or `findbugs-maven-plugin` as current. The retained `edu.umd.cs.findbugs.*` package names are lineage, not life.
 
 Findings are organized into nine categories and a **bug rank 1–20** ("1 to 4 are scariest … 15 to 20 of concern"), so a team can gate on the scariest and triage the rest. Analysis depth is set by **effort** (`min`/`less`/`more`/`max`, default `more`). And SpotBugs is really **one engine with pluggable detector sets**: **FindSecBugs** adds 144 security patterns over 826 API signatures (SQL injection, weak crypto, `PREDICTABLE_RANDOM`, OWASP/CWE-tagged), and **fb-contrib** adds more correctness detectors. Both load into the same analysis pass, so they are SpotBugs *capabilities*, not rival tools.
 
@@ -145,9 +145,9 @@ Four tools, but one operational reality from Chapter 15: every one of them is an
 
 > **CONCEPT** *The two-pin trap.* A build plugin and the analyzer engine it runs are **two separate versions**. The Maven Checkstyle plugin 3.6.0 *bundles Checkstyle 9.3 by default*, so a config relying on a newer check silently mismatches unless the engine dependency is overridden. The same split applies to PMD, SpotBugs, and (as an external community plugin on a separate cadence) Error Prone's Gradle integration. Pin the *engine* and the *plugin* as two distinct versions, and override the bundled engine when a newer rule is required.
 
-**They overlap — and that is fine, until it is not.** The four catalogues intersect (empty catch, naming, unused code, some concurrency and null checks). Running all four un-coordinated produces duplicate findings and combined build-time cost. Whether and how to *layer* them (let the formatter own typography, pick one tool per overlapping concern, dedupe) is a real decision, but it is the *next* chapter's, made alongside SonarQube and IDE inspections. The overlap exists because the tools were built from different vantage points; the non-overlap is why teams run more than one.
+**They overlap, and that is fine until it is not.** The four catalogues intersect (empty catch, naming, unused code, some concurrency and null checks). Running all four un-coordinated produces duplicate findings and combined build-time cost. Whether and how to *layer* them (let the formatter own typography, pick one tool per overlapping concern, dedupe) is a real decision, but it is the *next* chapter's, made alongside SonarQube and IDE inspections. The overlap exists because the tools were built from different vantage points; the non-overlap is why teams run more than one.
 
-The unifying thread: these are not four contestants for one slot. They are four readers standing at four points in the build (source text, source AST with metrics, type-attributed AST in the compiler, emitted bytecode), and a quality pipeline composes the ones whose vantage points it needs.
+These are not four contestants for one slot. They are four readers standing at four points in the build (source text, source AST with metrics, type-attributed AST in the compiler, emitted bytecode), and a quality pipeline composes the ones whose vantage points it needs.
 
 ## Limitations & when NOT to reach for it
 
@@ -164,19 +164,19 @@ The unifying thread: these are not four contestants for one slot. They are four 
 - **A formatter** (Spotless / google-java-format, Chapter 6): for pure typography, a formatter that *rewrites* the source removes the find-and-fix loop that Checkstyle's layout rules impose — let the formatter own whitespace and disable the overlapping linter rules.
 - **SonarQube** (Chapter 17): a platform that can *host and aggregate* these analyzers' output (including SpotBugs) plus its own rules, with a server-side dashboard and quality gate — the aggregation layer above the individual tools.
 - **CodeQL / Semgrep** (the security part): whole-program taint-tracking SAST, for the injection-class bugs FindSecBugs approximates with signatures.
-- **IDE inspections** (Chapter 17): the same families of checks at *author time*, before the build — fastest feedback, but per-developer and not a gate.
+- **IDE inspections** (Chapter 17): the same families of checks at *author time*, before the build. Fastest feedback, but per-developer and not a gate.
 - **The compiler itself** (`javac -Xlint`): the zero-friction floor every project should enable before adding any of these.
 
 These layer rather than compete: the formatter owns typography, the four analyzers own their respective vantage points, SonarQube aggregates and gates, SAST owns injection, and the IDE shifts it all left — the composition is Chapter 17's subject.
 
 ## When to use what
 
-- **For style, naming, Javadoc, and convention enforcement:** Checkstyle (with a formatter owning pure typography) — encode the written standard once and gate it.
+- **For style, naming, Javadoc, and convention enforcement:** Checkstyle (with a formatter owning pure typography). Encode the written standard once and gate it.
 - **For a configurable rule catalogue + complexity metrics, and copy-paste detection:** PMD for the rules/metrics, CPD for duplication (Maven bundles it; Gradle needs the community plugin).
-- **For bytecode-visible bug patterns and a security on-ramp:** SpotBugs, adding FindSecBugs for security and fb-contrib once the core gate is clean — gate on the scariest ranks first.
+- **For bytecode-visible bug patterns and a security on-ramp:** SpotBugs, adding FindSecBugs for security and fb-contrib once the core gate is clean. Gate on the scariest ranks first.
 - **For type-aware, build-failing checks at the earliest moment, with automated fixes:** Error Prone (JDK 21+), using `-XepAllErrorsAsWarnings` and patch mode to adopt, and Refaster for codebase-specific rewrites.
 - **For every tool:** suppress with a reason (never disable the rule), pin the engine *and* the plugin, and ramp onto legacy code with filters/thresholds rather than enabling everything at once.
-- **Before adding a fourth tool for a concern three already cover:** do not — take the de-duplication decision to Chapter 17.
+- **Before adding a fourth tool for a concern three already cover:** do not. Take the de-duplication decision to Chapter 17.
 
 ## Hand-off to the next chapter
 

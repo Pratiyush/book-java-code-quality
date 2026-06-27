@@ -19,12 +19,12 @@ This chapter, the last in Part II, turns the whole part into a vocabulary. It ca
 - What a code smell *is* (a symptom, not a bug) and the **smell → refactoring → detecting-rule** triple that makes the catalogue operational.
 - The headline smells grouped (Bloaters, OO-abusers, Change-preventers, Dispensables, Couplers), each with Fowler's named refactoring and at least one detecting rule.
 - The Java idiom **anti-patterns** from *Effective Java* (telescoping constructor, raw types, finalizers) and their idiomatic fixes.
-- **Canon-dating the patterns:** which classic GoF patterns modern Java now serves with a language feature — and which still earn their keep.
-- The **contested core** (key 61): when a pattern helps and when "patternitis" hurts — presented two-schools, neither crowned.
+- **Canon-dating the patterns:** which classic GoF patterns modern Java now serves with a language feature, and which still earn their keep.
+- The **contested core** (key 61): when a pattern helps and when "patternitis" hurts, presented two-schools, neither crowned.
 
-**What this chapter does NOT cover.** The analyzer internals and how to tune their rulesets (Part IV — this chapter cites rule keys, those chapters configure them), the *automated* application of refactorings at scale (Chapter 39, OpenRewrite), SOLID and architectural design (Chapter 25), and the modern features themselves in depth (Chapter 5).
+**What this chapter does NOT cover.** The analyzer internals and how to tune their rulesets (Part IV — this chapter cites rule keys, those chapters configure them), the *automated* application of refactorings at scale (Chapter 40, OpenRewrite), SOLID and architectural design (Chapter 25), and the modern features themselves in depth (Chapter 5).
 
-**One idea to hold:** *a smell is a hint to investigate, never a verdict to obey — and the same is true of a design pattern: it is justified by the problem it solves, not by its name.*
+**One idea to hold:** *a smell is a hint to investigate, never a verdict to obey. The same is true of a design pattern: it is justified by the problem it solves, not by its name.*
 
 ## How it works
 
@@ -46,7 +46,7 @@ This maps directly onto the maintainability model from Chapter 1 (ISO/IEC 25010)
 
 What turns a vocabulary into a tool is that each named smell comes with two things: a **named refactoring** that resolves it (Fowler gives each a name and step-by-step mechanics) and, for many, a **static-analysis rule** that detects it. The chapter's organizing unit is that triple.
 
-> **CONCEPT** *The smell card.* For each entry: the **smell** (name attributed to Fowler), its **Java symptom**, the **refactoring** that fixes it (Fowler's catalogue name), the **detecting rule(s)** (cited to each tool), and **when it is a false positive**. The last field is not optional — it is what keeps the catalogue honest.
+> **CONCEPT** *The smell card.* For each entry: the **smell** (name attributed to Fowler), its **Java symptom**, the **refactoring** that fixes it (Fowler's catalogue name), the **detecting rule(s)** (cited to each tool), and **when it is a false positive**. The last field is not optional; it is what keeps the catalogue honest.
 
 Detection works one of three ways, and knowing which matters:
 
@@ -80,7 +80,7 @@ And the Java idiom anti-patterns, from *Effective Java*:
 | Mutable where immutable would do | Minimize mutability (Item 17) — Chapter 8 |
 | String standing in for a real type | Use the real type (Item 62) |
 
-Notice how much of this catalogue points back into Part II — the anti-pattern fixes *are* the earlier chapters. That is deliberate: this chapter reads the part back as a set of recognizable shapes.
+Notice how much of this catalogue points back into Part II: the anti-pattern fixes *are* the earlier chapters. That is deliberate: this chapter reads the part back as a set of recognizable shapes.
 
 ### Canon-dating the patterns
 
@@ -174,7 +174,7 @@ A behaviour-preservation test in the module proves the refactored service return
 
 ## Alternatives & adjacent approaches
 
-- **Automated remediation (OpenRewrite):** beyond *flagging* a smell, recipes like `common-static-analysis` *apply* the refactoring across a whole codebase, bridging this catalogue to large-scale modernization (Chapter 39). It hands the smell→recipe map to the automation.
+- **Automated remediation (OpenRewrite):** beyond *flagging* a smell, recipes like `common-static-analysis` *apply* the refactoring across a whole codebase, bridging this catalogue to large-scale modernization (Chapters 39–40). It hands the smell→recipe map to the automation.
 - **IDE refactorings:** IntelliJ and Eclipse implement most of Fowler's catalogue as safe, mechanical transforms: the lowest-friction way to apply a single refactoring with the test net the IDE preserves.
 - **Architecture fitness functions** (Chapter 26): for design-level smells a linter cannot see (layering violations, cyclic dependencies), an ArchUnit test encodes the rule structurally.
 - **Code review** (Chapter 4): the only reliable detector for the judgment-only smells and for misapplied patterns. It is the human layer the tools cannot replace.
@@ -188,7 +188,7 @@ These layer rather than compete: the metric and bug-overlap smells go to the lin
 - **For judgment smells (Feature Envy, premature abstraction, misapplied patterns):** rely on review; use the names to make feedback concrete.
 - **Before refactoring:** ensure a test safety net exists; on untested legacy, characterize first.
 - **When reaching for a GoF pattern:** check whether a modern-Java feature already serves it (`enum` singleton, `record` carrier, `sealed` + pattern `switch` for visitor), and whether the problem actually has the pattern's shape. If the dependency never varies, skip the Strategy.
-- **For codebase-wide cleanup:** OpenRewrite recipes (Chapter 39) over hand-editing hundreds of sites.
+- **For codebase-wide cleanup:** OpenRewrite recipes (Chapter 40) over hand-editing hundreds of sites.
 
 ## Hand-off to Part III
 
@@ -200,7 +200,7 @@ That closes Part II. Across eight chapters, Part II has built code that is trust
 - **Bloch, *Effective Java* (3rd ed., 2018)** — idiom anti-patterns + fixes: Item 2 (Builder vs telescoping), 8 (AutoCloseable vs finalizers), 10–11 (equals/hashCode), 17 (minimize mutability), 26 (raw types), 62 (avoid strings for other types), Item 3 (enum singleton). *(⚠ item numbers/verbatim @pin.)*
 - **GoF, *Design Patterns*** — pattern definitions/vocabulary (Strategy, Factory, Builder, Adapter, Facade, Observer, Visitor, Singleton). **Brown et al., *AntiPatterns*** — the "anti-pattern" term/God Object. *(⚠ verbatim @pin.)* **Ousterhout, *A Philosophy of Software Design*** — the over-decomposition / simplicity-first school.
 - **Tool rules (keys stable; thresholds move):** Sonar `java:S3776` (cognitive complexity, **default 15 — verified**), `java:S107` (params, **default 7 — verified**), `java:S138`, `java:S1192` (dup string literals, 3 ⚠), `java:S1448` ⚠; PMD `GodClass`, `CyclomaticComplexity` (10/80 ⚠), `CognitiveComplexity` (15 ⚠), `NPathComplexity` (200 ⚠), `ExcessiveParameterList` (10 ⚠), `TooManyMethods` (10 ⚠), `TooManyFields` (15 ⚠), `DataClass`, `LawOfDemeter`, `NcssCount` (60/1500 ⚠), `CouplingBetweenObjects` (20 ⚠), `ExcessiveImports` (30 ⚠); SpotBugs `EI_EXPOSE_REP`/`EI_EXPOSE_REP2` (**verified: raised on `OrderLeaky` in the companion build, suppressed with a reason**), `SE_NO_SERIALVERSIONID`, `DM_DEFAULT_ENCODING`; Error Prone `EqualsHashCode`, `DeadException`, `StringSplitter`, `ReferenceEquality`. *(each cited to its own tool docs. ⚠ = default threshold still to confirm against the pinned tool version: PMD 7.25.0 Design-rule defaults were read from live docs and Sonar `java:S138`/`java:S1192`/`java:S1448` defaults/titles are unconfirmed — RSPEC pages were unreachable at research; flagged `09-flags/19_unverified_thresholds_and_undetectable_smells.md`.)*
-- **OpenRewrite** — `common-static-analysis` recipe ("50+ issues"), the automated-apply bridge to Chapter 39. *(⚠ recipe id/GAV @pin.)*
+- **OpenRewrite** — `common-static-analysis` recipe ("50+ issues"), the automated-apply bridge to Chapter 40. *(⚠ recipe id/GAV @pin.)*
 - **Modern Java** — `record` (JEP 395, Java 16), `sealed` (JEP 409, Java 17), pattern matching for `switch` (JEP 441, Java 21), text blocks (JEP 378, Java 15). *(JEP numbers verified against the openjdk.org JEP index — all finalized within the pinned JDK 21/25 range, SOURCE-PIN §1; 2026-06-27. Feature depth: Chapter 5.)*
 
 ## Next chapter teaser

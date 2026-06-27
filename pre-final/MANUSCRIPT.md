@@ -2299,7 +2299,7 @@ Java's type system, by itself, cannot help. The language specification makes `nu
 - The annotation landscape: three families (**JSpecify**, the **Checker Framework** set, the dormant **JSR-305** `javax.annotation` set), distinguished by what they attach to and what guarantee the checker offers.
 - The enforcement tools: **NullAway** (fast, modular, deliberately unsound) and the **Checker Framework Nullness Checker** (sound, heavier), presented as two points on one trade-off curve, neither crowned.
 
-**What this chapter does NOT cover.** The cross-tool "which stack should a team standardize on" verdict (Chapter 17), the Error Prone host in depth (Chapter 16's neighbour), suppression and ruleset tuning (Chapter 18), and migration recipes between annotation families (the OpenRewrite chapter). This chapter owns the *design problem*, the *annotation vocabulary*, and the *enforcement idea*.
+**What this chapter does NOT cover.** The cross-tool "which stack should a team standardize on" verdict (Chapter 17), the Error Prone host in depth (Chapter 16), writing custom rules (Chapter 18), living with the findings — false positives, baselines, suppression, ratcheting (Chapter 19), and migration recipes between annotation families (the automated-change chapter, Chapter 40). This chapter owns the *design problem*, the *annotation vocabulary*, and the *enforcement idea*.
 
 **The one idea worth carrying:** *an NPE is a design defect made visible at runtime, and four chances exist to catch it earlier, the latest of which is a comment and the earliest a compiler error.*
 
@@ -2439,7 +2439,7 @@ The property is "no `null` is ever dereferenced." No *modular* checker can decid
 - **NullAway** picks a *modular, optimistic* proxy. It checks one method at a time, assumes unannotated code is non-null, and assumes callees do not mutate. That optimism is unsound: a real NPE *can* slip through from a mutating callee or an unannotated return. But NullAway's own FSE'19 paper measured the cost of that optimism and found it well-targeted. On a corpus of production Android crashes, remaining NPEs traced to unchecked third-party libraries (64%), deliberate suppressions (17%), or reflection (17%), "never due to NullAway's unsound assumptions for checked code." And it is fast: the paper reports ~1.15× a normal build, against ~2.8× and ~5.1× for the comparable tools it benchmarks. Those figures are attributed to NullAway's own FSE'19 paper, never to a rival's docs (⚠ UNVERIFIED: the FSE'19 paper is outside the pinned authority set; re-quote byte-exact from the paper before release — see 09-flags/31_nullaway_overhead_figures_unverified.md).
 - **The Checker Framework** picks a *sound* proxy. It pays the annotation and build cost (the paper's 5.1× point) and in return offers the guarantee NullAway declines to: type-check clean, and no NPE from null misuse in checked code.
 
-Neither proxy is "right." They sit at opposite ends of a single axis (*how much soundness the team buys, and what build time and annotation effort it pays*), and the honest framing is to show the axis, not pick a winner. A team that needs a guarantee on a long-lived core library leans one way; a team that wants most of the benefit for ~15% build cost and minimal annotation leans the other; some run both. The decision belongs to the team and to Chapter 17; the chapter's job is to make the trade-off legible.
+Neither proxy is "right." They sit at opposite ends of a single axis (*how much soundness the team buys, and what build time and annotation effort it pays*), and the honest framing is to show the axis, not pick a winner. A team that needs a guarantee on a long-lived core library leans one way; a team that wants most of the benefit for a low build-time cost (the paper's ~1.15× point, the same UNVERIFIED figure flagged above) and minimal annotation leans the other; some run both. The decision belongs to the team and to Chapter 17; the chapter's job is to make the trade-off legible.
 
 The unifying move across all four levers is the one this whole part keeps making: *take a fact that was invisible to the compiler (here: "this might be absent") and lift it into the type, so the failure is caught as early as the team is willing to pay for.*
 
@@ -2601,13 +2601,13 @@ Item 73 done right is exception translation that chains the cause; the companion
 
 ### Fail fast: detect the violation at its cause
 
-Fail-fast means detecting a broken contract as close to its cause as possible and throwing immediately, rather than letting a corrupted value travel to a distant, confusing failure. In Java that is guard clauses at method entry: `Objects.requireNonNull(x, "x")` for null, `Objects.checkIndex` for range, an explicit `throw new IllegalArgumentException(...)` for everything else, following Item 72's exception conventions. And when a null still slips through, **JEP 358** helpful NullPointerExceptions name the exact null expression (delivered in JDK 14 behind `-XX:+ShowCodeDetailsInExceptionMessages`, on by default since JDK 15, so active at the Java 21 anchor with no flag, per openjdk.org JEP 358), so even the failure that was not caught early is diagnosable in one read. (The full defensive-coding treatment is its own section below.)
+Fail-fast means detecting a broken contract as close to its cause as possible and throwing immediately, rather than letting a corrupted value travel to a distant, confusing failure. In Java that is guard clauses at method entry: `Objects.requireNonNull(x, "x")` for null, `Objects.checkIndex` for range, and an explicit `throw new IllegalArgumentException(...)` for everything else, following Item 72's exception conventions. And when a null still slips through, **JEP 358** helpful NullPointerExceptions name the exact null expression, so even the failure that was not caught early is diagnosable in one read. (JEP 358 was delivered in JDK 14 behind `-XX:+ShowCodeDetailsInExceptionMessages` and turned on by default since JDK 15, so it is active at the Java 21 anchor with no flag, per openjdk.org JEP 358. The full defensive-coding treatment is its own section below.)
 
 ### Modern error models: the typed alternative
 
-Exceptions are not the only way to model failure. A closed set of outcomes can be a *value*: a `sealed` interface (JEP 409, Java 17) with record (JEP 395) cases, deconstructed exhaustively by pattern matching for `switch` (JEP 441, GA in Java 21). The compiler rejects a `switch` that misses a permitted case. This is a `Result`/`Either`-style model, presented here as an *approach alongside* exceptions, not a winner: it puts every failure in the type (every call site must destructure it), which is precise but verbose and interoperates awkwardly with the exception-throwing libraries (JDBC, Spring) most code crosses. These features are post-2018, so they are not *Effective Java* recommendations. They are the modern modelling option, with their own trade-offs in the Limitations section. (Structured concurrency's `StructuredTaskScope`, which streamlines concurrent error handling, is **preview** across 21→25; it belongs to Part III, not the anchor.)
+Exceptions are not the only way to model failure. A closed set of outcomes can be a *value*: a `sealed` interface (JEP 409, Java 17) with record (JEP 395) cases, deconstructed exhaustively by pattern matching for `switch` (JEP 441, GA in Java 21). The compiler rejects a `switch` that misses a permitted case. This is a `Result`/`Either`-style model, presented here as an *approach alongside* exceptions, not a winner. It puts every failure in the type, so every call site must destructure it. That is precise but verbose, and it interoperates awkwardly with the exception-throwing libraries (JDBC, Spring) most code crosses. These features are post-2018, so they are not *Effective Java* recommendations; they are the modern modelling option, and the Limitations section weighs their trade-offs. (Structured concurrency's `StructuredTaskScope`, which streamlines concurrent error handling, is **preview** across 21→25; it belongs to Part III, not the anchor.)
 
-The companion module models that closed set as a sealed `Result` with record cases:
+Because the interface is `sealed`, the compiler knows the full set of cases, and a `switch` that omits one fails to compile. The trade-off this buys is concrete: handling every outcome becomes a compile-time obligation rather than a run-time one, at the cost of threading the type through every call site. The companion module models that closed set as a sealed `Result` with record cases:
 
 ```java
 public sealed interface Result<T, E> permits Result.Ok, Result.Err {
@@ -3012,12 +3012,12 @@ This chapter, the last in Part II, turns the whole part into a vocabulary. It ca
 - What a code smell *is* (a symptom, not a bug) and the **smell → refactoring → detecting-rule** triple that makes the catalogue operational.
 - The headline smells grouped (Bloaters, OO-abusers, Change-preventers, Dispensables, Couplers), each with Fowler's named refactoring and at least one detecting rule.
 - The Java idiom **anti-patterns** from *Effective Java* (telescoping constructor, raw types, finalizers) and their idiomatic fixes.
-- **Canon-dating the patterns:** which classic GoF patterns modern Java now serves with a language feature — and which still earn their keep.
-- The **contested core** (key 61): when a pattern helps and when "patternitis" hurts — presented two-schools, neither crowned.
+- **Canon-dating the patterns:** which classic GoF patterns modern Java now serves with a language feature, and which still earn their keep.
+- The **contested core** (key 61): when a pattern helps and when "patternitis" hurts, presented two-schools, neither crowned.
 
-**What this chapter does NOT cover.** The analyzer internals and how to tune their rulesets (Part IV — this chapter cites rule keys, those chapters configure them), the *automated* application of refactorings at scale (Chapter 39, OpenRewrite), SOLID and architectural design (Chapter 25), and the modern features themselves in depth (Chapter 5).
+**What this chapter does NOT cover.** The analyzer internals and how to tune their rulesets (Part IV — this chapter cites rule keys, those chapters configure them), the *automated* application of refactorings at scale (Chapter 40, OpenRewrite), SOLID and architectural design (Chapter 25), and the modern features themselves in depth (Chapter 5).
 
-**One idea to hold:** *a smell is a hint to investigate, never a verdict to obey — and the same is true of a design pattern: it is justified by the problem it solves, not by its name.*
+**One idea to hold:** *a smell is a hint to investigate, never a verdict to obey. The same is true of a design pattern: it is justified by the problem it solves, not by its name.*
 
 ## How it works
 
@@ -3039,7 +3039,7 @@ This maps directly onto the maintainability model from Chapter 1 (ISO/IEC 25010)
 
 What turns a vocabulary into a tool is that each named smell comes with two things: a **named refactoring** that resolves it (Fowler gives each a name and step-by-step mechanics) and, for many, a **static-analysis rule** that detects it. The chapter's organizing unit is that triple.
 
-> **CONCEPT** *The smell card.* For each entry: the **smell** (name attributed to Fowler), its **Java symptom**, the **refactoring** that fixes it (Fowler's catalogue name), the **detecting rule(s)** (cited to each tool), and **when it is a false positive**. The last field is not optional — it is what keeps the catalogue honest.
+> **CONCEPT** *The smell card.* For each entry: the **smell** (name attributed to Fowler), its **Java symptom**, the **refactoring** that fixes it (Fowler's catalogue name), the **detecting rule(s)** (cited to each tool), and **when it is a false positive**. The last field is not optional; it is what keeps the catalogue honest.
 
 Detection works one of three ways, and knowing which matters:
 
@@ -3073,7 +3073,7 @@ And the Java idiom anti-patterns, from *Effective Java*:
 | Mutable where immutable would do | Minimize mutability (Item 17) — Chapter 8 |
 | String standing in for a real type | Use the real type (Item 62) |
 
-Notice how much of this catalogue points back into Part II — the anti-pattern fixes *are* the earlier chapters. That is deliberate: this chapter reads the part back as a set of recognizable shapes.
+Notice how much of this catalogue points back into Part II: the anti-pattern fixes *are* the earlier chapters. That is deliberate: this chapter reads the part back as a set of recognizable shapes.
 
 ### Canon-dating the patterns
 
@@ -3167,7 +3167,7 @@ A behaviour-preservation test in the module proves the refactored service return
 
 ## Alternatives & adjacent approaches
 
-- **Automated remediation (OpenRewrite):** beyond *flagging* a smell, recipes like `common-static-analysis` *apply* the refactoring across a whole codebase, bridging this catalogue to large-scale modernization (Chapter 39). It hands the smell→recipe map to the automation.
+- **Automated remediation (OpenRewrite):** beyond *flagging* a smell, recipes like `common-static-analysis` *apply* the refactoring across a whole codebase, bridging this catalogue to large-scale modernization (Chapters 39–40). It hands the smell→recipe map to the automation.
 - **IDE refactorings:** IntelliJ and Eclipse implement most of Fowler's catalogue as safe, mechanical transforms: the lowest-friction way to apply a single refactoring with the test net the IDE preserves.
 - **Architecture fitness functions** (Chapter 26): for design-level smells a linter cannot see (layering violations, cyclic dependencies), an ArchUnit test encodes the rule structurally.
 - **Code review** (Chapter 4): the only reliable detector for the judgment-only smells and for misapplied patterns. It is the human layer the tools cannot replace.
@@ -3181,7 +3181,7 @@ These layer rather than compete: the metric and bug-overlap smells go to the lin
 - **For judgment smells (Feature Envy, premature abstraction, misapplied patterns):** rely on review; use the names to make feedback concrete.
 - **Before refactoring:** ensure a test safety net exists; on untested legacy, characterize first.
 - **When reaching for a GoF pattern:** check whether a modern-Java feature already serves it (`enum` singleton, `record` carrier, `sealed` + pattern `switch` for visitor), and whether the problem actually has the pattern's shape. If the dependency never varies, skip the Strategy.
-- **For codebase-wide cleanup:** OpenRewrite recipes (Chapter 39) over hand-editing hundreds of sites.
+- **For codebase-wide cleanup:** OpenRewrite recipes (Chapter 40) over hand-editing hundreds of sites.
 
 ## Hand-off to Part III
 
@@ -3193,7 +3193,7 @@ That closes Part II. Across eight chapters, Part II has built code that is trust
 - **Bloch, *Effective Java* (3rd ed., 2018)** — idiom anti-patterns + fixes: Item 2 (Builder vs telescoping), 8 (AutoCloseable vs finalizers), 10–11 (equals/hashCode), 17 (minimize mutability), 26 (raw types), 62 (avoid strings for other types), Item 3 (enum singleton). *(⚠ item numbers/verbatim @pin.)*
 - **GoF, *Design Patterns*** — pattern definitions/vocabulary (Strategy, Factory, Builder, Adapter, Facade, Observer, Visitor, Singleton). **Brown et al., *AntiPatterns*** — the "anti-pattern" term/God Object. *(⚠ verbatim @pin.)* **Ousterhout, *A Philosophy of Software Design*** — the over-decomposition / simplicity-first school.
 - **Tool rules (keys stable; thresholds move):** Sonar `java:S3776` (cognitive complexity, **default 15 — verified**), `java:S107` (params, **default 7 — verified**), `java:S138`, `java:S1192` (dup string literals, 3 ⚠), `java:S1448` ⚠; PMD `GodClass`, `CyclomaticComplexity` (10/80 ⚠), `CognitiveComplexity` (15 ⚠), `NPathComplexity` (200 ⚠), `ExcessiveParameterList` (10 ⚠), `TooManyMethods` (10 ⚠), `TooManyFields` (15 ⚠), `DataClass`, `LawOfDemeter`, `NcssCount` (60/1500 ⚠), `CouplingBetweenObjects` (20 ⚠), `ExcessiveImports` (30 ⚠); SpotBugs `EI_EXPOSE_REP`/`EI_EXPOSE_REP2` (**verified: raised on `OrderLeaky` in the companion build, suppressed with a reason**), `SE_NO_SERIALVERSIONID`, `DM_DEFAULT_ENCODING`; Error Prone `EqualsHashCode`, `DeadException`, `StringSplitter`, `ReferenceEquality`. *(each cited to its own tool docs. ⚠ = default threshold still to confirm against the pinned tool version: PMD 7.25.0 Design-rule defaults were read from live docs and Sonar `java:S138`/`java:S1192`/`java:S1448` defaults/titles are unconfirmed — RSPEC pages were unreachable at research; flagged `09-flags/19_unverified_thresholds_and_undetectable_smells.md`.)*
-- **OpenRewrite** — `common-static-analysis` recipe ("50+ issues"), the automated-apply bridge to Chapter 39. *(⚠ recipe id/GAV @pin.)*
+- **OpenRewrite** — `common-static-analysis` recipe ("50+ issues"), the automated-apply bridge to Chapter 40. *(⚠ recipe id/GAV @pin.)*
 - **Modern Java** — `record` (JEP 395, Java 16), `sealed` (JEP 409, Java 17), pattern matching for `switch` (JEP 441, Java 21), text blocks (JEP 378, Java 15). *(JEP numbers verified against the openjdk.org JEP index — all finalized within the pinned JDK 21/25 range, SOURCE-PIN §1; 2026-06-27. Feature depth: Chapter 5.)*
 
 ## Next chapter teaser
@@ -3272,7 +3272,7 @@ Every safe-sharing technique in the rest of the chapter is one of these edges in
 The language gives three constructs, and the quality skill is knowing exactly what each one buys.
 
 - **`synchronized`** establishes the monitor edge: it provides *both* mutual exclusion (one thread at a time) *and* visibility (everything the previous holder did is visible to the next). It is the heavyweight, complete tool.
-- **`volatile`** establishes the volatile edge: *visibility and ordering without mutual exclusion*. This is the one most often misunderstood. `volatile` does **not** make compound actions *atomic* — happen all-at-once, with no other thread able to observe a half-done state. `count++` on a `volatile` field is a read-modify-write and can still lose updates; SpotBugs flags it as `VO_VOLATILE_INCREMENT`. Use `volatile` for a flag or a published reference, never for a counter.
+- **`volatile`** establishes the volatile edge: *visibility and ordering without mutual exclusion*. This is the one most often misunderstood. `volatile` does **not** make compound actions *atomic*, that is, happen all-at-once with no other thread able to observe a half-done state. `count++` on a `volatile` field is a read-modify-write and can still lose updates; SpotBugs flags it as `VO_VOLATILE_INCREMENT`. Use `volatile` for a flag or a published reference, never for a counter.
 - **`final`** establishes a *special publication guarantee* (the safe-publication section below), the backbone of immutable-object thread-safety.
 
 > **CONCEPT** *Visibility is not atomicity.* `volatile` guarantees that a read sees the latest write (visibility); it does *not* guarantee that read-modify-write happens as one indivisible step (atomicity). The most common concurrency bug after "no edge at all" is reaching for `volatile` where an atomic or a lock was needed.
@@ -3351,7 +3351,7 @@ If a data race passes every ordinary test, how is it ever caught? Two ways: befo
 
 But static analysis is necessarily incomplete: race detection is undecidable in general, so the tools catch patterns, not all races, and `@GuardedBy` only helps the fields that carry the annotation. A clean static scan is never *proof* of thread-safety.
 
-**As it runs — JCStress.** The OpenJDK Java Concurrency Stress harness is the runtime instrument: it runs threads concurrently over shared state, collects *every* observed outcome across many iterations and hardware reorderings, and labels each ACCEPTABLE / FORBIDDEN / INTERESTING. It can make the hook's race reproducible, surfacing a FORBIDDEN interleaving the unit tests never triggered, and then show it disappear once the missing edge is added. It is, by its own label, *experimental*, probabilistic, and slow; it proves the *presence* of a bug far more reliably than its absence. Reserve it for genuinely subtle lock-free or publication code. The companion module pins no JCStress coordinate, so it stands in with a plain concurrent hammer that the racy and atomic counters run through — the same shape, classified by an assertion rather than the harness:
+**As it runs — JCStress.** The OpenJDK Java Concurrency Stress harness is the runtime instrument: it runs threads concurrently over shared state, collects *every* observed outcome across many iterations and hardware reorderings, and labels each ACCEPTABLE / FORBIDDEN / INTERESTING. It can make the hook's race reproducible, surfacing a FORBIDDEN interleaving the unit tests never triggered, and then show it disappear once the missing edge is added. It is, by its own label, *experimental*, probabilistic, and slow; it proves the *presence* of a bug far more reliably than its absence. Reserve it for genuinely subtle lock-free or publication code. The companion module pins no JCStress coordinate, so it stands in with a plain concurrent hammer that the racy and atomic counters run through. The shape is the same, classified by an assertion rather than the harness:
 
 ```java
         for (int t = 0; t < THREADS; t++) {
@@ -3384,7 +3384,7 @@ Thread-safety is the one quality dimension developers reason about rather than t
         return Holder.INSTANCE; // class-init locking publishes INSTANCE once, lazily and safely
     }
 ```
-- **`ConcurrentHashMap` atomicity is per-operation, not per-transaction.** A `get`-then-`put` still races; use `computeIfAbsent`/`merge`. It also rejects `null` keys and values, unlike `HashMap`.
+- **`ConcurrentHashMap` atomicity is per-operation, not per-transaction.** A `get`-then-`put` still races; use `computeIfAbsent`/`merge`. It also rejects `null` keys and values, where `HashMap` permits them.
 - **`CopyOnWriteArrayList` copies on every write.** Suitable for read-mostly listener lists only, never a write-heavy path. **`StampedLock` is not reentrant,** which is a deadlock trap when reentrancy is expected.
 - **Executors leak threads if not shut down.** A non-daemon pool keeps the JVM alive; `shutdown()` + `awaitTermination()` (with a `shutdownNow()` fallback) is mandatory. An ignored `Future` hides task exceptions (Error Prone `FutureReturnValueIgnored`).
 - **Immutability has a copy cost.** Every "change" allocates; for large, frequently-updated structures that is GC pressure (the performance chapter). Genuinely stateful entities (a balance that must mutate under a lock) are an honest case for controlled mutability.
@@ -3945,19 +3945,19 @@ That is the organizing fact of this chapter, and the reason teams run several an
 
 **What this chapter does NOT cover.** The cross-tool "which to run / how to layer them without redundancy" verdict (Chapter 17: SonarQube, IDE inspections, and the layered stack). Custom rule authoring (Chapter 18). False-positive *policy*, including baselines, ratcheting, and what breaks the build (Chapter 19). The deep SAST treatment of FindSecBugs versus other security scanners (the security part). The concurrency slice of these tools (Chapters 13–14). Each tool here is cited to its own docs; no tool is crowned.
 
-**One idea to carry forward:** *a tool can only catch what its vantage point lets it see* — so the four are complementary by construction, and the question is never "which one" but "what does each add."
+**One idea to carry forward:** *a tool can only catch what its vantage point lets it see*. The four are complementary by construction, and the question is never "which one" but "what does each add."
 
 ## How it works
 
 The whole chapter hangs on one axis: the moment in the build at which each tool reads the program. Figure 16.1 places the four analyzers on that axis, from source text through the type-attributed tree inside the compiler to the emitted bytecode, and names the distinctive reach each position grants.
 
-![Figure 16.1 — The detection-time axis: where each analyzer reads the program — Four tools, four vantage points — where a tool stands determines what it can see](figures/fig27_1.png)
+![Figure 16.1: the detection-time axis, placing four analyzers from source text to bytecode and naming the distinctive reach each position grants](figures/fig27_1.png)
 
-*Figure 16.1 — The detection-time axis: where each analyzer reads the program — Four tools, four vantage points — where a tool stands determines what it can see*
+*Figure 16.1 — The detection-time axis: where each analyzer reads the program, and the distinctive reach each vantage point grants.*
 
 ### The organizing axis: where each tool stands
 
-Every finding in the hook traces to *where* the tool reads the program. This is the spine of the chapter:
+Every finding in the hook traces to *where* the tool reads the program:
 
 | Tool | Reads | When | Has types? | Distinctive reach | Characteristic blind spot |
 |---|---|---|---|---|---|
@@ -3972,7 +3972,7 @@ Every finding in the hook traces to *where* the tool reads the program. This is 
 
 Checkstyle is, in its own words, "a development tool to help programmers write Java code that adheres to a coding standard … to spare humans of this boring (but important) task." It parses each source file to an AST and runs `Check` modules over it. Its niche is the **style/convention layer** (naming, layout, import hygiene, Javadoc presence, and size limits): the conventions a team agrees once and stops re-litigating in review.
 
-The configuration is a fixed hierarchy: a root `Checker` module holds project-wide properties and a `TreeWalker` that builds the AST and dispatches to `Check` submodules (`LineLength`, `ConstantName`, `JavadocMethod`, …). Every violation carries a **severity** (`error` by default, `warning`, `info`, or `ignore`) that decides whether it breaks the build. Checkstyle ships ready-made configs (`google_checks.xml`, `sun_checks.xml`, `openjdk_checks.xml`, `doc_comments_checks.xml`), and its naming family already covers modern Java (`RecordComponentName`, `PatternVariableName`).
+The configuration is a fixed hierarchy: a root `Checker` module holds project-wide properties and a `TreeWalker` that builds the AST and dispatches to `Check` submodules (`LineLength`, `ConstantName`, `JavadocMethod`, …). Every violation carries a **severity** (`error` by default, `warning`, `info`, or `ignore`) that decides whether it breaks the build. Checkstyle ships ready-made configs (`google_checks.xml` and `sun_checks.xml` are bundled in the engine this module runs), and its naming family already covers modern Java (`RecordComponentName`, `PatternVariableName`).
 
 The companion module builds to a small, curated house ruleset; its naming block, including those modern-Java surfaces, is one `TreeWalker` submodule list:
 
@@ -4009,7 +4009,7 @@ The filter layer is what keeps the gate credible. `SuppressWarningsFilter` lets 
   <module name="SuppressWarningsFilter"/>
 ```
 
-Its hard limit is stated in its own docs: "You have access to the content of one file only … You cannot determine the type of an expression … You cannot determine the full inheritance hierarchy of type." Checkstyle reasons about *style and local structure*, never types or whole-program facts, which is exactly why a style number like `LineLength`'s default `max=80` (the Google config sets 100) is a *cited choice*, never a universal truth. A Checkstyle-clean file is consistently formatted. It is not correct.
+Its hard limit is stated in its own docs: "You have access to the content of one file only … You cannot determine the type of an expression … You cannot determine the full inheritance hierarchy of type." Checkstyle reasons about *style and local structure*, never types or whole-program facts. That is exactly why a size limit is a *cited choice* and never a universal truth. A Checkstyle-clean file is consistently formatted. It is not correct.
 
 What `ConstantName` governs is a name, never a value: its default regex `^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$` accepts the `UPPER_SNAKE` shape, so the module's constants pass it.
 
@@ -4043,7 +4043,7 @@ Two honest seams: the **PMD 6→7 rewrite** changed the ruleset syntax and some 
 
 ### SpotBugs (+ FindSecBugs, fb-contrib) — bug patterns over bytecode
 
-SpotBugs "looks for instances of *bug patterns* — code instances that are likely to be errors," and its defining choice is *what it reads*: compiled `.class` **bytecode**, in a separate pass after `javac`. Because it analyzes what the compiler actually emitted, it catches defects invisible at the source level: an `equals()` comparing unrelated types (`EC_UNRELATED_TYPES`), an impossible cast (`BC_IMPOSSIBLE_CAST`), a `volatile++` that compiled to a non-atomic read-modify-write (`VO_VOLATILE_INCREMENT`), a null dereference on an exception path (`NP_NULL_ON_SOME_PATH`). It is also the tool that enforces several JDK contracts from Part II: `HE_EQUALS_USE_HASHCODE` (Chapter 8), `SE_NO_SERIALVERSIONID`, `EI_EXPOSE_REP` (defensive copying, Chapter 8). One folklore guard: SpotBugs is the maintained successor to the dead **FindBugs**; never cite FindBugs or `findbugs-maven-plugin` as current. The retained `edu.umd.cs.findbugs.*` package names are lineage, not life.
+SpotBugs "looks for instances of *bug patterns*" (code instances that are likely to be errors), and its defining choice is *what it reads*: compiled `.class` **bytecode**, in a separate pass after `javac`. Because it analyzes what the compiler actually emitted, it catches defects invisible at the source level: an `equals()` comparing unrelated types (`EC_UNRELATED_TYPES`), an impossible cast (`BC_IMPOSSIBLE_CAST`), a `volatile++` that compiled to a non-atomic read-modify-write (`VO_VOLATILE_INCREMENT`), a null dereference on an exception path (`NP_NULL_ON_SOME_PATH`). It is also the tool that enforces several JDK contracts from Part II: `HE_EQUALS_USE_HASHCODE` (Chapter 8), `SE_NO_SERIALVERSIONID`, `EI_EXPOSE_REP` (defensive copying, Chapter 8). One folklore guard: SpotBugs is the maintained successor to the dead **FindBugs**, so never cite FindBugs or `findbugs-maven-plugin` as current. The retained `edu.umd.cs.findbugs.*` package names are lineage, not life.
 
 Findings are organized into nine categories and a **bug rank 1–20** ("1 to 4 are scariest … 15 to 20 of concern"), so a team can gate on the scariest and triage the rest. Analysis depth is set by **effort** (`min`/`less`/`more`/`max`, default `more`). And SpotBugs is really **one engine with pluggable detector sets**: **FindSecBugs** adds 144 security patterns over 826 API signatures (SQL injection, weak crypto, `PREDICTABLE_RANDOM`, OWASP/CWE-tagged), and **fb-contrib** adds more correctness detectors. Both load into the same analysis pass, so they are SpotBugs *capabilities*, not rival tools.
 
@@ -4067,9 +4067,9 @@ Four tools, but one operational reality from Chapter 15: every one of them is an
 
 > **CONCEPT** *The two-pin trap.* A build plugin and the analyzer engine it runs are **two separate versions**. The Maven Checkstyle plugin 3.6.0 *bundles Checkstyle 9.3 by default*, so a config relying on a newer check silently mismatches unless the engine dependency is overridden. The same split applies to PMD, SpotBugs, and (as an external community plugin on a separate cadence) Error Prone's Gradle integration. Pin the *engine* and the *plugin* as two distinct versions, and override the bundled engine when a newer rule is required.
 
-**They overlap — and that is fine, until it is not.** The four catalogues intersect (empty catch, naming, unused code, some concurrency and null checks). Running all four un-coordinated produces duplicate findings and combined build-time cost. Whether and how to *layer* them (let the formatter own typography, pick one tool per overlapping concern, dedupe) is a real decision, but it is the *next* chapter's, made alongside SonarQube and IDE inspections. The overlap exists because the tools were built from different vantage points; the non-overlap is why teams run more than one.
+**They overlap, and that is fine until it is not.** The four catalogues intersect (empty catch, naming, unused code, some concurrency and null checks). Running all four un-coordinated produces duplicate findings and combined build-time cost. Whether and how to *layer* them (let the formatter own typography, pick one tool per overlapping concern, dedupe) is a real decision, but it is the *next* chapter's, made alongside SonarQube and IDE inspections. The overlap exists because the tools were built from different vantage points; the non-overlap is why teams run more than one.
 
-The unifying thread: these are not four contestants for one slot. They are four readers standing at four points in the build (source text, source AST with metrics, type-attributed AST in the compiler, emitted bytecode), and a quality pipeline composes the ones whose vantage points it needs.
+These are not four contestants for one slot. They are four readers standing at four points in the build (source text, source AST with metrics, type-attributed AST in the compiler, emitted bytecode), and a quality pipeline composes the ones whose vantage points it needs.
 
 ## Limitations & when NOT to reach for it
 
@@ -4086,19 +4086,19 @@ The unifying thread: these are not four contestants for one slot. They are four 
 - **A formatter** (Spotless / google-java-format, Chapter 6): for pure typography, a formatter that *rewrites* the source removes the find-and-fix loop that Checkstyle's layout rules impose — let the formatter own whitespace and disable the overlapping linter rules.
 - **SonarQube** (Chapter 17): a platform that can *host and aggregate* these analyzers' output (including SpotBugs) plus its own rules, with a server-side dashboard and quality gate — the aggregation layer above the individual tools.
 - **CodeQL / Semgrep** (the security part): whole-program taint-tracking SAST, for the injection-class bugs FindSecBugs approximates with signatures.
-- **IDE inspections** (Chapter 17): the same families of checks at *author time*, before the build — fastest feedback, but per-developer and not a gate.
+- **IDE inspections** (Chapter 17): the same families of checks at *author time*, before the build. Fastest feedback, but per-developer and not a gate.
 - **The compiler itself** (`javac -Xlint`): the zero-friction floor every project should enable before adding any of these.
 
 These layer rather than compete: the formatter owns typography, the four analyzers own their respective vantage points, SonarQube aggregates and gates, SAST owns injection, and the IDE shifts it all left — the composition is Chapter 17's subject.
 
 ## When to use what
 
-- **For style, naming, Javadoc, and convention enforcement:** Checkstyle (with a formatter owning pure typography) — encode the written standard once and gate it.
+- **For style, naming, Javadoc, and convention enforcement:** Checkstyle (with a formatter owning pure typography). Encode the written standard once and gate it.
 - **For a configurable rule catalogue + complexity metrics, and copy-paste detection:** PMD for the rules/metrics, CPD for duplication (Maven bundles it; Gradle needs the community plugin).
-- **For bytecode-visible bug patterns and a security on-ramp:** SpotBugs, adding FindSecBugs for security and fb-contrib once the core gate is clean — gate on the scariest ranks first.
+- **For bytecode-visible bug patterns and a security on-ramp:** SpotBugs, adding FindSecBugs for security and fb-contrib once the core gate is clean. Gate on the scariest ranks first.
 - **For type-aware, build-failing checks at the earliest moment, with automated fixes:** Error Prone (JDK 21+), using `-XepAllErrorsAsWarnings` and patch mode to adopt, and Refaster for codebase-specific rewrites.
 - **For every tool:** suppress with a reason (never disable the rule), pin the engine *and* the plugin, and ramp onto legacy code with filters/thresholds rather than enabling everything at once.
-- **Before adding a fourth tool for a concern three already cover:** do not — take the de-duplication decision to Chapter 17.
+- **Before adding a fourth tool for a concern three already cover:** do not. Take the de-duplication decision to Chapter 17.
 
 ## Hand-off to the next chapter
 

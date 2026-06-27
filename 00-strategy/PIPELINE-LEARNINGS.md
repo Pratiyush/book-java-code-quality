@@ -2854,3 +2854,118 @@ Levers (a) em-dash density, (b) hype-word removal, (c) gloss-before-first-use, (
   directions: flagged-not-invented PASSes the floor, but "honestly flagged" is not "pin-traced," so the
   cluster stays capped. This designed divergence (floor PASS, cluster 7) must not be "rounded up to match
   the floor."
+
+---
+
+## Ch 11 / key 14 (generics & type-safety) — independent score 44/50 → SHIP (2026-06-28)
+
+- **The whole-file em-dash metric mis-fires on reference apparatus.** Key-14 measures 8.08/1000
+  whole-file but **4.23/1000 in actual prose**; the entire gap is the leading HTML metadata comment +
+  the dense "Back matter — sources" citation list (legitimately em-dash-heavy). The readability check
+  should measure the chapter **body only** (strip the leading `<!-- -->` block and everything from the
+  "Back matter — sources" heading on) so a clean chapter is not falsely flagged for lift.
+- **A green FLOOR-C compile is worth ~+1 across CLARITY/ACCURACY/UTILITY/DEPTH vs the same draft scored
+  "spec'd, not built."** The main-loop self-score capped at 40/50 with COMPILE = PENDING-RUNTIME; the
+  independent re-score reached 44/50 once `_EXAMPLE.md` (BUILD SUCCESS, 7/7, 0/0) and `_CODEREVIEW.md`
+  (PASS) made the examples *proven* rather than *plausible*. Expectation worth recording in SCORING.md:
+  a chapter scored before its module builds should anticipate a lift on independent re-score after the
+  build goes green, not a re-litigation of the prose.
+- **Flag-and-don't-assert scored clean and is the reference pattern for SaaS rule metadata.** The two
+  genuinely-unverifiable atoms (Sonar `java:S3740`/`java:S1452` default-severities + Sonar-way-profile
+  membership, RSPEC ECONNREFUSED; Project Valhalla reified generics, AHEAD-OF-PIN) are flagged to
+  `09-flags/` and **never asserted** in prose, so ACCURACY took no penalty beyond an honest "held off
+  10." Keep this as the model for any continuously-released-SaaS rule metadata.
+
+## Ch 9 (key 11) null-safety — independent score (2026-06-28): the honest ACCURACY cap
+
+- **An honest ACCURACY cap is a `/pin-source` routing signal, not a re-draft.** Ch 9 passes all three
+  floors, builds green (16/16, 0 Checkstyle, 0 SpotBugs), holds the voice, carries a load-bearing figure
+  introduced before it appears, and glosses every term — yet sits at 39/50, below the 44/50 bar, purely
+  because its deepest comparative substance (the NullAway↔Checker-Framework soundness–overhead deep dive)
+  rests on the FSE'19 paper figures (1.15×/2.8×/5.1×), the "never due to NullAway's unsound assumptions"
+  quote, and the Checker Framework soundness-sentence — all flagged UNVERIFIED because their sources are
+  outside the pinned authority set. Correctly cordoned (never asserted as pinned). The lift loop cannot
+  raise ACCURACY because the only lever is `/pin-source`, not prose. Recommend a distinct LEDGER state:
+  "capped — blocked on pin expansion" vs "LIFT — cluster quality."
+- **Cross-ref-vs-FINAL_INDEX needs an automated pre-pass.** The draft pointed suppression/baselines/
+  ratcheting to "Chapter 18" when the LOCKED index places it at Chapter 19 (Ch 18 is custom rules). No
+  banned-phrase / snippet / build gate catches a wrong chapter pointer against the book of record. A
+  greppable resolver — every "(Chapter N)" / "Ch N" in a draft checked against FINAL_INDEX chapter titles —
+  would have surfaced it. Highest-value automation this score found; propose folding into `lint_citations.sh`
+  and the AUDIT checklist. (Fixed in this pass: pointers split to Ch 16 / 18 / 19 / 40.)
+- **The independent score must re-run the build, never inherit a stale COMPILE state.** The prior self-score
+  recorded FLOOR-C COMPILE as PENDING-RUNTIME (40/50); the module is now green and the two CODE-REVIEW
+  MAJORs (Optional-as-field/param vs Item 55; dead `!= null` in `isReady()`) are fixed in the current code.
+  Re-running `mvn -Pquality -pl … verify` at score time caught the difference and let FLOOR C be recorded
+  as a true PASS.
+
+---
+
+## 2026-06-28 — Ch 10 (key 12+16+18) independent score → SHIP 44/50 (2 lift passes)
+
+- **Em-dash density lint must exclude tables + back-matter citation bullets.** Raw whole-body em-dash/1000
+  for `12_error_handling_exceptions_v1.md` read 8.87 ("over the <8 budget"), but isolating *running
+  narrative paragraphs* showed em-dashes appear there essentially nowhere — the count is table column-cell
+  punctuation ("— (design)") and the standard `**Source** — trace` citation separator in the back-matter.
+  A naive density gate would have forced a cosmetic edit that garbles the FLOOR-C source-trace format.
+  Proposal: the readability/voice lint should compute em-dash density over running-prose paragraphs only
+  (exclude `|`-table rows, `![`/`*Figure` caption lines, and back-matter `- **X** —` source bullets).
+- **Stale gate reports vs the live re-saved draft.** `_EXAMPLE.md` (worried about an asserted "Hibernate
+  Validator 9.1.0.Final") and `_CODEREVIEW.md` Finding #1 (Money-sketch literal divergence) both flagged
+  issues already fixed in the current draft. An independent scorer must re-verify each prior finding against
+  the live draft, not inherit it. Proposal: when a draft is re-saved after a gate runs, stamp that gate
+  report stale-until-reconfirmed.
+- **`@pin`-flagged atoms are an ACCURACY ceiling, not a floor failure.** Holding ACCURACY at 8 (not scoring
+  9 around flagged-unverified rule IDs/JEP numbers/Jakarta impl GAV) keeps the bar meaningful; the only
+  legitimate lift is a `/pin-source` re-trace, never a scoring concession. Worth stating in SCORING.md.
+- **Lift-loop honesty:** reached 44 via CLARITY 9→10 (make the sealed/`switch` exhaustiveness mechanism
+  explicit at point of use, as a neutral trade-off) + READABILITY 8→9 (split the two densest run-on
+  paragraphs). DEPTH/ACCURACY held at 8 and deliberately NOT padded/invented — their caps are structural
+  (scope routed to Parts III/IV) and pin-bounded. 2 of 3 passes used; code untouched → no rebuild.
+
+---
+
+## 2026-06-28 — Ch 12 (key 19) independent score + 1-pass lift → SHIP 45/50
+
+- **Em-dash density is the most common readability drag on otherwise-strong drafts.** Ch 12 sat at
+  9.71/1000 (prose-only) with banned-phrase=0, no filler, voice clean, FLOOR C green. One mechanical
+  appositive→period/comma/colon pass (protecting the quoted Fowler span, figure captions, table cells,
+  and bold `**School A —**` list labels) cleared it to 8.24/1000. Lifted READABILITY 7→8.
+  *Suggestion:* a `check_emdash.sh` that reports prose-only density EXCLUDING quoted spans, captions,
+  table cells, and the back-matter source list (the auditor currently eyeballs that boundary).
+- **Cross-ref precision needs a FINAL_INDEX-aware linter.** Ch 12 routed every "OpenRewrite at scale /
+  codebase-wide" reference to Ch 39, but FINAL_INDEX assigns *automated large-scale change* to **Ch 40**
+  ("OpenRewrite/Refaster as the engine"); Ch 39 is broader refactoring/legacy. Corrected to Ch 40 (and
+  Ch 39–40 where the topic spans both). Lifted ACCURACY 9→10. *Suggestion:* `lint_xrefs.py` keying each
+  "Chapter NN" mention's surrounding keyword against that row's scope contract.
+- **Figure sidecars drift when prose is line-edited after the figure is authored.** `fig19_1.sources.md`
+  still quotes the pre-revision "…is not merely stylistic…" wording the draft replaced with "…reaches
+  past style into correctness…" (a VOICE-GUIDE defensive-phrasing excision). Depicted atom still true;
+  sidecar text stale. *Suggestion:* reconcile should diff each sidecar's quoted draft spans against the
+  current draft, not only re-trace depicted atoms. (Logged as a non-blocking figure-reconcile item.)
+- **Confirmed clean:** JEP→version atoms independently re-verified (395/409/441/378 → Java 16/17/21/15);
+  unverified tool thresholds correctly hedged `⚠ verify @pin` + flagged; counter-example-with-load-bearing-
+  suppression module shape recurs (keys 09/10/19) and is worth codifying in COMPANION-REPO.md.
+
+---
+
+## Ch16 (key 27, Checkstyle) — independent score + lift loop (2026-06-28)
+
+- **Em-dash density must be measured on a scoped corpus.** Raw full-file count (10.64/1000) was inflated by legitimate non-cadence em-dashes (section-heading subtitles; back-matter "Tool — facts" citation list). The AI-tell rule targets the appositive *prose* cadence; narrative-prose-only here was 2.90/1000 final, full-body 7.85. Recommend the AUDIT em-dash scan report both numbers so a chapter is not failed for citation-list punctuation.
+- **CODE-REVIEW's routed-out prose NOTES are live ACCURACY debts.** The `openjdk_checks.xml`/`doc_comments_checks.xml` finding correctly sat outside FLOOR C (no code atom) but was a stated-as-fact body error. A scorer should harvest CODE-REVIEW's routed-out NOTES as ACCURACY lift candidates rather than waiting for VERIFY.
+- **DEPTH on a multi-tool survey is gated by built-module count and must not be padded.** Three of four tools lacking a built module is the real ceiling; the in-bounds lift is to build the peers (EXAMPLE-BUILD), not add prose. Loop held DEPTH at 8 and reached 44 via READABILITY (×2) + ACCURACY (×1).
+- Ch16 reached the 88% bar (44/50) before its independent VERIFY/CLARITY/AUDIT reports exist; remaining pin-flagged atoms (per-rule defaults, FindSecBugs "144/826", CPD minimumTokens=100, the verbatim Checkstyle quote) must be closed by VERIFY before Step 16.
+
+## Ch14 (key 22, virtual threads / structured concurrency) — independent score 2026-06-28
+
+- **A "rule-name drift" alarm between two chapters can be a false positive — settle it against the shared verified catalogue, not by assuming the later chapter drifted.** Ch13 uses SpotBugs `AT_NONATOMIC_OPERATIONS_ON_SHARED_VARIABLE` (non-atomic write on a shared primitive); Ch14 uses `AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION` (non-atomic check-then-act on a concurrent abstraction). Both are real, distinct, verified-verbatim SpotBugs MT patterns (keys 20/25/29 dossiers, `spotbugs.readthedocs.io ✅`), each used for its own defect class. FLOOR C should treat "two distinct verified IDs for two distinct defects" as correct, not a conflict. The check that resolved it offline was the cross-dossier verbatim record, not the live tool.
+- **Re-run the module build at SCORE when the pinned JDK is on the box.** The CODE-REVIEW reviewer here could not run the build (no runtime) and relied on `target/` artifacts; the independent scorer re-ran `mvn -B -Pquality -pl … clean verify` GREEN on JDK 21.0.11 (10 tests, 0 Checkstyle, 0 SpotBugs), upgrading FLOOR-C COMPILE from attested to independently confirmed. Make this the default for the independent score when `JAVA_HOME` resolves to the pin.
+- **Em-dash density catches a 43→44 single-pass lift at SCORE, before AUDIT.** Body-prose density measured 10.89/1,000 (49/4,501) vs the ~8 target; this is the entire gap to the 44/50 bar and a pure punctuation pass closes it. Print the measured per-1,000 number in the READABILITY note so the lift target is unambiguous (consistent with the earlier "report both numbers" learning).
+- **AHEAD-OF-PIN dating is exemplary in this chapter — promote it as the reference pattern.** The whole-chapter "GA vs preview status discipline" turns the pin rule into pedagogy: virtual threads stated as GA@21 fact; structured concurrency (preview 21→25), scoped values (GA@25), JEP 491 (Java 24) each dated and flagged, never asserted as Java-21 anchor reality. Cite as the model for any chapter touching a forward JDK feature.
+
+### Ch13 independent re-score (key 20) — 2026-06-28, harsh-skeptic pass
+
+- **The non-atomic-rule suspect is confirmed REAL against the pinned 4.10.2 jar — corroborates the earlier cross-dossier finding.** Independent extract of `findbugs.xml` from the pinned `spotbugs-4.10.2.jar` (in local m2) shows BOTH `AT_NONATOMIC_OPERATIONS_ON_SHARED_VARIABLE` (Ch13) and `AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION` (Ch14) as real, distinct `BugPattern` types, plus all 7 cited MT IDs and the `MT_CORRECTNESS` category. The `DC_DOUBLECHECK` verbatim quote ("not correct according to the semantics of the Java memory model") is exact in the pinned `messages.xml`. The drift alarm was a false positive — settled the way the prior learning prescribed, now also pin-jar-confirmed.
+- **Confirm a cited rule ID in the PINNED jar's catalogue, not only in a green build, when build engine ≠ pin.** The module deliberately builds on SpotBugs 4.9.x (one line behind the 4.10.2 pin); a build-confirmed pattern still needs SOURCE-TRACE confirmation against the pinned jar. The local m2 holds the pinned 4.10.2 jar, so the check is a 30-second `unzip findbugs.xml` + grep. Propose adding this to the source-verify skill: "engine ≠ pin → grep the pinned jar's `findbugs.xml`/`messages.xml`."
+- **A same-JDK factual contrast can still trip the literal neutrality scan.** `unlike HashMap` (an innocent, sourced `ConcurrentHashMap`-rejects-null API fact) matched the `unlike X` blocklist string and was a latent automatic-FAIL of FLOOR A under the scripted pre-pass. Rewriting to "where `HashMap` permits them" loses no fact and clears it. Propose this exact rewrite go into `NEUTRALITY.md`'s neutral-pattern table for same-subject contrasts.
+- **43→44 single-pass lift confirmed again — em-dash density was the whole gap.** Body-prose density measured 8.01/1000 (33/4119) vs the <8 target; converting two of the weakest appositive cadences dropped it to 7.52 and took READABILITY 8→9. No facts touched, no code changed, snippets 5/5 intact, no rebuild. Reinforces: run the em-dash numeric pre-pass before SCORE so it never reaches the scorer as a held cluster point.

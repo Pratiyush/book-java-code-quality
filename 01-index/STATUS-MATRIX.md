@@ -7,10 +7,10 @@
 ## Summary
 
 - **47/47 chapters** drafted (🟢 `draft`).
-- **31** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).
+- **23** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).
 - **0** need EXAMPLE-BUILD (FLOOR-C compile).
 - **FLOOR-C on disk:** 45/47 modules built green; 45 CODE-REVIEW reports (45 PASS, 0 FAIL).
-- **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 40 in lift · 5 need an independent score · 2 approved (in 04-approved/).
+- **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 35 in lift · 5 need an independent score · 7 approved (in 04-approved/).
 - **DRIFT: ✅ none**.
 
 ## Needs-human queue 🔵
@@ -32,18 +32,18 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | 6 | 07 | Naming, structure & formatting | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 7 | 09 | Designing clear APIs & method contracts | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 8 | 10 | Immutability & value-based design | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
-| 9 | 11 | Null-safety & Optional discipline | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
-| 10 | 12 | Error handling & exceptions | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 9 | 11 | Null-safety & Optional discipline | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 10 | 12 | Error handling & exceptions | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | | | **Part II — Writing Quality Java** |  |  |  |  |  |  |  |  |  |  | |
-| 11 | 14 | Generics & type-safety | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 11 | 14 | Generics & type-safety | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
-| 12 | 19 | Code smells & Java anti-patterns | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
-| 13 | 20 | Thread-safety & the Java Memory Model | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
-| 14 | 22 | Virtual threads & structured concurrency | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 12 | 19 | Code smells & Java anti-patterns | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
+| 13 | 20 | Thread-safety & the Java Memory Model | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
+| 14 | 22 | Virtual threads & structured concurrency | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | | | **Part IV — Static Analysis, Linting & Formatting** |  |  |  |  |  |  |  |  |  |  | |
-| 15 | 26 | How static analysis works | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 15 | 26 | How static analysis works | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
-| 16 | 27 | Checkstyle, PMD, SpotBugs, Error Prone | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 16 | 27 | Checkstyle, PMD, SpotBugs, Error Prone | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 17 | 35 | SonarQube, IDE inspections & the layered sta… | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 18 | 38 | Writing custom rules; annotation processors … | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part IV — Static Analysis, Linting & Formatting** |  |  |  |  |  |  |  |  |  |  | |
