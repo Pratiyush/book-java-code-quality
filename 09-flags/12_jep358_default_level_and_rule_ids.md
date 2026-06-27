@@ -5,9 +5,14 @@ Raised: 2026-06-15 · Source dossier: `02-research/12_error_handling_exceptions/
 Material facts that could not be confirmed against a pinned authority (tools are TO-PIN in SOURCE-PIN.md)
 and must be re-traced at the pinning step before being stated as fact in the draft:
 
-1. **JEP 358 default-on level (⚠ UNVERIFIED).** Delivered JDK 14 behind
-   `-XX:+ShowCodeDetailsInExceptionMessages`; multiple secondaries say "on by default since JDK 15." Confirm
-   against the JDK 15 release notes / JEP text. Material to the fail-fast section.
+1. **JEP 358 default-on level (✅ RESOLVED 2026-06-27 — web-verified).** Delivered JDK 14 behind
+   `-XX:+ShowCodeDetailsInExceptionMessages`; on by default since JDK 15. Confirmed against the **primary
+   openjdk.org JEP 358 page** (Status Closed/Delivered, Release 14; flag + "enable by default in a future
+   release" wording read) plus JBS **JDK-8233014** "Enable ShowCodeDetailsInExceptionMessages by default"
+   (Resolved/Fixed, fixVersion 15). So it is on by default with no flag at the **Java 21 anchor** → WITHIN
+   the pin, not ahead-of-pin. Draft `03-drafts/12_error_handling_exceptions/...v1.md` updated: §fail-fast
+   line + Sources/header trace now state delivered-14/default-on-15 with the `openjdk.org JEP 358` cite,
+   `⚠ verify @pin` removed for this atom. `check_snippets.sh`: PASS (9/9). Items 2–7 below are unchanged.
 
 2. **Sonar rule IDs (⚠ verify at pin).** `java:S112` vs legacy `squid:S00112` (generic exceptions);
    ID for "catch `Throwable`/`Error`" (asserted `java:S1181` — confirm); empty-block ID

@@ -1,8 +1,28 @@
 # FLAG — ISO/IEC 25010:2023 full sub-characteristic tree UNVERIFIED
 
 - **Chapter / key:** 01 — What is code quality?
-- **Type:** ⚠ UNVERIFIED (edition-specific detail)
+- **Type:** ⚠ PARTIAL — top-level facts ✅ web-verified 2026-06-27; finer sub-characteristic tree still UNVERIFIED (needs paid standard text)
 - **Raised:** 2026-06-15 (Phase 1 research, key 01)
+
+## Web-verify update 2026-06-27 (top-level facts CONFIRMED)
+The **top-level** 2023 facts the draft states as fact are now confirmed against the **standard's own
+catalogue/OBP text on iso.org** (not a blog):
+- **Nine characteristics** — verbatim from the iso.org abstract for std 78176 (Edition 2): "The product
+  quality model is composed of **nine characteristics** (which are further subdivided into
+  subcharacteristics)…".
+- **Safety added** as a top characteristic; **Usability → Interaction Capability**; **Portability →
+  Flexibility** — confirmed from the iso.org OBP entry for ISO/IEC 25010:2023 (`iso:std:78176:en`):
+  "Safety has been added as a quality characteristic…"; "Usability and portability have been replaced
+  with interaction capability and flexibility respectively." Title confirmed "Product quality model".
+- These remain stated as **fact** in `01_what_is_code_quality_v1.md` (NOTE §How-it-works + Fig 01.1
+  caption) — no draft change needed; the draft was already correct and conservative.
+
+**STILL PENDING (kept flagged):** the **finer sub-characteristic names** (e.g. Reliability's
+*maturity* → *faultlessness*, and the complete per-characteristic sub-tree) are NOT confirmed — they
+need the **paid ISO standard body text**, which is not web-readable. The draft correctly attributes
+those finer names to secondary summaries and holds them verify-at-pin (see "Draft compliance" below).
+The iso.org OBP HTML is a JS single-page app (no body text via curl) and returns 403 to WebFetch with
+the default UA; only the catalogue abstract + OBP search-indexed top-level text were machine-readable.
 
 ## What is unconfirmed
 The **top-level** 2023 changes are corroborated (Safety added → 9 characteristics; Usability→Interaction Capability; Portability→Flexibility; Reliability maturity→faultlessness; plus added sub-characteristics resistance/scalability/self-descriptiveness; accessibility split into inclusivity + user assistance; UI aesthetics → user engagement). Source: arc42 quality-model update + ISO abstract.
