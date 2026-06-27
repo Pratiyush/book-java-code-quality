@@ -118,5 +118,17 @@ class ArchitectureFitnessTest {
         // baseline down. The same caveat applies — a frozen baseline can mask debt if never reduced.
         FreezingArchRule.freeze(noConsole).check(LAYERS);
         FreezingArchRule.freeze(noConsole).check(LAYERS);
+
+        // The discriminating half of the ratchet contract: a NEW violation still fails. A separately
+        // described rule (so it keys its own store slot, distinct from the baseline above) is frozen
+        // over the clean layers first — an empty baseline — then checked over the breaching import.
+        // The System.out write is now new relative to that empty baseline, so the frozen rule throws,
+        // proving the ratchet suppresses only recorded debt, never a freshly introduced breach.
+        ArchRule fresh = NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS
+            .as("no class accesses standard streams (ratchet discrimination check)");
+        FreezingArchRule.freeze(fresh).check(CLEAN_LAYERS);
+        assertThatThrownBy(() -> FreezingArchRule.freeze(fresh).check(LAYERS))
+            .isInstanceOf(AssertionError.class)
+            .hasMessageContaining("LegacyReportWriter");
     }
 }

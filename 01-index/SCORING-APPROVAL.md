@@ -28,14 +28,14 @@
 | 21 | 42 | 45/50 | 90% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 90% (independent) ≥88% + floors PASS → auto-approve into 04-approved ★≥90% excellence |
 | 22 | 45 | 43/50 | 86% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 86% (independent) <88% → lift loop (≤3) toward the bar |
 | 23 | 48 | 45/50 | 90% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 90% (independent) ≥88% + floors PASS → auto-approve into 04-approved ★≥90% excellence |
-| 24 | 50 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 84% self-score — lift + independent-score toward the 88% bar |
-| 25 | 53 | 43/50 | 86% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 86% self-score — lift + independent-score toward the 88% bar |
-| 26 | 55 | 43/50 | 86% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 86% self-score — lift + independent-score toward the 88% bar |
-| 27 | 62 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 84% self-score — lift + independent-score toward the 88% bar |
-| 28 | 65 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 84% self-score — lift + independent-score toward the 88% bar |
-| 29 | 67 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 84% self-score — lift + independent-score toward the 88% bar |
-| 30 | 69 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | no | **NEEDS-INDEP** | 88% self ≥88% — needs an INDEPENDENT score to auto-approve |
-| 31 | 70 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 84% self-score — lift + independent-score toward the 88% bar |
+| 24 | 50 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 84% (independent) <88% → lift loop (≤3) toward the bar |
+| 25 | 53 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
+| 26 | 55 | 45/50 | 90% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 90% (independent) ≥88% + floors PASS → auto-approve into 04-approved ★≥90% excellence |
+| 27 | 62 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 84% (independent) <88% → lift loop (≤3) toward the bar |
+| 28 | 65 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 84% (independent) <88% → lift loop (≤3) toward the bar |
+| 29 | 67 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
+| 30 | 69 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
+| 31 | 70 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
 | 32 | 73 | 41/50 | 82% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 82% self-score — lift + independent-score toward the 88% bar |
 | 33 | 75 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | no | **NEEDS-INDEP** | 88% self ≥88% — needs an INDEPENDENT score to auto-approve |
 | 34 | 80 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | no | **LIFT** | 84% self-score — lift + independent-score toward the 88% bar |
@@ -56,9 +56,9 @@
 ## Routing
 
 - **0** eligible to auto-approve — independent score ≥88% + content floors PASS (applied into 04-approved/ on the next run).
-- **3** need an independent score (self ≥88%, run the independent scorer).
-- **31** in the lift loop (below the 88% bar or a floor unresolved).
-- **13** approved (in 04-approved/).
+- **2** need an independent score (self ≥88%, run the independent scorer).
+- **27** in the lift loop (below the 88% bar or a floor unresolved).
+- **18** approved (in 04-approved/).
 
 ## FLOOR-C (compile + code-review) — from the on-disk gate reports
 
