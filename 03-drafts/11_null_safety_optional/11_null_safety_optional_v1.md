@@ -40,9 +40,9 @@ Java's type system, by itself, cannot help. The language specification makes `nu
 
 ## How it works
 
-![Fig 11.1 — Null-safety: four levers of layered defense — Each lever catches the null the earlier one cannot reach. Detection moves left (earlier) across the lifecycle.](../../05-figures/11_null_safety_optional/fig11_1.png)
+![Fig 9.1 — Null-safety: four levers of layered defense — Each lever catches the null the earlier one cannot reach. Detection moves left (earlier) across the lifecycle.](../../05-figures/11_null_safety_optional/fig11_1.png)
 
-*Fig 11.1 — Null-safety: four levers of layered defense — Each lever catches the null the earlier one cannot reach. Detection moves left (earlier) across the lifecycle.*
+*Fig 9.1 — Null-safety: four levers of layered defense — Each lever catches the null the earlier one cannot reach. Detection moves left (earlier) across the lifecycle.*
 
 
 ### Why null is special in Java

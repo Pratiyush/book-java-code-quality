@@ -38,9 +38,9 @@ This chapter, the last in Part II, turns the whole part into a vocabulary. It ca
 
 ## How it works
 
-![Fig 19.1 — The smell-triple: smell → refactoring → detecting rule — Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it](../../05-figures/19_code_smells_antipatterns/fig19_1.png)
+![Fig 12.1 — The smell-triple: smell → refactoring → detecting rule — Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it](../../05-figures/19_code_smells_antipatterns/fig19_1.png)
 
-*Fig 19.1 — The smell-triple: smell → refactoring → detecting rule — Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it*
+*Fig 12.1 — The smell-triple: smell → refactoring → detecting rule — Each smell comes with the named refactoring that resolves it and the analyzer rule that catches it · detection mode determines whether a linter or human review finds it*
 
 
 ### A smell is a symptom, not a defect

@@ -41,16 +41,16 @@ One idea carries the whole chapter: *coverage shows what ran; mutation score sho
 
 ## How it works
 
-![Fig 41.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
+![Fig 20.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
     &ldquo;The more high-level you get the fewer tests you should have.&rdquo;](../../05-figures/41_testing_landscape_quality/fig41_1.png)
 
-*Fig 41.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
+*Fig 20.1 &mdash; The test pyramid — Two rules (Vocke / Cohn): &ldquo;Write tests with different granularity&rdquo; and
     &ldquo;The more high-level you get the fewer tests you should have.&rdquo;*
 
-![Fig 41.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
+![Fig 20.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
     A suite can reach 100% coverage and kill zero mutants.](../../05-figures/41_testing_landscape_quality/fig41_2.png)
 
-*Fig 41.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
+*Fig 20.2 &mdash; Coverage vs. mutation score: two independent axes of test quality — Coverage measures execution; mutation score measures fault detection. They are independent.
     A suite can reach 100% coverage and kill zero mutants.*
 
 

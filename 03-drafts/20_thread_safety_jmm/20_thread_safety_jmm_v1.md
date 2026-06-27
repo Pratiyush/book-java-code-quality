@@ -38,9 +38,9 @@ This chapter teaches that reasoning. It defines what "correct" even means when t
 
 ## How it works
 
-![Fig 20.1 — Java Memory Model: happens-before edges and safe publication — JLS SE 21 §17.4.5 · six edges that establish cross-thread visibility · four idioms for safely publishing an object reference](../../05-figures/20_thread_safety_jmm/fig20_1.png)
+![Fig 13.1 — Java Memory Model: happens-before edges and safe publication — JLS SE 21 §17.4.5 · six edges that establish cross-thread visibility · four idioms for safely publishing an object reference](../../05-figures/20_thread_safety_jmm/fig20_1.png)
 
-*Fig 20.1 — Java Memory Model: happens-before edges and safe publication — JLS SE 21 §17.4.5 · six edges that establish cross-thread visibility · four idioms for safely publishing an object reference*
+*Fig 13.1 — Java Memory Model: happens-before edges and safe publication — JLS SE 21 §17.4.5 · six edges that establish cross-thread visibility · four idioms for safely publishing an object reference*
 
 
 ### Happens-before: the definition of "correct"

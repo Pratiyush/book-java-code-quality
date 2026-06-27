@@ -43,13 +43,13 @@ This chapter takes on the failure paths: how to signal an error (exceptions, and
 
 ## How it works
 
-![Fig 12.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java](../../05-figures/12_error_handling_exceptions/fig12_1.png)
+![Fig 10.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java](../../05-figures/12_error_handling_exceptions/fig12_1.png)
 
-*Fig 12.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java*
+*Fig 10.1 — The Throwable — JLS SE 21 §11 hierarchy · §11.2 catch-or-specify rule · Effective Java*
 
-![Fig 12.2 — try-with-resources: suppressed vs masked exceptions — JLS SE 21 §14.20.3 · Effective Java](../../05-figures/12_error_handling_exceptions/fig12_2.png)
+![Fig 10.2 — try-with-resources: suppressed vs masked exceptions — JLS SE 21 §14.20.3 · Effective Java](../../05-figures/12_error_handling_exceptions/fig12_2.png)
 
-*Fig 12.2 — try-with-resources: suppressed vs masked exceptions — JLS SE 21 §14.20.3 · Effective Java*
+*Fig 10.2 — try-with-resources: suppressed vs masked exceptions — JLS SE 21 §14.20.3 · Effective Java*
 
 
 ### The exception model: the hierarchy and the decision

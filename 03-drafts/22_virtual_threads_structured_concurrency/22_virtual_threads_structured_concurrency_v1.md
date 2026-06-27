@@ -39,13 +39,13 @@ The line that closes Part III: **threads got cheap; correctness did not.** Virtu
 
 ## How it works
 
-![Fig 22.1 — Virtual thread mounting, unmounting, and the pinning trap — JEP 444 (GA, Java 21) · JEP 491 (Java 24) · Two behaviors, one version boundary](../../05-figures/22_virtual_threads_structured_concurrency/fig22_1.png)
+![Fig 14.1 — Virtual thread mounting, unmounting, and the pinning trap — JEP 444 (GA, Java 21) · JEP 491 (Java 24) · Two behaviors, one version boundary](../../05-figures/22_virtual_threads_structured_concurrency/fig22_1.png)
 
-*Fig 22.1 — Virtual thread mounting, unmounting, and the pinning trap — JEP 444 (GA, Java 21) · JEP 491 (Java 24) · Two behaviors, one version boundary*
+*Fig 14.1 — Virtual thread mounting, unmounting, and the pinning trap — JEP 444 (GA, Java 21) · JEP 491 (Java 24) · Two behaviors, one version boundary*
 
-![Fig 22.2 — Three-layer concurrency verification stack — Static detection (build time) + stress sampling (verify time) + deterministic reproduction (regression time) — complementary, not substitutes](../../05-figures/22_virtual_threads_structured_concurrency/fig22_2.png)
+![Fig 14.2 — Three-layer concurrency verification stack — Static detection (build time) + stress sampling (verify time) + deterministic reproduction (regression time) — complementary, not substitutes](../../05-figures/22_virtual_threads_structured_concurrency/fig22_2.png)
 
-*Fig 22.2 — Three-layer concurrency verification stack — Static detection (build time) + stress sampling (verify time) + deterministic reproduction (regression time) — complementary, not substitutes*
+*Fig 14.2 — Three-layer concurrency verification stack — Static detection (build time) + stress sampling (verify time) + deterministic reproduction (regression time) — complementary, not substitutes*
 
 
 ### Virtual threads: mounting, carriers, the scheduler
