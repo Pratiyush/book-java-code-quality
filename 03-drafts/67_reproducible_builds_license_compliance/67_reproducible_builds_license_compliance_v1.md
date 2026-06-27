@@ -19,9 +19,9 @@ DRAFT v1 — gates manual; build-integrity-two-facets(technical-reproducible + l
 
 ## Hook
 
-The last chapter produced a software bill of materials, scanned it, and signed a provenance attestation: a cryptographic statement that *this artifact* came from *this build*. Then someone rebuilds from the exact tagged source — on a different machine, a week later — and gets a *different* binary. The bytes do not match. Which artifact does the attestation describe? Neither, really: a signature over an artifact is only meaningful if "the artifact" is a stable, reproducible thing, and a build that emits different bytes each time has no single correct output to attest. The provenance proves nothing, because there is nothing fixed for it to prove.
+The last chapter produced a software bill of materials (an SBOM, the itemized list of every component in the build), scanned it, and signed a provenance attestation: a cryptographic statement that *this artifact* came from *this build*. Then someone rebuilds from the exact tagged source, on a different machine, a week later, and gets a *different* binary. The bytes do not match. Which artifact does the attestation describe? Neither, really: a signature over an artifact is only meaningful if "the artifact" is a stable, reproducible thing, and a build that emits different bytes each time has no single correct output to attest. The provenance proves nothing, because there is nothing fixed for it to prove.
 
-That is the first of two ways a build can betray a project even when the code is correct, and together they are the subject of this final chapter of Part VII. The first is **technical integrity**: a **reproducible build** produces a bit-for-bit identical artifact from the same source, which is both a quality property (determinism — "works on my machine" finally dies) and the security property that makes provenance and SLSA actually mean something. The second is **legal integrity**: every dependency in the tree carries a **license**, and a permissive-looking direct dependency can pull a strong-copyleft transitive that quietly imposes obligations on a proprietary product — discovered, in legal review the week before a release, when it is too late. Both are integrity properties of the build and the tree it assembles, invisible to every correctness gate in the book, and both read off the same pinned tree and SBOM the last two chapters built. The license material in this chapter is *factual, not legal advice* — tools detect declared licenses; interpreting specific obligations needs counsel.
+That is the first of two ways a build can betray a project even when the code is correct, and together they are the subject of this final chapter of Part VII. The first is **technical integrity**: a **reproducible build** produces a bit-for-bit identical artifact from the same source, which is both a quality property (determinism, where "works on my machine" finally dies) and the security property that makes provenance and SLSA actually mean something. The second is **legal integrity**: every dependency in the tree carries a **license**, and a permissive-looking direct dependency can pull a strong-copyleft transitive that quietly imposes obligations on a proprietary product, discovered in legal review the week before a release, when it is too late. Both are integrity properties of the build and the tree it assembles, invisible to every correctness gate in the book, and both read off the same pinned tree and SBOM the last two chapters built. The license material in this chapter is *factual, not legal advice*. Tools detect declared licenses; interpreting specific obligations needs counsel.
 
 ## Overview
 
@@ -30,7 +30,7 @@ That is the first of two ways a build can betray a project even when the code is
 - **Reproducible builds**: what bit-for-bit reproducibility is, the Java-specific sources of non-determinism, the fixes, and how to verify.
 - Why reproducibility is the foundation under provenance and SLSA (Chapter 28).
 - **License compliance**: SPDX identifiers, the obligation spectrum (permissive → copyleft), the policy gate, and generated attributions.
-- The honest limits of both — and why license tooling is *not legal advice*.
+- The honest limits of both, and why license tooling is *not legal advice*.
 
 **What this chapter does NOT cover.** The build as gate host and dependency pinning (Chapter 27, the precondition). SBOMs, SCA, and provenance/SLSA mechanics (Chapter 28, which this chapter makes trustworthy). The book's *own* intellectual-property rules (the project's legal-IP rules, separate). Release and publish mechanics (later). Reproducible-build tooling and license tooling are presented neutrally; the licensing content is **factual, explicitly not legal advice**.
 
@@ -38,9 +38,13 @@ That is the first of two ways a build can betray a project even when the code is
 
 ## How it works
 
+The chapter has two mechanisms, and two figures map them. Figure 29.1 traces the reproducibility chain: the five sources of Java build non-determinism, the fix for each, and the verify step that closes the loop.
+
 ![Fig 29.1 &mdash; The reproducibility chain — Five sources of Java build non-determinism, their fixes, and the verify step that closes the chain.](../../05-figures/67_reproducible_builds_license_compliance/fig67_1.png)
 
 *Fig 29.1 &mdash; The reproducibility chain — Five sources of Java build non-determinism, their fixes, and the verify step that closes the chain.*
+
+Figure 29.2 maps the second mechanism: the license-obligation spectrum read against distribution mode, showing how the same SPDX license carries a different obligation depending on how the artifact ships.
 
 ![Fig 29.2 &mdash; The license-obligation spectrum, by distribution mode — The same SPDX license carries a different obligation depending on how the artifact is distributed &mdash; tune the policy gate to the distribution mode. Categories are factual; tools report declared](../../05-figures/67_reproducible_builds_license_compliance/fig67_2.png)
 
@@ -49,7 +53,7 @@ That is the first of two ways a build can betray a project even when the code is
 
 ### Reproducible builds: the artifact as a pure function of source
 
-A **reproducible build** produces a **bit-for-bit identical** artifact from the same source, independent of *when*, *where*, or *by whom* it is built. That single property does two jobs. As a **quality** property, the artifact becomes a pure function of source plus pinned inputs, which kills an entire class of "works on my machine" build bugs. As a **security** property, anyone can rebuild from source and confirm the published artifact was not tampered with — the verification that gives Chapter 28's provenance and SLSA their meaning. Without reproducibility, "this source produced this artifact" is unfalsifiable; with it, the claim is checkable by anyone.
+A **reproducible build** produces a **bit-for-bit identical** artifact from the same source, independent of *when*, *where*, or *by whom* it is built. That single property does two jobs. As a **quality** property, the artifact becomes a pure function of source plus pinned inputs, which kills an entire class of "works on my machine" build bugs. As a **security** property, anyone can rebuild from source and confirm the published artifact was not tampered with, the verification that gives Chapter 28's provenance and SLSA their meaning. Without reproducibility, "this source produced this artifact" is unfalsifiable; with it, the claim is checkable by anyone.
 
 The obstacle is that a naive Java build embeds non-determinism in several specific places:
 
@@ -71,7 +75,7 @@ and the reproducible-build plugin removes the residual variability (archive entr
 
 > **CONCEPT** *Verify by rebuilding.* Reproducibility is not assumed — it is *checked*: build the artifact twice, on a different machine or at a different time, and `diff` the outputs (Maven's `artifact:compare` automates the comparison). Publishing checksums and signatures then lets others perform the same verification, which is the link to Chapter 28's provenance: a reproducible build is what lets a third party confirm a signed artifact genuinely came from the claimed source.
 
-That check — build twice, compare the bytes — is a digest comparison, modelled in the companion module's `ReproducibleArtifact`:
+That check (build twice, compare the bytes) is a digest comparison, modelled in the companion module's `ReproducibleArtifact`:
 
 <!-- include: 67_reproducible_builds_license_compliance/src/main/java/org/acme/repro/ReproducibleArtifact.java#repro-verify -->
 
@@ -81,9 +85,9 @@ The strong form is **hermeticity**: a build that depends *only* on declared, pin
 
 The same dependency tree carries a second kind of integrity concern, and it reads off the same inventory. Every dependency has a **license**, and the wrong license in the wrong place is a genuine liability: copyleft obligations, redistribution restrictions, attribution requirements. License compliance is a *quality of the dependency graph*, and it rides the machinery the last two chapters built: the SBOM already inventories every component, so license checking reads the license field directly. The four steps:
 
-- **Identify.** Normalize every component's license to its **SPDX identifier** (`Apache-2.0`, `MIT`, `GPL-3.0-only`, `LGPL-2.1`), extracted from POM metadata or scanned from source; the SBOM (Chapter 28) carries this.
-- **Categorize by obligation.** Licenses fall on a spectrum: **permissive** (Apache, MIT, BSD — attribution only), **weak copyleft** (LGPL, MPL, EPL — file- or library-level share-alike), and **strong copyleft** (GPL, AGPL — derivative-work obligations, with AGPL notably reaching *network/SaaS* use, not just shipped binaries).
-- **Gate on policy.** Define an allow/deny policy (e.g. ban GPL in a proprietary shipped product), and a tool — `license-maven-plugin`, FOSSA, ScanCode — checks every dependency's license against it and **fails the build** on a violation. This is a fitness function (Chapter 26) for legal risk, run in the same build as every other gate.
+- **Identify.** Normalize every component's license to its **SPDX identifier**, the standardized short code that names a license unambiguously (`Apache-2.0`, `MIT`, `GPL-3.0-only`, `LGPL-2.1`), extracted from POM metadata or scanned from source; the SBOM (Chapter 28) carries this.
+- **Categorize by obligation.** Licenses fall on a spectrum: **permissive** (Apache, MIT, BSD: attribution only), **weak copyleft** (LGPL, MPL, EPL: file- or library-level share-alike), and **strong copyleft** (GPL, AGPL: derivative-work obligations, with AGPL notably reaching *network/SaaS* use, not just shipped binaries).
+- **Gate on policy.** Define an allow/deny policy (e.g. ban GPL in a proprietary shipped product), and a tool (`license-maven-plugin`, FOSSA, ScanCode) checks every dependency's license against it and **fails the build** on a violation. This is a fitness function (Chapter 26) for legal risk, run in the same build as every other gate.
 - **Produce attributions.** Permissive licenses require attribution; the `THIRD-PARTY`/`NOTICE` file (aggregated from the same license data) is automatable from the inventory.
 
 In the companion module's `pom.xml`, the `license-maven-plugin` does the gate-and-attribute step in one execution — fail on a license outside the allow-list, and write the `THIRD-PARTY` file:

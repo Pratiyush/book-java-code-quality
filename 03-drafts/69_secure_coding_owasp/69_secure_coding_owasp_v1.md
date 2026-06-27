@@ -39,11 +39,11 @@ That inward turn is Part VIII, and this opening chapter frames it. The reassurin
 
 ## How it works
 
-![Fig 30.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically.
-    A vulnerability in the eliminate](../../05-figures/69_secure_coding_owasp/fig69_1.png)
+The chapter's three sections share one method, and Figure 30.1 lays it out as a hierarchy: for each vulnerability class, eliminate it by construction where that is possible, mitigate it where elimination is not feasible, and detect what remains automatically. The figure reads top to bottom in order of preference, with the three Java classes this chapter covers — injection, deserialization, and cryptographic misuse — mapped onto it.
 
-*Fig 30.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically.
-    A vulnerability in the eliminate*
+![Fig 30.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically. A class addressed at the eliminate tier costs nothing to maintain; one left at the mitigate or detect tier depends on a control that can be misconfigured or bypassed.](../../05-figures/69_secure_coding_owasp/fig69_1.png)
+
+*Fig 30.1 — Three Java vulnerability classes: design-out hierarchy — Root cause → eliminate by construction (preferred) → mitigate when unavoidable → detect automatically. A class addressed at the eliminate tier costs nothing to maintain; one left at the mitigate or detect tier depends on a control that can be misconfigured or bypassed.*
 
 
 ### Secure coding: design out the class
@@ -96,7 +96,7 @@ Where native serialization cannot be removed, the JEP 290 allow-list is the miti
 
 ### Cryptographic-API misuse: the failure is the usage, not the algorithm
 
-Cryptography is famously easy to *use* and hard to use *correctly*, and the crucial observation is that the failure is almost never a broken algorithm. The failure is **API misuse**. The primitives (AES, SHA-256, `SecureRandom`) are sound; the vulnerabilities come from wrong mode, weak algorithm choice, predictable inputs, and bad randomness. Mapped to OWASP's cryptographic-failures category, the common Java misuses are a teachable, gateable checklist:
+Cryptography is famously approachable to *use* and demanding to use *correctly*, and the crucial observation is that the failure is almost never a broken algorithm. The failure is **API misuse**. The primitives (AES, SHA-256, `SecureRandom`) are sound; the vulnerabilities come from wrong mode, weak algorithm choice, predictable inputs, and bad randomness. Mapped to OWASP's cryptographic-failures category, the common Java misuses are a teachable, gateable checklist:
 
 | Misuse | The fix |
 |---|---|
