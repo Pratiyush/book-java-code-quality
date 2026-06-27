@@ -1,0 +1,275 @@
+# SCORING PACKET — Printed Chapter 05  (dossier 08_effective_java)
+# 1. Paste EVERYTHING below the line into a fresh chat in a DIFFERENT-VENDOR LLM (not Claude).
+# 2. Save its one-pager reply VERBATIM as: 03-drafts/08_effective_java/08_effective_java_SCORE_INDEP.md
+# 3. score >=88% (44/50) + floors A/B/C-source PASS auto-promotes the chapter.
+# =====================================================================
+
+# External independent-review prompt (paste into the other LLM)
+
+> **How to use.** For one chapter: paste everything in the fenced block below into your top-tier LLM,
+> then **attach or paste the chapter draft** (`03-drafts/<slug>/<slug>_v1.md`). The LLM returns a
+> one-pager scorecard. Save that reply verbatim as `03-drafts/<slug>/<slug>_SCORE_INDEP.md` (or paste
+> it back here) — it is written in the exact format the pipeline's engine parses, so it drops straight
+> in and Claude applies the lifts. This is the **independent gate**: a different model from the author
+> (Claude/Opus), which is the whole point.
+
+---
+
+```
+You are an INDEPENDENT editorial quality gate for a technical book on Java code quality. You are a
+DIFFERENT model from the author — your job is to be a rigorous, skeptical reviewer who catches an
+over-generous self-assessment, NOT to praise. Review the ONE chapter draft I attach.
+
+Score it against these five clusters, each 1–10 (higher is better):
+- CLARITY — is the mechanism explained in a clear, followable order; why-before-how; a load-bearing figure where one is needed?
+- ACCURACY — is every technical claim correct and traceable to a credible source; any invented rule ID, API, version, GAV, flag, or statistic? (Flag specifics that look unverifiable as PENDING, not invented, unless clearly fabricated.)
+- UTILITY — is it directly actionable; concrete guidance, decision rules, a runnable example or worked snippet?
+- DEPTH — does it go beyond a feature tour to senior-level insight and the real trade-offs?
+- READABILITY — does it read in ONE locked voice: third-person invisible narrator (NO second-person "you" in narration; imperative is allowed for instructions), no narration contractions, em-dash density ≤ ~8 per 1000 words, no self-narration ("the load-bearing point is…"), no filler ("simply", "just", "obviously", "easy")?
+
+Also judge the THREE content floors as PASS / PENDING / FAIL:
+- A — NEUTRALITY: no option crowned; NO banned phrasings ("better than", "unlike X", "superior", "beats", "the problem with X", "outperforms", "worse than", "inferior"); every cross-tool comparison is on named axes with trade-offs both ways. (A single banned phrase = FAIL.)
+- B — HONEST-LIMITATIONS: every technique/claim carries its hardest objection AND an explicit when-NOT-to-use.
+- C — SOURCE-TRACE: no invented facts; specifics trace to a credible source. (Mark SaaS/dated stats that cannot be verified from the text as PENDING.)
+(Two more are tracked elsewhere — for COMPILE write PENDING, for CODE-REVIEW write N/A; do not fail the chapter on them.)
+
+Return ONLY this one-pager, in EXACTLY this Markdown structure (keep the headings and the literal "Aggregate NN/50" line):
+
+# INDEPENDENT SCORECARD — Ch <N> — model: <your model name> — <date>
+
+## Content floors
+| Floor | Verdict | Evidence / offending text + fix |
+|---|---|---|
+| A — NEUTRALITY | PASS or PENDING or FAIL | … |
+| B — HONEST-LIMITATIONS | PASS/PENDING/FAIL | … |
+| C — SOURCE-TRACE | PASS/PENDING/FAIL | … |
+| C — COMPILE | PENDING | tracked separately |
+| C — CODE-REVIEW | N/A | tracked separately |
+
+## Clusters
+| Cluster | Score (1–10) | Note (specific, with a draft location) |
+|---|---|---|
+| CLARITY | n | … |
+| ACCURACY | n | … |
+| UTILITY | n | … |
+| DEPTH | n | … |
+| READABILITY | n | … |
+
+**Aggregate NN/50**
+
+## Lift actions (specific, minimal changes that would raise the score)
+1. <cluster/floor> — <exact location> — <the change to make>
+2. …
+(5–10 items, each concrete and actionable. Label each: prose-fixable / needs-figure / needs-source-verify / needs-example.)
+
+## Verdict
+APPROVE (≥40/50 AND A/B/C-source all PASS) · LIFT (below the bar — list above) · BLOCK (a floor FAILs).
+```
+
+---
+
+## The contract that makes this drop-in
+
+- The literal token **`Aggregate NN/50`** and the **floor table** are what the engine
+  (`.claude/scripts/status.py`) reads. Keep them exactly.
+- Save the reply as `03-drafts/<slug>/<slug>_SCORE_INDEP.md`. Claude then runs the lift actions
+  (the heavy editing) and re-requests a review if needed (≤3 lift passes), routing the chapter to the
+  human gate at ≥80% + floors PASS.
+- One chapter per request keeps the feedback a true one-pager.
+
+===================== CHAPTER DRAFT TO REVIEW =====================
+
+<!--
+Dossier key: 08 (owner) + folds 13 — per 01-index/FINAL_INDEX.md Ch 5
+Slug: 08_effective_java
+Part / arc position: Part II — Writing Quality Java, Chapter 5 (opens Part II)
+Companion module: 08-companion-code/08_effective_java/ — EXAMPLE-BUILD = GREEN at JDK 21.0.11 / Maven 3.9.16 (2026-06-26; 7 tests, 0 Checkstyle, 0 SpotBugs — see 08_effective_java_EXAMPLE.md). Spec at foot.
+Verified against SOURCE-PIN: 2026-06-27 (Effective Java 3e, 2018; JEPs for records/sealed/pattern-matching/text-blocks/virtual-threads/var confirmed — see dossier 13 VERIFY + the green build). ⚠ AHEAD-OF-PIN: structured concurrency / value classes are preview/exploratory — never asserted stable.
+DRAFT v1 — gates manual; canon-dating shape; EXAMPLE-BUILD GREEN.
+-->
+
+# The Canon, Dated
+
+*Effective Java in practice, read through a language that changed underneath it · 08 (folds 13) · Part II*
+
+> "Items" are the unit of Effective Java; the language is the unit that keeps moving.
+
+## Hook
+
+A pull request arrives: a 40-line class with a private final field, a constructor, `equals`, `hashCode`, `toString`, and getters, all to carry three values. The author cites *Effective Java*, Item by Item: minimize mutability, obey the `equals`/`hashCode` contract, favor composition. Every word is right. And every line is now unnecessary, because on Java 21 the whole class is one line:
+
+```java
+record Point(int x, int y, String label) {}
+```
+
+The companion module carries both forms side by side — the hand-written value class the pull request describes, and the one-line record that replaces it:
+
+<!-- include: 08_effective_java/src/main/java/org/acme/canon/LegacyPoint.java#handrolled-contract -->
+
+<!-- include: 08_effective_java/src/main/java/org/acme/canon/Point.java#record-value -->
+
+*Effective Java* taught a generation of developers how to write the language well. But it was last revised in 2018, and Java has shipped a new feature train every six months since. This chapter does two things at once: it distills the canon's load-bearing principles, and it reads each through the language as it is now, because citing a 2018 rule uncritically can produce hand-written code the compiler will now generate, correctly, for free.
+
+## Overview
+
+**What this chapter covers**
+
+- The *Effective Java* principles that still anchor quality Java: immutability, the object contracts, composition, generics discipline, and "prefer alternatives to Java serialization."
+- The **canon-dating** method: for each rule, name the modern Java feature (records, sealed types, pattern matching) that changed how to apply it, and give a verdict.
+- Which classic idioms are now **served by a language feature**, which **still stand**, and which are **reinforced**.
+
+**What this chapter does NOT cover.** Deep dives on immutability (Chapter 8), null-safety (Chapter 9), generics (Chapter 11), or the full feature reference (the JDK docs). It is the bridge from the canon to modern Java; the specific topics follow.
+
+One idea carries the chapter: a principle can be timeless while the *idiom that expresses it* becomes obsolete. The skill is telling the two apart.
+
+## How it works
+
+![Fig 08.1 — Canon-dating: Effective Java principle → modern Java feature → verdict — The principle is kept; the idiom is updated. Three verdicts: Stands, Served by a feature, Reinforced-and-dated.](../../05-figures/08_effective_java/fig08_1.png)
+
+*Fig 08.1 — Canon-dating: Effective Java principle → modern Java feature → verdict — The principle is kept; the idiom is updated. Three verdicts: Stands, Served by a feature, Reinforced-and-dated.*
+
+![Fig 08.2 — Records serve, not retire, the immutability principle — Choose the right form — records cover the common case; the principle (EJ Items 15–17) applies to every form.](../../05-figures/08_effective_java/fig08_2.png)
+
+*Fig 08.2 — Records serve, not retire, the immutability principle — Choose the right form — records cover the common case; the principle (EJ Items 15–17) applies to every form.*
+
+
+### The canon's load-bearing principles
+
+*Effective Java* (Joshua Bloch, 3rd edition, 2018) is organized as ~90 "Items." A handful carry most of the weight for code quality, and they are genuinely durable:
+
+- **Minimize mutability** — immutable objects are simpler, thread-safe, and freely shareable (Chapter 8 goes deep).
+- **Obey the `equals` / `hashCode` / `Comparable` contracts** — violate them and collections and sorting silently misbehave (Chapter 8).
+- **Favor composition over inheritance** — inheritance across package boundaries is fragile.
+- **Use generics and avoid raw types** — let the compiler enforce type-safety (Chapter 11).
+- **Prefer alternatives to Java serialization** — native serialization is a security and maintenance hazard (Chapter 30 on deserialization).
+
+These are not in dispute. What has changed is *how to satisfy them* in modern Java.
+
+### Canon-dating: rule → feature → verdict
+
+Each principle gets a three-step treatment reused for every "canon" chapter (Fowler, Feathers, SOLID): state the rule, cite the **primary source** (a JEP or the JLS) that changed the terrain, and give a verdict: *Stands*, *Served by a feature*, or *Reinforced-and-dated*.
+
+| Effective Java principle | Modern Java feature (JEP/version @ pin) | Verdict |
+|---|---|---|
+| Minimize mutability; immutable value classes | **Records** (JEP 395, final Java 16) | **Served by a feature** — a transparent immutable data carrier is one line; hand-write when invariants/validation are required |
+| Obey `equals`/`hashCode`/`toString` | Records generate all three from the components | **Served** for data carriers; **Stands** for classes with identity or custom equality |
+| Model a closed set of types safely | **Sealed types** (JEP 409, Java 17) + **pattern matching for `switch`** (JEP 441, Java 21) | **Served / reinforced** — exhaustive, checked alternatives to the visitor/instanceof ladder |
+| Prefer enums for fixed instances; singletons | `enum` (Item 3's recommended singleton) | **Stands** — still the idiom |
+| Use generics; avoid raw types | JLS ch.4 (unchanged) | **Stands** (Chapter 11) |
+| Concurrency utilities over `wait/notify` | **Virtual threads** (JEP 444, Java 21); structured concurrency = **preview, AHEAD-OF-PIN** | **Reinforced-and-dated** — the advice holds; the tools expanded (Chapter 14) |
+
+> **CONCEPT** *Canon-dating* — citing a respected older source through the lens of what the platform now provides. The principle is kept; the idiom is updated; and where the source predates a feature, the verdict says so, traced to the JEP that changed it.
+
+### The features, briefly (each has its own chapter)
+
+The modern features above are the quality story of Java 21/25, and they earn their keep by stating intent more directly:
+
+- **Records** — collapse a data carrier's boilerplate to its components; a **compact constructor** adds validation where needed. The hook's one-liner is a record.
+- **Sealed types** — declare the complete set of permitted subtypes, so the compiler (and the reader) knows the hierarchy is closed.
+
+  <!-- include: 08_effective_java/src/main/java/org/acme/canon/Shape.java#sealed-types -->
+
+- **Pattern matching for `switch`** — flat, exhaustive handling of a sealed hierarchy, replacing the nested `instanceof`-and-cast ladder; the compiler checks that every case is covered.
+
+  <!-- include: 08_effective_java/src/main/java/org/acme/canon/Areas.java#pattern-switch -->
+
+- **Text blocks** — multi-line strings (SQL, JSON) that read as themselves.
+- **`var`** — local type inference that cuts redundant noise (used judiciously; Chapter 2's caveat).
+
+*(Every JEP number and since-version here is confirmed against the pinned JDK (dossier 13 VERIFY checked them against the JEP head tables; the companion module compiles each idiom green on JDK 21.0.11); preview/exploratory features are flagged AHEAD-OF-PIN below.)*
+
+> **Trace it back.** Principles cite *Effective Java* 3e; each "changed the terrain" claim cites the JEP/JLS that introduced the feature (pinned @ JDK 21.0.11 / 25.0.3). Where a feature is preview at 25 (structured concurrency) or exploratory (Valhalla value classes), it is marked AHEAD-OF-PIN and never presented as a stable replacement. The companion module builds green on JDK 21.0.11.
+
+## Deep dive
+
+### The folklore to avoid: "records make immutability obsolete"
+
+A tempting over-claim has emerged: *records replace Effective Java's immutability item.* They do not. A `record` carries **transparent, immutable data**; its components *are* its API. But the Item-on-minimizing-mutability covers more: types with **invariants** (a temperature that must be ≥ absolute zero), **validation**, or a **hidden representation** still need the hand-written form, or a record with a **compact constructor** that validates. The honest framing, traced to JEP 395 and the EJ item, is *nuance, not replacement*: records serve the common case (a plain immutable data carrier) and shrink the boilerplate; they do not retire the principle. The companion module's temperature carrier shows the point — a record whose compact constructor still enforces the invariant the components alone cannot:
+
+<!-- include: 08_effective_java/src/main/java/org/acme/canon/Temperature.java#record-invariant -->
+
+> **WARNING** Reaching for a record reflexively for any small class is its own anti-pattern. A record exposes all components and is for *data*; a class with behaviour, encapsulated state, or validation beyond a compact constructor is not a record candidate. Use the feature where it fits the principle, not as a default.
+
+### Reading a 2018 book in 2026 — the standing discipline
+
+The same discipline applies to every named-book source in this book (Fowler's *Refactoring*, Feathers' *Working Effectively with Legacy Code*, Martin's *Clean Code*): the **book is a secondary authority**. Where it conflicts with a **primary** source (the JLS, a JEP, a tool's own docs at the pin) or has been overtaken by a language version, the primary wins and the book's claim is dated and contextualized, never presented as current fact without the primary confirming it. *Effective Java* remains the best single distillation of Java idiom; the discipline is to read it forward into the language as it stands.
+
+## Limitations
+
+- **The book predates the modern feature train.** 3rd edition is 2018; records, sealed types, pattern matching, virtual threads, and the deprecation-for-removal of finalization all postdate it. Cited uncritically, it teaches dated idioms.
+- **"Served by a feature" is not "obsolete principle."** The principle stands; only the idiom changes. Confusing the two (e.g. the records folklore) over-claims.
+- **Feature reach is bounded.** Records are for transparent data; sealed types for closed hierarchies; pattern matching gains most with sealed types. Each fits a shape; forcing it elsewhere harms readability (Chapter 2).
+- **Preview ≠ stable.** Structured concurrency is preview at the pinned JDK; value classes (Valhalla) are exploratory. Building on them as if stable is an AHEAD-OF-PIN error.
+- **Bridge, not a deep dive.** Immutability, null-safety, and generics each have their own chapter; this one surveys them.
+
+## Alternatives
+
+- **Other Java-idiom references** — for example, the *Java Concurrency in Practice* canon (for the concurrency items) or vendor/style guides. They overlap with *Effective Java* and are sometimes more current on a narrow area; *Effective Java* remains the broadest single distillation. Use the canon for breadth and the specialist works (and this book's later chapters) for depth; neither is "the" source.
+- **"Read only the JEPs."** The primary sources are authoritative and current but give no *idiom*: they describe what a feature is, not when to reach for it. The canon supplies judgment; the JEPs supply ground truth. The two are complementary, which is the whole point of canon-dating.
+
+## When to use
+
+- **Reach for a record** for a transparent, immutable data carrier — the common case the immutability principle covers. Add a compact constructor for validation; hand-write the class when invariants, identity, or a hidden representation are required.
+- **Reach for sealed types + pattern matching** when modeling a closed set of alternatives — it makes the hierarchy legible and the handling exhaustive and compiler-checked.
+- **Keep the standing principles** (composition over inheritance, generics over raw types, alternatives to serialization) regardless of version — they are not dated. The single-element enum singleton (Item 3) is one such idiom no feature has changed; the companion module carries it unchanged:
+
+  <!-- include: 08_effective_java/src/main/java/org/acme/canon/PricingPolicy.java#enum-singleton -->
+
+- **Avoid** building on preview/exploratory features as if stable, and avoid citing a 2018 idiom without checking what the language now provides.
+
+## Hand-off
+
+The canon, read forward, points at a cluster of related craft: immutability and value semantics, the object contracts, null-safety, generics, each a principle the modern language now helps satisfy. The next chapters take them one at a time, beginning with the most leverage-heavy readability lever a developer touches every day: naming, structure, and the formatters that end the argument.
+
+## Back matter
+
+**Key takeaways**
+
+- *Effective Java* (3e, 2018) distills durable principles — minimize mutability, the object contracts, composition, generics, alternatives to serialization.
+- **Canon-dating:** read each rule through the modern feature (records, sealed types, pattern matching) that changed how to apply it. Verdict: *Stands / Served by a feature / Reinforced-and-dated*.
+- **Records serve, not retire, the immutability principle** — transparent data only; invariants/validation still need the hand-written form or a compact constructor.
+- A **book is a secondary authority**; the JLS/JEP (the pin) wins. Read the canon forward into the language as it is.
+- **Preview/exploratory features** (structured concurrency, Valhalla) are AHEAD-OF-PIN — never cited as stable.
+
+**Key concepts**
+
+- *Record* — a transparent, immutable data carrier whose components are its API (JEP 395).
+- *Sealed type* — a type that declares its complete set of permitted subtypes (JEP 409).
+- *Pattern matching for `switch`* — flat, exhaustive handling of a (sealed) hierarchy (JEP 441).
+- *Compact constructor* — a record constructor that validates/normalizes components.
+- *Canon-dating* — citing an older source through the lens of the current platform.
+
+**Reference (traced to the pin; JEP numbers confirmed @ pinned JDK)**
+
+- Records JEP 395 (Java 16); sealed types JEP 409 (Java 17); pattern matching for switch JEP 441 (Java 21); record patterns JEP 440 (Java 21); text blocks JEP 378 (Java 15); `var` JEP 286 (Java 10); virtual threads JEP 444 (Java 21). Structured concurrency = preview (AHEAD-OF-PIN). *(Confirmed against the JEP head tables in dossier 13's VERIFY and by the companion module's green build on JDK 21.0.11.)*
+
+**Sources and further reading**
+
+*Tier 1 — Primary / official*
+- Joshua Bloch, *Effective Java*, 3rd edition (2018) — the Items cited above.
+- OpenJDK JEPs + the JLS at the pin (records, sealed types, pattern matching, text blocks, virtual threads) — the primary sources that date the canon.
+
+*Tier 2 — Accessible / further reading*
+- OpenJDK project pages for Amber (language features) and Loom (virtual threads / structured concurrency).
+- JDK 21 / 25 release notes (the feature levels).
+
+## Next chapter teaser
+
+If the language now states much of the developer's intent, the highest-leverage choice remaining is what things are called — so why is naming still the hardest part, and can a tool settle the rest?
+
+---
+
+<!--
+RUNNABLE EXAMPLE SPEC (seeds Step 4b)
+- Module: 08-companion-code/08_effective_java/ (self-contained, own config/ + `quality` profile; parent org.acme.storefront:companion-code:1.0.0-SNAPSHOT; pin per SOURCE-PIN; JDK 21).
+- Demo: the hook's hand-written value class vs the record one-liner (a test proves they are observably equivalent); a record WITH a compact constructor enforcing an invariant (showing records don't retire the principle); a single-element enum singleton (Item 3, Stands); a sealed interface + exhaustive pattern-matching switch replacing an instanceof ladder.
+- File list: pom.xml; config/{checkstyle,spotbugs}/; src/main/java/org/acme/canon/{LegacyPoint,Point,Temperature,PricingPolicy,Shape,Areas,CanonDemo,package-info}.java; src/test/java/org/acme/canon/CanonIdiomsTest.java; README.md.
+- Snippet tags: `handrolled-contract` (LegacyPoint.java), `record-value` (Point.java), `record-invariant` (Temperature.java), `enum-singleton` (PricingPolicy.java), `sealed-types` (Shape.java), `pattern-switch` (Areas.java) — each ≤9 lines, resolved by check_snippets.sh.
+- Build/verify command: mvn -B -Pquality -f 08-companion-code/08_effective_java/pom.xml verify (standalone) — or via the reactor with -pl 08_effective_java -am.
+- Expected output: BUILD SUCCESS; 7 tests green (handwritten ≡ record behaviour; equals/hashCode contract; invariant rejected on bad input; enum singleton; switch computes each variant); 0 Checkstyle violations; 0 SpotBugs findings.
+- BUILD STATUS: GREEN at JDK 21.0.11 / Maven 3.9.16 (2026-06-26). Not yet registered in 08-companion-code/pom.xml <modules> (joins the reactor after CODE-REVIEW).
+
+FIGURE PLAN (Step 9)
+- Fig 05? (08.1) — the canon-dating table rendered: EJ principle → modern feature → verdict (Stands / Served / Reinforced-and-dated). Trace to EJ + JEPs.
+- Fig 08.2 — the records "serve not retire" decision: is it transparent immutable data with no invariants? → record; else compact-constructor record / hand-written. Trace to JEP 395 + EJ item.
+-->

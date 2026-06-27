@@ -1,0 +1,236 @@
+# SCORING PACKET — Printed Chapter 23  (dossier 48_coverage_mutation_effectiveness)
+# 1. Paste EVERYTHING below the line into a fresh chat in a DIFFERENT-VENDOR LLM (not Claude).
+# 2. Save its one-pager reply VERBATIM as: 03-drafts/48_coverage_mutation_effectiveness/48_coverage_mutation_effectiveness_SCORE_INDEP.md
+# 3. score >=88% (44/50) + floors A/B/C-source PASS auto-promotes the chapter.
+# =====================================================================
+
+# External independent-review prompt (paste into the other LLM)
+
+> **How to use.** For one chapter: paste everything in the fenced block below into your top-tier LLM,
+> then **attach or paste the chapter draft** (`03-drafts/<slug>/<slug>_v1.md`). The LLM returns a
+> one-pager scorecard. Save that reply verbatim as `03-drafts/<slug>/<slug>_SCORE_INDEP.md` (or paste
+> it back here) — it is written in the exact format the pipeline's engine parses, so it drops straight
+> in and Claude applies the lifts. This is the **independent gate**: a different model from the author
+> (Claude/Opus), which is the whole point.
+
+---
+
+```
+You are an INDEPENDENT editorial quality gate for a technical book on Java code quality. You are a
+DIFFERENT model from the author — your job is to be a rigorous, skeptical reviewer who catches an
+over-generous self-assessment, NOT to praise. Review the ONE chapter draft I attach.
+
+Score it against these five clusters, each 1–10 (higher is better):
+- CLARITY — is the mechanism explained in a clear, followable order; why-before-how; a load-bearing figure where one is needed?
+- ACCURACY — is every technical claim correct and traceable to a credible source; any invented rule ID, API, version, GAV, flag, or statistic? (Flag specifics that look unverifiable as PENDING, not invented, unless clearly fabricated.)
+- UTILITY — is it directly actionable; concrete guidance, decision rules, a runnable example or worked snippet?
+- DEPTH — does it go beyond a feature tour to senior-level insight and the real trade-offs?
+- READABILITY — does it read in ONE locked voice: third-person invisible narrator (NO second-person "you" in narration; imperative is allowed for instructions), no narration contractions, em-dash density ≤ ~8 per 1000 words, no self-narration ("the load-bearing point is…"), no filler ("simply", "just", "obviously", "easy")?
+
+Also judge the THREE content floors as PASS / PENDING / FAIL:
+- A — NEUTRALITY: no option crowned; NO banned phrasings ("better than", "unlike X", "superior", "beats", "the problem with X", "outperforms", "worse than", "inferior"); every cross-tool comparison is on named axes with trade-offs both ways. (A single banned phrase = FAIL.)
+- B — HONEST-LIMITATIONS: every technique/claim carries its hardest objection AND an explicit when-NOT-to-use.
+- C — SOURCE-TRACE: no invented facts; specifics trace to a credible source. (Mark SaaS/dated stats that cannot be verified from the text as PENDING.)
+(Two more are tracked elsewhere — for COMPILE write PENDING, for CODE-REVIEW write N/A; do not fail the chapter on them.)
+
+Return ONLY this one-pager, in EXACTLY this Markdown structure (keep the headings and the literal "Aggregate NN/50" line):
+
+# INDEPENDENT SCORECARD — Ch <N> — model: <your model name> — <date>
+
+## Content floors
+| Floor | Verdict | Evidence / offending text + fix |
+|---|---|---|
+| A — NEUTRALITY | PASS or PENDING or FAIL | … |
+| B — HONEST-LIMITATIONS | PASS/PENDING/FAIL | … |
+| C — SOURCE-TRACE | PASS/PENDING/FAIL | … |
+| C — COMPILE | PENDING | tracked separately |
+| C — CODE-REVIEW | N/A | tracked separately |
+
+## Clusters
+| Cluster | Score (1–10) | Note (specific, with a draft location) |
+|---|---|---|
+| CLARITY | n | … |
+| ACCURACY | n | … |
+| UTILITY | n | … |
+| DEPTH | n | … |
+| READABILITY | n | … |
+
+**Aggregate NN/50**
+
+## Lift actions (specific, minimal changes that would raise the score)
+1. <cluster/floor> — <exact location> — <the change to make>
+2. …
+(5–10 items, each concrete and actionable. Label each: prose-fixable / needs-figure / needs-source-verify / needs-example.)
+
+## Verdict
+APPROVE (≥40/50 AND A/B/C-source all PASS) · LIFT (below the bar — list above) · BLOCK (a floor FAILs).
+```
+
+---
+
+## The contract that makes this drop-in
+
+- The literal token **`Aggregate NN/50`** and the **floor table** are what the engine
+  (`.claude/scripts/status.py`) reads. Keep them exactly.
+- Save the reply as `03-drafts/<slug>/<slug>_SCORE_INDEP.md`. Claude then runs the lift actions
+  (the heavy editing) and re-requests a review if needed (≤3 lift passes), routing the chapter to the
+  human gate at ≥80% + floors PASS.
+- One chapter per request keeps the feedback a true one-pager.
+
+===================== CHAPTER DRAFT TO REVIEW =====================
+
+<!--
+Dossier key: 48 (owner, leads) + folds 47 — per 01-index/FINAL_INDEX.md Ch 23
+Slug: 48_coverage_mutation_effectiveness (owner key 48)
+Part / arc position: Part V — Testing, Chapter 23 (Part V = Ch 20-24)
+Companion module: 08-companion-code/ (100%-line-coverage-but-mutants-survive: weak vs strong test, JaCoCo + PITest) — ✅ EXAMPLE-BUILD = BUILT GREEN 2026-06-26 (mvn -B -Pquality verify → BUILD SUCCESS, 12 tests; see _EXAMPLE.md). Spec at foot.
+Verified against SOURCE-PIN: 2026-06-20. Sources (each tool cited to its OWN docs; metric pair — crown neither; gate POLICY routed to CI part key 80):
+- Coverage/JaCoCo (48): coverage = which production code EXECUTED while tests ran ("what did my tests touch?", NOT "are my tests good?"). JaCoCo = JVM coverage; on-the-fly Java-agent bytecode instrumentation + probes (ASM shaded org.jacoco.agent.rt_<id>; CRC64 class id; .exec data). SIX counters VERBATIM (counters.html): INSTRUCTION(C0), BRANCH(C1, available w/o debug info), LINE(REQUIRES debug info; ≥1 instr on line), METHOD(≥1 instr), CLASS(≥1 method), COMPLEXITY(cyclomatic v(G)=B−D+1, covered/missed). Maven org.jacoco:jacoco-maven-plugin goals prepare-agent(sets argLine)/report/check(+ merge/report-aggregate/instrument). Gradle id 'jacoco' tasks jacocoTestReport(JacocoReport)/jacocoTestCoverageVerification(JacocoCoverageVerification); toolVersion. check rule model VERBATIM (check-mojo.html): element {BUNDLE/PACKAGE/CLASS/SOURCEFILE/METHOD/GROUP} default BUNDLE; counter {six} default INSTRUCTION; value {TOTALCOUNT/COVEREDCOUNT/MISSEDCOUNT/COVEREDRATIO/MISSEDRATIO} default COVEREDRATIO; minimum/maximum; haltOnFailure default true. FOLKLORE (chapter's reason): coverage % ≠ test quality, necessary-not-sufficient. Fowler VERBATIM: "Test coverage is of little use as a numeric statement of how good your tests are"; "high coverage numbers are too easy to reach with low quality testing"; "useful tool for finding untested parts of a codebase"; targets get gamed; suspicious of 100%. JDK lag: Java21→0.8.11, Java25→0.8.14 (0.8.13 experimental). Sharp edges: line needs debug info; stale .class/CRC64 mismatch; argLine clobber→0% silently; generated code inflates (0.8.11 filters synthetic switch/record-pattern bytecode).
+- Mutation/PITest (47): mutation testing = FAULT-DETECTING power, not execution. PITest introduces faults (mutations) then runs tests; KILLED (test caught) / SURVIVED (covered but no test failed = assertion gap). Mutation score = killed ÷ total. PIT VERBATIM (pitest.org): coverage "does not check that your tests are actually able to detect faults". Mechanism: line-coverage pass FIRST → apply mutators to bytecode (1 mutant/operator/site) → per mutant run ONLY covering tests (fastest-first; speed trick vs Jester/Jumble whole-suite). 7 statuses VERBATIM (basic-concepts): KILLED/SURVIVED/NO_COVERAGE/TIMED_OUT/MEMORY_ERROR/RUN_ERROR/NON_VIABLE. Test strength = killed ÷ mutants-with-coverage. Mutators DEFAULTS (CONDITIONALS_BOUNDARY >=→>, INCREMENTS, INVERT_NEGS, MATH, NEGATE_CONDITIONALS, VOID_METHOD_CALLS, EMPTY/FALSE/TRUE/NULL/PRIMITIVE_RETURNS); STRONGER/ALL add; RETURN_VALS deprecated. Wiring org.pitest:pitest-maven goal mutationCoverage; pitest-junit5-plugin REQUIRED for Jupiter (setup trap: silent no-coverage if missing); Gradle info.solidsoft.pitest; mutationThreshold/coverageThreshold/testStrengthThreshold gates. Incremental withHistory (trades soundness for speed; "currently unproven"). EQUIVALENT MUTANTS = hard ceiling <100% (undecidable; PIT skips logging-call mutations). Cost = headline limit (once per mutant; separate CI stage).
+✅ verified-at-pin (SOURCE-PIN.md §3 + BUILT module 08-companion-code/48, mvn verify green 2026-06-26): JaCoCo 0.8.15, PITest 1.25.3 (both pinned & built); prepare-agent sets argLine + the no-`<argLine>`/clobber path (demonstrated by the green build's "argLine set to -javaagent:…jacocoagent…"). ⚠ verify-at-pin (STILL UNVERIFIED — upstream-doc facts not in SOURCE-PIN / no live channel here; flagged 09-flags/48_jacoco_pitest_doc_defaults_verify_at_pin.md): JaCoCo JDK-support mapping (21→0.8.11, 25→0.8.14); synthetic-filter list; check-rule default values; PITest threshold defaults; test-strength denominator; status-to-score accounting; pitest-junit5-plugin↔JUnit-Platform↔PITest matrix (09-flags/48_pitest_junit5_plugin_matrix_verify_at_pin.md); mutator exact semantics. ⚠ AHEAD-OF-PIN: Java25 preview-construct mutation. self-description ("gold standard"/"state of the art") = PITest's OWN words, quote-not-crown. SOURCE-PIN gaps: DEMO-CATALOG missing; cost figure (2h/47KLOC) = arxiv corroboration cite-with-source. Cohn/Fowler bliki Bucket-i.
+Routes: pyramid/landscape + coverage-≠-quality intro → Ch20(41); gate POLICY (what %, ratchet, clean-as-you-code) → CI part(80); over-mocking flatters score → Ch21(44); flakiness corrupts score → Ch20(49); complexity counter → metrics(58); SonarQube ingests XML → Ch17(35); dashboards → 88.
+DRAFT v1 — gates manual; the-metric-and-its-folklore + metric-pair-complementary-not-ranked + counter-ladder + gate-mechanism-vs-policy-split + self-description-≠-ranking shapes; EXAMPLE-BUILD = BUILT GREEN 2026-06-26 (see _EXAMPLE.md).
+-->
+
+# The Number That Feels Like Quality
+
+*Coverage as the necessary floor, mutation testing as the deeper truth, and why only one of them is cheap · 48 (folds 47) · Part V*
+
+> Coverage reports that a line ran. It cannot report whether a test would have noticed if that line were wrong. Those are different facts, and only one of them has a cheap number.
+
+## Hook
+
+A team gates its build at 85% coverage. The badge is green, the number trends up, everyone trusts it. Then someone runs mutation testing for the first time, and the report is uncomfortable: on lines the suite *covers*, a flipped `>=` to `>` goes undetected, a swapped `+` to `-` goes undetected, a deleted method call goes undetected. Roughly 40% of the deliberately seeded faults survive, on covered code. The 85% number measured something real, but not what the team thought. It measured *execution*: which lines ran while the tests executed. It said nothing about *detection*: whether any test would fail if those lines were wrong.
+
+That gap is the subject of this chapter, and it is the payoff of the two-axis framing from the opening of Part V. The last three chapters built a test suite: unit, integration, property-based. This one measures what the suite is actually worth, with two tools that answer two different questions. **Coverage** (JaCoCo) answers *what did the tests touch?* — cheap, fast, gateable on every commit, and the necessary floor, because code that never runs under test is code whose behaviour is entirely unknown. **Mutation testing** (PITest) answers *would the tests catch a bug?* — expensive, slow, run periodically, and the deeper truth, because it seeds faults and checks whether the tests notice. Neither number is "test quality" on its own; both are signals, not proofs. The uncomfortable lesson is that the number teams already have is the weaker one, and the stronger one costs more to run.
+
+## Overview
+
+**What this chapter covers**
+
+- **Coverage** and **JaCoCo**: how it measures (agent, probes), the six counters and which to read, the build gate, and its sharp edges.
+- The **coverage folklore**: why a coverage % is necessary but not sufficient, stated and corrected with its citation.
+- **Mutation testing** and **PITest**: how it scores fault-detection, the mutant statuses, and why it is the stronger signal.
+- Where each fits — coverage every commit, mutation periodically — and the costs each carries.
+
+**What this chapter does NOT cover.** The pyramid and the test-quality landscape (Chapter 20, which introduced this two-axis idea). **Gate policy** — what threshold to set, whole-codebase versus new-code ratchet, clean-as-you-code — which belongs to the CI part; this chapter covers the gate *mechanism* both policies use. Cyclomatic complexity in depth (the metrics chapter). How SonarQube ingests coverage (Chapter 17). Coverage and mutation score are presented as a **complementary pair, crowning neither metric**; each tool is cited to its own docs.
+
+**One idea to hold**: *coverage is a lower bound (uncovered code is certainly untested) and mutation score is the stronger signal of whether the covered code is actually tested; both are signals, neither is proof, and a high coverage number with weak assertions manufactures false confidence.*
+
+## How it works
+
+![Fig 23.1 — Coverage vs mutation: the assertion gap on the same covered line — 100% line coverage does not move when assertions are added — mutation score does. Coverage records execution; mutation score records detection.](../../05-figures/48_coverage_mutation_effectiveness/fig48_1.png)
+
+*Fig 23.1 — Coverage vs mutation: the assertion gap on the same covered line — 100% line coverage does not move when assertions are added — mutation score does. Coverage records execution; mutation score records detection.*
+
+
+### Coverage: what the tests touched
+
+**Code coverage** measures which parts of the production code were *executed* while the tests ran. **JaCoCo** is the de-facto JVM coverage library, and its mechanism is worth understanding because its sharp edges follow from it. JaCoCo uses **on-the-fly bytecode instrumentation** via a Java agent: as classes load, it inserts **probes** (execution flags) into the bytecode (using the ASM library, shaded into a private package to avoid conflicts), records which probes fire at runtime into a binary `.exec` file, and a report goal turns that into HTML/XML/CSV plus an optional build-failing check. Each class is identified by a CRC64 hash of its bytes, which is why a stale `.class` that does not match the analyzed source breaks line mapping.
+
+"Coverage" is not one number — JaCoCo reports **six counters**, and reading the right one is half the skill:
+
+| Counter | What it counts | Note |
+|---|---|---|
+| **INSTRUCTION** (C0) | individual bytecode instructions | the base; available without debug info |
+| **BRANCH** (C1) | branches of `if`/`switch` | available without debug info; **exposes the untested `else`** |
+| **LINE** | source lines (≥1 instruction ran) | **requires debug info**; most readable, most fragile |
+| **METHOD** | methods with ≥1 instruction run | coarse |
+| **CLASS** | classes with ≥1 method run | coarsest |
+| **COMPLEXITY** | cyclomatic complexity, covered vs missed | ties coverage to complexity (metrics chapter) |
+
+> **CONCEPT** *Read BRANCH, not only LINE.* The counters form a strictness ladder, and LINE % is the one most often quoted and most misleading: a method with 100% line coverage can leave a whole branch untested, because a line counts as covered when *one* instruction on it ran. BRANCH coverage catches the untested decision path that LINE hides. Never write "coverage %" unqualified — name the counter. And note what *no* counter measures: whether a test *asserted* anything. That gap is the whole reason for the chapter's second half.
+
+The gate is the `check` goal (Maven) or `jacocoTestCoverageVerification` (Gradle). A `check` rule names an **element** scope (BUNDLE down to METHOD), a **counter**, a **value** (`COVEREDRATIO` for "≥ X%", or `MISSEDCOUNT` for "no more than N uncovered"), a `minimum`/`maximum`, and `haltOnFailure` (default true). The `value` choice is the design lever: `COVEREDRATIO minimum` is the familiar percentage gate; `MISSEDCOUNT maximum` is the ratchet-friendly form that gates "no *new* uncovered code" without punishing legacy wholesale. This chapter shows the mechanism; *which* policy to adopt — whole-codebase percentage, new-code ratchet, or no gate plus a trend — is a deliberate choice the CI part owns. The companion module gates on BRANCH so an untested decision path fails the build even at high line coverage:
+
+<!-- include: 48_coverage_mutation_effectiveness/pom.xml#jacoco-check -->
+
+### The coverage folklore
+
+**A coverage percentage is not a measure of test quality.** Coverage records that a line *executed*, not that any test *asserted* anything about what it did. A test that calls a method and asserts nothing earns full line coverage and catches no bugs. Martin Fowler states it directly: coverage is *"of little use as a numeric statement of how good your tests are"* and *"high coverage numbers are too easy to reach with low quality testing,"* while its genuine value is *"a useful tool for finding untested parts of a codebase."*
+
+> **CONCEPT** *Coverage is a gap-finder, not a score.* Use a coverage number to find code the tests never touch — that use is sound and defensible. Do not use it as a quality verdict or chase it as a target. Fowler again: *"if you make a certain level of coverage a target, people will try to attain it,"* and the cheapest way to hit a target is assertion-free tests; he'd *"expect a coverage percentage in the upper 80s or 90s"* from good testing but be *"suspicious of anything like 100% — it would smell of someone writing tests to make the coverage numbers happy."* The number is a smell-detector for gaps, not a goal.
+
+JaCoCo's own sharp edges compound the trap. Line coverage *needs debug info* (`LineNumberTable`); strip it and only INSTRUCTION/BRANCH survive. The agent is injected via the `argLine` property, and a project that sets `<argLine>` directly in Surefire **overwrites** JaCoCo's value and silently reports 0% coverage, a classic CI failure. Generated code (record accessors, lambdas, Lombok output) inflates the raw number, so exclusions become their own tuning lever. JaCoCo tracks JDK releases per version (Java 21 support landed in 0.8.11, Java 25 in 0.8.14), so the version must match the JDK the build runs on. None of that makes coverage useless. It makes coverage a *floor-finding instrument* that must be read precisely and never mistaken for a verdict.
+
+### Mutation testing: would the tests catch a bug?
+
+The tool that actually probes whether tests *detect* faults is **mutation testing**, realized in Java by **PITest**. It works by introducing small faults (*mutations*) into the compiled bytecode, then running the tests against each mutated version. If a test fails, the mutant is **killed** (the tests detected the fault); if every test still passes, the mutant **survived** (the tests are blind to it). The **mutation score** is the percentage killed. A mutant that survives on a *covered* line is the precise thing coverage cannot see: covered, executed, and yet *untested*. PITest states it plainly: coverage *"does not check that your tests are actually able to detect faults in the executed code."*
+
+The mechanism is what makes it tractable. PITest runs a **line-coverage pass first** to learn which tests touch which line; then it applies **mutators** to the bytecode (each application is one mutant), and for each mutant it runs **only the tests that cover the mutated line**, fastest-first, not the whole suite. The mutators are a named fault catalogue: the DEFAULTS group includes `CONDITIONALS_BOUNDARY` (`>=` becomes `>`), `NEGATE_CONDITIONALS`, `MATH` (swap an operator), `VOID_METHOD_CALLS` (delete a call), and the returns family (`EMPTY_RETURNS`/`NULL_RETURNS`/…); STRONGER and ALL add more. Each mutant resolves to one of seven statuses — **KILLED**, **SURVIVED**, **NO_COVERAGE** (survived *and* never executed), **TIMED_OUT**, **MEMORY_ERROR**, **RUN_ERROR**, **NON_VIABLE** — and the report also gives **test strength** (killed ÷ mutants-with-coverage), which isolates assertion strength on covered code.
+
+> **CONCEPT** *Coverage and mutation score are complementary, not ranked.* Coverage answers "what executed?": a necessary lower bound, cheap enough to gate every commit. Mutation score answers "would a break be caught?": a stronger assertion-strength signal, expensive enough to run periodically. Coverage is a single instrumented run; mutation testing runs the covering tests once *per mutant*. Neither is crowned "the" test-quality measure: coverage alone flatters assertion-free suites, and mutation score alone can be gamed and is unachievable at 100%. They are a pair — and Part V's two axes, finally given their tools.
+
+Wiring it: the Maven `org.pitest:pitest-maven` plugin runs the `mutationCoverage` goal, and a `mutationThreshold` fails the build below a score (Gradle uses `info.solidsoft.pitest`). One setup trap deserves naming: running JUnit 5 (Jupiter) tests *requires* the `pitest-junit5-plugin`; without it, the tests silently report no coverage. The version matrix between PITest, that plugin, and the JUnit Platform moves per release and must be checked at the pin.
+
+## Deep dive: 100% coverage, surviving mutants
+
+Put the two tools on one module and the chapter's thesis becomes tactile. Take a behaviour-rich method: a discount that applies above a quantity boundary (`qty >= 10`), computes `price * (1 - rate)`, and returns early in one case. Write a *weak* test that calls it and asserts only that the result is non-null. JaCoCo reports ~100% line coverage: every line ran. Now run PITest: the `CONDITIONALS_BOUNDARY` mutant (`>=` → `>`) survives, the `MATH` mutant (`*` → `/`) survives, the returns mutants survive. The mutation score is low. The suite executed every line and would catch almost none of those faults, which is the 85%-badge story from the hook reproduced in one class. Add the *strong* test — AssertJ assertions on the boundary (`qty == 9` versus `qty == 10`) and the computed price — and the mutants die, the score climbs, while line coverage stays exactly 100%. That invariance is the whole point: coverage did not move because the code executed was identical; what changed was whether the tests *checked* it.
+
+The method under both tools is the boundary, the arithmetic, and the early return:
+
+<!-- include: 48_coverage_mutation_effectiveness/src/main/java/org/acme/effectiveness/Discount.java#under-test -->
+
+The weak test runs every one of those lines yet asserts only that the result is non-null, so each mutant survives:
+
+<!-- include: 48_coverage_mutation_effectiveness/src/test/java/org/acme/effectiveness/DiscountWeakTest.java#weak-test -->
+
+The strong test executes the identical lines but pins both sides of the boundary and the computed value, so the same mutants are killed while line coverage does not move:
+
+<!-- include: 48_coverage_mutation_effectiveness/src/test/java/org/acme/effectiveness/DiscountTest.java#strong-test -->
+
+Neither number is free of caveats. Coverage's caveat is the folklore already covered: it is gameable and says nothing about assertions. Mutation testing's caveats are subtler and just as important. **Cost** is the headline limit: running the covering tests once per mutant is orders of magnitude slower than a unit-test run, which is why mutation testing belongs in a separate, scoped CI stage (nightly, or on changed modules via targeting and incremental history), never the inner dev loop. **Equivalent mutants** put a hard ceiling below 100%: some mutations produce behaviour no test can distinguish from the original (a change to a value no input exercises differently), so they can *never* be killed, and detecting them is undecidable in general. PITest skips the most common case (logging-call mutations) but cannot eliminate the class. A team that gates on "100% mutation score" chases irreducible survivors. **Survivors need human triage**, not auto-fix: each is a *hypothesis* of a weak test that a developer must judge — a real gap, an equivalent mutant, or a low-value behaviour not worth asserting. **Flaky tests corrupt the score** outright (Chapter 20): mutation testing assumes a deterministic green suite, so a flaky test marks mutants inconsistently.
+
+One interaction ties back to the last chapter: an over-mocked test (Chapter 21) can *kill mutants in the unit under test while asserting nothing about real collaborators*, so a high mutation score on heavily-mocked code can flatter. Mutation score measures detection within the encoded mutators and the code the tests touch. It is a strong signal, not a proof of correctness, and is subject to the same humility the book applies to every metric. (PITest's own site calls itself "gold standard" and "state of the art"; those are the project's words, quoted as self-description, not an independent ranking.)
+
+The synthesis is the two-axis picture made operational: coverage as the cheap, necessary, every-commit floor that finds untested code, read at the BRANCH counter and gated by policy the CI part sets; mutation testing as the expensive, periodic, deeper measure that tells teams whether the covered code is genuinely tested. Run both, trust neither alone, and remember that the comfortable number was always the weaker one.
+
+## Limitations & when NOT to reach for it
+
+- **Coverage % is not test quality.** It records execution, not assertion; a fully covered suite can catch nothing. Never present it as a quality score, and do not chase 100% — the marginal lines cost more than they protect and invite assertion-free padding. When the question is "are my tests good?", reach for mutation testing.
+- **Do not gate a high whole-codebase % on legacy code.** It blocks all work until a debt is paid; prefer a new-code ratchet (`MISSEDCOUNT`, the CI part's policy) or a trend.
+- **JaCoCo's sharp edges bite.** Line coverage needs debug info; a stale `.class` breaks line mapping; a hand-set `<argLine>` silently zeroes coverage; generated code inflates the number; the JaCoCo version must match the JDK. Read the report knowing these.
+- **Mutation testing is expensive.** It runs the covering tests once per mutant — far too slow for the inner loop or every commit. Run it nightly, on a release branch, or scoped to changed modules with incremental history.
+- **100% mutation score is unachievable.** Equivalent mutants cannot be killed by any test, and detecting them is undecidable; gate on a pragmatic per-module threshold, not perfection.
+- **Survivors are hypotheses, not bugs.** Each needs human triage — real gap, equivalent mutant, or low-value behaviour; un-triaged survivors erode the score's credibility just as un-triaged static findings do.
+- **A flaky or failing suite makes the score meaningless.** Mutation testing assumes a deterministic green suite; stabilize flakiness first.
+- **Incremental mode trades soundness for speed.** History-based skipping can reuse a stale result if an untracked dependency changed; use full runs for the authoritative score.
+- **Neither metric proves correctness.** Both are signals; both can be gamed; neither establishes whether the *requirements* are tested. They complement tests, types, and review — they do not replace judgment.
+
+## Alternatives & adjacent approaches
+
+- **Branch/condition coverage over line coverage** — within coverage, reading BRANCH (and gating on it) is a meaningfully stronger floor than LINE at no extra tooling cost.
+- **Mutation testing scoped and incremental** — targeting (`targetClasses`) plus history files make mutation viable on real projects without a full nightly run.
+- **Property-based testing** (Chapter 22) — another way to kill mutants: generated inputs exercise behaviours hand-picked examples miss, often raising mutation score for free.
+- **Code review** — the judgment no metric makes: is the *right* behaviour tested, is this survivor worth killing, is 100% coverage here padding?
+- **SonarQube / dashboards** (Chapter 17) — ingest the JaCoCo XML to track coverage as a trend rather than a single gate number.
+
+These layer into one effectiveness program: BRANCH coverage every commit as the floor, periodic scoped mutation testing as the depth gauge, property-based tests to raise both, and review for the judgment metrics cannot supply.
+
+## When to use what
+
+- **Find code the tests never touch:** coverage (JaCoCo), read at BRANCH and INSTRUCTION, gated every commit as a floor.
+- **Measure whether the covered code is actually tested:** mutation testing (PITest), run periodically and scoped to changed modules.
+- **Gate a legacy codebase:** a new-code ratchet (`MISSEDCOUNT` / the CI part's policy), not a high whole-codebase percentage.
+- **Reproduce a clean coverage signal in CI:** keep the JaCoCo version matched to the JDK and do not clobber `argLine`.
+- **Decide whether a survivor matters:** human triage — real gap, equivalent mutant, or low-value behaviour.
+- **Raise both numbers honestly:** stronger assertions and property-based tests, not assertion-free padding.
+- **Track effectiveness over time:** the coverage XML in a dashboard as a trend, not a single pass/fail.
+
+## Hand-off to the next chapter
+
+Coverage and mutation testing measure whether the code is tested. Neither asks a different question that matters just as much: does the code still do what its *consumers* and a known-good *baseline* expect? A change can be fully covered, kill every mutant, and still break the contract a downstream service depends on, or silently alter an output that a human last approved as correct. The next chapter covers **contract testing** — verifying that the agreement between a service and its consumers holds (Pact, REST-assured) — and **approval testing** — pinning a complex output against a reviewed snapshot so any change surfaces for a human to accept or reject. Both check a kind of correctness that coverage and mutation, focused on internal logic, structurally cannot reach.
+
+## Back matter — sources & traceability
+
+- **Coverage/JaCoCo** (`jacoco.org`; `github.com/jacoco/jacoco`): on-the-fly Java-agent bytecode instrumentation + probes (ASM shaded; CRC64 class id; `.exec`); six counters verbatim — INSTRUCTION(C0)/BRANCH(C1, w/o debug info)/LINE(requires debug info)/METHOD/CLASS/COMPLEXITY (`v(G)=B−D+1`) (counters.html); Maven `org.jacoco:jacoco-maven-plugin` goals prepare-agent/report/check/merge/report-aggregate/instrument; Gradle `id 'jacoco'` jacocoTestReport/jacocoTestCoverageVerification, `toolVersion`; `check` rule model verbatim (element/counter/value enums, minimum/maximum, haltOnFailure default true — check-mojo.html). Folklore: Fowler "TestCoverage" bliki verbatim ("little use as a numeric statement…", "high coverage numbers are too easy to reach with low quality testing", "useful tool for finding untested parts", targets-get-gamed, suspicious-of-100%). JDK lag: Java 21→0.8.11, Java 25→0.8.14 (0.8.13 experimental). *(model/counters/rule verified; **version 0.8.15 verified** = SOURCE-PIN.md §3 (re-pinned 0.8.16→0.8.15, 2026-06-27) + built green in 08-companion-code/48; **prepare-agent/argLine-clobber-fix verified** by the green build; JDK-support-mapping/synthetic-filter-list/exclusion-keys ⚠ @pin — upstream-doc facts not in SOURCE-PIN.)*
+- **Mutation/PITest** (`pitest.org`; `github.com/hcoles/pitest`): mutation = fault-detecting power; introduce faults → run tests → KILLED/SURVIVED; mutation score = killed ÷ total; PIT verbatim "does not check that your tests are actually able to detect faults". Mechanism: line-coverage pass first → mutators on bytecode → run only covering tests fastest-first (vs Jester/Jumble). 7 statuses verbatim (basic-concepts): KILLED/SURVIVED/NO_COVERAGE/TIMED_OUT/MEMORY_ERROR/RUN_ERROR/NON_VIABLE; test strength = killed ÷ mutants-with-coverage. Mutators DEFAULTS (CONDITIONALS_BOUNDARY/INCREMENTS/INVERT_NEGS/MATH/NEGATE_CONDITIONALS/VOID_METHOD_CALLS/EMPTY|FALSE|TRUE|NULL|PRIMITIVE_RETURNS) + STRONGER/ALL; RETURN_VALS deprecated. Wiring `org.pitest:pitest-maven` goal `mutationCoverage`; `pitest-junit5-plugin` REQUIRED for Jupiter (silent no-coverage if missing); Gradle `info.solidsoft.pitest`; `mutationThreshold`/`coverageThreshold`/`testStrengthThreshold`. Incremental `withHistory` ("currently unproven" — trades soundness for speed). Equivalent mutants = undecidable ceiling <100% (PIT skips logging-call mutations). *(identity/statuses/mutators verified; **version 1.25.3 verified** = SOURCE-PIN.md §3 + built green in 08-companion-code/48; JUnit5-matrix/threshold-defaults/test-strength-denominator/status-accounting/mutator-semantics ⚠ @pin — upstream-doc facts not in SOURCE-PIN / pitest-junit5-plugin matrix per 09-flags/48_pitest_junit5_plugin_matrix_verify_at_pin.md; "gold standard"/"state of the art" = PITest self-description quoted, not crowned; cost figure 2h/47KLOC = arxiv corroboration cite-with-source.)*
+- **Routing** — pyramid + coverage-≠-quality intro → Ch 20 (41); gate POLICY (threshold/ratchet/clean-as-you-code) → CI part (80); over-mocking flatters score → Ch 21 (44); flakiness corrupts score → Ch 20 (49); complexity counter → metrics chapter (58); SonarQube ingests JaCoCo XML → Ch 17 (35); dashboards/trend → key 88. Metric pair crown-neither; Java-25 preview mutation = AHEAD-OF-PIN; DEMO-CATALOG missing.
+
+**Companion module (spec — ✅ EXAMPLE-BUILD = BUILT GREEN 2026-06-26; `mvn -B -Pquality verify` → BUILD SUCCESS, 12 tests):** `08-companion-code/48_coverage_mutation_effectiveness/` — a `Discount.apply` method (boundary `qty >= 10` + `price*(1-rate)` + early return) with **two test classes**: (a) a *weak* test (asserts non-null) → full **line** coverage on `apply` yet PITest mutants **SURVIVED** (scoped to the weak test alone: 15 mutations, 5 killed = 33% mutation score, fails `mutationThreshold`); (b) a *strong* AssertJ boundary/value test → the same mutants **KILLED** (full suite: 15 mutations, 13 killed = 87%, test strength 87%), **line coverage unchanged**. JaCoCo (0.8.15 — SOURCE-PIN.md §3, re-pinned 0.8.16→0.8.15 on 2026-06-27; flag 48_jacoco_pin_0816_unpublished.md RESOLVED) runs in the default `verify`: `check` gates on BRANCH `COVEREDRATIO` (≥ 0.90) with a `MISSEDCOUNT maximum=0` ratchet limit alongside (the gate POLICY routed to the CI part); PITest behind the `pitest` profile (slow stage opt-in) with `pitest-junit5-plugin`. **Failure path:** the weak test reaches full line coverage yet fails the mutation gate (mutants survive on covered code) — the demonstrated thesis; the honest edge is that gating on INSTRUCTION/LINE alone lets a buggy variant pass, and chasing 100% mutation score hits equivalent mutants. The JaCoCo HTML report (`target/site/jacoco/`) pairs with the PITest report (`target/pit-reports/`, surviving → killed) as the two-axis contrast.
+
+**Snippet tags:** `under-test` (`Discount.java`); `weak-test` (`DiscountWeakTest.java`); `strong-test` (`DiscountTest.java`); `jacoco-check` (`pom.xml`) — 4 tags, each ≤9 lines (6/6/4/5), all bound into the prose above via tag-include markers and verified green by `check_snippets.sh`.
+
+## Next chapter teaser
+
+A change can be fully covered and kill every mutant and still break what a downstream consumer relies on, or silently alter an output a human once signed off as correct — because coverage and mutation look *inward*, at the code's own logic. The next chapter looks *outward*: contract testing, which verifies the agreement between a service and the consumers that depend on it, and approval testing, which pins a complex output against a reviewed baseline so any drift surfaces for a human to accept. Two kinds of correctness the inward-looking metrics cannot reach.

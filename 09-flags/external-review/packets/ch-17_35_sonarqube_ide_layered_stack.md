@@ -1,0 +1,277 @@
+# SCORING PACKET — Printed Chapter 17  (dossier 35_sonarqube_ide_layered_stack)
+# 1. Paste EVERYTHING below the line into a fresh chat in a DIFFERENT-VENDOR LLM (not Claude).
+# 2. Save its one-pager reply VERBATIM as: 03-drafts/35_sonarqube_ide_layered_stack/35_sonarqube_ide_layered_stack_SCORE_INDEP.md
+# 3. score >=88% (44/50) + floors A/B/C-source PASS auto-promotes the chapter.
+# =====================================================================
+
+# External independent-review prompt (paste into the other LLM)
+
+> **How to use.** For one chapter: paste everything in the fenced block below into your top-tier LLM,
+> then **attach or paste the chapter draft** (`03-drafts/<slug>/<slug>_v1.md`). The LLM returns a
+> one-pager scorecard. Save that reply verbatim as `03-drafts/<slug>/<slug>_SCORE_INDEP.md` (or paste
+> it back here) — it is written in the exact format the pipeline's engine parses, so it drops straight
+> in and Claude applies the lifts. This is the **independent gate**: a different model from the author
+> (Claude/Opus), which is the whole point.
+
+---
+
+```
+You are an INDEPENDENT editorial quality gate for a technical book on Java code quality. You are a
+DIFFERENT model from the author — your job is to be a rigorous, skeptical reviewer who catches an
+over-generous self-assessment, NOT to praise. Review the ONE chapter draft I attach.
+
+Score it against these five clusters, each 1–10 (higher is better):
+- CLARITY — is the mechanism explained in a clear, followable order; why-before-how; a load-bearing figure where one is needed?
+- ACCURACY — is every technical claim correct and traceable to a credible source; any invented rule ID, API, version, GAV, flag, or statistic? (Flag specifics that look unverifiable as PENDING, not invented, unless clearly fabricated.)
+- UTILITY — is it directly actionable; concrete guidance, decision rules, a runnable example or worked snippet?
+- DEPTH — does it go beyond a feature tour to senior-level insight and the real trade-offs?
+- READABILITY — does it read in ONE locked voice: third-person invisible narrator (NO second-person "you" in narration; imperative is allowed for instructions), no narration contractions, em-dash density ≤ ~8 per 1000 words, no self-narration ("the load-bearing point is…"), no filler ("simply", "just", "obviously", "easy")?
+
+Also judge the THREE content floors as PASS / PENDING / FAIL:
+- A — NEUTRALITY: no option crowned; NO banned phrasings ("better than", "unlike X", "superior", "beats", "the problem with X", "outperforms", "worse than", "inferior"); every cross-tool comparison is on named axes with trade-offs both ways. (A single banned phrase = FAIL.)
+- B — HONEST-LIMITATIONS: every technique/claim carries its hardest objection AND an explicit when-NOT-to-use.
+- C — SOURCE-TRACE: no invented facts; specifics trace to a credible source. (Mark SaaS/dated stats that cannot be verified from the text as PENDING.)
+(Two more are tracked elsewhere — for COMPILE write PENDING, for CODE-REVIEW write N/A; do not fail the chapter on them.)
+
+Return ONLY this one-pager, in EXACTLY this Markdown structure (keep the headings and the literal "Aggregate NN/50" line):
+
+# INDEPENDENT SCORECARD — Ch <N> — model: <your model name> — <date>
+
+## Content floors
+| Floor | Verdict | Evidence / offending text + fix |
+|---|---|---|
+| A — NEUTRALITY | PASS or PENDING or FAIL | … |
+| B — HONEST-LIMITATIONS | PASS/PENDING/FAIL | … |
+| C — SOURCE-TRACE | PASS/PENDING/FAIL | … |
+| C — COMPILE | PENDING | tracked separately |
+| C — CODE-REVIEW | N/A | tracked separately |
+
+## Clusters
+| Cluster | Score (1–10) | Note (specific, with a draft location) |
+|---|---|---|
+| CLARITY | n | … |
+| ACCURACY | n | … |
+| UTILITY | n | … |
+| DEPTH | n | … |
+| READABILITY | n | … |
+
+**Aggregate NN/50**
+
+## Lift actions (specific, minimal changes that would raise the score)
+1. <cluster/floor> — <exact location> — <the change to make>
+2. …
+(5–10 items, each concrete and actionable. Label each: prose-fixable / needs-figure / needs-source-verify / needs-example.)
+
+## Verdict
+APPROVE (≥40/50 AND A/B/C-source all PASS) · LIFT (below the bar — list above) · BLOCK (a floor FAILs).
+```
+
+---
+
+## The contract that makes this drop-in
+
+- The literal token **`Aggregate NN/50`** and the **floor table** are what the engine
+  (`.claude/scripts/status.py`) reads. Keep them exactly.
+- Save the reply as `03-drafts/<slug>/<slug>_SCORE_INDEP.md`. Claude then runs the lift actions
+  (the heavy editing) and re-requests a review if needed (≤3 lift passes), routing the chapter to the
+  human gate at ≥80% + floors PASS.
+- One chapter per request keeps the feedback a true one-pager.
+
+===================== CHAPTER DRAFT TO REVIEW =====================
+
+<!--
+Dossier key: 35 (owner) + folds 36 + 37 — per 01-index/FINAL_INDEX.md Ch 17
+Slug: 35_sonarqube_ide_layered_stack (owner key 35; folder uses owner-key dossier slug per convention)
+Part / arc position: Part IV — Static Analysis, Linting & Formatting, Chapter 17 (Part IV = Ch 15-19)
+Companion module: 08-companion-code/35_sonarqube_ide_layered_stack/ (CONFIG-centric layered-stack module) — EXAMPLE-BUILD = GREEN (mvn -B -Pquality verify: 7 tests, 0 Checkstyle, 0 SpotBugs; JDK 21.0.11 / Maven 3.9.16; 2026-06-26). Spec at foot.
+Verified against SOURCE-PIN: 2026-06-20. Sources (each tool cited to its OWN docs; this chapter OWNS the cross-tool verdict per the cluster routing):
+- Sonar (35): platform (rule engine + layer above); sonar-java reads source+bytecode (sonar.java.binaries REQUIRED for multi-file or analysis fails — verbatim); java:S### rule keys (java:S2077 verified example); symbolic-execution/data-flow engine; Clean Code taxonomy — MQR mode (3 software qualities Security/Reliability/Maintainability + 14 attributes FORMATTED..RESPECTFUL; severities Blocker/High/Medium/Low/Info) vs Standard mode (bug/vuln/code-smell/hotspot; Blocker/Critical/Major/Minor/Info); issue types DE-EMPHASIZED not removed; security hotspots review-driven; "Sonar way" profile + gate (built-in/default/read-only); Clean as You Code (gate on NEW code; fails if issues>0, hotspots reviewed 100%); SQALE debt (sum of remediation minutes; 30min/line default; A=0-0.05..E=0.51-1 grid — coarse trend not truth; ⚠ grid values version-sensitive, verify-at-pin); taint/deeper-SAST = Developer Edition (or higher)/Cloud (NOT free Community Build; ⚠ exact edition-version verify-at-pin); Oct-2024 product rename (SonarQube Server/Cloud/for IDE/Community Build ← SonarQube/SonarCloud/SonarLint/Community Edition); Connected Mode; scanners sonar-maven-plugin(sonar:sonar)/org.sonarqube Gradle/SonarScanner CLI.
+- IDE (36): author-time FIRST line, not a gate (local, settings-dependent). IntelliJ inspections ("detect and correct abnormal code before you compile it" verbatim; severities Error/Warning/Weak Warning/Server Problem/Grammar Error/Typo/Consideration/No-highlighting; highlighting None/Syntax/Essential/All-Problems; profile XML .idea/inspectionProfiles/; Code|Inspect Code batch; inspect.sh CLI; Actions on Save Reformat/Optimize imports/Rearrange/Run code cleanup) vs Eclipse JDT (Compiler Errors/Warnings Ignore/Warning/Error folded into JDT compiler; Save Actions Format/Organize imports/Additional via Clean Up). On-the-fly vs batch. Qodana = same engine in CI (SARIF, quality gates). EditorConfig shared truth. Save-action diff-noise trap.
+- Layered stack (37): substrate × moment matrix (source text/source AST/bytecode/javac AST/platform × author-time→compile→post-compile→CI→platform); one-owner-per-concern map; overlap/redundancy/noise 3 failure modes; order cheap-first/fail-fast; Lenarduzzi et al. 2021 (arxiv 2101.08832) "little to no agreement among the tools and a low degree of precision" (DATED — includes FindBugs→SpotBugs; cite for low-agreement=additive only, not per-tool benchmark).
+SOURCE-PIN §2 (corrected 2026-06-27) pins SonarQube Server 2026.1 LTA (patch 2026.1.3) — Server version now PINNED, not deferred. ⚠ dated-at-use (Sonar is SaaS/rolling), re-confirm at pin: scanner GAVs/rule defaults/severities/edition-gating/SQALE grids; IDE versions/default-profile membership; rules.sonarsource.com offline (use RSPEC repo); Lenarduzzi per-tool numbers (full paper). ⚠ AHEAD-OF-PIN: Sonar AI CodeFix. SOURCE-PIN gaps: IDEs + Qodana not yet §2 rows.
+Routes: per-tool depth → Ch 15/16; custom rules → Ch 18; FP policy/baselines → Ch 19; SAST/taint depth → security part; debt/SQALE depth → metrics chapter; end-to-end gate → CI part.
+DRAFT v1 — gates manual; substrate×moment-matrix + platform=engine+layer-above + first-line-not-the-gate + one-owner-per-concern shapes; EXAMPLE-BUILD green (module authored + built: mvn -B -Pquality verify, 7 tests / 0 Checkstyle / 0 SpotBugs, 2026-06-26).
+-->
+
+# Composition, Not Accumulation
+
+*SonarQube as the platform, the IDE as the first line, and how to layer analyzers into one coherent stack · 35 (folds 36, 37) · Part IV*
+
+> Bolting on every analyzer produces a slow build and a flood of duplicate findings. The skill is composing a few that each watch a different blind spot.
+
+## Hook
+
+Two facts sit in tension, and resolving them is this chapter. First: independent studies find that Java static analyzers **barely agree**. Point several at the same 47 projects and they flag mostly *different* things (Lenarduzzi et al., 2021). That argues for running several: their coverage is additive, not redundant. Second: a team that acts on that by bolting on Checkstyle *and* PMD *and* SpotBugs *and* Sonar with default rulesets gets a twenty-minute CI build, the same style nit reported by three tools, and developers who have learned to ignore the gate. That argues for running fewer.
+
+Both are right, and the resolution is neither "more tools" nor "fewer tools" but **composition**: each analyzer reads a *different substrate* (source text, source AST, compiled bytecode, the `javac` tree during compilation, or an aggregating platform) at a *different moment* (while editing, at compile, after compile, in CI), so each sees a class of defect the others cannot — and a coherent stack assigns *one owner per concern*, runs each at its cheapest moment, and rolls the whole thing up into one signal a team can act on. This chapter builds that stack. It leads with **SonarQube** (the platform that aggregates and gates), adds the **IDE** (the author-time first line), and closes with the **layering verdict** the previous chapter deferred: which tool owns what, and how to stop them drowning each other.
+
+## Overview
+
+**What this chapter covers**
+
+- The **substrate × moment matrix**: the one picture that explains why layering is additive, not redundant.
+- **SonarQube**: the platform *above* a rule engine (quality profiles, the **quality gate**, "Clean as You Code," the Clean Code taxonomy, and the debt/trend model), and where it is gated behind paid editions.
+- **IDE inspections** as the author-time **first line** (IntelliJ and Eclipse), why they are not a gate, and how `Connected Mode`/Qodana/EditorConfig make them a *shared* first line.
+- The **coherent stack**: one owner per concern, ordered cheap-first, fail-fast; the cross-tool verdict Chapter 16 routed here.
+
+**What this chapter does NOT cover.** Each analyzer's rule catalogue and config in depth (Chapters 15–16). Writing custom rules (Chapter 18). False-positive *policy*, including baselines, ratcheting, and what breaks the build (Chapter 19). Deep SAST / taint analysis (the security part). The SQALE/technical-debt model in depth (the metrics chapter). The full end-to-end CI gate (the CI part). Each tool here is cited to its own docs; **no tool is crowned**.
+
+**One idea to hold**: *a tool's substrate and moment decide what it can see and how fast. Compose a stack by covering each substrate×moment cell once (one owner per concern), not by stacking tools that re-check the same one.*
+
+## How it works
+
+![Fig 35.1 &mdash; The substrate &times; moment matrix: one owner per concern — Each tool reads one substrate at one moment &mdash; covering a cell no other tool reaches. Compose by assigning each concern exactly once.](../../05-figures/35_sonarqube_ide_layered_stack/fig35_1.png)
+
+*Fig 35.1 &mdash; The substrate &times; moment matrix: one owner per concern — Each tool reads one substrate at one moment &mdash; covering a cell no other tool reaches. Compose by assigning each concern exactly once.*
+
+
+### The substrate × moment matrix
+
+Every analyzer reads exactly one substrate, and that choice fixes both *what it can possibly see* and *when it can run*:
+
+| Tool | Substrate (what it reads) | Moment (when it runs) | Sees what the others cannot |
+|---|---|---|---|
+| IDE inspections | source AST, live in the editor | **author-time** (keystroke) | the fastest feedback; nothing the others structurally cannot, but *first* |
+| Error Prone | **`javac` AST during compilation** | **compile** (fails the build) | type-aware bugs, with the compiler's own type info + auto-fixes |
+| Checkstyle / PMD | **source text / source AST** | source pass | layout, naming, Javadoc, smells, duplication — things erased by compilation |
+| SpotBugs | **compiled bytecode** | **post-compile** | impossible casts, `volatile++`, null-on-exception-path — only visible after `javac` |
+| SonarQube | source + bytecode, its own engine (+ can ingest others) | IDE + CI + **platform** | trend over time, a server-side gate, PR decoration — a role, not just a check |
+
+> **CONCEPT** *Substrate determines reach; moment determines latency.* SpotBugs sees the bytecode `javac` emits that Checkstyle never reads; Checkstyle sees source layout SpotBugs has discarded; Error Prone has the compiler's resolved types the source linters lack. None is "smarter" — each stands somewhere different. The "coherent stack" is the deliberate choice of which cells to cover, *once each*. (This is Chapter 15's technique ladder turned into a composition rule.)
+
+This is *why* the analyzers barely agree, and why low agreement is good news: it means additive coverage. The composition problem is to capture that additivity without paying for the overlap.
+
+### SonarQube: the platform above the rule engine
+
+SonarQube is not "another linter" — it is a **quality platform** wrapping a rule engine. That distinction drives every choice in this section. It has two halves.
+
+**The rule engine** (`sonar-java`) analyzes *both source and bytecode*: for a multi-file project, "Compiled `.class` files are required" via `sonar.java.binaries` or "analysis will fail," so it runs after compile with the build's classpath, not as a source-only linter. Every Java rule has a key in the **`java:`** namespace (e.g. `java:S2077`), and the engine includes a **symbolic-execution / data-flow engine** for path-sensitive bugs (null dereference, resource leaks) beyond pattern matching. Rules are classified by the **Clean Code taxonomy**: in **MQR mode**, each rule impacts one or more of three **software qualities** (Security, Reliability, Maintainability) and carries one of 14 **Clean Code attributes** (FORMATTED, CONVENTIONAL, … RESPECTFUL), with severities Blocker/High/Medium/Low/Info. The older **Standard Experience mode** keeps the familiar rule *types* (Bug, Vulnerability, Code Smell, Security Hotspot). A precision point: those issue types are **de-emphasized in favour of the Clean Code framing, not removed**; both modes coexist.
+
+The scanner config records exactly that — where the engine reads its compiled inputs and classpath:
+
+<!-- include: 35_sonarqube_ide_layered_stack/sonar-project.properties#sonar-keys -->
+
+**The platform** is the layer a bare analyzer lacks: a **quality profile** (the named set of active rules; the built-in "Sonar way" is default and read-only and teams copy it to tune), a **quality gate** (the pass/fail policy), persistence and **trend over time**, and PR decoration. Its load-bearing idea is **Clean as You Code**: scope the gate to **new code** (added/changed per the project's new-code definition) rather than the whole codebase; the built-in gate fails when new-code "issues is higher than 0" and requires "Security Hotspots Reviewed … 100%." That is what makes a gate *workable on a legacy codebase*: fixing a decade of debt is not required to turn it on. Keeping new code clean is enough.
+
+Two scanner properties make that gate scope the diff and fail the build when it is breached:
+
+<!-- include: 35_sonarqube_ide_layered_stack/sonar-project.properties#quality-gate-wait -->
+
+> **CONCEPT** *Platform = rule engine + a layer above it.* SonarQube's distinct contribution over Checkstyle/SpotBugs is not "a better linter" — it is the layer above the rules: profiles, a server-side gate, trend, and PR decoration. It runs at three moments (author-time via SonarQube for IDE, CI via the scanner, and the dashboard over time), and in **Connected Mode** the IDE pulls the team's profile and gate so local findings match CI.
+
+Two honest limits to state plainly. The **flagship security analysis** — taint-based SAST that follows untrusted input to a sink — is a **Developer Edition (or higher) / Cloud** capability; the free **Community Build** has the rule engine but not the deep taint SAST. And the debt/rating model (SQALE: technical debt as a sum of per-rule "remediation minutes," a Maintainability A–E rating off a debt ratio) rests on **configurable conventions** (a default "30 minutes to develop a line"), so it is a *coarse trend signal, not a precise measurement*. Never report a debt figure as ground truth (the metrics chapter goes deeper). (Naming note: as of October 2024 the products are **SonarQube Server / Cloud / for IDE / Community Build** — formerly SonarQube / SonarCloud / SonarLint / Community Edition; use the current names.)
+
+### IDE inspections: the author-time first line
+
+The cheapest place to catch a defect is the **keystroke**. Both mainstream Java IDEs run a continuous analysis engine that highlights problems at the keystroke and offers a one-keystroke fix, plus a **save-action** layer that auto-formats and mechanically repairs on save. This is the leftmost moment in the toolchain — but it is a **first line, not a gate**, because it runs on the *author's* machine with the *author's* settings.
+
+The two IDEs deliver it differently (neither crowned):
+
+| | IntelliJ IDEA | Eclipse (JDT) |
+|---|---|---|
+| Where analysis lives | a dedicated **inspection engine** (separate from `javac`) | folded into the **JDT incremental compiler** (diagnostics are compiler warnings) |
+| Severities | Error / Warning / Weak Warning / … / No-highlighting, per-profile, scopable | per-diagnostic Ignore / Warning / Error |
+| Shared config | **inspection profile** XML under `.idea/inspectionProfiles/` (committed) | Errors/Warnings + Clean Up as project settings under `.settings/` (committed) |
+| Save-time | **Actions on Save** (Reformat / Optimize imports / Rearrange / Run cleanup) | **Save Actions** (Format / Organize imports / Additional via Clean Up) |
+
+The organizing distinction is **on-the-fly vs batch**: the squiggle appears at the keystroke (local, open files), while a batch run (`Code | Inspect Code…`, or the headless `inspect.sh` / **Qodana**, which runs the *same* inspections in CI with SARIF output and quality gates) covers the whole project and can feed a gate. The fix that makes the first line *trustworthy* is sharing it: commit the inspection profile, and pin formatting via **EditorConfig** so every developer's IDE and the build's formatter produce the same output.
+
+A committed `.editorconfig` is that shared style, with a note on binding the IDE to the team's gate:
+
+<!-- include: 35_sonarqube_ide_layered_stack/.editorconfig#connected-mode -->
+
+> **CONCEPT** *First line, not the gate.* The IDE gives the fastest feedback but guarantees nothing about what reaches the repo: a teammate who lowers the highlighting level or never commits the profile sees something different. So the author-time layer must be (a) *shared* (committed profile + `.editorconfig`) and (b) *backed by a build-time/CI equivalent*. "It's clean in my IDE" is not a contract; the gate lives in CI.
+
+One trap specific to the save-action half: aggressive reformat-on-save with an *unshared* style rewrites lines a developer never touched, producing noisy diffs and reformat fights. Pin one style via EditorConfig aligned with the build's canonical formatter (Chapter 6) so the IDE and CI agree.
+
+### The coherent stack: one owner per concern
+
+Now the verdict Chapter 16 deferred. With analyzers that each read a different substrate, the composition principle is **assign each quality concern to exactly one primary tool**, layered so each runs at its cheapest moment:
+
+Encoded in the companion module, that one-owner rule refuses a second owner for a concern outright:
+
+<!-- include: 35_sonarqube_ide_layered_stack/src/main/java/org/acme/layered/LayeredStack.java#one-owner -->
+
+| Concern | Primary owner (by substrate fit) | Equally-valid alternative |
+|---|---|---|
+| Formatting | a formatter (Spotless + google-java-format) | EditorConfig + IDE save-actions |
+| Style & convention | Checkstyle | PMD style rules; Sonar |
+| Source smells / duplication | PMD (+ CPD) | Sonar |
+| Compile-time correctness + auto-fix | Error Prone | — (unique substrate) |
+| Bytecode bug patterns | SpotBugs (+ fb-contrib) | Sonar's own engine |
+| Null-safety | NullAway / JSpecify / Checker FW | Sonar null rules |
+| Trend / debt / gate | SonarQube (platform) | aggregators |
+
+Turn that into *one* build with one owner per row, ordered **cheap-first / fail-fast**: format-check and Error Prone (which rides the compile) fail earliest; the source passes (Checkstyle/PMD) next; the SpotBugs bytecode pass after `compile`; the heavier platform/coverage/mutation last. The same ordered checks run at the IDE/pre-commit *and* in CI (local↔CI parity) so the developer is not surprised at the gate. That ordering is the menu from Chapter 3's map turned into a deliberate sequence — the answer is composition, not accumulation.
+
+In the build, the source-pass owner pins its analyzer engine separately from the build plugin:
+
+<!-- include: 35_sonarqube_ide_layered_stack/pom.xml#layered-gate -->
+
+In CI, the platform layer runs above those bare analyzers and gates the new code:
+
+<!-- include: 35_sonarqube_ide_layered_stack/ci/sonar-analysis.yml#ci-sonar-step -->
+
+## Deep dive: composing the stack without redundancy
+
+The naive stack (every analyzer, default rulesets, all as build-breakers) fails in three specific ways, and the composition above is the fix for each.
+
+**Overlap.** Style and convention rules overlap heavily: Checkstyle, PMD, and Sonar each ship line-length, naming, and empty-block checks. But the *empirical* picture is that cross-tool agreement is **low**: Lenarduzzi et al. (2021), studying six tools across 47 Java projects, report "little to no agreement among the tools and a low degree of precision." (Dating caveat: that study includes FindBugs, now superseded by SpotBugs; cite it for the *qualitative* low-agreement finding, which is the layering rationale, not as a current per-tool benchmark.) The lesson: overlap is real but concentrated in a minority of (mostly style) rule families; the bulk of findings are tool-unique. The fix is not dropping tools but **assigning each concern one owner**: let Checkstyle own style, and turn *off* Sonar's and PMD's overlapping style rules, so each finding comes from exactly one place.
+
+**Redundancy.** Running two source-AST style checkers for the same concern costs build time and produces near-duplicate findings with no coverage gain. The one-owner map eliminates it by construction.
+
+**Noise.** Every static tool has false positives (the same study reports low precision across the set). An un-tuned full stack as a build-breaker trains developers to ignore or disable the gate; the worst outcome is that the *real* findings drown too. The discipline: **tune and baseline the stack before gating it** (Chapter 19 owns the how — suppression with reason, baselines, ratcheting). A noisy gate is a net negative: it teaches the team that the gate lies, so the real findings get ignored alongside the false ones.
+
+The composed result is a stack where the IDE is the shared first line (fast, local, backed by CI), Error Prone fails the compile on type-aware bugs, Checkstyle and PMD own style and smells on the source, SpotBugs catches what only bytecode reveals, and SonarQube sits above it all — aggregating findings, tracking the trend, and applying one Clean-as-You-Code gate on new code that a team can actually keep green. Each tool earns its place by owning a substrate×moment cell no other tool covers; none is there to re-check a cell already owned.
+
+The unifying thread of Part IV's tool chapters: static analysis is a set of approximations reading different views of a program, and quality comes from *composing* those views deliberately — covering each blind spot once, at its cheapest moment, with a gate scoped so the team keeps it green rather than learns to route around it.
+
+## Limitations & when NOT to reach for it
+
+- **SonarQube is a platform, with platform cost.** SonarQube Server is a stateful service (database, upgrades, the LTA upgrade path); a small team may find the dashboard's value does not justify the ops overhead versus running the bare analyzers in CI. Cloud removes the ops cost but adds per-LOC pricing. When NOT: a build-only stack suffices and the team does not need trend/gate-over-time.
+- **Sonar's deep security is paid.** Taint-based SAST for Java is Developer Edition+/Cloud, not the free Community Build. A team needing free injection analysis must weigh open-source SAST (the security part), each cited to its own source.
+- **Sonar needs bytecode + classpath** (`sonar.java.binaries`): heavier setup than a source-only checker, and it must run after compile.
+- **IDE inspections are not a gate.** Local, settings-dependent, scoped to open files on-the-fly; without a committed profile/EditorConfig *and* a CI equivalent, "clean in my IDE" guarantees nothing. The headless path (`inspect.sh`/Qodana) *can* gate but spins up a full IDE, making it heavier than a purpose-built CI linter.
+- **Save-actions can wreck diffs.** Reformat-on-save with an unshared style rewrites untouched lines and causes reformat fights; pin EditorConfig + the build's canonical formatter, and consider scoping reformat to changed lines.
+- **The debt/rating model is coarse, not exact.** SQALE letter ratings and technical-debt minutes rest on configurable conventions: trend/triage signals, never a precise "this codebase owes N hours."
+- **More tools is not more quality.** Overlap costs build time without coverage gain; an un-tuned, un-baselined stack as a build-breaker erodes the gate's credibility. Compose one owner per concern, tune before gating, split fast (pre-commit) from full (CI) so feedback latency stays low.
+- **The whole stack is necessary, not sufficient.** Static analysis reasons without running the code; a green gate is a *policy* met, not proof of correctness. It does not replace tests (Part V) or runtime security testing.
+
+> **AHEAD-OF-PIN** Sonar's AI-assisted fix suggestions (AI CodeFix, 2024+) are product movement around the anchor; mention as direction, never as a settled anchor fact.
+
+## Alternatives & adjacent approaches
+
+- **The bare analyzers in CI without a platform** (Chapter 16): Checkstyle/PMD/SpotBugs/Error Prone wired into Maven/Gradle and failing the build directly. Sufficient for many teams; the trade-off is loss of trend, the server-side gate, and PR decoration.
+- **Other aggregators** (Codacy, Code Climate): hosted platforms that ingest multiple analyzers' output, filling the same "platform above the engines" role as Sonar with a different commercial shape.
+- **Qodana** (JetBrains): runs the IDE's *own* inspection engine headless in CI with SARIF + quality gates; it reuses the IDE-first-line profile as a gate and offers an alternative platform path for IntelliJ shops.
+- **CodeQL / Semgrep** (the security part): whole-program taint SAST for the injection class Sonar's paid taint engine targets.
+- **Pre-commit hooks** (the CI part): the line between the IDE and CI. Run the fast layers locally before the commit lands.
+
+These layer rather than compete: the IDE first line, the bare analyzers (or Qodana) in the build, and a platform (Sonar/aggregator) above for trend and the gate, composed with one owner per concern.
+
+## When to use what
+
+- **For the author-time first line:** the IDE's inspections + save-actions, with a *committed* inspection profile and `.editorconfig` so the configuration is shared, and (optionally) `Connected Mode` to match the team's gate.
+- **For the build-time checks:** the bare analyzers (Chapter 16) with one owner per concern, ordered cheap-first, run identically at pre-commit and in CI.
+- **For trend, a server-side gate, and PR decoration:** SonarQube, with "Clean as You Code" scoping the gate to new code so a legacy codebase is not blocked wholesale.
+- **For free injection SAST:** open-source SAST (security part), not the free Community Build.
+- **For a small team / build-only setup:** skip the platform; run the bare analyzers in CI and gate on those.
+- **Before gating any stack:** tune and baseline it (Chapter 19); a noisy gate undermines itself.
+
+## Hand-off to the next chapter
+
+The composed stack now stands: the IDE first line, the bare analyzers each owning a substrate, and SonarQube above as the platform and gate. Everything so far has used the rules these tools *ship*. But every team eventually hits a convention or anti-pattern no off-the-shelf rule catches — a house API that must be called a certain way, a banned method, a project-specific contract. The next chapter is **writing custom rules**: custom Checkstyle checks, PMD/Sonar rules, and Error Prone/Refaster patterns, plus the related compile-time machinery of **annotation processors** and the contested **Lombok** debate. That is where the stack stops being something to configure and becomes something to extend.
+
+## Back matter — sources & traceability
+
+- **SonarQube** (`docs.sonarsource.com`; Server/Cloud/for IDE/Community Build — Oct-2024 rename, verbatim from Sonar's press release): `sonar-java` reads source+bytecode (`sonar.java.binaries` required, verbatim); `java:S####` keys (`java:S2077` verified); symbolic-execution engine; Clean Code taxonomy (MQR: 3 software qualities + 14 attributes FORMATTED…RESPECTFUL, severities Blocker/High/Medium/Low/Info; Standard: bug/vuln/code-smell/hotspot); issue types de-emphasized not removed; security hotspots review-driven; "Sonar way" profile + gate (default/read-only); Clean as You Code (new-code gate: issues>0 fails, hotspots 100%); SQALE debt (sum of remediation minutes, 30min/line default, A=0-0.05…E=0.51-1 — coarse trend); taint/deeper-SAST = Developer Edition (or higher)/Cloud; Connected Mode; scanners `sonar-maven-plugin`(`sonar:sonar`)/`org.sonarqube` Gradle/SonarScanner CLI. *(identity/taxonomy verified; Server version PINNED at **2026.1 LTA / patch 2026.1.3** per SOURCE-PIN §2 corrected 2026-06-27 — dated-at-use 2026-06, Sonar SaaS/rolling; scanner GAV/rule defaults/SQALE grids/exact edition-version matrix still ⚠ verify-at-pin; `rules.sonarsource.com` offline → RSPEC repo; AI CodeFix AHEAD-OF-PIN.)*
+- **IDE inspections** — IntelliJ IDEA (`jetbrains.com/help/idea`): inspections "detect and correct abnormal code … before you compile it" (verbatim); severities Error/Warning/Weak Warning/Server Problem/Grammar Error/Typo/Consideration/No-highlighting; highlighting None/Syntax/Essential/All-Problems; profile XML `.idea/inspectionProfiles/`; `Code|Inspect Code` batch; `inspect.sh` CLI; Actions on Save. Eclipse JDT (`help.eclipse.org`): Compiler Errors/Warnings (Ignore/Warning/Error); Save Actions (Format/Organize imports/Additional via Clean Up). Qodana (same engine in CI, SARIF + gates). EditorConfig (shared truth). *(identity verified; IDE versions/default-profile membership ⚠ @pin; IDEs+Qodana not yet SOURCE-PIN §2 rows.)*
+- **Layered stack** (the synthesis, owned here): substrate × moment matrix; one-owner-per-concern map; overlap/redundancy/noise; cheap-first/fail-fast ordering; local↔CI parity. **Lenarduzzi, Lujan, Saarimäki, Palomba, "A Critical Comparison on Six Static Analysis Tools" (2021, arXiv:2101.08832)** — "little to no agreement among the tools and a low degree of precision" (verbatim abstract; DATED — includes FindBugs→SpotBugs; cite for low-agreement=additive only). FindBugs is dead → SpotBugs.
+- **Routing** — per-tool depth → Ch 15/16; custom rules → Ch 18 (key 38); false-positive policy/baselines/ratcheting → Ch 19 (key 39); SAST/taint depth → the security part; SQALE/debt depth → the metrics chapter; end-to-end CI gate → the CI part.
+
+**Companion module (`08-companion-code/35_sonarqube_ide_layered_stack/` — EXAMPLE-BUILD green via `mvn -B -Pquality verify`):** a CONFIG-centric module that realizes the chapter's three layers. The **author-time first line** is a committed `.editorconfig` (shared style + the connected-mode note binding the IDE to the team's gate). The **build/CI layers** are the Sonar analysis config (`sonar-project.properties`: `sonar.java.binaries` plus the Clean-as-You-Code gate scoped to new code, with `sonar.qualitygate.wait=true` failing the build) and the CI Sonar step (`ci/sonar-analysis.yml`) running above the bare analyzers — both configuration, not run by the build. The **composition rule** is runnable Java (`org.acme.layered.LayeredStack`): it assigns one owner per concern, *refuses a second owner*, orders the owners cheap-first by moment, and surfaces an unowned concern as a coverage gap. The `-Pquality` profile is the **local layered gate** — Checkstyle (source view) ordered before SpotBugs (bytecode view), the local↔CI-parity equivalent of the stack. **Failure path:** assigning a second owner to a concern, or requiring an unowned concern, fails loudly (driven by tests); at the platform layer `sonar.qualitygate.wait=true` fails the build on new-code gate failure. **Honest edges in code:** more tools is not more quality (a second owner is refused, not silently run); the IDE is a first line not a gate; Sonar's taint SAST is paid-edition, the debt model is a coarse trend, and a green gate is policy not proof. The Sonar scanner is invoked by goal (`sonar:sonar`); its GAV version, the named rules' default severities, and edition gating remain **dated-at-use / `⚠ verify at pin`** (Sonar is SaaS-rolling; SOURCE-PIN §2 — corrected 2026-06-27 — pins SonarQube Server 2026.1 LTA / patch 2026.1.3, so the Server version is anchored while the scanner/rule/edition atoms stay version-sensitive), so no rule severity is asserted from memory and the live-server seeded-issue scan stays runtime-gated.
+- **Snippet tags:** `sonar-keys`, `quality-gate-wait` (`sonar-project.properties`); `connected-mode` (`.editorconfig`); `ci-sonar-step` (`ci/sonar-analysis.yml`); `layered-gate` (`pom.xml`); `one-owner` (`src/main/java/org/acme/layered/LayeredStack.java`).
+
+## Next chapter teaser
+
+The stack so far runs rules other people wrote. The next chapter covers writing them: a custom Checkstyle check or PMD/Sonar rule for a house convention, an Error Prone/Refaster pattern that bans-and-rewrites a deprecated API across the codebase — and the compile-time machinery next door: annotation processors, and the long-running argument over Lombok, the library that rewrites a class during compilation to delete boilerplate.

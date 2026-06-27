@@ -1,0 +1,250 @@
+# SCORING PACKET — Printed Chapter 33  (dossier 75_ci_pipeline_quality_gates)
+# 1. Paste EVERYTHING below the line into a fresh chat in a DIFFERENT-VENDOR LLM (not Claude).
+# 2. Save its one-pager reply VERBATIM as: 03-drafts/75_ci_pipeline_quality_gates/75_ci_pipeline_quality_gates_SCORE_INDEP.md
+# 3. score >=88% (44/50) + floors A/B/C-source PASS auto-promotes the chapter.
+# =====================================================================
+
+# External independent-review prompt (paste into the other LLM)
+
+> **How to use.** For one chapter: paste everything in the fenced block below into your top-tier LLM,
+> then **attach or paste the chapter draft** (`03-drafts/<slug>/<slug>_v1.md`). The LLM returns a
+> one-pager scorecard. Save that reply verbatim as `03-drafts/<slug>/<slug>_SCORE_INDEP.md` (or paste
+> it back here) — it is written in the exact format the pipeline's engine parses, so it drops straight
+> in and Claude applies the lifts. This is the **independent gate**: a different model from the author
+> (Claude/Opus), which is the whole point.
+
+---
+
+```
+You are an INDEPENDENT editorial quality gate for a technical book on Java code quality. You are a
+DIFFERENT model from the author — your job is to be a rigorous, skeptical reviewer who catches an
+over-generous self-assessment, NOT to praise. Review the ONE chapter draft I attach.
+
+Score it against these five clusters, each 1–10 (higher is better):
+- CLARITY — is the mechanism explained in a clear, followable order; why-before-how; a load-bearing figure where one is needed?
+- ACCURACY — is every technical claim correct and traceable to a credible source; any invented rule ID, API, version, GAV, flag, or statistic? (Flag specifics that look unverifiable as PENDING, not invented, unless clearly fabricated.)
+- UTILITY — is it directly actionable; concrete guidance, decision rules, a runnable example or worked snippet?
+- DEPTH — does it go beyond a feature tour to senior-level insight and the real trade-offs?
+- READABILITY — does it read in ONE locked voice: third-person invisible narrator (NO second-person "you" in narration; imperative is allowed for instructions), no narration contractions, em-dash density ≤ ~8 per 1000 words, no self-narration ("the load-bearing point is…"), no filler ("simply", "just", "obviously", "easy")?
+
+Also judge the THREE content floors as PASS / PENDING / FAIL:
+- A — NEUTRALITY: no option crowned; NO banned phrasings ("better than", "unlike X", "superior", "beats", "the problem with X", "outperforms", "worse than", "inferior"); every cross-tool comparison is on named axes with trade-offs both ways. (A single banned phrase = FAIL.)
+- B — HONEST-LIMITATIONS: every technique/claim carries its hardest objection AND an explicit when-NOT-to-use.
+- C — SOURCE-TRACE: no invented facts; specifics trace to a credible source. (Mark SaaS/dated stats that cannot be verified from the text as PENDING.)
+(Two more are tracked elsewhere — for COMPILE write PENDING, for CODE-REVIEW write N/A; do not fail the chapter on them.)
+
+Return ONLY this one-pager, in EXACTLY this Markdown structure (keep the headings and the literal "Aggregate NN/50" line):
+
+# INDEPENDENT SCORECARD — Ch <N> — model: <your model name> — <date>
+
+## Content floors
+| Floor | Verdict | Evidence / offending text + fix |
+|---|---|---|
+| A — NEUTRALITY | PASS or PENDING or FAIL | … |
+| B — HONEST-LIMITATIONS | PASS/PENDING/FAIL | … |
+| C — SOURCE-TRACE | PASS/PENDING/FAIL | … |
+| C — COMPILE | PENDING | tracked separately |
+| C — CODE-REVIEW | N/A | tracked separately |
+
+## Clusters
+| Cluster | Score (1–10) | Note (specific, with a draft location) |
+|---|---|---|
+| CLARITY | n | … |
+| ACCURACY | n | … |
+| UTILITY | n | … |
+| DEPTH | n | … |
+| READABILITY | n | … |
+
+**Aggregate NN/50**
+
+## Lift actions (specific, minimal changes that would raise the score)
+1. <cluster/floor> — <exact location> — <the change to make>
+2. …
+(5–10 items, each concrete and actionable. Label each: prose-fixable / needs-figure / needs-source-verify / needs-example.)
+
+## Verdict
+APPROVE (≥40/50 AND A/B/C-source all PASS) · LIFT (below the bar — list above) · BLOCK (a floor FAILs).
+```
+
+---
+
+## The contract that makes this drop-in
+
+- The literal token **`Aggregate NN/50`** and the **floor table** are what the engine
+  (`.claude/scripts/status.py`) reads. Keep them exactly.
+- Save the reply as `03-drafts/<slug>/<slug>_SCORE_INDEP.md`. Claude then runs the lift actions
+  (the heavy editing) and re-requests a review if needed (≤3 lift passes), routing the chapter to the
+  human gate at ≥80% + floors PASS.
+- One chapter per request keeps the feedback a true one-pager.
+
+===================== CHAPTER DRAFT TO REVIEW =====================
+
+<!--
+Dossier key: 75 (owner, leads) + folds 76 + 79 — per 01-index/FINAL_INDEX.md Ch 33 (OPENS Part IX — CI/CD & Quality Gates)
+Slug: 75_ci_pipeline_quality_gates (owner key 75)
+Part / arc position: Part IX — CI/CD & Quality Gates, Chapter 33 (OPENS Part IX; Ch 33-36)
+Companion module: 08-companion-code/75_ci_pipeline_quality_gates/ (staple-stack pipeline as CI config: ordered stages, PR-fast vs main-full split, ~/.m2 cache + parallel) — EXAMPLE-BUILD ✅ GREEN (`mvn -B -Pquality verify`, JDK 21.0.11: 11 tests pass, 0 Checkstyle, 0 SpotBugs; see _EXAMPLE.md). The illustrative CI YAML's network-gated stages (a live remote GitHub Actions run) stay → REPRO PENDING-RUNTIME offline. Spec at foot.
+Verified against SOURCE-PIN: 2026-06-27 (VERIFY pass at the corrected pin — JaCoCo 0.8.15, Spotless 3.6.0). Sources (3 concise main-loop dossiers; umbrella for Part IX; the gate pattern Parts IV-VIII kept touching, made general):
+- CI pipeline design (75, umbrella): a CI pipeline = where every quality gate runs on every change; its DESIGN (which checks/what order/what feedback latency) decides enforced-vs-theatre. Each stage = a fitness function (Ch 26 key 56); the pipeline = the portfolio (the generalization Ch 32 promised — security gate was one instance). Stage ordering = FAIL FAST, cheap→expensive: (1) compile + format-check + fast linters (Checkstyle/PMD Ch 16) → (2) unit tests (Ch 21) + coverage (Ch 23) → (3) heavier static (SpotBugs/Error Prone/Sonar Ch 16/17) + SAST/SCA/secrets (Ch 28/31) → (4) integration tests (Testcontainers Ch 22) → (5) mutation/perf where applicable (Ch 23/JMH) → (6) package + SBOM/sign (Ch 28/29). Cheapest most-likely-to-fail first. FAST FEEDBACK = core principle (45-min pipeline loses devs → speed §C). PR vs main vs nightly: fast gates block PRs; heavier (full DAST, long perf, deep mutation) on main/nightly. Reproducibility & parity: same build (./mvnw -B verify Ch 27) devs run locally (key 82); pinned tool versions (Ch 27/29). Every gate's verdict recorded (PR decoration key 78) → actionable. DORA capability.
+- Quality gate policy (76): a quality gate = the policy deciding can-this-merge/ship — which findings BREAK THE BUILD vs warn. Too strict → bypassed; too loose → meaningless. Can check: build/compile, tests pass, coverage threshold (Ch 23), no new high-severity static/security (Ch 16/17/31), no new secrets (Ch 31), no banned deps/licenses (Ch 27/29), architecture rules (Ch 26), complexity thresholds (metrics). SonarQube Quality Gate packages many. KEY POLICY DECISION — new code vs whole repo: gating WHOLE-REPO absolutes on legacy = impossible (block every PR); gating NEW/CHANGED code ("clean as you code", key 80) = modern default — devs own what they touch; Sonar default gate is new-code-focused (no new bugs/vulns/uncovered, reviewed hotspots, limited new duplication). Block vs warn: block on objective low-FP high-severity NEW; warn/triage subjective/noisy (Ch 19) to preserve credibility; security → reviewer (Ch 32). Enforcement: REQUIRED status check in branch protection (key 81) — can't merge around. Escape hatches with discipline: documented override (justification + approval + tracked) healthier than quiet disabling. LIMITS: too-strict→bypassed (#1 failure; routed-around gate net-negative); GAMING (Goodhart — gate on coverage% → assertion-free tests Ch 23; gates measure proxies); whole-repo-absolute impractical on legacy; green-gate ≠ good-code (no DETECTED policy violations; design/logic → review Ch 84); override-discipline-hard.
+- Gate performance (79): gate SPEED is a quality concern not a luxury — too slow → bypassed; slow local → devs skip. Make it fast enough the team keeps it on → enforcement + velocity (DORA) reinforce not fight. Build caching: Gradle build cache (local+remote) + config cache; Maven incremental/reactor; CI dep caching (~/.m2). Incremental analysis: analyzers on changed modules/files; Sonar PR analysis on new code; avoid full-repo re-scan/PR. Parallelism: Maven -T (parallel modules), Gradle parallel+workers, JUnit parallel exec; CI job parallelism/sharding. Test-suite speed: fast unit inner loop, slower integration later; quarantine/fix flaky (Ch 20) wasting retries. Stage placement: cheap on PR, expensive (full mutation/DAST/perf) on main/nightly. MEASURE it: track pipeline duration (meta-quality signal; creeping = debt). LIMITS: caching can mask staleness (bad cache key → false green; cache-invalidation hard → verify correctness + clean builds on main); parallelism surfaces flakiness/ordering bugs (hidden shared state Ch 20); incremental misses cross-module effects (periodic full scans backstop); optimization diminishing-returns + complexity-cost (optimize actual bottleneck); sharding/remote-cache infra cost.
+Resolved at VERIFY (2026-06-27): the runnable gate-policy facts are build-confirmed in `08-companion-code/75_ci_pipeline_quality_gates/` (green) — clean-as-you-code scoping to NEW findings, the block-narrowly severity axis, the three-way sealed `GateDecision` (Pass/Warn/Block), and pre-existing debt being out of scope all trace to the unit-tested `org.acme.cigate` code; Maven `-T` (parallel reactor) is the pinned Maven 3.9.16 flag, in the built YAML; OWASP Dependency-Check 12.2.2 and PITest 1.25.3 named in the YAML match their SOURCE-PIN rows. ⚠ Still dated-at-use / routed onward (not asserted as settled in this chapter's body): CI platform stage/job syntax (key 77 → Ch 34, GitHub Actions = rolling SaaS, dated 2026-06); DORA CI-capability wording (key 85 → Part X); SonarQube default Quality Gate conditions + "clean as you code" product wording (Ch 17/34); CI required-status-check mechanics (key 81 → Ch 35); Gradle build/config cache + JUnit parallel config + CI cache syntax + Sonar incremental/PR-analysis (performance-lever specifics, named not specified here). REPRO: a live remote CI run → REPRO PENDING-RUNTIME offline.
+Routes: fitness functions → Ch 26 (56); CI platforms (Actions/GitLab/Jenkins) + PR automation (reviewdog/Danger) → Ch 34 (77/78); coverage/clean-as-you-code strategy → Ch 34 (80); branch protection/trunk-based/merge-queue + pre-commit/local↔CI parity → Ch 35 (81/82); release quality → Ch 36 (83); DORA metrics → Part X (85); suppression/triage → Ch 19 (39); flaky tests → Ch 20 (49); build → Ch 27 (62); review (design/logic) → key 84; culture/shift-left → Ch 1 (06).
+DRAFT v1 — gates manual; pipeline-is-the-fitness-function-portfolio + fail-fast-cheap→expensive-ordering + clean-as-you-code-new-vs-whole-repo + block-vs-warn + speed-is-a-quality-concern + gate-routed-around-is-net-negative shapes; PART IX OPENER. EXAMPLE-BUILD ✅ GREEN (runnable gate policy unit-tested; CI YAML illustrative).
+-->
+
+# A Gate the Team Keeps On
+
+*Designing the CI pipeline that runs every gate in the book — ordered for fast feedback, scoped to new code, and kept fast enough that nobody routes around it · 75 (folds 76, 79) · Part IX (opener)*
+
+> Wire up every gate the team has built and run them all, blocking, on every pull request, and within a month the slow ones are skipped with `[skip ci]` and the strict ones are set to `continue-on-error`. The gates did not fail. The pipeline did.
+
+## Hook
+
+A team has built every gate in this book. The analyzers from Part IV, the test suite and coverage and mutation gates from Part V, the architecture rules from Part VI, the dependency and supply-chain scans from Part VII, the security gate from Part VIII — each works, each was carefully tuned in isolation. Then they wire all of it into one CI pipeline, set everything to block, and run it on every pull request. The pipeline takes forty minutes and fails on three hundred pre-existing findings the PR never touched. Within a month, half the checks are set to `continue-on-error`, developers merge with `[skip ci]`, and the quality program is decorative. Not one gate was wrong. The *pipeline* was never designed — and an undesigned pipeline collapses under its own weight.
+
+Designing the pipeline so the team *keeps it on* is the subject of Part IX, and it opens here. The previous parts built the individual gates; this part assembles them into one system that runs on every change without being slow enough or strict enough to get routed around — which, as Chapters 19 and 32 kept showing, is the way every gate dies. That assembly is three design decisions, one per section of this chapter. **Order** — which checks run when, so feedback is fast and failures are cheap (the pipeline). **Policy** — what *blocks* a merge versus what merely warns, scoped so a legacy codebase does not block every PR (the quality gate). **Performance** — how to keep the whole thing fast enough that nobody has a reason to skip it (gate speed). Each stage is a fitness function (Chapter 26); the pipeline is the portfolio; and getting these three right is the difference between quality that is enforced and quality that is theatre.
+
+## Overview
+
+**What this chapter covers**
+
+- **Pipeline design**: fail-fast, cheap-to-expensive stage ordering, and the PR / main / nightly split for fast feedback.
+- **Quality-gate policy**: what can block a merge, the new-code-versus-whole-repo decision (clean-as-you-code), and block-versus-warn.
+- **Gate performance**: caching, incremental analysis, parallelism, and stage placement — speed as a quality concern.
+- The unifying frame: the pipeline as a fitness-function portfolio, and the failure mode (a gate routed around) all three guard against.
+
+**What this chapter does NOT cover.** The CI *platforms* (GitHub Actions, GitLab, Jenkins) and PR automation (reviewdog, Danger), and coverage *strategy* in depth — the next chapter. Branch protection, trunk-based development, merge queues, and pre-commit/local parity (the chapter after). Release quality (the chapter after that). DORA metrics in depth (Part X). The individual gates themselves (Parts IV–VIII — what *runs* in the pipeline). This is the **pipeline-design umbrella**; specifics route onward. CI platform and tool specifics are verified at the pin.
+
+*A quality pipeline is a fitness-function portfolio, and it survives only if it is ordered for fast feedback, scoped to gate new code rather than the legacy mountain, and kept fast enough that developers never have a reason to route around it — order, policy, performance, all serving "a gate the team keeps on."*
+
+## How it works
+
+![Fig 33.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by feedback latency — Each stage is one fitness function; the pipeline is the portfolio. Order cheap → expensive so the most-likely-to-fail checks fail first. Keep the blocking PR path short; defer the slow, expensive checks to main and nightly so they never fall on a developer waiting to merge.](../../05-figures/75_ci_pipeline_quality_gates/fig75_1.png)
+
+*Fig 33.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by feedback latency — Each stage is one fitness function; the pipeline is the portfolio. Order cheap → expensive so the most-likely-to-fail checks fail first. Keep the blocking PR path short; defer the slow, expensive checks to main and nightly so they never fall on a developer waiting to merge.*
+
+
+### Pipeline design: order for fast feedback
+
+A CI pipeline is where every quality gate in this book actually runs, on every change, and its *design* — which checks, in what order, with what feedback latency — decides whether quality is enforced or theatre. The organizing principle is the one from the analyzer and build chapters, now applied to the whole program: **fail fast, cheapest and most-likely-to-fail first.**
+
+| Stage | Checks | Why here |
+|---|---|---|
+| 1. Compile + format + fast lint | `javac`, format-check, Checkstyle/PMD (Ch 16) | seconds; catches the most common, cheapest failures first |
+| 2. Unit tests + coverage | JUnit (Ch 21), JaCoCo (Ch 23) | fast feedback on behaviour |
+| 3. Heavier static + security | SpotBugs/Error Prone/Sonar (Ch 16–17), SAST/SCA/secrets (Ch 28, 31) | slower analysis, still on the PR |
+| 4. Integration tests | Testcontainers (Ch 22) | needs Docker; minutes |
+| 5. Mutation / performance | PITest (Ch 23), JMH | expensive; often main/nightly |
+| 6. Package + SBOM + sign | reproducible build, CycloneDX (Ch 28–29) | release artifacts |
+
+> **CONCEPT** *Not everything runs on every pull request.* Fast feedback is the core principle — a pipeline that takes forty-five minutes to give a verdict is one developers learn to bypass. So the blocking PR path is kept short (the cheap stages), while the expensive checks (full DAST, deep mutation, long performance suites) run on **main** or **nightly**, where their latency does not block a developer waiting to merge. The PR answers "is this change cheaply, obviously broken?" in minutes; the slower stages answer the deeper questions out of the critical path.
+
+In the companion pipeline configuration, that split is just the workflow's trigger block — the pull request runs the cheap blocking gates, the trunk adds the heavier stage, and a nightly schedule carries the most expensive checks.
+
+<!-- include: 75_ci_pipeline_quality_gates/ci/quality-gates.yml#pr-vs-main-split -->
+
+Two properties make the pipeline trustworthy: it runs the *same* build developers run locally (`./mvnw -B verify`, Chapter 27, with pinned tool versions so it cannot drift), and every gate's verdict is *recorded* on the pull request (PR decoration, next chapter) so a failure is immediately actionable rather than a mysterious red X. This is the fitness-function portfolio of Chapter 26 made operational — each stage an automated, continuous assessment of one quality characteristic, the whole pipeline the deliberate set of them.
+
+The middle stages of that pipeline are the test-and-coverage gate and the heavier static-analysis-and-security gate — and each one is the same Maven command a developer runs locally, so the pipeline and the inner loop cannot drift apart.
+
+<!-- include: 75_ci_pipeline_quality_gates/ci/quality-gates.yml#test-coverage-gate -->
+
+<!-- include: 75_ci_pipeline_quality_gates/ci/quality-gates.yml#static-security-gate -->
+
+### Quality-gate policy: what blocks, and on whose code
+
+A pipeline that *runs* checks still has to decide what to *do* when one fails — and that policy, not the checks themselves, is what most often makes or breaks the gate. A **quality gate** is the policy deciding whether a change can merge: which findings break the build versus merely warn. Too strict and it is bypassed; too loose and it is meaningless. A gate can check compilation, passing tests, a coverage threshold (Chapter 23), no new high-severity static or security findings, no new secrets, no banned dependencies or licenses (Part VII), architecture rules (Chapter 26), complexity thresholds — and SonarQube's Quality Gate packages many of these into one configurable policy.
+
+Expressed as code, that policy has two knobs — whether it scopes to new code, and the severity at which a finding blocks — and both are externalized into a profile rather than compiled in, so a feature-branch gate can tolerate more than the one guarding the trunk.
+
+<!-- include: 75_ci_pipeline_quality_gates/src/main/java/org/acme/cigate/GatePolicy.java#gate-policy -->
+
+> **CONCEPT** *Gate new code, not the whole repo — "clean as you code."* This is the breakthrough that made gates practical at scale. Gating *whole-repo absolutes* on a legacy codebase is impossible: a "zero findings" or "80% coverage" rule applied to a million existing lines blocks every pull request on debt the PR did not create. Gating **new and changed code** instead (no *new* bugs, no *new* uncovered code, hotspots reviewed) makes the gate adoptable immediately and assigns ownership correctly: developers own the quality of what they *touch*. SonarQube's default gate is new-code-focused for exactly this reason; it is the same scoping that saved the static-analysis gate in Chapter 19 and the security gate in Chapter 32, now stated as the general policy.
+
+In the companion gate, that scoping is the first step of the decision: under clean-as-you-code the findings are filtered to the new and changed ones before anything is allowed to block, and only the worst of those that clears the block severity fails the build.
+
+<!-- include: 75_ci_pipeline_quality_gates/src/main/java/org/acme/cigate/QualityGate.java#clean-as-you-code -->
+
+The second policy axis is **block versus warn**: block on objective, low-false-positive, high-severity *new* findings; warn and triage on the subjective or noisy ones (Chapter 19), so the gate's red light always means something real. Security findings often route to a reviewer rather than auto-blocking (Chapter 32). The gate is *enforced* by becoming a **required status check** in branch protection (next-but-one chapter), so it genuinely cannot be merged around — and the healthy complement to that hard enforcement is a *documented, tracked override path* (with justification and approval) for the rare legitimate exception, because a sanctioned escape hatch is far healthier than developers quietly disabling the check when it blocks something it should not.
+
+That axis is why the gate returns three outcomes rather than two: pass, a non-blocking warning, and a build-breaking block, each carrying the reason that produced it so the verdict is actionable.
+
+<!-- include: 75_ci_pipeline_quality_gates/src/main/java/org/acme/cigate/GateDecision.java#block-vs-warn -->
+
+The honest limits are the failure modes the policy must avoid. *Too strict gets bypassed.* That is the number-one failure, and a gate the team routes around is a net negative. *Gates get gamed* (Goodhart's law, the metrics folklore): gate on coverage percentage and the team produces assertion-free tests (Chapter 23), because a gate measures a proxy, not the quality itself. And a *green gate is not good code.* It means "no detected policy violations," and design and logic quality still need human review (Chapter 37).
+
+### Gate performance: fast enough to keep on
+
+The third decision is the one teams treat as an afterthought and should not: **gate speed is a quality concern.** A pipeline too slow for fast feedback gets bypassed; a slow local build makes developers skip the checks before pushing. Speed is the precondition for every other gate in the book — make the gate fast and enforcement and developer velocity reinforce each other (the DORA finding); make it slow and they fight, and the gate loses. The levers:
+
+- **Caching** — Gradle's build and configuration caches (local and remote), Maven's reactor and incremental build, and CI dependency caching (`~/.m2`) so unchanged work is not re-downloaded or rebuilt.
+- **Incremental analysis** — run analyzers on changed modules/files, and Sonar's PR analysis on new code, rather than re-scanning the whole repo every PR.
+- **Parallelism** — Maven `-T` for parallel modules, Gradle's parallel workers, JUnit parallel execution, and CI job sharding (splitting tests across runners).
+- **Stage placement** — the PR/main/nightly split from the pipeline section *is* a performance lever: keep the blocking PR path short, defer the expensive checks.
+- **Test-suite speed** — fast unit tests in the inner loop, integration tests later, and quarantine or fix the flaky tests (Chapter 20) that waste retries and erode trust.
+
+The first two levers sit together in one stage of the companion configuration: a `~/.m2` dependency cache so unchanged dependencies are not re-downloaded, and a parallel reactor build, with a comment marking where a bad cache key can false-green.
+
+<!-- include: 75_ci_pipeline_quality_gates/ci/quality-gates.yml#cache -->
+
+> **CONCEPT** *Speed has its own honest limits.* Each lever can backfire. **Caching can mask staleness**: a bad cache key skips work that should run and produces a false green, and cache invalidation is famously hard, so verify cache correctness and run clean builds on main. **Parallelism surfaces flakiness**: tests with hidden shared state that passed serially fail under parallel execution (Chapter 20), which is a real bug the speedup exposed, not a regression. **Incremental analysis can miss cross-module effects** (a change whose impact lands outside the changed file), so periodic full scans (nightly) backstop it. And optimization has diminishing returns: an over-tuned build is itself hard to maintain, so measure where the time actually goes (pipeline duration is a meta-quality metric; a creeping build time is debt) and optimize the real bottleneck, not a guess.
+
+## Deep dive: three decisions, one goal — a gate nobody routes around
+
+The three sections are not independent topics; they are three facets of a single design goal, and naming it is what turns "set up CI" into engineering. The goal is **a gate the team keeps on**, and every gate in this book, across every part, has died the same two deaths when that goal was not met: too *slow*, so developers bypass it, or too *strict*, so they disable it. Ordering, policy, and performance are precisely the three levers against those two deaths. Performance attacks "too slow" directly. Policy (clean-as-you-code, block-narrowly) attacks "too strict" directly. And ordering serves both: fast feedback from cheap-first staging, and a short blocking path that keeps the strict checks off the critical path. The three interlock: a perfectly-ordered pipeline with a too-strict policy still gets disabled; a lenient policy on a forty-minute pipeline still gets bypassed; all three are required.
+
+This also resolves a tension that has run through the whole book: enforcement versus velocity. Naively, every gate added slows the team and constrains it, so quality and speed look opposed, and a badly-designed pipeline makes that real, which is exactly why teams under deadline pressure strip gates out. But the DORA research found the opposite at well-run organizations: speed and stability *correlate*, because a fast, credible gate lets a team merge small changes frequently with confidence, while the absence of gates forces large, risky, infrequent releases. The reconciliation is in this chapter's three decisions: clean-as-you-code policy means the gate constrains only the new code a developer is already thinking about (low friction); fast performance means the verdict comes back before the developer has context-switched (low latency); and fail-fast ordering means the team hears about the cheap mistake in seconds, not the expensive one in an hour. A well-designed pipeline does not trade quality against speed — it is the mechanism by which a team gets both, which is why "the pipeline was never designed" is the root cause when a team feels quality gates are slowing them down.
+
+The honest center, shared with every gate chapter: **the pipeline enforces policy; it does not create quality, and it cannot fix culture.** A green pipeline means "no detected policy violations on new code" — it is necessary, high-value, and the thing that makes quality scale beyond individual heroics, but it is not a proof of good code (design and logic flaws pass every automated gate, Chapter 37) and it is helpless against a team that rubber-stamps red builds or normalizes `[skip ci]` (Chapter 1's culture point). More stages do not help such a team; fewer, well-chosen, fast, credibly-blocking stages do. The pipeline is the portfolio of fitness functions made to run continuously and cheaply enough that the team treats its verdict as real. That, far more than the number of gates, is what determines whether the quality program built across this entire book actually holds.
+
+## Limitations & when NOT to reach for it
+
+- **A slow pipeline gets bypassed.** If PR feedback is too slow, teams merge around it; speed is a first-class design concern, not an afterthought. Keep the blocking PR path short and defer expensive checks.
+- **A too-strict gate gets disabled.** The number-one failure; a gate the team routes around is a net negative. Scope to new code (clean-as-you-code) and block narrowly, or watch it get turned off.
+- **Gates get gamed.** Gate on a proxy (coverage %) and the team optimizes the proxy (assertion-free tests), not the quality (Goodhart's law). Gates measure proxies; pair them with review.
+- **A green pipeline is not good code.** It means "no detected policy violations" — design, logic, and authorization quality still need human review (Chapter 37). Do not read green as a quality proof.
+- **More stages ≠ better.** Every gate adds latency, maintenance, and false-positive surface (Chapter 19); include only gates that earn their cost.
+- **Caching can produce false greens.** A bad cache key skips work that should run; verify cache correctness and run clean builds on main. Cache invalidation is genuinely hard.
+- **Parallelism exposes flaky tests.** Hidden shared state fails under parallel execution — a real bug, not a regression, but it must be fixed (Chapter 20) before parallelism pays off.
+- **CI cannot fix a broken culture.** A team that rubber-stamps red builds or `[skip ci]`s is not helped by more gates (Chapter 1); the pipeline enforces policy, it does not create the will to care.
+- **The pipeline config is code.** It rots, drifts, and needs ownership and review like any code; an over-tuned build is its own maintenance liability.
+
+## Alternatives & adjacent approaches
+
+- **SonarQube Quality Gate** — packages many checks (new-code coverage, no new issues, hotspots reviewed) into one configurable, maintained policy; the common operationalization of this chapter's gate.
+- **PR / main / nightly split** — the structural alternative to "everything on every PR"; the primary lever for fast feedback without dropping coverage of the expensive checks.
+- **Merge queues and trunk-based development** (next-but-one chapter) — re-validate against the latest base and keep the gate meaningful as the codebase moves under it.
+- **Pre-commit hooks** (next-but-one chapter) — push the cheapest checks even further left, before CI, with the local↔CI parity caveat.
+- **Documented override paths** — the disciplined alternative to quiet gate-disabling: a tracked, justified, approved exception is far healthier than a silent `continue-on-error`.
+
+These compose into one enforceable system: a fast, fail-fast pipeline; a clean-as-you-code blocking policy; performance levers to keep it quick; and the branch-protection enforcement (next chapters) that makes the gate unbypassable while leaving a sanctioned escape hatch.
+
+## When to use what
+
+- **To order the pipeline:** fail-fast, cheap-to-expensive — compile/format/lint, then unit+coverage, then heavy static/security, then integration, then mutation/perf, then package.
+- **To keep PR feedback fast:** block on the cheap stages at the PR; defer full DAST, deep mutation, and long performance suites to main or nightly.
+- **To make the gate adoptable on a legacy codebase:** clean-as-you-code — gate new/changed code, not whole-repo absolutes.
+- **To set block-vs-warn:** block on objective high-severity new findings; warn and triage the subjective and noisy; route security to a reviewer.
+- **To enforce it:** a required status check in branch protection, with a documented, tracked override path.
+- **To keep it fast:** caching, incremental analysis, parallelism, and the PR/main/nightly split — verifying cache correctness and fixing the flakiness parallelism exposes.
+- **To know if it is healthy:** measure pipeline duration as a metric; a creeping build time is debt to pay down.
+
+## Hand-off to the next chapter
+
+This chapter set the pipeline's *shape* — order, policy, performance — but left the load-bearing policy decision, clean-as-you-code, as a principle rather than a worked strategy, and left the pipeline running on an unnamed platform with its verdicts appearing by magic on the pull request. The next chapter fills both in: **coverage and gate strategy** in depth — how clean-as-you-code actually scopes coverage and findings to new code so the gate is fair and adoptable — plus the **CI platforms** that run the pipeline (GitHub Actions, GitLab CI, Jenkins) and the **PR automation** (reviewdog, Danger) that turns a gate's raw output into the inline, actionable review comments that make a failure something a developer can fix in seconds. That is where the pipeline design here meets the concrete platforms and the developer's pull request.
+
+## Back matter — sources & traceability
+
+- **CI pipeline design** (key 75, umbrella) — pipeline = where every gate runs on every change; design (checks/order/latency) decides enforced-vs-theatre; each stage a fitness function (Ch 26 56), pipeline the portfolio (generalizes Ch 32's security gate). Stage ordering fail-fast cheap→expensive (compile/format/lint → unit+coverage → heavy static/security → integration → mutation/perf → package/SBOM/sign); fast-feedback core (PR vs main vs nightly); same build local↔CI (Ch 27 62, key 82) with pinned versions; verdicts recorded (PR decoration key 78). DORA capability (Part X 85). *(frame verified; fail-fast cheap→expensive ordering + the PR/main/nightly split confirmed in the green companion YAML. Still deferred: CI platform stage/job syntax = GitHub Actions rolling SaaS, dated-at-use 2026-06 (key 77 → Ch 34); DORA CI-capability wording ⚠ @pin → Part X 85.)*
+- **Quality-gate policy** (key 76) — the policy deciding can-this-merge (break-build vs warn). Checks: compile/tests/coverage(Ch 23)/no-new-high-severity(Ch 16/17/31)/no-new-secrets(Ch 31)/no-banned-deps-licenses(Ch 27/29)/arch-rules(Ch 26)/complexity; SonarQube Quality Gate packages. **Clean-as-you-code** (key 80): gate NEW/changed code not whole-repo (legacy-adoptable; devs own what they touch; Sonar default new-code-focused). Block-vs-warn (objective high-severity new blocks; subjective/noisy warn/triage Ch 19; security→reviewer Ch 32). Enforce: required status check in branch protection (key 81); documented tracked override. *(mechanism verified and build-confirmed in the green companion module — clean-as-you-code NEW-scope filtering, the block-narrowly severity axis, and the three-way sealed `GateDecision` are runnable + unit-tested in `org.acme.cigate`. Still deferred: SonarQube's product default-gate conditions + its "Clean as You Code" product wording (Ch 17/34) and the platform required-status-check mechanics (key 81 → Ch 35) ⚠ @pin. Limits: too-strict→bypassed #1; Goodhart-gaming; whole-repo-impractical; green≠good-code; override-discipline-hard.)*
+- **Gate performance** (key 79) — speed is a quality concern (too slow→bypassed; slow-local→skipped); fast gate ⇒ enforcement+velocity reinforce (DORA). Caching (Gradle build/config cache + remote; Maven reactor/incremental; CI ~/.m2); incremental analysis (changed modules; Sonar PR analysis); parallelism (Maven -T, Gradle workers, JUnit parallel, CI sharding); test-suite speed (unit-inner/integration-later; quarantine flaky Ch 20); stage placement (cheap-PR/expensive-main-nightly); MEASURE pipeline duration (meta-quality; creeping=debt). *(levers verified; Maven `-T` (parallel reactor) is the pinned Maven 3.9.16 flag and is in the green companion YAML. Still deferred (named as levers, exact flags not asserted here): Gradle build/config cache syntax, JUnit parallel-execution config, CI cache-action syntax (GitHub Actions = rolling SaaS, dated 2026-06), Sonar incremental/PR-analysis (Ch 34) ⚠ @pin. Limits: caching-masks-staleness/false-green; parallelism-surfaces-flakiness; incremental-misses-cross-module; diminishing-returns; infra-cost.)*
+- **Routing** — fitness functions → Ch 26 (56); CI platforms + PR automation → Ch 34 (77/78); coverage/clean-as-you-code strategy → Ch 34 (80); branch protection/trunk-based/merge-queue + pre-commit/parity → Ch 35 (81/82); release → Ch 36 (83); DORA → Part X (85); suppression/triage → Ch 19 (39); flaky → Ch 20 (49); build → Ch 27 (62); review → key 84; culture/shift-left → Ch 1 (06). SOURCE-PIN (2026-06-27): the DORA (2025 report), SonarQube (Server 2026.1 LTA), and GitHub Actions / GitLab / Jenkins rows are pinned — GitHub Actions as rolling SaaS, dated 2026-06; the specific DORA-capability and Sonar default-gate *wording* atoms stay routed (Part X / Ch 17·34) and CI platform syntax is dated-at-use. A live remote CI run → REPRO PENDING-RUNTIME offline.
+
+**Companion module (`08-companion-code/75_ci_pipeline_quality_gates/` — EXAMPLE-BUILD ✅ GREEN, `mvn -B -Pquality verify`, Java 21; CI/network-gated stages → REPRO PENDING-RUNTIME):** the quality stack expressed two ways, kept in lock-step. The pipeline is illustrative **CI configuration** (`ci/quality-gates.yml`, GitHub Actions form) — ordered fail-fast stages (compile/format/lint → unit+coverage → static/security), a **PR-fast vs main-full split** (mutation/full-security on main/nightly), `~/.m2` dependency caching, and a parallel reactor (`-T`); that file is configuration, not run by the build. The load-bearing decision is runnable and unit-tested in `org.acme.cigate.QualityGate` — the **clean-as-you-code quality gate** that scopes to new code, blocks on new high-severity findings, and warns on the rest — so `mvn -Pquality verify` is the local equivalent of the CI gate (Ch 27 parity). **Failure path:** `QualityGate.evaluate` returns a sealed `GateDecision` (pass/warn/block); a new high-severity finding blocks, a lesser new finding warns, and pre-existing debt is out of scope (passes). **Honest edges (comments):** the gate blocks new-code only (whole-repo absolutes would block every PR — Ch 19); the cache can false-green on a bad key (clean build on main backstops); a green gate is not good code (design/logic need review, Ch 84); no pipeline fixes a culture that rubber-stamps red builds (Ch 1).
+
+**Snippet tags:** `ci/quality-gates.yml#pr-vs-main-split`, `ci/quality-gates.yml#test-coverage-gate`, `ci/quality-gates.yml#static-security-gate`, `ci/quality-gates.yml#cache` (CI config); `org.acme.cigate` → `GatePolicy.java#gate-policy`, `QualityGate.java#clean-as-you-code`, `GateDecision.java#block-vs-warn` (the gate policy in code). 7 tags, each ≤9 displayed lines, resolved by `check_snippets.sh`.
+
+## Next chapter teaser
+
+This chapter set the pipeline's shape but left clean-as-you-code as a principle and the platform unnamed. The next chapter makes both concrete: coverage and gate *strategy* — how clean-as-you-code scopes coverage and findings to new code so the gate is fair on a legacy codebase — and the CI *platforms* (GitHub Actions, GitLab, Jenkins) plus PR automation (reviewdog, Danger) that run the pipeline and turn a gate's output into the inline review comments a developer can act on. Pipeline design meets the concrete platform and the pull request.

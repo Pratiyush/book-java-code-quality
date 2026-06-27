@@ -1,0 +1,245 @@
+# SCORING PACKET — Printed Chapter 39  (dossier 91_refactoring_legacy_modernization)
+# 1. Paste EVERYTHING below the line into a fresh chat in a DIFFERENT-VENDOR LLM (not Claude).
+# 2. Save its one-pager reply VERBATIM as: 03-drafts/91_refactoring_legacy_modernization/91_refactoring_legacy_modernization_SCORE_INDEP.md
+# 3. score >=88% (44/50) + floors A/B/C-source PASS auto-promotes the chapter.
+# =====================================================================
+
+# External independent-review prompt (paste into the other LLM)
+
+> **How to use.** For one chapter: paste everything in the fenced block below into your top-tier LLM,
+> then **attach or paste the chapter draft** (`03-drafts/<slug>/<slug>_v1.md`). The LLM returns a
+> one-pager scorecard. Save that reply verbatim as `03-drafts/<slug>/<slug>_SCORE_INDEP.md` (or paste
+> it back here) — it is written in the exact format the pipeline's engine parses, so it drops straight
+> in and Claude applies the lifts. This is the **independent gate**: a different model from the author
+> (Claude/Opus), which is the whole point.
+
+---
+
+```
+You are an INDEPENDENT editorial quality gate for a technical book on Java code quality. You are a
+DIFFERENT model from the author — your job is to be a rigorous, skeptical reviewer who catches an
+over-generous self-assessment, NOT to praise. Review the ONE chapter draft I attach.
+
+Score it against these five clusters, each 1–10 (higher is better):
+- CLARITY — is the mechanism explained in a clear, followable order; why-before-how; a load-bearing figure where one is needed?
+- ACCURACY — is every technical claim correct and traceable to a credible source; any invented rule ID, API, version, GAV, flag, or statistic? (Flag specifics that look unverifiable as PENDING, not invented, unless clearly fabricated.)
+- UTILITY — is it directly actionable; concrete guidance, decision rules, a runnable example or worked snippet?
+- DEPTH — does it go beyond a feature tour to senior-level insight and the real trade-offs?
+- READABILITY — does it read in ONE locked voice: third-person invisible narrator (NO second-person "you" in narration; imperative is allowed for instructions), no narration contractions, em-dash density ≤ ~8 per 1000 words, no self-narration ("the load-bearing point is…"), no filler ("simply", "just", "obviously", "easy")?
+
+Also judge the THREE content floors as PASS / PENDING / FAIL:
+- A — NEUTRALITY: no option crowned; NO banned phrasings ("better than", "unlike X", "superior", "beats", "the problem with X", "outperforms", "worse than", "inferior"); every cross-tool comparison is on named axes with trade-offs both ways. (A single banned phrase = FAIL.)
+- B — HONEST-LIMITATIONS: every technique/claim carries its hardest objection AND an explicit when-NOT-to-use.
+- C — SOURCE-TRACE: no invented facts; specifics trace to a credible source. (Mark SaaS/dated stats that cannot be verified from the text as PENDING.)
+(Two more are tracked elsewhere — for COMPILE write PENDING, for CODE-REVIEW write N/A; do not fail the chapter on them.)
+
+Return ONLY this one-pager, in EXACTLY this Markdown structure (keep the headings and the literal "Aggregate NN/50" line):
+
+# INDEPENDENT SCORECARD — Ch <N> — model: <your model name> — <date>
+
+## Content floors
+| Floor | Verdict | Evidence / offending text + fix |
+|---|---|---|
+| A — NEUTRALITY | PASS or PENDING or FAIL | … |
+| B — HONEST-LIMITATIONS | PASS/PENDING/FAIL | … |
+| C — SOURCE-TRACE | PASS/PENDING/FAIL | … |
+| C — COMPILE | PENDING | tracked separately |
+| C — CODE-REVIEW | N/A | tracked separately |
+
+## Clusters
+| Cluster | Score (1–10) | Note (specific, with a draft location) |
+|---|---|---|
+| CLARITY | n | … |
+| ACCURACY | n | … |
+| UTILITY | n | … |
+| DEPTH | n | … |
+| READABILITY | n | … |
+
+**Aggregate NN/50**
+
+## Lift actions (specific, minimal changes that would raise the score)
+1. <cluster/floor> — <exact location> — <the change to make>
+2. …
+(5–10 items, each concrete and actionable. Label each: prose-fixable / needs-figure / needs-source-verify / needs-example.)
+
+## Verdict
+APPROVE (≥40/50 AND A/B/C-source all PASS) · LIFT (below the bar — list above) · BLOCK (a floor FAILs).
+```
+
+---
+
+## The contract that makes this drop-in
+
+- The literal token **`Aggregate NN/50`** and the **floor table** are what the engine
+  (`.claude/scripts/status.py`) reads. Keep them exactly.
+- Save the reply as `03-drafts/<slug>/<slug>_SCORE_INDEP.md`. Claude then runs the lift actions
+  (the heavy editing) and re-requests a review if needed (≤3 lift passes), routing the chapter to the
+  human gate at ≥80% + floors PASS.
+- One chapter per request keeps the feedback a true one-pager.
+
+===================== CHAPTER DRAFT TO REVIEW =====================
+
+<!--
+Dossier key: 91 (owner, leads) + folds 92 + 93 + 95 — per 01-index/FINAL_INDEX.md Ch 39 (OPENS Part XI — Refactoring & Legacy)
+Slug: 91_refactoring_legacy_modernization (owner key 91)
+Part / arc position: Part XI — Refactoring & Legacy, Chapter 39 (OPENS Part XI; Ch 39-40)
+Companion module: 08-companion-code/91_refactoring_legacy_modernization/ (an untestable legacy class → seam → characterization test → safe refactor; a strangler routing-façade + flag) — ✅ EXAMPLE-BUILD = BUILT GREEN (mvn -B -Pquality verify on JDK 21.0.11: BUILD SUCCESS, 16 tests, 0 Checkstyle, 0 SpotBugs; see _EXAMPLE.md). The migration scale (OpenRewrite UpgradeToJava21 before/after) is network-gated → REPRO PENDING-RUNTIME and is NOT part of the built module. Spec at foot.
+Verified against SOURCE-PIN: 2026-06-20. Sources (4 dossiers; the craft Part X measured but didn't perform; one invariant — preserve-behavior+test-backed+incremental — at four scales):
+- Refactoring discipline (91, leads): changing the STRUCTURE of code WITHOUT changing its BEHAVIOR — the disciplined mechanism by which quality is RECOVERED + debt (Ch 1 key 02) paid down. Separates refactoring from "rewriting and hoping": small behavior-preserving steps, each verified by tests, code always working. Owns the HOW (Ch 12 key 19 owns the WHAT — smells). Fowler (Refactoring 2e 2018): a refactoring = a small behavior-preserving transformation (Extract Method/Rename/Move/Replace-Conditional-with-Polymorphism/Introduce-Parameter-Object); refactoring IS applying these in series under a green suite. Discipline: (1) tests cover the area (or characterize first §B); (2) one small refactoring; (3) run tests green; (4) commit; repeat. NEVER refactor + change behavior in one step. Smells→refactorings (Ch 12 catalogues smells; Fowler pairs each w/ the fix — this owns the mechanics). Tooling: IDE automated refactorings (behavior-preserving by construction) + Error Prone/Refaster + OpenRewrite at scale (Ch 40 key 94). Modern Java (canon-dating Ch 5 key 13): some 2018 manual refactorings now language features (Replace-Constructor-with-Factory→records; some Visitor→sealed+pattern-matching). "Two hats" (Fowler): refactor OR add-feature never both; preparatory refactoring (refactor before a change to make it easy); opportunistic (Boy Scout Rule Ch 1 key 06). LIMITS: refactoring-without-tests = just editing (#1 risk — untested legacy → characterize first §B); scope-creep ("while I'm here" bloats review Ch 37, mixes behavior+structure — separate the hats); big-refactorings-overrun (a "refactoring" that's a redesign loses the safety — that's modernization §C/§D); catalog-partly-dated (modern-Java lens); opportunity-cost (not all code worth refactoring, frozen/throwaway).
+- Legacy code/seams (92, §B): Feathers (WELC 2004) — LEGACY CODE IS CODE WITHOUT TESTS (without tests can't change safely). Dilemma: to add tests must refactor (for testability), but to refactor safely need tests. Way out: characterization tests + seams. Characterization tests: document what the code ACTUALLY does (not what it should) — a net pinning current behavior before you touch it; large/opaque output → approval/golden-master (Ch 24 key 52); then refactor (§A) w/ the net catching any change. Seams (Feathers): "a place where you can alter behavior without editing in that place" — object seams (inject collaborator / subclass-and-override), interface seams, link seams; a seam lets you insert a test double (Ch 21 key 44) to isolate from hard-to-test deps (DB/network/statics). Getting to a seam: legacy refactorings (Extract Method/Extract Interface/Parameterize Constructor/Subclass-and-Override) create seams WITHOUT tests using only IDE behavior-preserving refactorings — safe minimal step to enable a test. Loop: find change point → break deps to a seam → characterize → change → refactor under green. LIMITS: characterization pins CURRENT behavior INCLUDING BUGS (locks what-is not what-should-be; can rubber-stamp a bug into the golden master — Ch 24 approve-wrong-output; review captured behavior); seam-creation briefly uglier (transitional cost; clean up after tests exist); slow/flaky if dragging real deps (seams+doubles+scrubbers); not-a-substitute-for-understanding (tests=behavior not intent → docs/ADRs Ch 37 key 89); some-legacy-better-strangled-than-tested (§C).
+- Strangler-fig/modernization (93, §C): too-large/risky to refactor in place (§A) but too-valuable for a big-bang rewrite → STRANGLER FIG: grow a new implementation AROUND the old, incrementally route old→new, retire old once fully replaced. Fowler (StranglerFigApplication bliki 2004; after the fig that grows over a host tree). Pattern: façade/interception layer in front of old → build new behind it → redirect calls old→new piece by piece → when nothing routes to old, delete it; system delivers value throughout (no big-bang cutover). Java/services: routing layer (gateway/proxy/adapter) deciding old-vs-new per request; feature flags (Ch 35 key 81) to toggle/roll back each slice; characterization (§B) + contract tests (Ch 24 key 50) at the seam. Granularity: strangle by feature/endpoint/module — small enough to ship+verify+rollback independently. vs big-bang-rewrite (high risk, often fails — Fowler's motivation) / in-place-refactoring (§A when code CAN evolve in place). LIMITS: long-lived dual-running cost (maintain old+new+routing; can STALL half-done — worst state two-systems-forever; needs commitment to finish); façade/routing-layer is itself complexity+risk (shared state/data the hard part — DB migration/dual-writes/consistency); not-always-cheaper (small system → clean rewrite may be simpler; strangler shines at large/high-risk scale); requires-good-seams+tests; org-stamina (loses funding before completion; half-strangled accrues its own debt key 59).
+- Java version migration (95, §D): staying on old Java = silent debt (missed perf, missed quality-features records/sealed/pattern-matching Ch 5 key 13, missed security patches, widening cliff). Version migration IS quality work — the act (large test-backed change) + the payoff (modernizable code). LTS path 8→11→17→21→25 (book anchors 21, notes 25); migrate LTS-to-LTS; each hop known breaking changes (removed APIs, JPMS strong-encapsulation since 17, removed internals, deprecations-for-removal). Automate bulk (OpenRewrite Ch 40 key 94): rewrite-migrate-java UpgradeToJava17/21/25; composite recipes chain (25⊇21); "don't cover all changes" → manual follow-up. Process: (1) tests green on current (characterize thin §B); (2) bump DEPENDENCIES FIRST (Ch 27 key 64 — old libs don't run on new JDKs); (3) run migration recipe; (4) fix residual breaks (removed APIs/illegal reflective access); (5) build+test on target JDK (matrix Ch 34 key 77); (6) adopt new features opportunistically (Ch 5 key 13) — SEPARATE from the bump. Common breakages: JPMS strong encapsulation blocking deep reflection; removed/changed APIs; third-party libs/agents incompatible; build-tool/plugin versions. Modernize AFTER migrating (records/sealed/pattern-matching/virtual-threads Ch 5/14). LIMITS: recipes-don't-cover-everything (budget residual manual); dependency/agent-incompatibility usual blocker (deps first); big-jumps-compound-risk (8→25 in one leap harder than stepping); migration ≠ modernization (bump doesn't refactor old idioms — feature adoption deliberate follow-up); preview-at-25 NOT a migration target (AHEAD-OF-PIN Ch 5 key 13); test-coverage-gates-safety (characterize untested legacy first).
+☑ CONFIRMED @pin (2026-06-27): runnable modern-Java atoms — records, sealed interface + record-deconstruction patterns in switch (exhaustive, no default), Optional, streams/List.of, enum type-code retirement — confirmed against JLS SE 21 (SOURCE-PIN §1; record patterns JEP 440 + pattern matching for switch JEP 441 final in 21) AND by the green build of the companion module on JDK 21.0.11. LTS path 8→11→17→21→25 (anchor 21 / note 25) + JPMS strong-encapsulation-by-default since 17 (JEP 403) confirmed against SOURCE-PIN §1 runtime baseline + the OpenJDK JEP index.
+⚠ verify-at-pin (UNCONFIRMABLE in-repo — named-canon secondary text not redistributed, SOURCE-PIN §7; see 09-flags/91_canon_verbatims_and_openrewrite_recipe_ids.md): Fowler refactoring names + "two hats"/preparatory wording (Refactoring 2e); which catalog entries modern Java supersedes; Feathers seam definition+types + "legacy=code without tests" (WELC); Fowler StranglerFig wording/date (2004); OpenRewrite UpgradeToJavaNN recipe names + coverage caveats (network-gated; recipe-id spelling verify-at-pin, see also 09-flags/94_openrewrite_recipe_ids…). ⚠ AHEAD-OF-PIN: Java 25 preview features as migration targets (kept out of scope, never asserted as settled — SOURCE-PIN moving-target policy). SOURCE-PIN §7 canon: Fowler *Refactoring* 2e (2018) and Feathers *WELC* (2004) ARE pinned rows (edition pinned; text not in-repo → exact wording stays verify-at-pin). Fowler's *StranglerFigApplication* bliki (2004) is NOT a pinned §7 row — a canon gap; the pattern's mechanics (façade routes old→new incrementally) are corroborated by the built StranglerRouter, but the wording/date are verify-at-pin. REPRO: OpenRewrite migration network-gated + needs JDKs → REPRO PENDING-RUNTIME (not built; the other three scales are built green).
+Routes: smells (the WHAT) → Ch 12 (19); tests (the net) → Ch 20-23 (42/...); characterization/approval → Ch 24 (52); test doubles/seams → Ch 21 (44); contract tests (strangler seam) → Ch 24 (50); feature flags (strangler slices) → Ch 35 (81); modern Java features → Ch 5 (13); dependency currency (deps-first) → Ch 27 (64); JDK matrix → Ch 34 (77); AUTOMATED change (OpenRewrite/Refaster) + the remediation PLAYBOOK → Ch 40 (94/96); debt/hotspots → key 59; docs/ADRs (intent) → Ch 37 (89); economics of staying behind → Ch 1 (02); Boy Scout/culture → Ch 1 (06).
+DRAFT v1 — gates manual; preserve-behavior+test-backed+incremental (the one invariant) + ladder-of-scale(method→under-test→system→platform) + two-hats + legacy=no-tests-characterize-first + characterization-pins-bugs + strangler-vs-big-bang + migration≠modernization + canon-dating shapes; PART XI OPENER. EXAMPLE-BUILD pending.
+-->
+
+# Changing Code Without Breaking It
+
+*The craft of safe change at four scales — refactoring a method, getting untested code under test, strangling a system, migrating a Java version — all under one rule · 91 (folds 92, 93, 95) · Part XI (opener)*
+
+> A team declares the legacy system unmaintainable and starts a ground-up rewrite. Two years later the rewrite is still not done, the old system never stopped growing features, and the project is quietly cancelled. The most expensive failure in software has a single cause: changing everything at once.
+
+## Hook
+
+A team looks at a gnarled, decade-old system, declares it unmaintainable, and starts a from-scratch rewrite. Two years later the rewrite is still not feature-complete; the old system — which never stopped — has grown new features the rewrite does not have, so the rewrite is chasing a moving target; the people who knew the original requirements have left; and the project is quietly cancelled with nothing shipped. This is the most common and most expensive failure in software, and it has a single root cause: **changing everything at once.** The big-bang rewrite is seductive — a clean slate, no legacy cruft — and it fails because it discards the one thing the old system had that the new one does not: years of accumulated, working, behavior-correct code, much of it encoding requirements nobody remembers.
+
+The entire craft of this part is the alternative: **changing existing code safely, in small reversible steps.** This opening chapter is that craft at four scales, and the crucial insight is that all four are governed by *one invariant*: **preserve behavior, verify it with tests, move in increments small enough to stay safe, and never big-bang.** At the scale of a **method or class**, that is *refactoring* (Fowler's behavior-preserving transformations under a green suite). The precondition everywhere is a test net — so where one is missing, the scale of *getting untested legacy code under test* comes first (Feathers' characterization tests and seams). At the scale of a **whole system**, it is the *strangler fig* (grow the new around the old, route incrementally, retire the old). And at the scale of the **platform itself**, it is *Java version migration* (LTS hop, automate the bulk, dependencies first). Different scales, one discipline — the opposite of the rewrite, applied wherever change is needed.
+
+## Overview
+
+**What this chapter covers**
+
+- **Refactoring discipline**: Fowler's definition (behavior-preserving transformation), the small-step test-backed loop, and the "two hats."
+- **Working with legacy code**: legacy as code-without-tests, characterization tests, and seams to get untestable code under test.
+- **Strangler-fig modernization**: incremental system replacement as the alternative to the big-bang rewrite.
+- **Java version migration**: the LTS path, automating the bulk (OpenRewrite), dependencies-first, and migration-versus-modernization.
+
+**What this chapter does NOT cover.** The *what* to fix — the code smells (Chapter 12, which this chapter's *how* removes). The *tools*: the test net (Part V), characterization/approval testing (Chapter 24), test doubles (Chapter 21), feature flags (Chapter 35), contract tests (Chapter 24). **Automated large-scale change (OpenRewrite/Refaster) and the end-to-end remediation playbook** — the *engine* for the manual craft here — which is the next chapter. Modern Java features (Chapter 5). The named canon (Fowler, Feathers) is read through a modern-Java lens; JEPs/versions and OpenRewrite recipe names are verified at the pin.
+
+**The one idea that matters**: *change existing code by preserving behavior, verifying with tests, and moving in small reversible steps — at every scale (method, getting-under-test, system, platform) — because the big-bang rewrite discards the working behavior the old code encodes, and a test net is the precondition that makes safe change possible; where it is missing, build it (characterize) first.*
+
+## How it works
+
+![The safe-change refactoring loop (precondition → transform → verify green → commit → repeat), and the same invariant at method/legacy/system/platform scale.](../../05-figures/91_refactoring_legacy_modernization/fig91_1.png)
+
+*The safe-change refactoring loop (precondition → transform → verify green → commit → repeat), and the same invariant at method/legacy/system/platform scale.*
+
+
+### Refactoring: small behavior-preserving steps under a green suite
+
+**Refactoring is changing the structure of code without changing its behavior** — the disciplined mechanism by which quality is *recovered* and debt paid down, and the thing that separates it from "rewriting and hoping" is precisely the discipline. Fowler's definition: a refactoring is a small, *behavior-preserving* transformation — Extract Method, Rename, Move, Replace Conditional with Polymorphism, Introduce Parameter Object — and refactoring *is* applying these in series under a green test suite. (The code-smell catalogue of Chapter 12 says *what* to fix; this chapter owns the *how*.)
+
+> **CONCEPT** *The refactoring loop, and the two hats.* The discipline is a tight loop: (1) ensure tests cover the area (or characterize first — next section); (2) make *one* small refactoring; (3) run the tests — green; (4) commit; repeat. The cardinal rule: **never refactor and change behavior in the same step.** Fowler's "two hats" names it — at any moment the developer is *either* refactoring (structure, behavior fixed) *or* adding a feature (behavior, structure fixed), never both, because mixing them means a test failure cannot identify which change broke it. Refactor *before* a change to make the change easy (preparatory refactoring), and clean up opportunistically as code is touched (the Boy Scout Rule, Chapter 1).
+
+The tooling makes this safer: IDE automated refactorings (IntelliJ/Eclipse) are behavior-preserving *by construction*, far safer than manual edits; Error Prone/Refaster and OpenRewrite (next chapter) automate refactorings across a whole codebase. The canon is also read through a modern-Java lens (Chapter 5): some 2018-era manual refactorings are now *language features* — "Replace Constructor with Factory" is often just a `record`, some Visitor hierarchies become sealed types with pattern matching — so a JEP sometimes supersedes a catalog entry. The hard limit: **refactoring without tests is just editing.** Behavior cannot be known to be preserved if nothing verifies it — which is why untested legacy needs the next section *first*.
+
+### Legacy code: characterize, then create a seam
+
+Michael Feathers' working definition is deliberately stark: **legacy code is code without tests** — because without tests code cannot be changed safely. This creates the legacy dilemma: to add tests, the code often must be refactored for testability, but to refactor safely the tests must already exist. Feathers' way out has two tools:
+
+- **Characterization tests** capture what the code *actually does*, not what it *should* do, pinning current behavior as a safety net before anything is changed. The technique is to assert observed output; for large or opaque output, approval/golden-master testing (Chapter 24) captures it wholesale. With the net in place, refactoring proceeds (previous section) and any behavior change trips a test.
+- **Seams** are Feathers' key idea: *"a place where you can alter behavior without editing in that place."* Object seams (inject a collaborator, or subclass-and-override), interface seams, and link seams each allow a test double (Chapter 21) to be slotted in, isolating the unit from a hard-to-test dependency (a database, the network, a static call).
+
+> **CONCEPT** *Get to a seam using only behavior-preserving refactorings.* The chicken-and-egg — needing tests to refactor and refactoring to test — breaks because the *seam-creating* refactorings (Extract Method, Extract Interface, Parameterize Constructor, Subclass-and-Override) are exactly the IDE's behavior-preserving ones, so they can be applied *without* tests to create the seam; the characterization test is then written through it. The loop: find the change point → break dependencies to reach a seam → characterize the current behavior → make the change → refactor under the now-green tests.
+
+**Characterization tests pin current behavior *including its bugs*.** They lock what *is*, not what *should be*, so a bug can be rubber-stamped into the golden master (the approve-wrong-output risk from Chapter 24); the captured behavior must be *reviewed*, not blindly accepted. Tests capture behavior, not *intent*, and pair with docs and ADRs (Chapter 37) for the *why*. Seam-creation can briefly make the code uglier (a parameterized constructor, a subclass-for-testing) — an acceptable transitional cost to clean up once tests exist. And some legacy is better *strangled* than characterized, which is the next scale.
+
+### Strangler fig: grow the new around the old
+
+When a system is too large or risky to refactor in place but too valuable to rewrite big-bang, the **strangler fig pattern** (Fowler, 2004 — named for the fig that grows over and eventually replaces a host tree) is the middle path: grow a new implementation *around* the old one, incrementally route functionality from old to new, and retire the old once nothing routes to it. The system delivers value throughout — there is no big-bang cutover.
+
+The mechanics, in Java services: put a **façade or interception layer** (a gateway, proxy, or adapter) in front of the old system that decides, per request, whether to route to old or new; build each new slice behind it; redirect calls one feature/endpoint/module at a time; and when nothing routes to the old system, delete it. **Feature flags** (Chapter 35) toggle and roll back each migrated slice independently; **characterization tests** (previous section) and **contract tests** (Chapter 24) at the seam verify the new path matches the old behavior. The granularity is the safety: each slice is small enough to ship, verify, and reverse on its own — the incremental discipline at system scale.
+
+> **CONCEPT** *The half-strangled stall is the failure mode.* The strangler's danger is the long-lived dual-running state: the team maintains the old system, the new system, *and* the routing layer simultaneously, and the migration can stall half-done — two systems forever, the worst of both worlds — when funding or attention runs out. It needs organizational stamina to *finish*, and the half-strangled state accrues its own debt. The hard technical part is shared state: the data and consistency between old and new (database migration, dual-writes) is where strangler projects actually struggle. And it is not always cheaper — for a small system a clean rewrite may genuinely be simpler; the strangler earns its complexity only at large, high-risk scale.
+
+### Java version migration: the platform scale
+
+Staying on an old Java version is silent debt: missed performance, missed quality-improving language features (records, sealed types, pattern matching — Chapter 5), missed security patches, and a widening upgrade cliff. **Version migration is quality work** — both the act (a large, test-backed change) and the payoff (code that can now be modernized). The path is **LTS-to-LTS** — 8 → 11 → 17 → 21 → 25 (this book anchors 21, notes 25) — because each hop has a known set of breaking changes (removed APIs, JPMS strong encapsulation since 17, removed internals, deprecations-for-removal), and stepping through them is far safer than leaping 8 → 25 in one go.
+
+> **CONCEPT** *Automate the bulk, do dependencies first, and keep migration separate from modernization.* OpenRewrite's `rewrite-migrate-java` recipes (`UpgradeToJava17/21/25`, composite so 25 includes 21) apply the common mechanical changes across the whole codebase type-aware — but they explicitly do *not cover everything*, so budget residual manual work. The disciplined process: (1) get tests green on the current version (characterize where thin); (2) **bump dependencies first** — the usual blocker is an old library or agent that does not run on the new JDK (Chapter 27); (3) run the migration recipe; (4) fix residual breaks (removed APIs, illegal reflective access); (5) build and test on the target JDK (a version matrix, Chapter 34); (6) adopt new features opportunistically — *as separate steps from the bump*. **Migration is not modernization**: bumping the version does not refactor old idioms, and conflating the version change with feature adoption mixes the two hats at platform scale. Preview features at 25 are not migration targets — a codebase does not migrate onto unstable APIs.
+
+## Deep dive: one invariant, four scales, against the big-bang
+
+One invariant governs all four scales: **preserve behavior, verify it with tests, move in increments small enough to stay safe, keep the system working throughout.** Refactoring applies it to a method or class (a small transform, the suite stays green). Characterization-and-seams applies it to *getting code under test* — the precondition scale, because the invariant requires a test net and legacy code lacks one, so the net is built first using only behavior-preserving steps. The strangler fig applies it to a whole system (route one slice at a time, each reversible, the system always shippable). Version migration applies it to the platform (one LTS hop, automate the mechanical bulk, the build green on the target at each step). Method, under-test, system, platform: the same loop scaled up, with the granularity shrinking the risk at every level.
+
+The unifying enemy, recurring in every section, is the **big-bang**: the rewrite that discards working behavior, the migration that leaps versions, the cutover with no incremental path, the "refactoring" that is secretly a redesign and loses the behavior-preserving safety. The big-bang is seductive at every scale because incremental change feels slower and messier: two states to maintain, ugly transitional seams, the feature and the refactoring shipped as separate PRs. But the hook's two-year cancelled rewrite is what the big-bang actually costs. It trades the *bounded, per-step* risk of incremental change for the *unbounded, all-or-nothing* risk of changing everything at once, and on a system of any size the all-or-nothing bet loses. The whole craft rests on the conviction that *small reversible steps are safer than one big leap* — not because incremental is elegant, but because each small step is independently verifiable and reversible, so the system is never more than one step away from working. The big-bang is not working until the very end, if it ever gets there.
+
+The test net is the thread through all four scales. Every scale assumes verification: refactoring needs a green suite, the strangler needs characterization and contract tests at the seam, migration needs tests green on the current version before the hop. Where the net is missing, build it first — by capturing what-is, not what-should-be. The scale that *creates* the net (characterization) is the foundation under the other three, and it carries the subtlest honesty in the chapter: a characterization test pins *current* behavior, bugs and all, so it is a *net*, not a *specification*. It reports "behavior changed," not "behavior is correct," and a bug faithfully preserved is still a bug. This is why the captured behavior must be reviewed, why characterization pairs with the intent-capturing docs of Chapter 37, and why "some legacy is better strangled than characterized." The craft of safe change is, at bottom, the craft of *always having a way to know nothing was broken* — and where that way does not exist, the first move is to build it, carefully, before a single line changes. That is the discipline Part X measured as "debt trending down"; this is how the trend is actually produced.
+
+The companion module makes the precondition scale concrete: a shipping calculator that, as written, has no seam, because it constructs its own rate source inside the object.
+
+<!-- include: 91_refactoring_legacy_modernization/src/main/java/org/acme/refactoring/LegacyShippingCalculator.java#legacy-no-seam -->
+
+Extracting the rate source as an interface is the seam — the one place a test can alter behavior without editing the calculator.
+
+<!-- include: 91_refactoring_legacy_modernization/src/main/java/org/acme/refactoring/RateTable.java#seam-interface -->
+
+With the seam in place, a characterization test pins what the legacy method *does* today, including a rounding quirk a naive reading gets wrong — the net captures behavior, not correctness.
+
+<!-- include: 91_refactoring_legacy_modernization/src/test/java/org/acme/refactoring/SafeChangeTest.java#characterization-test -->
+
+Now the refactor can proceed under the net: the modernized calculator expresses the same computation through the seam with `Optional` and a typed result, one short recipe.
+
+<!-- include: 91_refactoring_legacy_modernization/src/main/java/org/acme/refactoring/ShippingCalculator.java#modern-refactor -->
+
+The representation leak the legacy accessor carried is closed in passing, by handing back an unmodifiable snapshot rather than an internal list.
+
+<!-- include: 91_refactoring_legacy_modernization/src/main/java/org/acme/refactoring/ShippingCalculator.java#modern-immutable-snapshot -->
+
+And the typed outcome lets a routing façade describe a quote with an exhaustive `switch` over the sealed result — a modern-Java idiom that supersedes a manual catalog step, with the compiler tracking the closed set of cases.
+
+<!-- include: 91_refactoring_legacy_modernization/src/main/java/org/acme/refactoring/StranglerRouter.java#sealed-switch -->
+
+A behavior-preservation test in the module proves the modernized calculator returns the identical charge as the legacy method for every parcel — quirk and all — so the structure changed and the result did not; the strangler router then routes each request to the legacy or the modern path behind a flag, the cutover lever the chapter's system scale turns one slice at a time.
+
+## Limitations & when NOT to reach for it
+
+- **Refactoring without tests is just editing.** The number-one risk: behavior cannot be known to be preserved if nothing verifies it. On untested legacy, characterize first — never refactor blind.
+- **Do not mix the two hats.** Refactoring and behavior change in one step means a failure cannot localize; "while I'm here" refactoring inside a feature PR bloats review (Chapter 37) and muddies what changed. Separate structure from behavior.
+- **A big "refactoring" that is really a redesign is not refactoring.** It loses the behavior-preserving safety; that is modernization (strangler/migration), planned and risk-managed differently.
+- **Characterization tests pin bugs.** They lock current behavior, not correct behavior — review the captured behavior, and remember they are a net, not a spec; they do not capture intent (pair with docs/ADRs, Chapter 37).
+- **The strangler can stall half-done.** Long-lived dual-running (old + new + routing) is costly and the half-strangled state is the worst outcome; it needs stamina to finish, and shared data/state is the hard part. For a small system, a clean rewrite may be simpler.
+- **Migration recipes do not cover everything.** Budget residual manual work; the usual blocker is a dependency or agent that does not run on the new JDK, so bump dependencies first.
+- **Big version jumps compound risk.** Step LTS-to-LTS (8→11→17→21→25), not 8→25 in one leap; the longer a team waits, the worse the cliff.
+- **Migration is not modernization.** Bumping the version does not refactor old idioms; adopt new features as a deliberate, separate follow-up — and never migrate onto preview APIs.
+- **Not all code is worth changing.** Frozen or throwaway code may not justify the effort; refactoring and modernization have opportunity cost.
+
+## Alternatives & adjacent approaches
+
+- **In-place refactoring vs strangler fig vs rewrite** — the scale ladder: evolve in place when the code can take it, strangle when it is too big/risky to refactor but too valuable to rewrite, and reserve the rewrite for small systems where it is genuinely simpler. The big-bang rewrite is the option this chapter argues against at scale, not a forbidden one.
+- **Characterization tests vs writing a spec** — when no spec exists, pin current behavior as a net; characterization is the pragmatic substitute, reviewed for bugs.
+- **Manual refactoring vs automated (OpenRewrite/Refaster)** — IDE refactorings for the small, automated recipes for the codebase-wide; the next chapter is the automated engine.
+- **Migrate-then-modernize vs conflate** — keep the version bump and the feature adoption as separate steps; conflating them mixes the two hats at platform scale.
+- **Strangle vs characterize** — for code slated for replacement, the strangler often pays off where heavy characterization of soon-to-be-deleted code would be wasted.
+
+These compose into the safe-change toolkit: refactor under tests at the small scale, characterize-and-seam to get legacy under test, strangle a system too big to refactor, migrate the platform LTS-by-LTS, and automate the mechanical bulk (next chapter).
+
+## When to use what
+
+- **To improve the structure of tested code:** refactoring — small behavior-preserving steps, green suite, one hat at a time, IDE refactorings where possible.
+- **To change untested legacy:** characterize first (approval testing for opaque output), create a seam with behavior-preserving refactorings, then change under the net — and review the captured behavior for bugs.
+- **To replace a system too large to refactor and too valuable to rewrite:** the strangler fig — façade + per-slice routing + feature flags + contract tests, with the commitment to finish.
+- **To upgrade the platform:** LTS-to-LTS migration — tests green first, dependencies first, automate with OpenRewrite, fix residual breaks, build on a JDK matrix, modernize *after*.
+- **When a clean rewrite is genuinely simpler:** a small system — but the big-bang's all-or-nothing risk is the price.
+- **For the mechanical bulk of any of these at scale:** automated change (OpenRewrite/Refaster) — the next chapter.
+- **Never:** change behavior and structure in the same step, refactor without a test net, or leap versions in one big-bang.
+
+## Hand-off to the next chapter
+
+This chapter is the *manual* craft of safe change — the discipline, the loop, the seams, the LTS hops — and it kept reaching for the same tool to do the mechanical bulk at scale: **OpenRewrite**, for the codebase-wide refactoring and the migration recipes that no human wants to apply by hand to ten thousand files. The next chapter is that engine, and the playbook around it: **automated large-scale change** (OpenRewrite and Refaster — type-aware, AST-level transformations applied across an entire codebase) and the **end-to-end remediation playbook** that sequences everything in this part into a coherent program — characterize, refactor, automate, modernize, in what order, with what guardrails. Where this chapter was the craft a developer applies by hand, the next is how that craft is applied at the scale of a legacy estate, automatically — turning the discipline of safe change into a repeatable, large-scale remediation.
+
+## Back matter — sources & traceability
+
+- **Refactoring discipline** (key 91, leads; Fowler *Refactoring* 2e 2018 — pinned §7 canon row; exact catalog names/wording ⚠ verify-at-pin, text not in-repo — see 09-flags/91_canon_verbatims_and_openrewrite_recipe_ids.md; the mechanics — Extract Interface, Parameterize Constructor, behavior-preserving transform under a green suite — are runnable-confirmed by the built companion module) — structure-change-without-behavior-change; quality recovered + debt (Ch 1 key 02) paid down; the HOW (Ch 12 key 19 = the WHAT). Behavior-preserving transformations (Extract Method/Rename/Move/Replace-Conditional/Introduce-Parameter-Object) in series under a green suite. Loop: cover-with-tests → one-small-transform → green → commit → repeat; NEVER refactor+behavior in one step; "two hats"; preparatory + Boy Scout (Ch 1 key 06). IDE refactorings (behavior-preserving by construction) + Refaster/OpenRewrite (Ch 40 key 94). Modern-Java supersession (Ch 5 key 13). *(LIMITS: refactoring-without-tests=editing; scope-creep; big-refactoring-overruns; catalog-dated; opportunity-cost.)*
+- **Legacy code/seams** (key 92, §B; Feathers *WELC* 2004 — pinned §7 canon row; the seam definition/types + "legacy=code without tests" wording ⚠ verify-at-pin, text not in-repo — see 09-flags/91_canon_verbatims_and_openrewrite_recipe_ids.md; the seam-and-characterization mechanics are runnable-confirmed by the built module) — legacy=no-tests; characterization tests (pin what-IS, approval/golden-master for opaque, Ch 24 key 52) + seams ("alter behavior without editing in place"; object/interface/link; insert a test double Ch 21 key 44). Seam-creating refactorings (Extract Method/Interface, Parameterize Constructor, Subclass-and-Override) applied WITHOUT tests via IDE. Loop: change-point → seam → characterize → change → refactor-green. *(LIMITS: characterization-pins-bugs (review it; net not spec; Ch 24 approve-wrong-output); seam-uglier-transitionally; slow/flaky-if-real-deps; not-a-substitute-for-intent (docs/ADRs Ch 37 key 89); some-legacy-better-strangled.)*
+- **Strangler-fig/modernization** (key 93, §C; Fowler StranglerFigApplication bliki 2004 — ⚠ wording/date verify-at-pin; NOT a pinned §7 row (canon gap) — see 09-flags/91_canon_verbatims_and_openrewrite_recipe_ids.md; the façade-routes-old→new-incrementally mechanics are runnable-confirmed by the built StranglerRouter) — grow new around old, route old→new incrementally, retire old; façade/routing + feature flags (Ch 35 key 81) + characterization (§B) + contract tests (Ch 24 key 50) at the seam; strangle by feature/endpoint/module. vs big-bang-rewrite (fails) / in-place-refactoring (§A). *(LIMITS: dual-running cost + half-strangled-stall (worst state; needs stamina); façade-complexity + shared-state/data hard; not-always-cheaper (small→rewrite); requires-seams+tests; org-stamina.)*
+- **Java version migration** (key 95, §D; OpenJDK notes/JEPs Ch 5 key 13 + OpenRewrite Ch 40 key 94 — ☑ CONFIRMED @pin: LTS path 8→11→17→21→25 (anchor 21/note 25) + JPMS strong-encapsulation-by-default since 17 (JEP 403) trace to SOURCE-PIN §1 runtime baseline + the OpenJDK JEP index; ⚠ verify-at-pin: OpenRewrite UpgradeToJavaNN recipe-id spelling + coverage caveats (network-gated — see 09-flags/94_openrewrite_recipe_ids… and 91_canon_verbatims_and_openrewrite_recipe_ids.md)) — old-Java=silent-debt; LTS path 8→11→17→21→25 (anchor 21/note 25), LTS-to-LTS; automate bulk (rewrite-migrate-java UpgradeToJava17/21/25 composite; doesn't-cover-all). Process: tests-green → DEPS-FIRST (Ch 27 key 64) → recipe → fix-residual → build-on-target-JDK-matrix (Ch 34 key 77) → modernize-after (Ch 5/14 key 13). Breakages: JPMS-since-17/removed-APIs/incompatible-libs-agents/plugin-versions. *(LIMITS: recipes-incomplete; dep/agent-incompat-blocker; big-jumps-risk; migration≠modernization; preview-at-25-not-a-target AHEAD-OF-PIN; coverage-gates-safety.)*
+- **Routing** — smells → Ch 12 (19); tests → Part V; characterization/approval → Ch 24 (52); doubles/seams → Ch 21 (44); contract tests → Ch 24 (50); feature flags → Ch 35 (81); modern Java → Ch 5 (13); deps-first → Ch 27 (64); JDK matrix → Ch 34 (77); **automated change + remediation playbook → Ch 40 (94/96)**; debt/hotspots → key 59; docs/ADRs → Ch 37 (89); economics → Ch 1 (02); Boy Scout → Ch 1 (06). SOURCE-PIN §7 canon: Fowler *Refactoring* 2e + Feathers *WELC* are pinned rows (text not in-repo → exact wording ⚠ verify-at-pin); Fowler *StranglerFig* bliki is not a pinned row (canon gap); recorded in 09-flags/91_canon_verbatims_and_openrewrite_recipe_ids.md. OpenRewrite migration network-gated → REPRO PENDING-RUNTIME (not built; the other three scales built green).
+
+**Companion module (built green · `08-companion-code/91_refactoring_legacy_modernization/`):** the one invariant realized on the flagship domain at the legacy, under-test, refactor, and system scales. A `LegacyShippingCalculator` that `new`s up its own rate source (untestable as written, the missing seam) gets a `RateTable` seam (Extract Interface) and a parameterized constructor (Parameterize Constructor) — behavior-preserving — so a **characterization test** can pin its current behavior, including a rounding quirk a naive reading gets wrong (the net captures what-is, not what-should-be). The modernized `ShippingCalculator` expresses the same computation through the seam with a `Parcel` record, a `ServiceLevel` enum, a sealed `Quote` hierarchy + pattern-matching `switch`, `Optional`, and streams (the modern-Java idioms of Ch 5 that supersede some 2018-era manual catalog steps), and a **behavior-preservation test** proves it returns the identical charge as the legacy method for every parcel — quirk and all. A `StranglerRouter` routes each request to the legacy or the modern path behind a flag (the cutover lever, with rollback), adapting the legacy in-band zero to the typed `Quote.Unavailable`. **Failure path:** the modern path turns an unserved zone into a typed `Quote.Unavailable` (not an in-band zero), and a test mutates the legacy accessor's leaked list and the calculator's state changes — proving the representation leak a *real* latent bug, while the modern snapshot is unmodifiable. **Detection boundary, made honest:** the house `quality` profile runs Checkstyle + SpotBugs, which raises `EI_EXPOSE_REP` on the legacy leaky accessor (held quiet by one reviewed suppression naming the counter-example), and does *not* measure method length. **Honest edges (comments):** every step is behavior-preserving + test-backed (the invariant); the characterization test pins current behavior *including the quirk* (review it — net not spec); modernizing the idiom is the refactor while changing the rounding would be a behavior change wearing the wrong hat; the strangler must be *finished* (half-strangled = two systems forever). The **migration** scale (OpenRewrite `UpgradeToJava21`) stays a REPRO-pending sketch — network-gated recipe resolution — and is *not* part of the built module; migration ≠ modernization (a separate, deliberate follow-up). Snippet tags: `legacy-no-seam`, `seam-interface`, `characterization-test`, `modern-refactor`, `modern-immutable-snapshot`, `sealed-switch`.
+
+## Next chapter teaser
+
+This chapter was the manual craft of safe change, and it kept reaching for one engine to do the mechanical bulk at scale: OpenRewrite, for the codebase-wide refactorings and migration recipes no human wants to apply by hand to ten thousand files. The next chapter is that engine — automated, type-aware, AST-level change across a whole codebase (OpenRewrite and Refaster) — and the end-to-end remediation playbook that sequences this entire part into a program: characterize, refactor, automate, modernize, in what order and with what guardrails. The craft, applied at the scale of a legacy estate, automatically.
