@@ -13,7 +13,7 @@
 # hosted services, continuously released. SOURCE-PIN.md §5 records GitHub Actions as "docs as of 2026-06
 # (rolling)" and has NO row for Codecov/Coveralls/Sonar-PR-analysis as versioned artifacts — they are
 # presented as dated-at-use, not pinned, and their marketplace actions must be pinned to a commit digest at
-# adoption. JaCoCo (0.8.16 row; built here at 0.8.15, the published latest) is the one pinned coordinate.
+# adoption. JaCoCo (pinned 0.8.15, the published latest) is the one pinned coordinate.
 # No tool/action/platform version is asserted as timeless here. See 09-flags for the dated-at-use convention.
 name: coverage-pr
 

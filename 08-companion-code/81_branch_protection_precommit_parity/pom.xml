@@ -11,7 +11,7 @@
     unit-tested part is the one load-bearing decision the chapter argues for.
 
     The configuration the chapter teaches lives beside the build, NOT run by it:
-      - config/branch-protection/ruleset.json — a branch-protection ruleset (required status checks,
+      - config/branch-protection/ruleset.yml — a branch-protection ruleset (required status checks,
         required review, linear history, restricted force-push/deletion) that gives the gate TEETH.
       - .pre-commit-config.yaml — fast hooks at commit time (format-check, a fast Checkstyle subset,
         a secrets scan) that give the gate SPEED at the keyboard.
