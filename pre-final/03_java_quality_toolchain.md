@@ -46,22 +46,22 @@ A tool that catches a bug at compile time (Error Prone) gives faster, cheaper fe
 
 ### The routing table
 
-This is the chapter's spine: for any concern, which kind of tool, when it runs, and where the book goes deep.
+This is the chapter's spine: for any concern, which kind of tool, when it runs, and where the book goes deep. The **Moment** column uses the same seven lifecycle moments named above — author-time, compile-time, local build, pre-commit, PR / CI, platform / dashboard, runtime / production feedback — so this table and §"Two axes" speak one vocabulary.
 
 | Concern | Representative Java tools | Analyzes | Moment | Deep chapter |
 |---|---|---|---|---|
-| Formatting | Spotless, google-java-format, EditorConfig | source text | author / pre-commit / CI | 6 |
-| Style & conventions | Checkstyle, PMD | source (AST) | build / CI | 16 |
-| Bug patterns (source / compile) | PMD, Error Prone | source / inside `javac` | build / **compile-time** | 16 |
-| Bug patterns (bytecode) | SpotBugs (+ FindSecBugs) | compiled bytecode | after compile / CI | 16 |
+| Formatting | Spotless, google-java-format, EditorConfig | source text | author-time / pre-commit / PR / CI | 6 |
+| Style & conventions | Checkstyle, PMD | source (AST) | local build / PR / CI | 16 |
+| Bug patterns (source / compile) | PMD, Error Prone | source / inside `javac` | local build / **compile-time** | 16 |
+| Bug patterns (bytecode) | SpotBugs (+ FindSecBugs) | compiled bytecode | local build / PR / CI | 16 |
 | Null-safety & types | NullAway, JSpecify, Checker Framework | source + annotations | compile-time | 9 |
-| Architecture / boundaries | ArchUnit, JPMS | tests / bytecode graph | test / CI | 25, 26 |
-| Test adequacy | JaCoCo (coverage), PITest (mutation) | test runtime | test / CI gate | 23 |
-| Security — SAST | FindSecBugs, Semgrep, CodeQL | source / bytecode / dataflow | CI | 30, 31 |
-| Security — SCA / deps | OWASP Dependency-Check, Grype, Renovate | dependency tree | build / CI / scheduled | 27, 28 |
-| Platform / trend / dashboard | SonarQube / SonarLint | aggregates many | IDE + CI + server | 17, 38 |
-| Refactoring / modernization | OpenRewrite, Refaster | source (recipes) | on-demand / CI | 40 |
-| Delivery outcomes | CI + VCS data (DORA) | the process | continuous | 38 |
+| Architecture / boundaries | ArchUnit, JPMS | tests / bytecode graph | local build / PR / CI | 25, 26 |
+| Test adequacy | JaCoCo (coverage), PITest (mutation) | test runtime | local build / PR / CI | 23 |
+| Security — SAST | FindSecBugs, Semgrep, CodeQL | source / bytecode / dataflow | PR / CI | 30, 31 |
+| Security — SCA / deps | OWASP Dependency-Check, Grype, Renovate | dependency tree | local build / PR / CI / scheduled | 27, 28 |
+| Platform / trend / dashboard | SonarQube / SonarLint | aggregates many | author-time / PR / CI / platform / dashboard | 17, 38 |
+| Refactoring / modernization | OpenRewrite, Refaster | source (recipes) | local build / PR / CI | 40 |
+| Delivery outcomes | CI + VCS data (DORA) | the process | platform / dashboard | 38 |
 
 ### Why a layered stack runs more than one: the distinctions that matter
 
@@ -136,7 +136,7 @@ And coverage over the test run, last:
 
 ### The menu is not the order
 
-The critical caveat: the map is the *menu*, not the *order*, and running everything is not the goal. Running every tool maximizes noise and build time and produces overlapping findings; Checkstyle, PMD, and SonarQube will all flag some of the same things. The case for layering is the mechanism already established above, not a count: because a source linter, a bytecode analyzer, and a compile-integrated checker reason over different artefacts, a few *complementary* tools each catch what the others structurally cannot — while piling on tools that share a vantage mostly multiplies redundant findings and noise.
+The critical caveat: the map is the *menu*, not the *order*, and running everything is not the goal. Running every tool maximizes noise and build time and produces overlapping findings; Checkstyle, PMD, and SonarQube will all flag some of the same things. The case for layering is the mechanism already established above, not a count. Because a source linter, a bytecode analyzer, and a compile-integrated checker reason over different artefacts, a few *complementary* tools each catch what the others structurally cannot. Piling on tools that share a vantage mostly multiplies redundant findings and noise.
 
 **Chapter 17** covers combining and de-duplicating the analyzers into a coherent layered stack; **Chapter 46** builds one concrete reference stack end to end.
 

@@ -10,7 +10,7 @@
 - **31** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).
 - **0** need EXAMPLE-BUILD (FLOOR-C compile).
 - **FLOOR-C on disk:** 45/47 modules built green; 45 CODE-REVIEW reports (45 PASS, 0 FAIL).
-- **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 42 in lift · 5 need an independent score · 0 approved (in 04-approved/).
+- **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 40 in lift · 5 need an independent score · 2 approved (in 04-approved/).
 - **DRIFT: ✅ none**.
 
 ## Needs-human queue 🔵
@@ -22,13 +22,13 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | Ch | Key | Topic | rese | veri | draf | exam | clar | audi | scor | figu | reco | appr | Next |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
-| 1 | 01 | What is code quality? | 🟢 | 🔴 | 🟢 | ⚪ | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 1 | 01 | What is code quality? | 🟢 | 🔴 | 🟢 | ⚪ | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 2 | 03 | Readability, maintainability & measuring | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | | | **Part I — Foundations** |  |  |  |  |  |  |  |  |  |  | |
 | 3 | 05 | The Java quality toolchain map | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
 | 4 | 06 | Quality culture, ownership & knowledge | 🟢 | 🔴 | 🟢 | ⚪ | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
-| 5 | 08 | Effective Java & modern Java for quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 5 | 08 | Effective Java & modern Java for quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 6 | 07 | Naming, structure & formatting | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 7 | 09 | Designing clear APIs & method contracts | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 8 | 10 | Immutability & value-based design | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |

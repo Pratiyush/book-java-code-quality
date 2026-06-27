@@ -5,11 +5,11 @@
 
 | Ch | Key | Score | % | A | B | C-src | C-compile | C-review | Indep? | Decision | Why |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 01 | 42/50 | 84% | PASS | PASS | PASS | NA | NA | yes | **LIFT** | 84% (independent) <88% → lift loop (≤3) toward the bar |
-| 2 | 03 | 41/50 | 82% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 82% (independent) <88% → lift loop (≤3) toward the bar |
-| 3 | 05 | 41/50 | 82% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 82% (independent) <88% → lift loop (≤3) toward the bar |
+| 1 | 01 | 45/50 | 90% | PASS | PASS | PASS | NA | NA | yes | **APPROVED** | 90% (independent) ≥88% + floors PASS → auto-approve into 04-approved ★≥90% excellence; example-build pending (separate phase) |
+| 2 | 03 | 43/50 | 86% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 86% (independent) <88% → lift loop (≤3) toward the bar |
+| 3 | 05 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 84% (independent) <88% → lift loop (≤3) toward the bar |
 | 4 | 06 | 38/50 | 76% | PASS | PASS | PASS | NA | NA | yes | **LIFT** | 76% (independent) <88% → lift loop (≤3) toward the bar |
-| 5 | 08 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 84% (independent) <88% → lift loop (≤3) toward the bar |
+| 5 | 08 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
 | 6 | 07 | 40/50 | 80% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 80% (independent) <88% → lift loop (≤3) toward the bar |
 | 7 | 09 | 40/50 | 80% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 80% (independent) <88% → lift loop (≤3) toward the bar |
 | 8 | 10 | 39/50 | 78% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 78% (independent) <88% → lift loop (≤3) toward the bar |
@@ -57,8 +57,8 @@
 
 - **0** eligible to auto-approve — independent score ≥88% + content floors PASS (applied into 04-approved/ on the next run).
 - **5** need an independent score (self ≥88%, run the independent scorer).
-- **42** in the lift loop (below the 88% bar or a floor unresolved).
-- **0** approved (in 04-approved/).
+- **40** in the lift loop (below the 88% bar or a floor unresolved).
+- **2** approved (in 04-approved/).
 
 ## FLOOR-C (compile + code-review) — from the on-disk gate reports
 
