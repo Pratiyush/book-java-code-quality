@@ -64,7 +64,7 @@ jobs:
           java-version: "21"
       # tag::test-coverage-gate[]
       - name: Unit tests + new-code coverage (JaCoCo)
-        run: mvn -B -Pquality test   # unit tests; the JaCoCo 0.8.15 new-code coverage gate binds in verify — see Ch 48
+        run: mvn -B -Pquality test   # unit tests; the JaCoCo 0.8.15 new-code coverage gate binds in verify — see Ch 23
       # end::test-coverage-gate[]
 
   # ---------------------------------------------------------------------------------------------------

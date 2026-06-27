@@ -7,10 +7,10 @@
 ## Summary
 
 - **47/47 chapters** drafted (🟢 `draft`).
-- **8** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).
+- **2** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).
 - **0** need EXAMPLE-BUILD (FLOOR-C compile).
 - **FLOOR-C on disk:** 45/47 modules built green; 45 CODE-REVIEW reports (45 PASS, 0 FAIL).
-- **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 27 in lift · 2 need an independent score · 18 approved (in 04-approved/).
+- **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 22 in lift · 0 need an independent score · 25 approved (in 04-approved/).
 - **DRIFT: ✅ none**.
 
 ## Needs-human queue 🔵
@@ -62,16 +62,16 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | 30 | 69 | Secure coding & OWASP for Java | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 31 | 70 | SAST & secrets detection | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | | | **Part VIII — Security & SAST** |  |  |  |  |  |  |  |  |  |  | |
-| 32 | 73 | Security in CI — the security gate | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 32 | 73 | Security in CI — the security gate | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
-| 33 | 75 | Designing the CI pipeline & quality gates | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
-| 34 | 80 | Coverage strategy, PR automation & CI platfo… | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
-| 35 | 81 | Branch protection, trunk-based dev & pre-com… | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 33 | 75 | Designing the CI pipeline & quality gates | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
+| 34 | 80 | Coverage strategy, PR automation & CI platfo… | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
+| 35 | 81 | Branch protection, trunk-based dev & pre-com… | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | | | **Part IX — CI/CD & Quality Gates** |  |  |  |  |  |  |  |  |  |  | |
-| 36 | 83 | Release quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 36 | 83 | Release quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
-| 37 | 84 | Code review, coding standards & documentation | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
-| 38 | 85 | Metrics, dashboards & rolling out quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 37 | 84 | Code review, coding standards & documentation | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
+| 38 | 85 | Metrics, dashboards & rolling out quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 39 | 91 | Refactoring, legacy code & modernization | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 40 | 96 | Automated change & the remediation playbook | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 41 | 97 | Quality of AI-generated code & AI-assisted d… | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |

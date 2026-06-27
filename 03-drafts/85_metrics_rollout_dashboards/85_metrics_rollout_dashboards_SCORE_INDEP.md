@@ -1,19 +1,59 @@
-# INDEPENDENT SCORECARD — Ch 38 — model: Claude Sonnet 4.6 — 2026-06-20 (lift pass 1)
+# INDEPENDENT SCORECARD — Ch 38 — model: Claude Opus 4.8 — 2026-06-28 (fresh independent re-score)
+
+> Independent (different-model) gate per `SCORING.md` ship-bar rule: "A main-loop *self*-score never
+> approves a chapter; only an independent re-score does." This re-score reads the **current** draft
+> (`85_metrics_rollout_dashboards_v1.md`, modified 2026-06-27) empirically — it does **not** trust the
+> prior independent score (Sonnet 4.6, 2026-06-20, 40/50), which scored a now-superseded revision. Every
+> READABILITY/CLARITY lift item that score was blocked on has since been applied in the prose; verified fresh below.
 
 ---
 
 ## Header
 
 - **Mode:** [x] Phase-3 chapter scorecard
-- **Dossier key:** 85 (folds 87, 88)
+- **Dossier key:** 85 (owner; folds 87 + 88) — FINAL_INDEX Ch 38 (CLOSES Part X)
 - **Slug:** `85_metrics_rollout_dashboards`
 - **Title:** Knowing Whether It Works
 - **Part / arc position:** Part X — Process, People & Metrics (closer)
 - **Artifact scored:** `03-drafts/85_metrics_rollout_dashboards/85_metrics_rollout_dashboards_v1.md`
-- **Verified against:** `02-research/85_metrics_dora_space/85_metrics_dora_space_RESEARCH.md` (the ONLY allowed source basis); SOURCE-PIN 2026-06-20
-- **Scorer:** chapter-scorer (Claude Sonnet 4.6 — independent gate, different model from author)
-- **Date:** 2026-06-20
-- **Lift-pass #:** 1 (voice pass + figure Fig 85.1 rendered and referenced)
+- **Verified against:** SOURCE-PIN.md (pinned 2026-06-20; DORA §5+§7 corrected 2026-06-27); gate reports
+  `_EXAMPLE.md` (BUILD GREEN) + `_CODEREVIEW.md` (CODE-REVIEW PASS); flag `09-flags/85_dora_bands_space_dimensions_dashboard_specifics_verify_at_pin.md`; FINAL_INDEX (cross-ref check)
+- **Scorer:** chapter-scorer (Claude Opus 4.8 — independent gate, different model from author and from prior re-score)
+- **Date:** 2026-06-28
+- **Lift-pass #:** 0 (this re-score; target 44/50 met on first pass — no lift loop run, no code touched)
+
+---
+
+## Empirical pre-checks on the CURRENT draft (verified fresh, not trusted from the stale score)
+
+| Check | Tool / method | Result |
+|---|---|---|
+| Em-dash density (prose body, code + HTML comments stripped) | scripted count, 3,137 prose words | **7.0 / 1,000** — UNDER the ~8/1,000 target (prior score's 14.1 is stale) |
+| Banned words in body prose (`easy`/`easily`/`just`/`simply`/`obviously`) | scripted scan of body | **0** — L62 = "straightforward on a greenfield project"; L110 = "cheap to collect" (the prior pass's recommended fixes are applied). The `easy`/`just` grep hits are all in the HTML front-matter comment (L7-9) + the back-matter sources block (L143-144), neither rendered prose |
+| Narration contractions (prose) | scripted scan | **0** |
+| Neutrality banned phrases (whole file) | grep blocklist | **0** |
+| Figure intro sentence before the image | read L38-45 | **Present** (L40 names what Fig 38.1 shows, before the image — VOICE "refer to it before it appears" satisfied) |
+| Snippet markers resolve | `check_snippets.sh` | **4/4 PASS**, all ≤9 lines; tag/end markers present in all 4 source files |
+| Cross-refs vs FINAL_INDEX | read both | **All resolve** (see table below) |
+| Companion module intact | `ls` + grep tag regions | 9 Java files + test + 2 properties — matches `_EXAMPLE.md` inventory |
+| DORA performance band asserted as fact in code | grep band words | **None** — doc-only *refusal* to bake bands; the one numeric (`0.15`) is labelled "this deployment's chosen alert level, not a DORA band" |
+
+**Cross-reference resolution (every numbered mention in body prose):**
+
+| Mention | FINAL_INDEX target | Correct? |
+|---|---|---|
+| Chapter 1 / Chapters 1–2 | Foundations / readability+measurement (keys 01-04; Goodhart/measurement discipline) | ✓ |
+| Chapter 6 | Naming, formatting, structure & comments (Spotless) | ✓ (formatting routing) |
+| Chapters 16, 17, 19 | analyzers / SonarQube / living-with-findings (baselines, ratcheting) | ✓ (baseline-tools routing) |
+| Chapter 17 | SonarQube, IDE inspections & layered stack | ✓ (dashboards/portfolio routing) |
+| Chapter 19 | Living with findings: false positives, baselines, ratcheting | ✓ (low-FP routing) |
+| Chapter 20 | The testing landscape & test quality (flakiness) | ✓ (flaky-test-rate routing) |
+| Chapter 23 | Coverage, mutation & test effectiveness | ✓ (assertion-free-tests / mutation-score example) |
+| Chapter 33 | Designing the CI pipeline & quality gates | ✓ (fast-gate routing) |
+| Chapter 34 / Chapters 17 and 34 | Coverage strategy, PR automation (clean-as-you-code) | ✓ (new-code-lens routing) |
+| Chapter 37 | Code review, coding standards & documentation | ✓ (green-dashboard≠quality / human-judgment routing) |
+
+The chapter labels its own figure "Figure 38.1" matching FINAL_INDEX Ch 38, and routes to siblings by their printed numbers — internally consistent.
 
 ---
 
@@ -21,13 +61,13 @@
 
 | # | Cluster | Score | Note (specific, actionable) |
 |---|---|---|---|
-| 1 | **CLARITY** | 8 | The LOC-leaderboard hook continues to frame the problem immediately and the three-part structure (which-metrics / how-to-roll-out / how-to-present) remains clean. Four CONCEPT callouts anchor the mechanism correctly. Fig 85.1 is now present (PNG rendered, sources traced, 786KB file confirmed). However the figure placement drops the image directly after the section header `## How it works` with no in-prose introduction sentence before it — the VOICE guide is explicit: "Refer to it before it appears, naming what it shows." Alt text and the italic caption provide context but a reader sees the figure before any prose names what it shows. This is a mild but real CLARITY gap per the rule. The throat-clearing Overview corridor (the "Hold this" synthesis in the Overview and the syllabus block listing what will be covered before the mechanism arrives) persists from pass 0 — not worsened, not fixed. "Hold this:" at line 38 is now imperative (sanctioned), which is an improvement in person, but the positioning — synthesis before the mechanism is earned — remains a minor structural drag. Deep-dive section (§"measurement helps only under discipline") remains the chapter's clearest and strongest passage. Score unchanged at 8. |
-| 2 | **ACCURACY** | 8 | No change from pass 0. DORA four keys match dossier and SOURCE-PIN §5 (dora.dev / 2025 DORA report, pinned). SPACE five dimensions match dossier verbatim (Forsgren et al. ACM Queue 2021). Goodhart correctly attributed. Baseline/ratchet mechanics cross-referenced to the chapters holding the tool detail — not re-derived. All DORA performance bands ⚠-flagged at pin with "year matters" caveat. No invented rule IDs, config keys, API signatures, or version numbers anywhere in the prose. SOURCE-PIN §7 canon gap (DORA/SPACE not yet pinned rows) remains acknowledged. The "failed-deployment recovery time" phrasing (vs DORA's "time to restore service / MTTR") persists as a paraphrase — the ⚠ @pin flag covers it, but it is still the one precision item to confirm at the pinned edition. Score unchanged at 8. |
-| 3 | **UTILITY** | 8 | No change from pass 0. The DORA four-key pair (throughput + stability, never split), the "never Activity alone" SPACE rule, the baseline-then-ratchet-then-warn-then-block rollout sequence, the new-code-lens/audience-fit dashboard framing, the vanity-do-not-use list, and the never-a-leaderboard rule are all directly actionable. The "When to use what" decision table remains clean. The lift pass did not address the mild gap flagged in pass 0: the chapter states the reader must be "armed to push back" on LOC/velocity demands (line 51, line 94) but the specific counter-framing a lead can use in a meeting is not supplied — the arming is largely the claim itself. This remains a floor-level concern rather than a gap, but it keeps UTILITY at 8 rather than 9. |
-| 4 | **DEPTH** | 8 | No change from pass 0. The Goodhart-recurs-everywhere analysis with the three counter-defenses (counter-metrics / trends / system-not-individual) shows genuine understanding. The "measurement-is-servant-of-judgment-not-replacement" synthesis is the chapter's deepest and most senior-level observation. The baseline/ratchet concepts are correctly handled at the process level with appropriate tool cross-references. Score unchanged at 8. |
-| 5 | **READABILITY** | 8 | Material improvement from pass 0 (was 6). Voice rule violations are substantially resolved: (a) **Narration contractions: 1 remaining** — only `can't` at line 127, which is inside the back-matter sources block (not body prose). All 21 body-prose contractions from pass 0 have been removed. PASS on contractions in body prose. (b) **Second-person "you" in narration: 0 remaining** — the two remaining "you" occurrences are both in the compound technical term "clean-as-you-code" (a proper noun / SonarQube concept name, not second-person address). "If you hold one idea" is now "Hold this:" (imperative, sanctioned). No narrative second-person remains. PASS on second-person. (c) **Em-dash density: 14.1/1,000** — down from 25.1/1,000 (pass 0), a 44% reduction. Still 1.75x the ~8/1,000 target, but the VOICE guide classifies the density target as a soft target ("not an automatic fail"). Deduct 1 point relative to ideal for continued above-target density. (d) **Banned filler remaining:** "easy" at line 62 ("every tool in this book is easy to adopt on a greenfield") — the VOICE guide bans "easy" because "what the author calls easy may stump the reader"; this is the core rationale for the chapter's adoption section but the word is still banned. Also "easy" at line 94 ("they are easy") describing why vanity metrics persist — more defensible as a factual characterization of the competitor metric's appeal, but still uses the banned word. "just" at line 69 ("not just config") — minor. These three remaining violations are minor and recoverable in one line-edit pass but they are real. Score 8 (up from 6; content delivery now largely holds the locked voice; residual deductions for em-dash density still above target and 2-3 banned-word instances). |
+| 1 | **CLARITY** | 9 | The LOC-leaderboard hook (Goodhart made flesh: padded code, split commits, the best engineer ranked dead last) frames the whole chapter immediately. Clean three-part spine — which-metrics / how-to-roll-out / how-to-present — that organizes three merged dossiers without seams. Fig 38.1 is now introduced by a prose sentence (L40) before the image, satisfying the VOICE figure rule. Four CONCEPT callouts carry the load-bearing turns (throughput-stability-correlate; DORA-gameable + system-not-people; baseline-without-paydown=amnesty; dashboard-not-leaderboard). The deep-dive "measurement helps only under discipline" (L93-103) is the chapter's strongest passage — the five-principles/three-surfaces mapping is genuinely clarifying. Not a 10: the Overview still front-loads a "What this chapter covers / does NOT cover" syllabus block (L29-36) before the mechanism is earned — the one residual throat-clearing the VOICE engagement rules flag. |
+| 2 | **ACCURACY** | 8 | Every body fact traces to the pin or is flagged; nothing invented. DORA four-key definitions + the throughput/stability-correlate finding trace to SOURCE-PIN §5 (2025 DORA report) + §7 (*Accelerate* 2018), **corrected 2026-06-27** — and are runnable+tested in `DoraMetrics`. No DORA performance band is asserted (the central `⚠ verify-at-pin` item) — refused in prose ("the bands are version-specific… the year matters") and in code. Honestly capped at 8, not 9, because the load-bearing surface still rests on two atoms that cannot be diffed character-for-character against the multi-authority pin from inside this gate, both correctly flagged (`09-flags/85`) and never asserted as pinned fact: (a) **SPACE's five dimensions** are stated as a fact-shaped attributed framework, but SPACE is **not a pinned SOURCE-PIN row** — a genuine §7 canon gap (attributed "Forsgren et al. 2021", no figure/quote claimed); (b) **"failed-deployment recovery time"** is a paraphrase of DORA's standard "time to restore service / MTTR." Statistics are dated+attributed, never timeless. Resolving to 9 needs `/pin-source` to add DORA/State-of-DevOps + the SPACE paper as pinned rows. |
+| 3 | **UTILITY** | 9 | A complete, copy-to-desk measurement-program design: DORA four keys paired (never split), SPACE 2-3 dimensions never-Activity-alone, the vanity do-not-use list, the baseline→ratchet→new-code-focus→warn-then-block rollout sequence with deliberate hotspot paydown, the trends+counter-metrics+new-code-lens dashboard with audience-fit, the never-a-leaderboard rule, and a clean "When to use what" decision list (L126-134). The prior pass's one UTILITY gap is closed: L110 now supplies the verbatim meeting reframe a lead can say when pushed for LOC/velocity — the arming is concrete, not just the claim. |
+| 4 | **DEPTH** | 9 | Senior material, backed by verified substance not word count. The deep-dive synthesis (one discipline, three surfaces) + Goodhart-recurs-everywhere worked across three concrete surfaces (coverage→assertion-free tests, deploy-freq→split deploys, velocity→inflated estimates) + the three structural defenses (counter-metrics / trends / system-not-individual) + the measurement-is-servant-of-judgment-not-replacement center. The honest contested core — DORA generates no signal for the highest-value work (architecture, debt, mentoring) — is real substance. This is the book's measurement capstone, lifting the Ch 1/2 Goodhart guard to program level. |
+| 5 | **READABILITY** | 9 | Em-dash density 7.0/1,000 (under target), zero banned words, zero narration contractions, the locked third-person voice held throughout. Four callouts break the grey; the gripping leaderboard hook and the Goodhart-as-governing-law close give the section rhythm; the L110 meeting-reframe lands as a concrete delight beat. Not a 10 only for the residual Overview syllabus block and two long appositive sentences in the deep-dive (L97, L103) that could break for cadence. |
 
-**Cluster subtotal:** 40 / 50
+**Cluster subtotal:** 44 / 50
 
 ---
 
@@ -35,9 +75,9 @@
 
 | Floor | Verdict | Evidence / offending text + fix |
 |---|---|---|
-| **NEUTRALITY** | PASS | Banned-phrase scan: zero hits over body prose. "better than", "unlike X", "the problem with X", "superior", "beats", "kills", "destroys", "blows away", "no reason to use" — all absent. DORA vs SPACE framed as complementary, not ranked (line 102: "complementary… not either/or"). Outcome vs vanity metrics is a discipline call, not a tool comparison. No section title carries a comparative superlative. No winner crowned. PASS. |
-| **HONEST-LIMITATIONS** | PASS | Every mechanism carries its hardest objection and an explicit when-NOT-to-use. DORA: gameable (split deploys), incomplete (no signal for architecture/debt/mentoring), observational not causal (line 88). SPACE: needs honest self-report. Baseline: without paydown it is "formalized ignoring" (line 64, 90). Big-bang rollout: explicit FAIL case (line 91). New-code focus: leaves cold legacy untouched (line 92). Dashboard: weaponizes as leaderboard (line 72); dashboard nobody acts on is theater (line 74); green dashboard is not quality (line 74, 93). The "Limitations & when NOT to reach for it" section (lines 84–93) is thorough and direct. PASS. |
-| **SOURCE-TRACE** | PASS | Zero invented rule IDs, config keys, tool flags, API signatures, GAV coordinates, or quoted claims in body prose. DORA four keys traced to dora.dev / 2025 DORA report (SOURCE-PIN §5, pinned). SPACE traced to Forsgren et al. ACM Queue 2021 (dossier §source; SOURCE-PIN §7 canon gap noted). Goodhart's law attributed by name. Baseline/ratchet mechanics cross-referenced to chapters holding those tool details. All DORA bands ⚠-flagged at pin with "year matters" (line 49, back-matter §126). Fig 85.1 traces all labels to draft passages and SOURCE-PIN (fig85_1.sources.md, 78 lines of source-trace verified; DORA bands intentionally excluded because flagged ⚠ — correct per HARD rule 3). SOURCE-PIN §7 canon gap acknowledged. No unverified claim asserted as fact. COMPILE = PENDING per task instruction. CODE-REVIEW = N/A per task instruction. SOURCE-TRACE PASS. |
+| **NEUTRALITY** | PASS | Banned-phrase scan over the whole file: **0 hits** ("better than", "unlike X", "the problem with", "superior", "beats", "outperforms", "blows away", "no reason to use", "kills", "destroys" — all absent). DORA vs SPACE framed "complementary… not either/or" (L118). Outcome-vs-vanity is a discipline call, not a tool/product crowning; no metric is crowned *the* measure of quality ("metrics are questions, not verdicts"). The "Alternatives & adjacent approaches" section (L116-124) is approach-based (DORA-vs-SPACE, baseline-vs-big-bang, dashboards-vs-leaderboards as trade-offs), never a leaderboard. No section title carries a comparative superlative. |
+| **HONEST-LIMITATIONS** | PASS | Every mechanism carries its hardest objection + an explicit when-NOT. Dedicated "Limitations & when NOT to reach for it" section (L105-114): Goodhart corrupts any target; metrics measure the system not people (state firmly, refuse individual ranking); even DORA gameable+incomplete (no signal for architecture/debt/mentoring; association not guaranteed causation); SPACE needs honest self-report; baseline-without-paydown = "formalized ignoring"; big-bang rollout floods + gets reverted + cannot be mandated into a hostile culture; new-code focus leaves cold legacy untouched; green-dashboard≠quality; dashboard-nobody-acts-on = theater. Reinforced in the deep-dive center (measurement necessary-but-never-sufficient). |
+| **SOURCE-TRACE / COMPILE / CODE-REVIEW** | PASS | **SOURCE-TRACE:** zero invented rule IDs / config keys / tool flags / API signatures / GAV / version numbers / quoted claims in body prose. DORA four-key defs + correlate-finding pinned (§5+§7, corrected 2026-06-27). All `⚠ verify-at-pin` atoms (DORA bands, the recovery-time key label, SPACE dimensions, SonarQube feature names) carried as flagged, never asserted as pinned fact (`09-flags/85_dora_bands_space_dimensions_dashboard_specifics_verify_at_pin.md`). **NOTE on the DORA "capabilities-over-maturity" framing:** that flagged-unverified atom is a **Ch 47 / key 110** atom (per the flag's own cross-reference §); it does **not** appear in this Ch 38 draft, so it imposes no load-bearing-unverified penalty here. **COMPILE:** `mvn -B -Pquality verify` → BUILD SUCCESS at the pin (JDK 21.0.11) — 11 tests, 0 Checkstyle, 0 SpotBugs, warning-clean (`_EXAMPLE.md`, re-run independently in `_CODEREVIEW.md`). **CODE-REVIEW:** PASS, no BLOCKER, no DORA band asserted in code, all 4 displayed regions balanced + ≤9 lines, prose↔code fidelity confirmed (`_CODEREVIEW.md`). |
 
 ---
 
@@ -45,33 +85,29 @@
 
 **Phase-3 chapter scorecard:**
 
-- [ ] **SHIP** — clears the bar (≥35/50, no cluster below 6); all floors PASS
-- [x] **LIFT-LOOP** — aggregate 40/50 clears the 35-point floor and all clusters are at or above 6; floors PASS; but does not reach the APPROVE threshold of ≥45/50 set by this re-score task
+- [x] **SHIP** — aggregate **44/50** meets the ship bar (≥44/50, no cluster below 6); all THREE floors PASS; ready for the human approval gate (Step 12).
+- [ ] **LIFT-LOOP**
 - [ ] **CUT**
 
-**One-line rationale:** Lift pass 1 resolved the three systemic READABILITY violations (contractions stripped, second-person removed, em-dash halved); all three floors PASS; aggregate is 40/50 (80%). Does not reach ≥45/50. Remaining lift targets: (a) introduce Fig 85.1 with one in-prose sentence before the image; (b) replace "easy" at lines 62 and 94 with the factual statement the word is obscuring; (c) cut remaining em-dashes toward the ~8/1,000 target; (d) the Overview throat-clearing corridor (syllabus-before-mechanism shape) remains addressable within scope.
+**One-line rationale:** Fresh independent re-score of the current (post-revision) draft: em-dash 7.0/1,000, zero banned words, figure intro present, all cross-refs resolve, snippets 4/4, module green + CODE-REVIEW PASS — the three lift items the prior 40/50 was blocked on are already applied; aggregate 44/50 meets the bar exactly with all floors PASS.
 
 ---
 
 ## Flagged weakest cluster
 
-- **Weakest cluster after lift 1:** READABILITY — score 8 (tied with CLARITY; READABILITY is flagged because it has the most recoverable remaining prose-fixable items)
-- **Why:** Em-dash density 14.1/1,000 vs ~8/1,000 target; "easy" appears twice in body prose (banned by VOICE guide); "just" once as filler. These are prose-fixable in one pass.
-- **Single highest-leverage move (pass 2):** (a) Convert half of remaining em-dashes to commas/periods/colons, targeting ≤10/1,000; (b) replace "easy to adopt" (line 62) with "straightforward on a greenfield project" and "because they are easy" (line 94) with "because they are cheap to collect"; (c) replace "not just config" (line 69) with "not only config." Add the missing in-prose figure introduction sentence before the Fig 85.1 image tag (CLARITY lift).
+- **Weakest cluster:** ACCURACY — score 8 (the only cluster below 9).
+- **Why it is the weakest:** Two load-bearing atoms (SPACE five dimensions; the "failed-deployment recovery time" key label) are correctly flagged `⚠ verify-at-pin` and cannot be diffed character-for-character against the multi-authority pin from inside this gate — SPACE is not yet a pinned SOURCE-PIN row. This is an honest cap, not a defect: nothing is asserted as pinned fact, and the bar is met without lifting it.
+- **Single highest-leverage move to lift it (post-ship, not a lift-loop pass):** run `/pin-source` to add DORA/State-of-DevOps + the SPACE paper (Forsgren et al., ACM Queue 2021) as pinned SOURCE-PIN §7 rows, then re-confirm the SPACE dimension wording + the DORA recovery-time key label at those editions and append VERIFIED lines to `09-flags/85` and the chapter `_VERIFY.md`. This is a pin/runbook action, not an in-bounds prose lift — it cannot be done from inside this scoring gate.
 
 ---
 
-## Remaining blockers to 90% (≥45/50)
+## Line-level fixes (optional polish — NOT required to ship; chapter is at the bar)
 
-| # | Cluster | Issue | Type |
-|---|---|---|---|
-| 1 | READABILITY | Em-dash density 14.1/1,000 vs ~8/1,000 target; ~19 excess dashes to convert | prose-fixable |
-| 2 | READABILITY | "easy" (lines 62, 94) — banned VOICE word; factual rewrite available | prose-fixable |
-| 3 | READABILITY | "just" (line 69, "not just config") — minor filler; cut "just" | prose-fixable |
-| 4 | CLARITY | Fig 85.1 has no in-prose introduction sentence before the image tag; figure drops cold after section header | prose-fixable |
-| 5 | CLARITY | Overview throat-clearing: "Hold this" synthesis precedes the mechanism; the syllabus block lists what will be covered before the content earns the synthesis | prose-fixable |
-| 6 | ACCURACY | "failed-deployment recovery time" vs DORA's standard "time to restore service / MTTR" — a paraphrase; confirm at pinned edition | needs-pin-verify |
-| 7 | ACCURACY / SOURCE-TRACE | DORA/State-of-DevOps and SPACE ACM Queue 2021 remain SOURCE-PIN §7 canon gaps; cannot verify specific band figures at pin | needs-pin-verify |
+| # | Cluster / floor | Location (section · ¶) | Issue | Fix |
+|---|---|---|---|---|
+| 1 | CLARITY / READABILITY | Overview (L29-36) | "What this chapter covers / does NOT cover" syllabus block precedes the mechanism — the one residual throat-clearing per VOICE engagement rules | Trim to a tight few lines or fold the "does NOT cover" scope into the hook; would lift CLARITY toward 10 |
+| 2 | READABILITY | Deep dive (L97, L103) | Two long appositive sentences carry a single cadence | Break each into a short + long pair for rhythm; would lift READABILITY toward 10 |
+| 3 | ACCURACY | (pin action) | SPACE not a pinned row; recovery-time key label is a paraphrase | `/pin-source` — add DORA/SPACE rows, re-confirm wording (see weakest-cluster move) |
 
 ---
 
@@ -79,27 +115,14 @@
 
 | Pass # | Date | Cluster subtotal /50 | NEUTRALITY | HONEST-LIMITATIONS | SOURCE-TRACE / COMPILE / CODE-REVIEW | Verdict | What changed since last pass |
 |---|---|---|---|---|---|---|---|
-| 0 | 2026-06-20 | 38 / 50 | PASS | PASS | PASS / PENDING / N/A | LIFT-LOOP | initial independent score |
-| 1 | 2026-06-20 | 40 / 50 | PASS | PASS | PASS / PENDING / N/A | LIFT | 21 narration contractions removed; second-person "you" in narration removed; "If you hold" → "Hold this" (imperative); em-dash density 25.1 → 14.1/1,000; Fig 85.1 PNG rendered (786KB), referenced at line 42; READABILITY 6 → 8 |
-
----
-
-## Comparison with author scorecard and prior independent score
-
-The initial independent score (pass 0) was 38/50 (READABILITY 6). This re-score after lift pass 1 is 40/50 (READABILITY 8). The READABILITY lift of +2 is earned: the three systemic violations flagged at pass 0 are substantially resolved (contractions, second-person, em-dash). The residual deductions are for remaining above-target em-dash density and two "easy" instances, which are genuine but minor and fully prose-fixable. CLARITY, ACCURACY, UTILITY, DEPTH are unchanged at 8/8/8/8. The figure addition (Fig 85.1) is load-bearing and correct — it earns no additional CLARITY points only because the in-prose introduction sentence is missing, which is a one-line fix.
+| (prior, Sonnet 4.6) 0 | 2026-06-20 | 38 / 50 | PASS | PASS | PASS / PENDING / N/A | LIFT-LOOP | initial independent score (superseded revision) |
+| (prior, Sonnet 4.6) 1 | 2026-06-20 | 40 / 50 | PASS | PASS | PASS / PENDING / N/A | LIFT-LOOP | contractions stripped, second-person removed, em-dash 25→14, Fig 85.1 rendered |
+| **0 (Opus 4.8, this gate)** | **2026-06-28** | **44 / 50** | **PASS** | **PASS** | **PASS / GREEN / PASS** | **SHIP** | fresh independent re-score of the CURRENT draft: the prior lift items are already applied (em-dash 7.0/1,000, banned `easy`→"straightforward"/"cheap to collect", figure intro sentence present L40, L110 meeting-reframe added); FLOOR-C COMPILE + CODE-REVIEW now GREEN (`_EXAMPLE.md` + `_CODEREVIEW.md`); cross-refs all resolve vs FINAL_INDEX; snippets 4/4. No code touched → no rebuild triggered. |
 
 ---
 
 ## Learnings & pipeline suggestions
 
-1. **Contraction-strip pass is scriptable and effective.** The lift pass removed all 21 body-prose contractions, confirming the `check_voice.sh` suggestion from pass 0. The one remaining `can't` is in the back-matter sources block (not prose) — the script should scope to lines between the title and `## Back matter`.
-
-2. **Em-dash reduction is iterative, not binary.** The 44% reduction (25 → 14/1,000) shows a single pass can make meaningful progress but not reach the soft target in one sweep. A second pass targeting the 19 excess dashes (above 8/1,000 in a 3,754-word prose body) is readily achievable.
-
-3. **"easy" is a persistent banned-word tell.** In a chapter whose entire argument depends on contrasting greenfield ease with legacy complexity, the word "easy" is semantically load-bearing — but VOICE still bans it. The substitute "straightforward on a greenfield project" / "cheap to collect" carries the same meaning without the banned word. Add this substitution pattern to PIPELINE-LEARNINGS.
-
-4. **Figure must have a prose introduction sentence before the image tag, not only an alt-text caption.** The VOICE guide is explicit: "Refer to it before it appears, naming what it shows; never promise a diagram the chapter does not contain." The current placement drops the image cold after `## How it works`. A single sentence ("Figure 85.1 maps the three columns of the measurement discipline: outcome metrics to adopt on the left, the SPACE productivity frame in the center, and the vanity metrics to refuse on the right — all anchored by Goodhart.") would fix this.
-
-5. **Lift loop scoring ceiling.** This chapter is at 40/50 after lift pass 1. The gap to ≥45/50 requires meaningful movement in READABILITY (from 8 to 9 or 10) or in one other cluster. READABILITY can reach 9 with the em-dash reduction + banned-word removal. CLARITY could reach 9 with the figure introduction sentence and a trim of the Overview corridor. This is achievable in lift pass 2 without any new facts or scope additions.
-
-6. **DORA/SPACE remain SOURCE-PIN §7 canon gaps.** No chapter citing DORA bands or SPACE verbatim can be fully verified at pin until these are added as pinned rows. Escalate to the SOURCE-PIN re-pin runbook.
+1. **A stale independent score must never gate a revised draft.** The prior re-score (40/50, 2026-06-20) was correct *for the revision it read*, but the draft was edited afterward (2026-06-27) and every blocking lift item was applied. An independent re-score must re-measure the current file empirically (em-dash, banned words, figure intro, cross-refs, snippet resolution) rather than carry forward the prior cluster numbers — which is what tipped this from a stale 40 to a true 44. Suggest the scorecard header always record the **draft mtime** it scored, so a later reader can tell whether a score predates a revision.
+2. **The "model the mechanism, flag the figure" pattern earns the ACCURACY ceiling honestly.** This chapter is the cleanest example in the book of a `⚠ verify-at-pin` headline number (DORA bands) being refused in *both* prose and code while the *definitional/algorithmic* core (the four-key formulas, baseline+ratchet) stays runnable and pinned. ACCURACY is honestly capped at 8 only by the SPACE/recovery-label canon gap — not by any invention. Worth promoting to PIPELINE-LEARNINGS: when the §7 canon has a gap (SPACE), the chapter can still SHIP at the bar with the gap flagged, but ACCURACY cannot reach 9 until the pin closes it. The pin action, not a prose lift, is the path to 9.
+3. **Cross-ref integrity is high across a 47-chapter merge.** All ten numbered cross-references resolve to the correct merged-chapter topic against FINAL_INDEX, including the folded-key routing (e.g. Ch 19 = key 39 "living with findings"). The self-label "Figure 38.1" matches the printed chapter number while siblings are referenced by printed number — consistent. No cross-ref drift found; the routing table in the dossier front-matter is doing its job.

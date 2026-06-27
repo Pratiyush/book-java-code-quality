@@ -6,7 +6,7 @@
 
 ## Hook
 
-A team ships from a pristine, always-green `main`: every analyzer passed, every test green, the architecture rules held, the security gate cleared, the branch protected. They deploy the release big-bang to one hundred percent of traffic — and production goes down for every user at once, because a single logic bug that *no* gate could catch (the code was well-formed, idiomatic, fully covered, and computed the wrong answer; the design flaw of Chapter 30, the kind only human review or production finds) hit everyone simultaneously. The pipeline did its job perfectly. The *release* did not, because it was built on an assumption the rest of the book has been quietly dismantling: that if the gates are green, the change is safe.
+A team ships from a pristine, always-green `main`: every analyzer passed, every test green, the architecture rules held, the security gate cleared, the branch protected. They deploy the release big-bang to one hundred percent of traffic — and production goes down for every user at once, because a single logic bug that *no* gate could catch (the code was well-formed, idiomatic, fully covered, and computed the wrong answer; the kind only human review or production finds — the catch of Chapter 37) hit everyone simultaneously. The pipeline did its job perfectly. The *release* did not, because it was built on an assumption the rest of the book has been quietly dismantling: that if the gates are green, the change is safe.
 
 The assumption does not hold, and this closing chapter of Part IX is the layer that accepts it. Every gate lowers the probability a defect reaches production, but none reaches zero: logic flaws, the untested edge, the condition that only exists under real load. **Release quality** assumes that *some* defect will eventually slip through every gate, and it is the discipline of (a) limiting the **blast radius** when one does, and (b) **learning** from it. This is **shift-right**, the complement to the shift-left of every prior part. Where the gates try to catch defects *before* merge, release quality limits the damage of those that escape and feeds production's lessons back into the gates. It has three parts: the final **release gates** (the artifact is green, signed, and inventoried), **progressive delivery** (canary, blue-green, feature flags, so a bad change hits 1% of users, not 100%, and rolls back in seconds), and the **post-release feedback loop** (a production regression becomes a fix, a test, and sometimes a new gate). This is where the always-green `main` of the last chapter becomes a steady stream of *safe* releases, and where the quality cycle finally closes.
 
@@ -61,7 +61,7 @@ public sealed interface ReleaseDecision permits ReleaseDecision.Ready, ReleaseDe
 }
 ```
 
-Two of those preconditions are the version and the changelog. A release carries a release version, never a development `-SNAPSHOT` (Maven's pre-release suffix, a build-in-progress that is not a shippable release — the semver contract of Chapter 26):
+Two of those preconditions are the version and the changelog. A release carries a release version, never a development `-SNAPSHOT` (Maven's pre-release suffix, a build-in-progress that is not a shippable release — the semver contract of Chapter 7):
 
 ```java
     public boolean isRelease() {
