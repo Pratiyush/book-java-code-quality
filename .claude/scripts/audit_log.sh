@@ -15,7 +15,10 @@ set -uo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 log="$root/10-logs/audit.jsonl"
 mkdir -p "$root/10-logs"
-ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+# Timestamp defaults to now (UTC); AUDIT_TS lets a backfill record the real historical date of a
+# milestone (read from git log) instead of the wall clock — used only to reconcile the trail, never
+# to fabricate. Format must be ISO-8601 (YYYY-MM-DDTHH:MM:SSZ).
+ts="${AUDIT_TS:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}"
 actor="${AUDIT_ACTOR:-claude}"
 
 if command -v jq >/dev/null 2>&1; then

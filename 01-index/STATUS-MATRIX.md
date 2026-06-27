@@ -9,6 +9,7 @@
 - **47/47 chapters** drafted (🟢 `draft`).
 - **39** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).
 - **0** need EXAMPLE-BUILD (FLOOR-C compile).
+- **FLOOR-C on disk:** 45/47 modules built green; 45 CODE-REVIEW reports (45 PASS, 0 FAIL).
 - **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 42 in lift · 5 need an independent score · 0 approved (in 04-approved/).
 - **DRIFT: ✅ none**.
 
@@ -21,12 +22,12 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | Ch | Key | Topic | rese | veri | draf | exam | clar | audi | scor | figu | reco | appr | Next |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
-| 1 | 01 | What is code quality? | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 1 | 01 | What is code quality? | 🟢 | 🔴 | 🟢 | ⚪ | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 2 | 03 | Readability, maintainability & measuring | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part I — Foundations** |  |  |  |  |  |  |  |  |  |  | |
 | 3 | 05 | The Java quality toolchain map | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
-| 4 | 06 | Quality culture, ownership & knowledge | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
+| 4 | 06 | Quality culture, ownership & knowledge | 🟢 | 🔴 | 🟢 | ⚪ | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 5 | 08 | Effective Java & modern Java for quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 6 | 07 | Naming, structure & formatting | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |
 | 7 | 09 | Designing clear APIs & method contracts | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟡 | 🟢 | 🔴 | 🟡 | score |

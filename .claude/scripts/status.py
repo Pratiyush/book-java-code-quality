@@ -151,6 +151,65 @@ def _verdict_token(cell):
     return min(found)[1] if found else None
 
 
+def report_verdict(slug, suffix):
+    """Read the headline VERDICT from a gate report (_EXAMPLE.md / _CODEREVIEW.md) → one of
+    'PASS' / 'FAIL' / 'NA' / None. The reports write the verdict on the first line containing 'Verdict'
+    ('## VERDICT: PASS', '- **Verdict:** **PASS-WITH-FIXES**', 'Floor-C verdict: N/A', '## VERDICT: FAIL').
+
+    Robustness rules learned from the real reports (each rule has a concrete failing case):
+      1. A verdict DECLARATION binds 'verdict' to its token directly: 'verdict' followed within a few
+         chars (after optional :/→/-/* ) by PASS / FAIL / N/A. Narrative that merely contains 'verdict'
+         ('Treat as FAIL on dimension 6', 'the dossier's N/A call', '## Verdict rationale — BUILT') is NOT
+         a declaration and is ignored — else Ch26/Ch03/Ch110 misread.
+      2. An UPGRADE phrase ('Verdict upgraded FAIL → PASS-WITH-FIXES') resolves to its TARGET (right of
+         the arrow). Several reports open '## VERDICT: FAIL', narrate the fix, and close by upgrading.
+      3. The verdict of record is the LAST declaration/upgrade on disk; PASS / PASS-WITH-FIXES is a PASS
+         (test PASS before FAIL; ignore counted forms like '0 FAIL').
+    Returns None when there is no report / no decisive declaration on disk."""
+    p = report_path(slug, suffix)
+    if not p or not os.path.exists(p):
+        return None
+    body = open(p, encoding="utf-8").read()
+
+    # _EXAMPLE.md special case — the COMPILE floor attaches only if a module EXISTS. Some chapters are
+    # pure-concept: a VERDICT line reads 'PASS — module N/A' / 'PASS (module N/A)' / 'NOT CREATED (N/A)'
+    # (the FLOOR-C COMPILE clause does not attach) → classify NA so the example bubble is ⚪, not a green
+    # that implies a built module. Scoped to verdict lines (not the whole body) so narrative like Ch110's
+    # 'the dossier's N/A call was revised' (module actually BUILT green) does NOT trip it.
+    if suffix == "_EXAMPLE.md":
+        for ln in body.splitlines():
+            if "verdict" not in ln.lower():
+                continue
+            if re.search(r"module\s*\**\s*(?:=\s*)?\**\s*N/?A|\(module\s+N/?A\)|NOT\s+CREATED|no\s+companion\s+module",
+                         ln, re.I):
+                return "NA"
+
+    def tok(text):
+        up = text.upper()
+        if "N/A" in up or "NOT CREATED" in up or "NOT APPLICABLE" in up:
+            return "NA"
+        if "PASS" in up:                      # PASS / PASS-WITH-FIXES — a pass even if it counts "0 FAIL"
+            return "PASS"
+        if ("FAIL" in up and not re.search(r"(?:NO|0|ZERO)\s+FAIL", up)) or "BLOCKER" in up:
+            return "FAIL"
+        return None
+
+    # A DECLARATION binds 'verdict' to its token within a short window (≤24 chars: room for ':' '**'
+    # 'Floor-C ' etc., but not enough to bridge into narrative like 'Verdict rationale — … the N/A call').
+    # An UPGRADE explicitly resolves to the token right of the arrow regardless of distance. Upgrade is
+    # tried first (it is the resolution of record); the LAST matching line on disk wins.
+    decl = re.compile(r"\bverdict\b\W{0,8}\**\s*(?:floor[\- ]?c\W*)?(pass(?:-with-fixes)?|fail|n/?a)\b", re.I)
+    upg = re.compile(r"\bverdict\b[^\n]*?→\s*\**\s*(pass(?:-with-fixes)?|fail|n/?a)\b", re.I)
+    result = None
+    for ln in body.splitlines():
+        m = upg.search(ln) or decl.search(ln)
+        if m:
+            t = tok(m.group(1))
+            if t:
+                result = t
+    return result
+
+
 def parse_score(slug):
     """Read the score → {total, pct, floors, independent} or None.
 
@@ -176,7 +235,7 @@ def parse_score(slug):
     # verdict in the next cell. Tolerates both "| A — NEUTRALITY | ✅ PASS |" and "| **NEUTRALITY** |
     # PASS |" formats; reads the verdict from the verdict cell only (evidence cells often mention other
     # floors' states, e.g. "COMPILE = PENDING", which must not bleed across). First matching row wins.
-    floors = {"A": "?", "B": "?", "Csrc": "?", "Ccompile": "?"}
+    floors = {"A": "?", "B": "?", "Csrc": "?", "Ccompile": "?", "Creview": "?"}
     names = (("A", "NEUTRAL"), ("B", "HONEST"), ("Csrc", "SOURCE-TRACE"), ("Ccompile", "COMPILE"))
     for ln in text.splitlines():
         s = ln.strip()
@@ -197,6 +256,22 @@ def parse_score(slug):
                 if tok:
                     floors[key] = tok
                     break
+    # FLOOR-C evidence upgrade (mirrors the _EXAMPLE.md bubble upgrade): the _SCORE.md floor table is
+    # written at scoring time and often predates EXAMPLE-BUILD/CODE-REVIEW, so it records FLOOR-C
+    # COMPILE as PENDING-RUNTIME. The on-disk gate reports are the fresher truth:
+    #   _EXAMPLE.md  PASS  -> the module built green        -> Ccompile = PASS
+    #   _EXAMPLE.md  NA    -> pure-concept chapter, no module -> Ccompile = NA (no compile clause)
+    #   _CODEREVIEW.md PASS/PASS-WITH-FIXES -> FLOOR-C 2nd half (CODE-REVIEW) satisfied -> Creview = PASS
+    #   _CODEREVIEW.md FAIL/BLOCKER         -> FLOOR-C 2nd half FAILS                  -> Creview = FAIL
+    # We only ever UPGRADE a PENDING/'?' compile cell from disk evidence; we never downgrade a recorded
+    # PASS/FAIL. Creview is a new half, sourced only from the report (no _SCORE.md field exists for it).
+    ex_v = report_verdict(slug, "_EXAMPLE.md")
+    if ex_v == "PASS" and floors.get("Ccompile") in (None, "?", "PENDING"):
+        floors["Ccompile"] = "PASS"
+    elif ex_v == "NA":
+        floors["Ccompile"] = "NA"
+    cr_v = report_verdict(slug, "_CODEREVIEW.md")
+    floors["Creview"] = {"PASS": "PASS", "FAIL": "FAIL", "NA": "NA"}.get(cr_v, "NA" if ex_v == "NA" else "?")
     pct = round(total / SCORE_MAX * 100) if total is not None else None
     return {"total": total, "pct": pct, "floors": floors, "independent": independent}
 
@@ -262,10 +337,19 @@ def parse_tracker():
         has_fig = bool(slug) and bool(glob.glob(os.path.join(ROOT, "05-figures", slug, "fig*_*.png")))
         if has_fig:
             bubbles["figure"] = BUB["done"]
-        # an EXAMPLE-BUILD report on disk (green companion module + bound snippets) upgrades example to 🟢
-        ep = report_path(slug, "_EXAMPLE.md")
-        if ep and os.path.exists(ep):
+        # FLOOR-C on disk: the `example` column carries BOTH halves of FLOOR-C — the green build
+        # (_EXAMPLE.md) AND the CODE-REVIEW (_CODEREVIEW.md, the 2nd half, a HARD gate). An EXAMPLE-BUILD
+        # report upgrades the cell to 🟢 (green module + bound snippets), N/A stays ⚪ — but a CODE-REVIEW
+        # FAIL/BLOCKER on a copy-verbatim deliverable forces the cell 🔴 so the unresolved FLOOR-C defect
+        # is visible (never silently green). PASS / PASS-WITH-FIXES leaves the build verdict standing.
+        ex_v = report_verdict(slug, "_EXAMPLE.md")
+        cr_v = report_verdict(slug, "_CODEREVIEW.md")
+        if ex_v == "PASS":
             bubbles["example"] = BUB["done"]
+        elif ex_v == "NA":
+            bubbles["example"] = BUB["na"]
+        if cr_v == "FAIL":
+            bubbles["example"] = BUB["no"]
         # approval engine drives the approve bubble
         score = parse_score(slug)
         decision, dkey, reason = approval_decision(score)
@@ -352,9 +436,13 @@ def summary(rows):
     human = sum(1 for r in rows if r["bubbles"]["approve"] == BUB["human"])
     figured = sum(1 for r in rows if r.get("has_fig"))
     scored = sum(1 for r in rows if r["score"] and r["score"]["independent"])
+    # FLOOR-C (compile + code-review), read from the on-disk gate reports
+    built = sum(1 for r in rows if report_verdict(r["slug"], "_EXAMPLE.md") == "PASS")
+    cr_pass = sum(1 for r in rows if report_verdict(r["slug"], "_CODEREVIEW.md") == "PASS")
+    cr_fail = sum(1 for r in rows if report_verdict(r["slug"], "_CODEREVIEW.md") == "FAIL")
     return dict(n=n, indep=need_indep, example=need_example,
                 ready=ready, needs_indep=needs_indep, lift=lift, approved=approved, human=human,
-                figured=figured, scored=scored)
+                figured=figured, scored=scored, built=built, cr_pass=cr_pass, cr_fail=cr_fail)
 
 
 # ----------------------------------------------------------------------------- markdown
@@ -380,6 +468,8 @@ def write_matrix(rows, ch2part, parts, findings, caps):
         f"- **{s['n']}/47 chapters** drafted (🟢 `draft`).",
         f"- **{s['indep']}** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).",
         f"- **{s['example']}** need EXAMPLE-BUILD (FLOOR-C compile).",
+        f"- **FLOOR-C on disk:** {s['built']}/47 modules built green; {s['cr_pass'] + s['cr_fail']} CODE-REVIEW reports "
+        f"({s['cr_pass']} PASS, {s['cr_fail']} FAIL)" + ("." if not s['cr_fail'] else " — **1 FLOOR-C blocker**, see Scoring."),
         f"- **Routing (auto-approve at {SHIP_BAR}% + floors):** {s['ready']} eligible/at-gate · {s['lift']} in lift · {s['needs_indep']} need an independent score · {s['approved']} approved (in 04-approved/).",
         f"- **DRIFT: {'❌ ' + str(len(findings)) + ' finding(s)' if findings else '✅ none'}**.",
         "",
@@ -440,24 +530,30 @@ def write_scoring_md(rows):
          f"> A main-loop *self*-score must be independently re-scored before it advances. **≥{APPROVE_THRESHOLD}%** is "
          "flagged as excellence. COMPILE/example-build is tracked separately (a later phase), not a blocker here.",
          "",
-         "| Ch | Key | Score | % | A | B | C-src | C-compile | Indep? | Decision | Why |",
-         "|---|---|---|---|---|---|---|---|---|---|---|"]
+         "| Ch | Key | Score | % | A | B | C-src | C-compile | C-review | Indep? | Decision | Why |",
+         "|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
         sc = r["score"]
         if not sc:
-            L.append(f"| {r['ch']} | {r['nn']} | — | — | — | — | — | — | — | {r['decision']} | {r['reason']} |")
+            L.append(f"| {r['ch']} | {r['nn']} | — | — | — | — | — | — | — | — | {r['decision']} | {r['reason']} |")
             continue
         f = sc["floors"]
         tot = f"{sc['total']}/{SCORE_MAX}" if sc["total"] is not None else "—"
         L.append(f"| {r['ch']} | {r['nn']} | {tot} | {sc['pct']}% | {f.get('A','?')} | {f.get('B','?')} | "
-                 f"{f.get('Csrc','?')} | {f.get('Ccompile','?')} | {'yes' if sc['independent'] else 'no'} | "
-                 f"**{r['decision']}** | {r['reason']} |")
+                 f"{f.get('Csrc','?')} | {f.get('Ccompile','?')} | {f.get('Creview','?')} | "
+                 f"{'yes' if sc['independent'] else 'no'} | **{r['decision']}** | {r['reason']} |")
     s = summary(rows)
     L += ["", "## Routing", "",
           f"- **{s['ready']}** eligible to auto-approve — independent score ≥{SHIP_BAR}% + content floors PASS (applied into 04-approved/ on the next run).",
           f"- **{s['needs_indep']}** need an independent score (self ≥{SHIP_BAR}%, run the independent scorer).",
           f"- **{s['lift']}** in the lift loop (below the {SHIP_BAR}% bar or a floor unresolved).",
           f"- **{s['approved']}** approved (in 04-approved/).",
+          "",
+          "## FLOOR-C (compile + code-review) — from the on-disk gate reports", "",
+          f"- **{s['built']}/47** companion modules built GREEN (`_EXAMPLE.md` = PASS); the rest are pure-concept N/A.",
+          f"- **{s['cr_pass'] + s['cr_fail']}** CODE-REVIEW reports on disk (`_CODEREVIEW.md`, FLOOR-C 2nd half): "
+          f"**{s['cr_pass']} PASS / PASS-WITH-FIXES**, **{s['cr_fail']} FAIL**"
+          + ("." if not s['cr_fail'] else " — a FAIL is an unresolved FLOOR-C blocker on a copy-verbatim deliverable; see the C-review column above and the chapter's `_CODEREVIEW.md`."),
           "",
           "_Approvals apply automatically on a normal `status.py` run; `--check-only`/`--no-apply` are read-only._", ""]
     open(SCORING_OUT, "w", encoding="utf-8").write("\n".join(L))
@@ -644,6 +740,16 @@ def write_html(rows, ch2part, parts, findings, caps, audit, today):
            f'≥{SHIP_BAR}% (≥{SHIP_BAR * SCORE_MAX // 100}/{SCORE_MAX}) + content floors PASS → AUTO-APPROVE '
            f'(into 04-approved/); else lift (≤3 passes). ≥{APPROVE_THRESHOLD}% flags excellence. Scoring is delegated to an '
            'external different-vendor LLM (one-pager); Claude applies the lifts. Only Step 16 is human.</div>']
+    fc_cls = "ok" if not s["cr_fail"] else "bad"
+    scr.append(f'<div class="note {fc_cls}"><b>FLOOR-C (compile + code-review) — from disk:</b> '
+               f'<b>{s["built"]}/47</b> companion modules built green (<code>_EXAMPLE.md</code> = PASS; the rest '
+               f'pure-concept N/A); <b>{s["cr_pass"] + s["cr_fail"]}</b> CODE-REVIEW reports '
+               f'(<code>_CODEREVIEW.md</code>, the FLOOR-C 2nd half): <b>{s["cr_pass"]} PASS / PASS-WITH-FIXES</b>, '
+               f'<b>{s["cr_fail"]} FAIL</b>'
+               + ('. The C-build / C-rev floor chips below are read from these reports, not the (older) score files.'
+                  if not s["cr_fail"] else
+                  ' — a FAIL is an unresolved FLOOR-C blocker on copy-verbatim code; see the C-rev chip and the '
+                  'chapter’s <code>_CODEREVIEW.md</code>.') + '</div>')
     scored_rows = sorted([r for r in rows if r["score"] and r["score"]["total"] is not None],
                          key=lambda r: (r["score"]["independent"], r["score"]["pct"]), reverse=True)
     indep_n = sum(1 for r in scored_rows if r["score"]["independent"])
@@ -651,7 +757,7 @@ def write_html(rows, ch2part, parts, findings, caps, audit, today):
     scr.append(f'<h2>Chapter scores — {indep_n} independent ★ · {prov_n} provisional self-score (bar {SHIP_BAR}%)</h2>')
     if scored_rows:
         scr.append('<div class=scroll><table><thead><tr><th>Ch</th><th>Topic</th><th>Type</th><th>Score</th>'
-                   '<th>Floors A·B·C-src</th><th>Decision</th></tr></thead><tbody>')
+                   '<th>Floors A · B · C-src · C-build · C-rev</th><th>Decision</th></tr></thead><tbody>')
         for r in scored_rows:
             sc = r["score"]; fl = sc["floors"]; pct = sc["pct"]; indep = sc["independent"]
             if indep:
@@ -663,9 +769,11 @@ def write_html(rows, ch2part, parts, findings, caps, audit, today):
             sbar = (f'<div class=sbar><i style="width:{pct}%;background:{col}"></i>'
                     f'<span>{sc["total"]}/{SCORE_MAX} · {pct}%</span></div>')
             flrs = ""
-            for k, lab in (("A", "A"), ("B", "B"), ("Csrc", "C")):
-                v = fl.get(k, "?"); cls = v if v in ("PASS", "PENDING", "FAIL") else "q"
-                flrs += f'<span class="flr {cls}">{lab}·{v}</span>'
+            for k, lab in (("A", "A"), ("B", "B"), ("Csrc", "C-src"), ("Ccompile", "C-build"), ("Creview", "C-rev")):
+                v = fl.get(k, "?")
+                cls = v if v in ("PASS", "PENDING", "FAIL") else "q"
+                disp = "n/a" if v == "NA" else v
+                flrs += f'<span class="flr {cls}">{lab}·{disp}</span>'
             bd = f'<span class=badge style="background:{DCOLOR.get(r["decision"], "#5b6675")}">{r["decision"]}</span>'
             scr.append(f'<tr><td><b>{r["ch"]}</b></td><td class=topic>{r["topic"][:42]}</td><td>{tag}</td>'
                        f'<td>{sbar}</td><td>{flrs}</td><td>{bd}</td></tr>')
