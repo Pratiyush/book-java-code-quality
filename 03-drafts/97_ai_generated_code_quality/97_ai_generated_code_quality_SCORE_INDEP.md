@@ -1,4 +1,10 @@
-# INDEPENDENT SCORECARD — Ch 41 — model: Claude Sonnet 4.6 — 2026-06-20 (lift pass 1)
+# INDEPENDENT SCORECARD — Ch 41 — model: Claude Opus 4.8 — 2026-06-28 (fresh independent re-score; bounded lift to pass 1)
+
+> Supersedes the 2026-06-20 independent score (39/50) — that pass scored the draft **before** the
+> companion module was built and embedded. This artifact has since changed materially: the module is
+> BUILT GREEN + CODE-REVIEW PASS (2026-06-27) and the draft now embeds 5 verified snippet includes, so
+> FLOOR C now carries live COMPILE + CODE-REVIEW evidence and the clusters are re-judged on the
+> current state. This is an independent (different-model) re-score per the ship-bar rule.
 
 ---
 
@@ -7,81 +13,96 @@
 - **Mode:** [x] Phase-3 chapter scorecard
 - **Dossier key:** 97 (folds 99)
 - **Slug:** `97_ai_generated_code_quality`
-- **Title:** The Draft That Looks Like a Deliverable — Quality of AI-generated Java: characteristic risks, refactoring/test-gen guardrails
+- **Title:** The Draft That Looks Like a Deliverable
 - **Part / arc position:** Part XII — AI-Era Code Quality (Ch 41, OPENS Part XII; umbrella)
 - **Artifact scored:** `03-drafts/97_ai_generated_code_quality/97_ai_generated_code_quality_v1.md`
-- **Verified against Java code quality the pins in SOURCE-PIN.md** — pinned at 2026-06-20 (re-check date: 2026-06-20)
-- **Scorer:** chapter-scorer agent (independent — Claude Sonnet 4.6, not the drafter model)
-- **Date:** 2026-06-20
-- **Lift-pass #:** 1
+- **Gate reports read:** `_EXAMPLE.md` (BUILD SUCCESS, 12 tests, 0/0), `_CODEREVIEW.md` (PASS-WITH-FIXES, no BLOCKER), `09-flags/97_ai_code_quality_stats_sources_verify_at_pin.md`. (`_VERIFY.md` / `_CLARITY.md` / `_AUDIT.md` are not on disk for this chapter.)
+- **Verified against SOURCE-PIN** — re-check date 2026-06-28 (pin unchanged from 2026-06-20/27)
+- **Scorer:** chapter-scorer agent (independent — Claude Opus 4.8, not the drafter model)
+- **Date:** 2026-06-28
+- **Lift-pass #:** 1 (one in-bounds pass applied this session; pass 0 = as-received state)
 
 ---
 
-## The five clusters (score 1–10)
+## Floors first (checked before scoring — a FAIL is fatal regardless of clusters)
 
-| # | Cluster | What it measures | Score (1–10) | Note (specific, actionable) |
+| Floor | PASS / FAIL | Evidence |
+|---|---|---|
+| **A — NEUTRALITY** | **PASS** | Body banned-phrase scan clean. The previously-flagged "unlike X" is already reworded (line 75: "An IDE refactoring or an OpenRewrite recipe is correct by its type-aware mechanics; an AI's suggestion, lacking that guarantee, can silently change behavior"). AI vs deterministic tools framed as a division of labour with trade-offs — no crowning. The only "kills" hits are mutation-testing term-of-art ("a spec-derived test that kills them") in the back-matter snippet glossary (line 145) + HTML-comment metadata (line 5), not a rival-crowning verdict — false positive for a naive pre-pass. CODE-REVIEW dimension 6 independently confirms zero banned phrasings across src/config/prose. |
+| **B — HONEST-LIMITATIONS** | **PASS** | Dedicated "Limitations & when NOT to reach for it" (9 distinct when-not conditions) + "When to use what" naming explicit "Not AI" cases. Every feature (AI drafting, AI refactoring, AI test-gen) carries its hardest objection AND an avoid-when. Productivity upside stated with its costs. The `AiReviewGate` failure path encodes the floor in code (untrusted-until-verified; refuse what cannot be verified). |
+| **C — SOURCE-TRACE / COMPILE / CODE-REVIEW** | **PASS** | SOURCE-TRACE: zero invented rule IDs / config keys / tool flags / GAVs / version numbers; every AI statistic is dated + attributed and the non-pinnable ones are tracked in `09-flags/97_ai_code_quality_stats_sources_verify_at_pin.md` (verify-at-pin) — none asserted as a timeless constant; the module deliberately bakes in **no** statistic. COMPILE: `_EXAMPLE.md` → `mvn -B -Pquality verify` BUILD SUCCESS, 12 tests, 0 Checkstyle, 0 unsuppressed SpotBugs, JDK 21.0.11. CODE-REVIEW: `_CODEREVIEW.md` → PASS-WITH-FIXES, **no BLOCKER** (two MINOR fixes — an unused `spotbugs-annotations` dep + one dangling `@link` — explicitly do not block FLOOR-C). All three conditions hold. |
+
+**All three floors PASS.** No floor fix required; the bar miss below is a cluster-quality miss, eligible for the bounded lift loop.
+
+---
+
+## The five clusters (score 1–10) — PASS 0 (as-received) then PASS 1 (post-lift)
+
+| # | Cluster | Pass 0 | Pass 1 | Note (specific, actionable) |
 |---|---|---|---|---|
-| 1 | **CLARITY** | Is the explanation easy to follow? Does the structure carry the reader? Are terms defined before use? | **8** | The two core mechanisms — vulnerability inheritance and confident wrongness — are introduced in plain language before any technical detail. The CONCEPT callouts give each its own clear definition. The chapter's two-halves structure (risks / guardrails) is announced and held. The mechanism logic flows cleanly: mechanism → characteristic risks → stance → refactoring guardrail → test-generation guardrail → why the gate is source-agnostic. The em-dash conversion (0.7/1,000 vs. prior 22/1,000) has improved the cadence of the Deep Dive paragraphs. Minor residual: the Deep Dive section carries several long, multi-clause sentences that correctly build an argument but could be broken up further without content loss. Score holds at 8. |
-| 2 | **ACCURACY** | Every fact traces to the pinned authority set at the pins in SOURCE-PIN.md. No invented rule IDs, config/ruleset keys, tool flags, API signatures, GAV coordinates, version numbers, benchmark figures, and quoted claims. Snippets/examples verified. | **7** | Positive: percentage statistics ("~40% with critical gaps," "XSS missed in the large majority of cases") remain framed as snapshots that "must be verified against the specific dated study and cited as a snapshot, never as a constant." arXiv papers 2502.01853 and 2409.19182 are named and acknowledged in SOURCE-PIN §7 as existing-but-figures-unverified rows. CodeScene three guardrails are attributed and flagged "⚠ wording @pin." The fig97_1.sources.md confirms every figure element traces to a prose passage with no new atoms introduced. No invented rule IDs, config keys, GAV coordinates, or version numbers. Deduction: arXiv figure atoms and CodeScene wording remain open PENDING-pin items; the statistics appear in prose body as "as of recent (2024–2025) studies" without inline study-name — the back matter carries the honest flag ("⚠ §7 canon rows, figures @pin") but the prose body does not name the study inline. These are PENDING-pin items per task instructions, treated as such (not failing). Score unchanged at 7. |
-| 3 | **UTILITY** | Could the reader act on this? Working examples, decision frames, "use this when / avoid when". | **8** | "When to use what" (lines 93–101) gives concrete, differentiated guidance across five distinct scenarios. "Limitations & when NOT to reach for it" (lines 72–81) is a scannable checklist of nine distinct when-not conditions. "Alternatives & adjacent approaches" (lines 83–91) maps each choice to its trade-off. The fig97_1.png now appears inline as a load-bearing diagram showing the full gate pipeline — it adds a decision-support visual the prior pass lacked. Deduction: companion module remains PENDING; no inline code illustration of the SQL injection pattern or hollow-test anti-pattern exists in prose. Those two scenarios are mentioned in the hook and companion spec but absent in runnable form. Score unchanged at 8. |
-| 4 | **DEPTH** | Does it go past the surface — mechanism, trade-offs, edge cases? | **8** | Two distinct mechanisms explained at mechanism level, not just named. Refactoring and test-generation sections go past the general warning to name the specific failure mode (behavior-change without a net; tests-from-code defeating double-bookkeeping). The Deep Dive advances the argument rather than restating it: gate is source-agnostic, bottleneck shifts from writing to verifying, confident wrongness defeats the human's instinct-based defense, and the statistics-volatility point is elevated to a durable structural argument. Self-aware provenance framing is a genuine depth move unique to this chapter's position. Deduction: "double-bookkeeping" remains a coined term where the attribution is flagged "⚠ wording @pin" in the dossier; no separate section addresses the coverage-theater mechanism in depth (it appears as a limitation bullet and a single passage). Score unchanged at 8. |
-| 5 | **READABILITY** | Does the prose hold attention? Locked voice per VOICE-GUIDE.md? Hook in, forward hook out? | **8** | Lift-pass changes are verified and significant. (a) Contractions: zero narration contractions in prose body lines 14–110 (grep confirms clean). (b) Em-dash density: 0.7/1,000 words in prose body, against a ~8/1,000 target — the voice pass eliminated the appositive-clause cadence that was the primary AI-tell. (c) Self-narration: the "not a slogan but the load-bearing principle" phrase is absent (grep confirms). (d) Figure 97.1 now appears inline at line 41 with a descriptive alt-text caption and matching italic caption line, and the PNG exists in `05-figures/`. The hook paragraph remains strong. The forward hand-off is still a pulling thread, not a syllabus. Residual note: the statistics paragraph at line 52 uses "(2024–2025)" informally in prose; this is not a voice violation but a precision deduction. The Deep Dive's final paragraph (line 74) is ambitious in scope and carries more subordinate clauses than the earlier sections, but it reads rather than stalls. Score lifted from 6 to 8. |
+| 1 | **CLARITY** | 8 | **9** | Mechanism spine is clean: vulnerability inheritance + confident wrongness are defined plain-first in CONCEPT boxes, the two-halves structure is announced and held, and the embedded SQL-concat→prepared and weak-vs-strong-test snippets now carry the mechanism in code, not just prose. **Pass-0 cap (the load-bearing defect):** the blurb + hook said the AI "imports a dependency that does not exist" — a case that fails dependency resolution *loudly* (build goes red) — while the body (line 53) correctly teaches **slopsquatting** (a hallucinated name an attacker pre-registers, which resolves silently). The most prominent sentence in the chapter taught the wrong, self-defeating version of its own "zero visible warning signs" thesis. Pass 1 reconciled the hook + blurb to the slopsquatting mechanism ("resolves and builds green while pulling in attacker-controlled code"; "not one of them turns the build red"). Spine now consistent end-to-end → 9. |
+| 2 | **ACCURACY** | 7 | **8** | Every figure dated + attributed + flagged; no invented atoms; the 5 displayed snippets trace to a built-green, code-reviewed module. **Pass-0 cap:** the "dependency that does not exist" line was not merely unclear, it was *internally inconsistent* with the chapter's own slopsquatting definition (a non-existent coordinate fails to resolve; a slopsquatted one resolves to a malicious artifact) — an accuracy defect at the highest-visibility point. Pass 1 fixed the inconsistency using only material already verified in the body + the flag file (no new fact introduced). Held at 8, not 9, by the open verify-at-pin study figures (arXiv 2502.01853 / 2409.19182 / CodeScene guardrails) — correctly flagged, dated, attributed, and **un-liftable in-bounds** (asserting them would violate FLOOR C + the standing AI-statistic rule). |
+| 3 | **UTILITY** | 8 | **8** | "When to use what" gives five differentiated scenarios incl. explicit "Not AI" cases; "Limitations" is a 9-item scannable checklist; the embedded runnable snippets give copyable, gated patterns (string-concat→`PreparedStatement`; assertion-light vs spec-derived test) the prior version lacked. Honest ceiling for an opener/umbrella chapter: it sets the Part XII stance rather than being a single deep how-to. No in-bounds 8→9 lever that is not padding. |
+| 4 | **DEPTH** | 8 | **8** | Two mechanisms at mechanism-level (not just named); the source-agnostic-gate argument is *advanced* (bottleneck shifts writing→verifying; confident wrongness defeats the reviewer's instinct), not restated; provenance self-awareness is a genuine depth move unique to this chapter's slot; coverage-vs-mutation gap explained concretely against the built module. Ceiling is the umbrella scope itself — not liftable without padding or pulling in the (flagged, un-pinnable) figures. |
+| 5 | **READABILITY** | 8 | **9** | Voice holds; terms glossed; strong forward hand-off. Pass 1's hook is now sharper *and* self-consistent ("Three serious defects, zero visible warning signs (not one of them turns the build red)") — the reconciliation tightened the lead rather than lengthening it. Em-dash density 7.62 / 1000 in body (under the 8/1000 ceiling; was 7.68 pre-edit, briefly 8.07 mid-edit, corrected by converting the inserted appositive em-dashes to parentheses). |
 
-**Cluster subtotal:** 39 / 50
-
----
-
-## The three content-floors (PASS / FAIL — all THREE must PASS)
-
-| Floor | What it requires | PASS / FAIL | Evidence / offending text + fix |
-|---|---|---|---|
-| **NEUTRALITY** | Neutral comparative survey: each option gets its strongest case and its hardest limitation; no crowning; banned phrasings absent ("better than," "unlike X," "the problem with X," "superior," "beats," "kills," "destroys," "blows away," "no reason to use X"). No rival crowned superior. Any cross-subject claim has a cited source. | **PASS** | The prior FAIL phrase ("unlike an IDE refactoring or an OpenRewrite recipe," previously at prose line 57) has been reworded. The current prose at line 62 reads: "An LLM suggesting a structural change or modernization is *not behavior-preserving by construction*. An IDE refactoring or an OpenRewrite recipe (Chapters 39, 40) is correct by its type-aware mechanics; an AI's suggestion, lacking that guarantee, can *silently change behavior*." The banned construction "unlike X" is absent. Grep scan of prose body lines 14–110 for all blocklist phrases returns clean (the word "kills" appears only in the back-matter companion-spec note about mutation testing, which is technical spec shorthand, not narration prose). No rival is crowned. No banned phrasing found in narration. PASS. |
-| **HONEST-LIMITATIONS** | Every feature gets its hardest objections AND a "when NOT to reach for this." Environment/compatibility caveats stated where relevant. | **PASS** | "Limitations & when NOT to reach for it" section (lines 72–81) covers nine distinct when-not conditions: over-trust, vulnerability inheritance, hallucinated dependencies, never-generate-tests-from-code, AI refactoring not behavior-preserving, coverage theater, volume outpaces review, every statistic dates fast, do not ship what the team does not understand. Limitations are also woven into each CONCEPT callout and the alternatives section. Both AI-assisted-refactoring and AI-test-generation uses name their hardest failure mode explicitly. PASS. |
-| **SOURCE-TRACE / COMPILE / CODE-REVIEW** | Zero invented rule IDs, config/ruleset keys, tool flags, API signatures, GAV coordinates, version numbers, benchmark figures, and quoted claims — everything traces to the pins or is flagged to `09-flags/`. COMPILE = PENDING (separate track). CODE-REVIEW = N/A per scoring instructions. | **PASS (source-trace); PENDING (compile); N/A (code-review)** | Source-trace: no invented rule IDs, config keys, tool flags, API signatures, GAV coordinates, or version numbers in prose body. Percentage statistics are explicitly flagged in the prose itself as pending per-study verification, and the back matter repeats "ALL stats ⚠ VERIFY @pin + DATED + ATTRIBUTED." arXiv 2502.01853 + 2409.19182 named and acknowledged-gap. CodeScene three guardrails cited and flagged "⚠ wording @pin." The fig97_1.sources.md confirms all figure atoms trace to prose passages; no new atoms introduced by the diagram. No cross-subject claim about IDE/OpenRewrite asserts a figure — describes mechanical properties referenced from within-book chapters. COMPILE: PENDING — companion module not yet built; toolchain confirmed ready (JDK 21.0.11+25.0.3). Not scored against chapter on FLOOR C per task instructions. PASS (source-trace). |
+**Cluster subtotal — Pass 0: 39 / 50 · Pass 1: 42 / 50.**
 
 ---
 
-## Verdict
+## Ship-bar verdict
 
-**Phase-3 chapter scorecard:**
+- **Bar:** all floors PASS **and** clusters sum ≥44/50 with no cluster <6, on an independent score.
+- **Floors:** A/B/C all PASS.
+- **Aggregate:** **42/50** after one in-bounds lift pass (no cluster <6).
+- **Result: LIFT** — 2 short of 44. Floors are clean; this is a pure cluster-quality miss.
 
-- [ ] **APPROVE** — ≥45/50 AND all floors PASS. Not reached: 39/50 = 78%.
-- [x] **LIFT** — all three floors PASS; aggregate 39/50 clears the standard ship bar (≥35/50, no cluster below 6) but does not reach the 90%/45-point threshold. Remaining blockers listed below.
-- [ ] **CUT** — below bar or structural floor failure.
+### Why the loop stops here rather than manufacturing a 44
 
-**One-line rationale:** All three floors now PASS (FLOOR A confirmed clean after "unlike X" rewrite); the voice pass lifted READABILITY from 6 to 8 and the aggregate from 37 to 39/50 (78%). The chapter clears the standard ship bar and is gate-eligible, but does not reach the 90% threshold for APPROVE. The gap is ACCURACY (pinned arXiv figures + CodeScene wording remain open) and the absent companion module / inline code illustration.
+The bounded loop allows ≤3 passes, but a pass must be **in-bounds** (no new unverified fact, no padding, no floor risk). After pass 1, the three 8-scored clusters are bound by ceilings that **cannot** be lifted in-bounds:
+
+- **ACCURACY 8→9** would require asserting the arXiv / CodeScene figures as verified — these are tracked verify-at-pin items with no pinned primary source; asserting them violates FLOOR C and the standing "every AI statistic stays dated + attributed, never timeless" rule. Out of bounds.
+- **UTILITY 8→9 and DEPTH 8→9** on an opener/umbrella chapter would require inventing more applied/contested detail or padding sections — out of bounds, and DEPTH is measured by verified substance, never word count.
+
+CLARITY and READABILITY are already at 9. There is **no remaining in-bounds revision that reaches 44** on this artifact. Per the rubric, the bar is not lowered to pass it; the honest outcome is **LIFT/escalate**, not SHIP. The single real defect (the hook contradiction) has been fixed and is worth banking regardless of the aggregate — but closing the last 2 points requires an out-of-bounds move (pin a primary AI-stat source, which would lift ACCURACY) that belongs to SOURCE-VERIFY / a SOURCE-PIN §7 row decision at the human gate, not to this in-bounds loop.
 
 ---
 
-## Remaining blockers to 90%
+## Flagged weakest cluster (after pass 1)
 
-| Blocker | Cluster / floor affected | Nature | Prose-fixable / needs-figure / needs-pin-verify |
-|---|---|---|---|
-| arXiv 2502.01853 + 2409.19182 figures not yet pinned — the statistics ("~40% gaps," "XSS miss rate") cannot be asserted with inline study-name and year until the SOURCE-PIN §7 rows are confirmed | ACCURACY | Pin-verify the arXiv papers and update inline attribution to name study + year; or cut the figures from prose body and retain only the back-matter flag until pinned | **needs-pin-verify** |
-| CodeScene three-guardrails wording not yet pinned to CodeScene's own docs — "Code Quality, Code Familiarity, Code/Test Coverage" is attributed but "⚠ wording @pin" | ACCURACY | Pin the CodeScene guardrails wording to CodeScene's own pinned docs (a SOURCE-PIN §5 or §7 row); confirm the exact names | **needs-pin-verify** |
-| "double-bookkeeping" term origin not pinned — coined framing used as the chapter's central concept for test-generation; attribution flagged in dossier | ACCURACY / DEPTH | Find and pin the coined-term attribution (if it traces to a specific source) or reframe as the chapter's own naming of the concept (and note it explicitly) | **needs-pin-verify** |
-| Companion module PENDING — no inline code illustration of the SQL injection / hollow-test scenarios despite being named in the hook and companion spec | UTILITY | Example-build track (separate from prose); once the companion module builds green, a tag-region snippet for the SAST-caught injection and the mutation-killed hollow test should be integrated into the "How it works" or "Deep dive" section | **needs-figure / needs-companion-build** |
-| Statistics paragraph (line 52) names "2024–2025" as a date range without the specific study name inline | ACCURACY | Once arXiv rows are pinned, insert: "(arXiv 2502.01853, [year of study])" immediately after each figure in prose; until then the inline date-range is the honest handling but leaves an attribution gap | **needs-pin-verify** |
+- **Weakest cluster:** ACCURACY — score 8 (tied with UTILITY/DEPTH at 8; ACCURACY is the one with a *named, addressable* ceiling).
+- **Why it is the weakest:** the only thing keeping ACCURACY off 9 is the set of AI-era figures (arXiv 2502.01853, 2409.19182, CodeScene three-guardrails wording) that are named but not pinned.
+- **Single highest-leverage move (OUT OF BOUNDS for this loop — for the human/SOURCE-VERIFY gate):** pin one dated primary source for the load-bearing AI-quality figure (add a SOURCE-PIN §7 row) and cite it inline with its date; that promotes the flagged figures from "honestly hedged" to "verified," which is the one move that legitimately lifts ACCURACY to 9 and the aggregate to 44+. This is deliberately deferred, not done here, because it changes the pin.
+
+---
+
+## Line-level fixes (work order)
+
+| # | Cluster / floor | Location | Issue | Fix | Status |
+|---|---|---|---|---|---|
+| 1 | CLARITY + ACCURACY | Blurb (line 18) + Hook (line 22) | "imports a dependency / Maven dependency that does not exist" contradicts the body's slopsquatting definition and undercuts the hook's "zero visible warning signs" thesis (a non-existent dep fails the build loudly). | Reconciled both to slopsquatting: hallucinated name an attacker pre-registers → resolves + builds green while pulling attacker-controlled code; "not one of them turns the build red." | **DONE this session (in-bounds; no new fact)** |
+| 2 | READABILITY | Hook (line 22) | The reconciliation initially added an em-dash appositive, pushing body density to 8.07/1000 (over the 8 ceiling). | Converted the inserted em-dash pair to parentheses + a colon; density back to 7.62/1000. | **DONE this session** |
+| 3 | ACCURACY (escalate) | Back-matter + prose figures | arXiv 2502.01853 / 2409.19182 / CodeScene guardrails named but not pinned. | SOURCE-VERIFY (Step 5): pin a dated primary source (SOURCE-PIN §7 row) or keep flagged. The one move that lifts the aggregate to ≥44. | **OPEN — human/SOURCE-VERIFY gate (out of bounds for the in-bounds loop)** |
+| 4 | (FLOOR-C hygiene, not blocking) | `pom.xml:54-59`; `AiReviewGate.java:19` | CODE-REVIEW MINOR F1 (unused `spotbugs-annotations` dep with a comment describing a non-existent `@SuppressFBWarnings` usage) + F2 (dangling `{@link #isReady()}`). | example-builder applies F1/F2, re-runs `-Pquality verify`, confirms BugInstance size 0. | **OPEN — example-builder (does not block FLOOR-C / this score)** |
 
 ---
 
 ## Lift-pass log
 
-| Pass # | Date | Cluster subtotal /50 | NEUTRALITY | HONEST-LIMITATIONS | SOURCE-TRACE / COMPILE / CODE-REVIEW | Verdict | What changed since last pass |
+| Pass # | Date | Subtotal /50 | NEUTRALITY | HONEST-LIMITATIONS | SOURCE-TRACE / COMPILE / CODE-REVIEW | Verdict | What changed since last pass |
 |---|---|---|---|---|---|---|---|
-| 0 | 2026-06-20 | 37 / 50 | FAIL (line 57: "unlike X") | PASS | PASS (src-trace); PENDING (compile); N/A (code-review) | LIFT-LOOP | Initial score — independent model (Claude Sonnet 4.6) |
-| 1 | 2026-06-20 | 39 / 50 | PASS (reworded to neutral pattern) | PASS | PASS (src-trace); PENDING (compile); N/A (code-review) | LIFT (standard bar cleared; 90% not reached) | FLOOR A fixed ("unlike X" → neutral; prose at line 62 confirmed clean); READABILITY lifted 6→8: zero narration contractions in prose body (grep clean), em-dash density 0.7/1,000 (was ~22/1,000), self-narration phrase removed, fig97_1.png now referenced inline with caption |
+| 0 | 2026-06-28 | 39 / 50 | PASS | PASS | PASS / GREEN / PASS | LIFT | Initial fresh independent re-score on the built-module artifact. Found the hook↔slopsquatting contradiction depressing CLARITY (8) + ACCURACY (7). |
+| 1 | 2026-06-28 | 42 / 50 | PASS | PASS | PASS / GREEN / PASS | LIFT | Reconciled blurb + hook to the slopsquatting mechanism (in-bounds; material already in body + flag file). CLARITY 8→9, ACCURACY 7→8, READABILITY 8→9. Em-dash density held at 7.62/1000. Still 2 short of 44; no in-bounds lever to 44 (see "why the loop stops"). |
+
+> Note: only prose was edited; no code touched, so no rebuild / `check_snippets` needed (snippet includes unchanged). Per task scope: no git, no `status.py`.
 
 ---
 
 ## Learnings & pipeline suggestions
 
-1. **NEUTRALITY fix is one sentence and zero content change.** The "unlike X" phrase appeared in a factually correct, necessary contrast. The neutral rewrite ("An IDE refactoring or an OpenRewrite recipe (Chapters 39, 40) is correct by its type-aware mechanics") carries identical content with zero floor risk. This confirms: run the banned-phrase grep on every draft before the drafter submits, not at the scorer stage. Recommend promoting a banned-phrase pre-scan to Step 4a in PIPELINE.md.
+- **A hook can pass every floor and still carry a thesis-defeating accuracy bug.** The "dependency that does not exist" line was floor-clean (no banned phrase, traceable as a generic risk) yet it taught the *loud-failure* version of a risk whose whole point is *silent* failure (slopsquatting), contradicting the body and undercutting the chapter's own "zero visible warning signs" thesis. Worth a SOURCE-VERIFY / CLARITY checklist line: **"hook claims must match the body's mechanism definition, especially where the thesis is 'this fails silently' — verify the hook example actually fails silently."**
+- **Mutation-testing "kills" is a recurring false-positive for the NEUTRALITY pre-pass.** "A spec-derived test that kills them" (kills mutants) is canonical PITest vocabulary, not a rival-crowning verdict. When `check_neutrality.sh` is built, it should whitelist "kill(s) … mutant(s)" / scope the "kills" rule to a named-rival object, or it will FAIL every mutation-testing chapter (Ch 23, Ch 41, …).
+- **Some 8→9 cluster moves are structurally un-liftable in-bounds, and the loop must say so rather than pad.** Here ACCURACY is capped by un-pinnable AI-era figures and UTILITY/DEPTH by the opener-chapter scope. The honest outcome is LIFT/escalate-to-human (pin a primary source), not a manufactured 44. Recommend the lift loop explicitly record "no in-bounds lever to the bar" as a terminal state distinct from "3 passes exhausted," so a chapter blocked only by a deferred SOURCE-PIN decision is routed to SOURCE-VERIFY rather than CUT.
+- **Editing prose can silently breach the em-dash ceiling.** Inserting one appositive pushed body density 7.68→8.07/1000. Any prose lift pass should re-run the em-dash density check as a matter of course (done here; restored to 7.62).
 
-2. **Em-dash density as an AI-tell is both high-signal and fully mechanical.** A drop from 22/1,000 to 0.7/1,000 in one voice pass, with no content loss, demonstrates how decisively a targeted em-dash conversion improves perceived authenticity. The VOICE-GUIDE already specifies the ~8/1,000 ceiling; the lesson is to automate the check. Recommend `em_dash_density.sh` in `.claude/scripts/` (fail >15/1,000, warn >10/1,000).
-
-3. **Contraction elimination in narration is a zero-risk mechanical pass.** Zero narration contractions remained in the prose body after the lift pass. No content was changed. A pre-submission grep (`n't `, `it's`, `that's`) would catch these before review and remove them from the scorer's consideration entirely.
-
-4. **Statistics handled as snapshots is the right model for fast-moving empirical fields.** The chapter's treatment of the AI-defect-rate figures ("must be verified against the specific dated study") is the correct pattern for any chapter in an area where model capability and study results change faster than a book's pin cycle. Recommend capturing this explicitly in GUIDELINES.md as the standard for any chapter with volatile empirical figures.
-
-5. **The 90% threshold surfaces pin-completeness gaps the standard bar does not.** At 39/50 (78%), the chapter clears the standard ≥35/50 ship bar but not the ≥45/50 APPROVE threshold. The gap is almost entirely ACCURACY, driven by PENDING-pin items (arXiv figures, CodeScene wording, double-bookkeeping attribution). The standard bar would ship a chapter with acknowledged pin gaps; the 90% threshold correctly holds it until the underlying sources are confirmed. This distinction is worth preserving in the rubric.
+Appended to `00-strategy/PIPELINE-LEARNINGS.md`.

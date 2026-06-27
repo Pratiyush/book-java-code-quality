@@ -138,12 +138,12 @@
             <groupId>org.apache.maven.plugins</groupId>
             <!-- tag::checkstyle-two-pin[] -->
             <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>3.6.0</version>                         <!-- the build plugin -->
+            <version>3.6.0</version> <!-- the build plugin -->
             <dependencies>
-              <dependency>                                   <!-- override the bundled engine -->
+              <dependency> <!-- override the bundled engine -->
                 <groupId>com.puppycrawl.tools</groupId>
                 <artifactId>checkstyle</artifactId>
-                <version>10.26.1</version>                    <!-- the pinned analyzer engine -->
+                <version>10.26.1</version> <!-- the pinned analyzer engine -->
               </dependency>
             </dependencies>
             <!-- end::checkstyle-two-pin[] -->
@@ -216,7 +216,7 @@
                       <element>BUNDLE</element>
                       <limits>
                         <!-- tag::jacoco-gate[] -->
-                        <limit>                          <!-- gate on BRANCH, not only LINE -->
+                        <limit> <!-- gate on BRANCH, not only LINE -->
                           <counter>BRANCH</counter>
                           <value>COVEREDRATIO</value>
                           <minimum>0.80</minimum>
