@@ -1,0 +1,273 @@
+<!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><title>Java Code Quality — Publisher Outreach</title><style>
+:root{--bg:#f4f6f9;--panel:#fff;--ink:#1f2328;--muted:#5b6675;--line:#e3e8ef;--brand:#3a5bd9;
+--brand2:#6b46c1;--done:#1a7f37;--self:#bf8700;--no:#cf222e;--human:#0969da;
+--shadow:0 1px 2px rgba(16,24,40,.05),0 6px 18px rgba(16,24,40,.06)}
+*{box-sizing:border-box}
+body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;margin:0;
+color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+a{color:var(--brand);text-decoration:none}a:hover{text-decoration:underline}
+.hd{background:linear-gradient(120deg,#1e2a4a,#2b1d52);color:#fff;padding:24px 28px 20px}
+.hd h1{margin:0;font-size:22px;font-weight:750;letter-spacing:.2px}
+.hd .sub{color:#aeb8d4;font-size:13px;margin-top:5px}
+.hd .prog{margin:16px 0 0;max-width:560px}
+.hd .prog .lbl{display:flex;justify-content:space-between;font-size:12px;color:#cdd5ee;margin-bottom:5px;font-weight:600}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#7aa2ff,#b794f6)}
+nav{position:sticky;top:0;z-index:9;background:#1b2440;display:flex;gap:2px;padding:0 16px;flex-wrap:wrap;box-shadow:var(--shadow)}
+nav a{color:#b7c0da;padding:12px 15px;font-size:13.5px;font-weight:600;border-bottom:3px solid transparent}
+nav a:hover{color:#fff;text-decoration:none}nav a.active{color:#fff;border-bottom-color:#7aa2ff}
+main{padding:24px 28px;max-width:1100px;margin:0 auto}
+h2{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:38px 0 6px;padding-top:14px}
+h2 .sec{color:var(--brand2);margin-right:7px}
+.lead{color:var(--muted);font-size:13.5px;margin:0 0 14px;max-width:780px}
+.hero{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 22px;box-shadow:var(--shadow);font-size:15px;line-height:1.65}
+.hero b{color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 17px;box-shadow:var(--shadow)}
+.kpi .n{font-size:28px;font-weight:760;line-height:1}.kpi .n small{font-size:15px;color:var(--muted);font-weight:600}
+.kpi .l{font-size:12.5px;color:var(--muted);margin:6px 0 10px;font-weight:600}
+.kpi .bar{background:#eef1f6;height:7px}.kpi .bar>i{background:linear-gradient(90deg,var(--brand),var(--brand2))}
+.note{border-radius:12px;padding:12px 16px;margin:14px 0;font-size:14px}
+.note.ok{background:#e9f8ee;border:1px solid #abe1bd;color:#0f6a2e}
+.note.bad{background:#fdeceb;border:1px solid #f5b5b1;color:#b42318}
+.note.info{background:#eef2ff;border:1px solid #c2cffc;color:#33409e}
+.note.warn{background:#fff7e6;border:1px solid #f3d699;color:#8a5d00}
+.scroll{overflow-x:auto;border-radius:12px;border:1px solid var(--line);box-shadow:var(--shadow);margin:14px 0}
+table{border-collapse:separate;border-spacing:0;width:100%;background:var(--panel);font-size:13px}
+.scroll table{border:none;box-shadow:none}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#f7f9fc;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+tr:last-child td{border-bottom:none}tbody tr:hover td{background:#f9fbff}
+td.c,th.c{text-align:center}td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+td.k{color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.3px;white-space:nowrap}
+.b-done{background:var(--done)}.b-self{background:var(--self)}.b-no{background:var(--no)}.b-human{background:var(--human)}.b-env{background:#0e7490}.b-brand{background:var(--brand2)}
+.rank{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--brand2);color:#fff;font-size:12px;font-weight:750;margin-right:6px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 8px;font-size:15px}.card p{margin:0 0 8px;font-size:13.5px;color:var(--muted)}
+.card ul{margin:6px 0 0;padding-left:18px;font-size:13.5px;color:var(--muted)}.card li{margin:4px 0}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{position:relative;padding:0 0 18px 26px;border-left:2px solid var(--line);margin-left:8px}
+.tl li:last-child{border-left-color:transparent;padding-bottom:0}
+.tl .dot{position:absolute;left:-11px;top:-1px;width:20px;height:20px;border-radius:50%;background:var(--panel);border:2px solid var(--brand);font-size:10px;text-align:center;line-height:17px;font-weight:700;color:var(--brand)}
+.tl .when{font-size:11.5px;color:var(--muted);font-family:ui-monospace,monospace;text-transform:uppercase;letter-spacing:.4px}
+.tl .what{font-weight:750;font-size:15px;margin:1px 0 3px}.tl .det{font-size:13.5px;color:var(--muted)}
+.tl .det b{color:var(--ink)}
+.email{background:#0f1729;color:#dbe3f4;border-radius:14px;padding:18px 20px;font:13px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow-x:auto;box-shadow:var(--shadow)}
+.email .fld{color:#8ea2c9}.email .var{color:#ffd479}
+.scn{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:14px 0}
+.scn .col{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+.scn .col h3{margin:0;font-size:13px;text-transform:uppercase;letter-spacing:.5px}
+.scn .lo h3{color:var(--no)}.scn .ba h3{color:var(--brand)}.scn .hi h3{color:var(--done)}
+.scn .big{font-size:24px;font-weight:760;margin:8px 0 2px}.scn .rev{font-size:13px;color:var(--muted);margin-bottom:8px}
+.scn .col ul{margin:6px 0 0;padding-left:16px;font-size:12.5px;color:var(--muted)}.scn .col li{margin:3px 0}
+.src{font-size:12px;color:var(--muted)}.src a{font-size:12px}
+.disc{background:#2b1d52;color:#e7e0ff;border-radius:14px;padding:16px 20px;font-size:13.5px;line-height:1.6;margin:14px 0}
+.disc b{color:#fff}
+.foot{color:var(--muted);font-size:12.5px;margin:40px 0 16px;padding-top:16px;border-top:1px solid var(--line)}
+.foot code{background:#eef1f6;padding:1px 6px;border-radius:5px}
+.flag{display:inline-block;background:#fff7e6;color:#8a5d00;border:1px solid #f3d699;border-radius:6px;padding:1px 7px;font-size:10.5px;font-weight:700;letter-spacing:.2px}
+@media(max-width:720px){main{padding:16px 14px}.scn{grid-template-columns:1fr}}
+</style>
+<div class=hd><h1>Java Code Quality — Publisher Outreach</h1><div class=sub>Traditional-publisher path · query template, royalty/advance norms, contract red-flags &amp; an outreach plan · generated 2026-06-28</div><div class=prog><div class=lbl><span>Manuscript readiness for a proposal</span><span>~95%</span></div><div class=bar><i style="width:95%"></i></div></div></div>
+<nav><a href="dashboard.html">Overview</a><a href="chapters.html">Chapters</a><a href="scoring.html">Scoring &amp; approval</a><a href="figures.html">Figures</a><a href="capstones.html">Capstones</a><a href="audit.html">Audit log</a><a href="publication-roadmap.html">Roadmap</a><a href="publisher-outreach.html" class="active">Publisher outreach</a></nav>
+<nav><a href="#why">Why traditional?</a><a href="#pubs">Recommended publishers</a><a href="#email">Query template</a><a href="#money">Royalty &amp; advance norms</a><a href="#redflags">Contract red-flags</a><a href="#plan">Outreach plan</a></nav>
+<main>
+
+<div class=hero>This page is the <b>traditional-publisher</b> companion to the self-publishing <a href="publication-roadmap.html">Roadmap</a>. The manuscript is the strongest card in any proposal: <b>47/47</b> chapters drafted, <b>45/47</b> independently scored and approved, <b>67</b> rendered figures, and a runnable companion repo that builds clean. The full written proposal lives at <code>06-assembly/PUBLISHER-PROPOSAL.md</code>. Below: which houses fit, exactly how to reach them, a copy-paste query email, realistic money, the contract clauses to watch, and a dated outreach plan.</div>
+
+<div class=kpis>
+<div class=kpi><div class=n>47<small>/47</small></div><div class=l>Chapters drafted</div><div class=bar><i style="width:100%"></i></div></div>
+<div class=kpi><div class=n>45<small>/47</small></div><div class=l>Approved (sample-ready)</div><div class=bar><i style="width:96%"></i></div></div>
+<div class=kpi><div class=n>6</div><div class=l>Publishers profiled</div><div class=bar><i style="width:100%"></i></div></div>
+<div class=kpi><div class=n>3</div><div class=l>Top-ranked fits</div><div class=bar><i style="width:50%"></i></div></div>
+<div class=kpi><div class=n>~10<small>%</small></div><div class=l>Typical net royalty</div><div class=bar><i style="width:20%"></i></div></div>
+<div class=kpi><div class=n>$2&ndash;5k</div><div class=l>Typical tech advance</div><div class=bar><i style="width:30%"></i></div></div>
+</div>
+
+<!-- ============================ WHY ============================ -->
+<h2 id=why><span class=sec>0</span> Traditional vs self-publish — the honest trade</h2>
+<p class=lead>The decision is not "more money." Self-publishing pays a far higher <i>per-unit</i> royalty; a traditional publisher trades that for editing, distribution, credibility, and reach. Pick the path that matches the goal.</p>
+<div class=grid2>
+<div class=card><h3>What a traditional publisher gives</h3>
+<ul>
+<li><b>Credibility &amp; brand</b> — a Manning / O'Reilly / Pragmatic spine carries weight with senior engineers and helps conference/speaking visibility.</li>
+<li><b>Professional editing</b> — developmental + copyedit + technical review, which an AI-drafted book still benefits from.</li>
+<li><b>Distribution &amp; reach</b> — bookstore, library, Safari/O'Reilly-platform, and translation channels a solo author cannot match.</li>
+<li><b>An advance</b> — non-refundable money up front (modest for tech, but real).</li>
+<li><b>It absorbs production</b> — typeset, cover, EPUB/print, ISBN, marketing scaffolding.</li>
+</ul></div>
+<div class=card><h3>What it costs you</h3>
+<ul>
+<li><b>Per-unit royalty drops sharply</b> — roughly <b>~10% of net</b> vs <b>35&ndash;70%+</b> self-published (see the money section).</li>
+<li><b>You give up rights &amp; control</b> — schedule, title, cover, and often a non-compete.</li>
+<li><b>It is slower</b> — months of acquisition + a 6&ndash;12 month production cycle vs days to self-list.</li>
+<li><b>Acceptance is not guaranteed</b> — even a complete manuscript can be passed on.</li>
+</ul></div>
+</div>
+<div class="note info"><b>Recommendation for this book:</b> <b>pursue traditional first, with a hard time-box.</b> The manuscript is complete and independently gated, the niche values authoritative references, and a recognized imprint compounds the author's credibility far more than the royalty delta costs &mdash; the realistic self-pub base case is only ~$4k&ndash;$9k net anyway (<a href="publication-roadmap.html#market">Roadmap §3</a>). Query the top 2&ndash;3 houses; if no contract within <b>~3&ndash;4 months</b>, fall back to the ready self-publish path. The two are not mutually exclusive in sequence.</div>
+
+<!-- ============================ PUBLISHERS ============================ -->
+<h2 id=pubs><span class=sec>1</span> Recommended publishers</h2>
+<p class=lead>Ranked by fit for a <b>vendor-neutral, senior-level Java code-quality book with runnable companion code</b>. Every submission link &amp; contact below is <span class=flag>⚠ web-sourced — verify</span> against the publisher's live page before sending (all accessed 2026-06-28). Contacts are the publishers' own stated proposal channels, not personal addresses.</p>
+<div class=scroll><table>
+<thead><tr><th style="width:38px">Fit</th><th>Publisher</th><th>Topic fit for this book</th><th>Submission link / contact</th><th>Notes (process · what they want)</th></tr></thead>
+<tbody>
+<tr>
+<td class=c><span class=rank>1</span></td>
+<td><b>Manning</b></td>
+<td><span class="badge b-done">Best fit</span> Deep, current Java &amp; software-engineering list at exactly this senior-practitioner level; practice-oriented house voice.</td>
+<td><a href="https://www.manning.com/write-for-us">manning.com/write-for-us</a><br><code>proposals@manning.com</code></td>
+<td>Email proposal + downloadable proposal form. Wants: why the topic matters <i>now</i>, how it differs from competing titles, what the reader gets, why you're the author. MEAP early-access model suits an already-drafted book. Expect to revise the proposal a few times.</td>
+</tr>
+<tr>
+<td class=c><span class=rank>2</span></td>
+<td><b>Pragmatic Bookshelf</b></td>
+<td><span class="badge b-done">Strong fit</span> "By developers, for developers"; catalog centered on craft, testing, refactoring, engineering practice &mdash; the cultural home of this subject.</td>
+<td><a href="https://pragprog.com/publish-with-us/">pragprog.com/publish-with-us</a><br><code>proposals@pragprog.com</code></td>
+<td>Email intro + their <b>Proposal Template</b> (fast-tracks review). Explicitly requires a <b>promotional-ideas</b> section &mdash; already addressed in the proposal §8. Accepts early concepts through complete manuscripts.</td>
+</tr>
+<tr>
+<td class=c><span class=rank>3</span></td>
+<td><b>O'Reilly Media</b></td>
+<td><span class="badge b-done">Strong fit</span> Brand authority in Java/quality (publishes <i>Building Evolutionary Architectures</i>); huge platform reach. More curated/commissioned list.</td>
+<td><a href="https://www.oreilly.com/work-with-us">oreilly.com/work-with-us</a><br><code>workwithus@oreilly.com</code> · <code>proposals@oreilly.com</code></td>
+<td>Full proposal: summary + outline, technology summary, audience &amp; market, your qualifications, schedule, sample chapters. They consider, discuss internally, then contract. Excellent fit; acceptance is competitive.</td>
+</tr>
+<tr>
+<td class=c>&mdash;</td>
+<td><b>Apress</b> (Springer Nature)</td>
+<td><span class="badge b-brand">Alternate</span> Solid Java/enterprise professional list; comfortable with reference-grade technical books.</td>
+<td><a href="https://www.apress.com/gp/write-for-us/submit-a-proposal">apress.com/gp/write-for-us/submit-a-proposal</a><br><code>editorial@apress.com</code></td>
+<td>Download the <b>Book Proposal Form</b>; email it (with CV + sample chapter) to the acquisitions editor for the topic, or to editorial@ if unsure. Editor then develops the proposal toward approval.</td>
+</tr>
+<tr>
+<td class=c>&mdash;</td>
+<td><b>Packt</b></td>
+<td><span class="badge b-brand">Alternate</span> Very broad tech list; actively recruits authors incl. first-timers. Faster cadence, narrower per-title marketing.</td>
+<td><a href="https://partnerships.packt.com/contributors/">partnerships.packt.com/contributors</a><br><code>author@packtpub.com</code></td>
+<td>Email a proposal (or an early-stage idea; a commissioning editor follows up). Will develop writing-inexperienced experts. Lower advances / different royalty norms (see money section).</td>
+</tr>
+<tr>
+<td class=c>&mdash;</td>
+<td><b>No Starch Press</b></td>
+<td><span class="badge b-no">Adjacent</span> Outstanding house, but topic center is security / hacking / open-source / low-level systems. A pure enterprise-Java-quality book is adjacent, not central.</td>
+<td><a href="https://nostarch.com/writeforus">nostarch.com/writeforus</a><br><code>editors@nostarch.com</code></td>
+<td>Email a clear description + TOC (chapter titles &amp; first-level headings) + audience &amp; how the book serves it. Strong editorial support. Best angle here would be the SAST/supply-chain/security Parts, not the whole book.</td>
+</tr>
+<tr>
+<td class=c>&mdash;</td>
+<td><b>Addison-Wesley / Pearson</b><br>(Professional Computing Series)</td>
+<td><span class="badge b-brand">Prestige / canon</span> The Java canon's home (Bloch's <i>Effective Java</i>, Fowler's <i>Refactoring</i>). Maximum prestige for this exact subject.</td>
+<td>Series is editor-/invitation-driven via <a href="https://www.informit.com/imprint/index.aspx?st=61085">informit.com (Addison-Wesley Professional)</a>; approach a series editor.</td>
+<td>Typically not open-submission; a referral or a series-editor relationship matters. Highest bar and slowest, but the most authoritative imprint for the category. A long-shot worth a single well-targeted approach.</td>
+</tr>
+</tbody>
+</table></div>
+<p class=src>Sources (accessed 2026-06-28): <a href="https://www.manning.com/write-for-us">Manning Write for Us</a> · <a href="https://pragprog.com/publish-with-us/">Pragmatic — Publish with Us</a> · <a href="https://www.oreilly.com/work-with-us">O'Reilly Work With Us</a> · <a href="https://www.apress.com/gp/write-for-us/submit-a-proposal">Apress Submit a Proposal</a> · <a href="https://partnerships.packt.com/contributors/">Packt Contributors</a> · <a href="https://nostarch.com/writeforus">No Starch Write for Us</a> · <a href="https://www.informit.com/imprint/index.aspx?st=61085">Addison-Wesley Professional (InformIT)</a>.</p>
+
+<!-- ============================ EMAIL ============================ -->
+<h2 id=email><span class=sec>2</span> Copy-paste query / pitch email</h2>
+<p class=lead>Keep it under ~300 words. Lead with the gap and the manuscript's completeness; disclose AI authorship honestly and frame it with the verification story. Replace <span class=var>[bracketed]</span> fields. Attach (or link) the one-page proposal and one sample chapter; attach the full proposal only if asked.</p>
+<div class=email><span class=fld>To:</span> <span class=var>[publisher proposal address — e.g. proposals@manning.com]</span>
+<span class=fld>Subject:</span> Book proposal — <span class=var>Java Code Quality</span>: a vendor-neutral guide for senior Java engineers (manuscript complete)
+
+Dear <span class=var>[Editor name / Acquisitions Team]</span>,
+
+I'm proposing <span class=var>Java Code Quality</span>, a single-volume, vendor-neutral guide that teaches an
+experienced Java engineer how to choose, tune, and sustain a real code-quality system — not how
+to run one tool. Java has no shortage of quality tools (Checkstyle, PMD, SpotBugs, Error Prone,
+SonarQube, ArchUnit, PITest, OpenRewrite, OWASP scanners, CI gates); what's missing is a book
+that surveys them neutrally — each given its strongest case and its hardest limitation — and
+teaches the judgment to assemble them into a gate a team trusts on code that already ships.
+
+Why now: the language has moved (records, sealed types, virtual threads — anchored to Java 21/25
+LTS), AI-generated code is now in the pipeline, and the software supply chain has become a quality
+surface. The book covers all three; most of the canon predates them.
+
+The manuscript is functionally complete, which I think de-risks this: 47 chapters across 14 Parts,
+each backed by one runnable, enterprise-grade module whose printed listings are tagged regions of
+files that compile (the whole companion build is green with zero analyzer findings), plus 67
+load-bearing figures. Every fact traces to a frozen set of pinned authorities — no invented rule
+IDs, versions, or quotes.
+
+In the interest of full disclosure: the book was produced with AI assistance under human direction
+and review, held to a strict source-tracing and authenticity standard — every code example
+compiles and every fact is traced to a pinned source, with an independent model scoring each
+chapter against a quality rubric. I'm glad to share that verification story in detail.
+
+I'm a senior software engineer at <span class=var>[Fiserv / role]</span> working daily on large-scale
+enterprise Java — the book's exact reader. A one-page proposal and a sample chapter are
+<span class=var>[attached / linked]</span>; I can send the full proposal and the companion repository on request.
+
+Thank you for your time and consideration.
+
+<span class=var>[Pratiyush Kumar Singh]</span>
+<span class=var>[email] · [GitHub / LinkedIn]</span></div>
+<div class="note warn"><b>Tailor per publisher before sending:</b> Pragmatic wants a <b>promotional-ideas</b> line — add one. O'Reilly wants <b>audience &amp; market</b> spelled out — expand that paragraph. For each, attach <i>their</i> proposal form/template where one exists rather than only this email.</div>
+
+<!-- ============================ MONEY ============================ -->
+<h2 id=money><span class=sec>3</span> Royalty &amp; advance norms — be realistic</h2>
+<p class=lead>Technical-book economics from traditional publishers are modest. The trade is reach and credibility, not a big cheque. All figures dated 2026-06-28 and attributed; treat as ranges, not guarantees.</p>
+
+<div class=scroll><table>
+<thead><tr><th>Path</th><th class=r>Royalty (typical)</th><th class=r>Advance (typical)</th><th>Basis &amp; notes</th></tr></thead>
+<tbody>
+<tr><td><b>Traditional tech publisher</b> (Manning / O'Reilly / Pragmatic / Apress)</td><td class=r>~<b>10&ndash;15% of net receipts</b></td><td class=r><b>$2,000&ndash;$5,000</b></td><td>"Net" = what the publisher receives after retailer/wholesaler discounts (often ~half of list), so net royalties run well below the same % on list price. The "big three" tech houses often offer a flat ~$5,000 advance. eBook royalty terms are frequently lower or differently defined. <span class=src>(Authors Guild; The Pragmatic Engineer; HN author threads, 2026-06-28)</span></td></tr>
+<tr><td><b>Manning</b> (reported author terms)</td><td class=r>~<b>10% of Manning's revenue</b></td><td class=r>~<b>$4,000</b> (reported)</td><td>Royalty is on Manning's sale price, not a bookstore's; one author modeled ~$2/book in a 50%-discount worst case. <span class=src>(Tune The Web / HN, 2026-06-28)</span> <span class=flag>⚠ verify in your own contract</span></td></tr>
+<tr><td><b>Packt</b> (reported author terms)</td><td class=r>~<b>16% of net</b> (reported)</td><td class=r>~<b>$2,000&ndash;$3,200</b> (reported)</td><td>Higher royalty %, lower advance, faster cadence; one author reported $363 in Q1 royalties. <span class=src>(Medium author posts, 2026-06-28)</span> <span class=flag>⚠ verify</span></td></tr>
+<tr><td><b>Self-publish — Leanpub</b></td><td class=r><b>80%</b> (above $7.99)</b></td><td class=r>none</td><td>Reader-set/variable pricing; popular for in-progress technical books. <span class=src>(Leanpub Help Center, 2026-06-28)</span></td></tr>
+<tr><td><b>Self-publish — Amazon KDP</b></td><td class=r><b>70%</b> ebook ($2.99&ndash;$9.99) · else 35%; <b>60%</b> print minus print cost</td><td class=r>none</td><td>70% band only $2.99&ndash;$9.99 (minus delivery fee); print cost for a 400+ page code book is high. <span class=src>(KDP Help / AuthorImprints, 2026-06-28)</span></td></tr>
+</tbody>
+</table></div>
+
+<div class="note info"><b>The one-sentence comparison:</b> a traditional tech contract pays roughly <b>~10% of net</b> (a few dollars a copy) plus a <b>~$2k&ndash;$5k</b> advance; self-publishing pays <b>35&ndash;70%+</b> per copy (Leanpub up to 80%) but with no advance, no editing, and no distribution. For a niche reference, the realistic self-pub base case is ~$4k&ndash;$9k net total (<a href="publication-roadmap.html#market">Roadmap §3</a>) — so the traditional advance alone can rival expected self-pub royalties, with credibility on top.</div>
+<div class="note bad"><b>Don't budget on royalties.</b> First-time tech-book authors should expect the advance to be most of the near-term money. The value here is the artifact, the credibility, and the reach — not the cheque.</div>
+
+<!-- ============================ RED FLAGS ============================ -->
+<h2 id=redflags><span class=sec>4</span> Contract red-flags to watch</h2>
+<p class=lead>If an offer comes, read these clauses before signing. None is necessarily a deal-breaker, but each is negotiable and each has bitten technical authors. <b>Have a publishing attorney or the Authors Guild review the contract</b> — this list is general information, not legal advice.</p>
+<div class=grid2>
+<div class=card><h3>1 · Rights scope (grant of rights)</h3><p>Watch for an <b>all-rights, all-languages, all-formats, life-of-copyright</b> grant. Prefer a defined territory/format grant, and ensure <b>subsidiary rights</b> (translation, audio, course/video adaptation) are either retained or fairly split. Clarify who controls the <b>companion code</b> — keep the runnable repo under your own open-source license (proposed Apache-2.0), separate from the prose grant.</p></div>
+<div class=card><h3>2 · Non-compete clause</h3><p>A broad non-compete can bar you from writing or even <b>blogging/speaking</b> on "Java code quality" for years. Narrow it to a directly-competing full-length book on the same topic; explicitly carve out <b>talks, articles, training, and the open-source companion repo</b>. This matters most given the planned content-marketing.</p></div>
+<div class=card><h3>3 · eBook &amp; platform royalty</h3><p>eBook and platform-subscription (Safari/O'Reilly-platform) royalties are often <b>lower or vaguely defined</b> ("net" can hide platform splits). Pin down the <b>eBook %</b>, how subscription/"all-you-can-read" reads are counted and paid, and whether deep-discount/bulk sales drop your rate. The Authors Guild benchmark is ~50% of net for ebooks; tech houses usually offer less — know the number.</p></div>
+<div class=card><h3>4 · Out-of-print &amp; rights reversion</h3><p>In the print-on-demand / ebook era a book is "never out of print," which can <b>lock up your rights forever</b>. Insist on a <b>reversion clause</b> tied to a real revenue/sales floor over a period (not merely "available for sale"), so rights return if the book stops selling. Also check the <b>revised-edition</b> clause — who decides on a new edition, and your royalty/obligation when Java/tools move.</p></div>
+</div>
+<div class=card style="margin-top:14px"><h3>Also worth checking</h3><ul style="margin:0;padding-left:18px;font-size:13.5px;color:var(--muted)">
+<li><b>Advance schedule &amp; recoupment</b> — when is the advance paid (signing / delivery / publication), and is it cross-collateralized against other titles? (Avoid cross-collateralization.)</li>
+<li><b>Manuscript-acceptance / "satisfactory" clause</b> — a vague "satisfactory to publisher" can let them reject and reclaim the advance; push for an objective acceptance standard.</li>
+<li><b>Deadlines &amp; penalties</b> — realistic given a near-complete manuscript, but check late-delivery and termination terms.</li>
+<li><b>AI-authorship representations &amp; warranties</b> — you'll likely warrant originality and rights; ensure the AI-assisted disclosure and your verification process are acceptable, and that the warranty language is one you can truthfully make.</li>
+<li><b>Audit rights &amp; reporting cadence</b> — the right to audit royalty statements, and at least semi-annual reporting.</li>
+</ul></div>
+<p class=src>Contract-clause guidance synthesized from the Authors Guild model trade contract and standard publishing-contract advice (accessed 2026-06-28): <a href="https://go.authorsguild.org/contract_sections/5">Authors Guild — Model Trade Book Contract</a> · <a href="https://authorsguild.org/news/half-of-net-proceeds-is-the-fair-royalty-rate-for-e-books/">Authors Guild — fair ebook royalty</a>. General information, not legal advice.</p>
+
+<!-- ============================ PLAN ============================ -->
+<h2 id=plan><span class=sec>5</span> Outreach plan &amp; timeline</h2>
+<p class=lead>A staged, time-boxed plan. Dates are indicative from a 2026-06-28 start; adjust to your calendar. Query top choices in parallel <b>after</b> confirming each accepts simultaneous submissions, or stagger in waves if any requires exclusivity.</p>
+<ol class=tl>
+<li><span class=dot>1</span><div class=when>Week 0 · by 2026-07-05</div><div class=what>Finish the proposal package &amp; resolve the placeholders</div><div class=det>Fill the author-bio fields in <code>00_front-matter.md</code> (role, years, city, links); confirm the title/subtitle; pick the sample chapter (Ch 1 + a code-forward alternate, Ch 16 or 46). <b>Re-verify every publisher contact/link</b> on its live page (all are ⚠ web-sourced). Build a one-page version of <code>PUBLISHER-PROPOSAL.md</code>.</div></li>
+<li><span class=dot>2</span><div class=when>Week 0&ndash;1</div><div class=what>Clear the employment &amp; rights questions first</div><div class=det>Review the Fiserv employment agreement (outside-activity, IP-assignment, non-compete) and consider a written outside-activity disclosure — do this <b>before</b> signing anything (<a href="publication-roadmap.html#setup">Roadmap §4</a>). Decide the companion-code license/public-push so the proposal can speak to it.</div></li>
+<li><span class=dot>3</span><div class=when>Week 1 · ~2026-07-08</div><div class=what>Wave 1 — query the top 3 fits</div><div class=det>Send tailored proposals to <b>Manning</b>, <b>Pragmatic Bookshelf</b>, and <b>O'Reilly</b>, each using that house's form/template + the query email + one sample chapter. Log send dates. (Confirm simultaneous-submission policy; all three accept email proposals.)</div></li>
+<li><span class=dot>4</span><div class=when>Weeks 2&ndash;5</div><div class=what>Follow up &amp; engage</div><div class=det>If no acknowledgement in ~2&ndash;3 weeks, send one polite follow-up. Expect Manning/Pragmatic to ask for proposal revisions — that's normal and a good sign. Have the full manuscript + companion repo ready to share on request.</div></li>
+<li><span class=dot>5</span><div class=when>~Week 5 · early Aug</div><div class=what>Wave 2 — alternates, if needed</div><div class=det>If Wave 1 stalls, query <b>Apress</b> and <b>Packt</b> (and pitch the security/supply-chain Parts to <b>No Starch</b> as a narrower angle). Optionally make one targeted approach to an <b>Addison-Wesley/Pearson</b> series editor.</div></li>
+<li><span class=dot>6</span><div class=when>On an offer</div><div class=what>Evaluate terms against the red-flags</div><div class=det>Run any offer through §4. Get a <b>publishing attorney or the Authors Guild</b> to review. Negotiate advance, eBook royalty, non-compete scope, companion-code rights, and a real reversion clause. It's fine to leverage multiple offers.</div></li>
+<li><span class=dot>7</span><div class=when>~Month 3&ndash;4 · ~Oct</div><div class=what>Decision gate — traditional or self-publish</div><div class=det>If a contract you're comfortable with is in hand → proceed. If not, <b>fall back to the ready self-publish path</b> (the manuscript, figures, and companion code are already built; <a href="publication-roadmap.html#pending">Roadmap §2</a>). Either way, the book ships.</div></li>
+</ol>
+<div class="note ok"><b>#1 next action:</b> finish the author-bio placeholders, build the one-page proposal, re-verify the three top contacts on their live pages, then send <b>Wave 1 to Manning, Pragmatic, and O'Reilly</b> with Chapter 1 as the sample — after a quick check of your Fiserv outside-activity policy.</div>
+
+<!-- ============================ DISCLAIMER ============================ -->
+<div class=disc><b>GENERAL INFORMATION — NOT LEGAL, TAX, OR HR ADVICE.</b> Royalty/advance figures are dated industry ranges, not guarantees, and vary by contract. Contract-clause notes are general guidance; have a qualified publishing attorney (or the Authors Guild) review any real contract. Publisher submission details are ⚠ web-sourced (2026-06-28) and change — confirm on each publisher's live page before sending. Because the author works at a fintech employer, review your own employment agreement and consult an attorney before signing any publishing contract.</div>
+
+<!-- ============================ SOURCES ============================ -->
+<h2>Sources</h2>
+<div class=card><p style="font-size:13px">All accessed 2026-06-28. Submission contacts are each publisher's stated proposal channel; re-verify before use.</p>
+<ul style="font-size:12.5px;line-height:1.7">
+<li>Publisher submission: <a href="https://www.manning.com/write-for-us">Manning Write for Us</a> · <a href="https://pragprog.com/publish-with-us/">Pragmatic — Publish with Us</a> · <a href="https://www.oreilly.com/work-with-us">O'Reilly — Work With Us</a> · <a href="https://submission-guides.oreilly.com/book-submissions/">O'Reilly submission guides</a> · <a href="https://www.apress.com/gp/write-for-us/submit-a-proposal">Apress — Submit a Proposal</a> · <a href="https://partnerships.packt.com/contributors/">Packt — Contributors</a> · <a href="https://nostarch.com/writeforus">No Starch — Write for Us</a> · <a href="https://www.informit.com/imprint/index.aspx?st=61085">Addison-Wesley Professional (InformIT)</a></li>
+<li>Royalty &amp; advance norms: <a href="https://go.authorsguild.org/contract_sections/5">Authors Guild — Model Trade Book Contract</a> · <a href="https://authorsguild.org/news/half-of-net-proceeds-is-the-fair-royalty-rate-for-e-books/">Authors Guild — fair ebook royalty</a> · <a href="https://blog.pragmaticengineer.com/four-years-on-writing-a-tech-book-pitching-to-a-publisher/">The Pragmatic Engineer — pitching to a publisher</a> · <a href="https://www.tunetheweb.com/blog/writing-a-technical-book-for-manning/">Tune The Web — Writing a Technical Book for Manning</a> · <a href="https://www.publishing.com/blog/average-royalties-for-a-book">Publishing.com — Average royalties 2025</a> · <a href="https://bernoff.com/blog/how-big-will-your-book-advance-be-results-of-my-nonfiction-author-survey">Josh Bernoff — book advance survey</a></li>
+<li>Self-publish royalty comparison: <a href="https://help.leanpub.com/en/articles/5468013-what-is-leanpub-s-royalty-rate-are-there-any-restrictions-on-where-i-can-self-publish-my-book-and-what-price-i-can-charge">Leanpub Help Center</a> · <a href="https://www.authorimprints.com/amazon-kdp-royalty-pricing/">AuthorImprints — KDP royalties</a></li>
+</ul></div>
+
+<div class=foot>Static report · generated 2026-06-28 for the book <b>Java Code Quality</b> · production state grounded in <code>LEDGER.md &sect;1</code>, <code>01-index/FINAL_INDEX.md</code>, <code>10-logs/dashboard.html</code>, and <code>04-approved/</code>. Full written proposal: <code>06-assembly/PUBLISHER-PROPOSAL.md</code>. Publisher, royalty &amp; contract content is general information dated 2026-06-28 — <b>not</b> legal, tax, or HR advice.</div>
+</main></html>
