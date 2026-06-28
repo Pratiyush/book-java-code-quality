@@ -63,15 +63,48 @@ confirmed by the build, and must not read as settled facts:
 | Atom | Why still flagged |
 |---|---|
 | `maven-enforcer-plugin:3.5.0` / `versions-maven-plugin:2.18.0` version literals | Not separately pinned in SOURCE-PIN §4 (covered above). |
-| Gradle `check` task semantics; version-catalog `gradle/libs.versions.toml` format; resolution strategies / `dependencyInsight`; `dependencyUpdates` goal | Gradle (SOURCE-PIN §4 = 9.6.0) was NOT exercised — the module is Maven-only; Gradle docs not fetched. Verify against Gradle 9.6.0 docs at SOURCE-VERIFY / a Gradle companion. |
+| `dependencyUpdates` Gradle task | Provided by the **third-party** `com.github.ben-manes.versions` plugin (`github.com/ben-manes/gradle-versions-plugin`), NOT `docs.gradle.org`. Outside the pinned Gradle authority → cannot be promoted to a Gradle-core doc fact; named in prose but left flagged in the back-matter. |
 | Renovate config keys (`packageRules`, `matchUpdateTypes`, `automerge`, `groupName`, `schedule`, `vulnerabilityAlerts`); Dependabot keys (`version: 2`, `package-ecosystem`, `schedule.interval`, `groups`) | SOURCE-PIN §4 marks Renovate/Dependabot **⚠ rolling** (hosted/SaaS). Pin the config schema **dated-at-use**; never timeless. (`renovate.json`/`dependabot.yml` in the module use only documented schema keys.) |
 | Security-alert sources NVD / OSV / GitHub Advisory | SaaS/rolling vulnerability feeds; dated-at-use. Cross-refs key 65 (vuln scanning). |
-| Maven "nearest-wins" resolution wording; `mvn dependency:tree` / `dependency:analyze` goal names | Documentation claim / goals not exercised by this build's gate path; confirm against Maven 3.9.16 docs at SOURCE-VERIFY. |
 
 The two stale `BUILD STATUS: PENDING` strings (front-matter comment, lines ~5 and ~12) and the two stale
 `SOURCE-PIN ... TO-PIN` strings (lines ~11 and ~141) were corrected to **built-green** / **§4 PINNED** to
 match `_EXAMPLE.md` (2026-06-26) and the corrected SOURCE-PIN. No verified fact was altered; no value was
 invented.
 
-**Status:** OPEN — resolve the table rows at `/pin-source` / SOURCE-VERIFY (Step 5); SaaS rows revisited at
-public-push sign-off. Updated by deferred-verification resolution pass, 2026-06-27.
+**Status:** OPEN — remaining rows: plugin version literals (resolve at `/pin-source`), `dependencyUpdates`
+(third-party, out of Gradle pin), and Renovate/Dependabot + NVD/OSV/GitHub-Advisory (SaaS, revisited at
+public-push sign-off). Updated by deferred-verification resolution pass, 2026-06-27.
+
+---
+
+## Addendum (2026-06-28, WEB-VERIFY + RESOLVE pass on the ACCURACY-capping doc atoms)
+
+The doc-only `⚠ verify-at-pin` atoms capping ACCURACY on printed Ch 27 were verified verbatim against the
+pinned authorities (Maven `maven.apache.org`, Gradle `docs.gradle.org` 9.6) and **RESOLVED** in the draft —
+the `@pin` markers on these atoms were removed and they now read as cited facts:
+
+| Atom | Verified value (verbatim) | Source URL |
+|---|---|---|
+| Maven dependency-mediation term | **"nearest definition"** — "it uses the version of the closest dependency to your project in the tree of dependencies"; tie-breaker: "if two dependency versions are at the same depth in the dependency tree, the first declaration wins" | https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html |
+| Maven inspection goals | `mvn dependency:tree`; `dependency:analyze` (analyze-mojo) — both named on the same page | https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html |
+| Gradle `check` task | "Aggregate task that performs verification tasks, such as running the tests"; `build` _Depends on_: `check`, `assemble` | https://docs.gradle.org/current/userguide/java_plugin.html |
+| Gradle version catalog | "conventionally declared using a `libs.versions.toml` file located in the `gradle` subdirectory of the root build"; "They use the TOML format"; accessor object `libs` | https://docs.gradle.org/current/userguide/version_catalogs.html |
+| Gradle `dependencyInsight` task | "Dependency insights provide information about a single dependency within a single configuration. Given a dependency, you can identify the reason and origin for its version selection." | https://docs.gradle.org/current/userguide/viewing_debugging_dependencies.html |
+
+**Correction made in the draft:** the draft's "nearest-wins" / "nearest wins" wording (3 places: §Convergence
+body + back-matter hygiene line + dossier-header tracking comment) was corrected to the documented term
+**"nearest definition"**, and the verbatim equal-depth tie-breaker was added. The draft also now carries the
+`check`-task quote, the version-catalog file/format/accessor, and the `dependencyInsight` purpose, each cited
+to its `docs.gradle.org` / `maven.apache.org` URL above.
+
+**NOT resolved (correctly left flagged — never invented):** `dependencyUpdates` is a **third-party**
+ben-manes Gradle plugin task, not a `docs.gradle.org` fact, so it stays flagged (now with the correct
+reason — it was previously mis-flagged as "Gradle docs unfetched"); the `maven-enforcer-plugin` /
+`versions-maven-plugin` version literals stay flagged (not separately pinned); Renovate/Dependabot config
+keys + NVD/OSV/GitHub-Advisory stay **dated-at-use** per SOURCE-PIN §4.
+
+**Status:** PARTIALLY RESOLVED — the Maven "nearest definition" mediation atoms and the Gradle version-catalog /
+`check` / `dependencyInsight` doc atoms are RESOLVED (web-verified + cited, markers removed). The flag stays
+**OPEN** only for: plugin version literals, the third-party `dependencyUpdates` task, and the SaaS
+Renovate/Dependabot + vuln-feed schema (dated-at-use). Pass run 2026-06-28.

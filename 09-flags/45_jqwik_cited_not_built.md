@@ -39,3 +39,20 @@ against (a) SOURCE-PIN.md (corrected 2026-06-27) and (b) the BUILT module:
   jqwik-doc atoms, NOT in SOURCE-PIN and NOT exercised by the build; they need jqwik's pinned docs fetched.
 - This flag stays **OPEN** as the underlying cited-not-built scope decision for the human gate; the build
   remains green and jqwik is realized prose-only with a seeded JDK generator + JDK shrinker.
+
+---
+
+**⚠ @pin TOOL-DOC ATOMS — RESOLVED (2026-06-28, WEB-VERIFY).** The jqwik `⚠ @pin` atom capping ACCURACY on
+printed Ch 22 is now web-verified against the pinned docs and resolved in the draft; `⚠ @pin` marker removed.
+The cited-not-built **scope decision** above remains OPEN for the human gate.
+- **jqwik default `@Property` tries = 1000 — VERIFIED.** jqwik user guide
+  (`jqwik.net/docs/current/user-guide.html`, version 1.10.1): "If not specified differently, jqwik will run
+  1000 tries … and execute the property method with each of those parameter sets"; overridable via the
+  `tries` attribute or globally. The draft body now states "by default 1,000 tries per property (the `tries`
+  attribute, overridable per property or globally)"; back-matter cite + URL added.
+- **`Arbitraries`/`@Provide` — VERIFIED** as the documented generator-description API at the same user guide
+  (named in prose, not load-bearing as a signature). GAV `net.jqwik:jqwik:1.10.1` resolves on Maven Central
+  (HTTP 200). jqwik maintenance-mode (2026) unchanged (already verified vs SOURCE-PIN §3).
+- **Residual (NOT a capping atom):** `@EnumSource`/`@ArgumentsSource` (JUnit Jupiter, named-not-exercised by
+  the build) remain a low-load-bearing `⚠ verify-at-pin` note in the header ledger; not part of the 4 capping
+  atoms and not blocking ACCURACY.

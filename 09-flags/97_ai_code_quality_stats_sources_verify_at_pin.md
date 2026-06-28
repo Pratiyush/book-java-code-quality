@@ -1,4 +1,11 @@
-# FLAG — keys 97 + 99: AI-generated-code-quality statistics & sources still ⚠ verify-at-pin
+# FLAG [RESOLVED 2026-06-28] — keys 97 + 99: AI-generated-code-quality statistics & sources
+
+> **STATUS: RESOLVED via WEB-VERIFY (2026-06-28).** Every flagged AI statistic was verified verbatim
+> against its dated primary source and resolved in the draft, dated + attributed. The arXiv-paper
+> mis-attribution of the 40%/86% figures was corrected (see below). The only residual is the AI
+> *productivity* figure, which was always routed to Ch 42 (09-flags/100). Sources are not yet
+> SOURCE-PIN §7 rows — they are cited inline as dated primaries; promoting any to a §7 row remains
+> the optional, logged path. Resolution detail per item is in the section "✅ Resolved by web-verify" below.
 
 - **Chapter / keys:** 97 (leads, Part XII umbrella) + 99 (folded, §B) — "The Draft That Looks Like a Deliverable" (Part XII OPENER; AI-generated code quality + AI-assisted refactoring/test generation)
 - **Draft:** `03-drafts/97_ai_generated_code_quality/97_ai_generated_code_quality_v1.md`
@@ -47,32 +54,43 @@ so they cannot be confirmed from the build either. They stay marked + dated + at
   injection class = OWASP Top 10:2025 A03 / CWE-89 (SOURCE-PIN §1); `SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE`
   = SpotBugs (SOURCE-PIN §3); mutation-testing "covered-line-yet-mutant-survives" = Ch 23 mechanism (PITest, SOURCE-PIN §3).
 
-## ⚠ Still unverified — needs a pinned/dated primary source (SOURCE-VERIFY, Step 5). KEEP DATED + ATTRIBUTED, never timeless.
-1. **AI-generated-code vuln/defect figures** — "~40% with critical gaps", "XSS missed 86% / in the large
-   majority of cases". Attributed in dossier notes to arXiv **2502.01853** ("Security and Quality in LLM-Generated
-   Code") + **2409.19182** ("AI-Generated Code Considered Harmful") — papers may exist, but neither is a
-   SOURCE-PIN §7 row and the exact figures are unverified. Prose already hedges ("as of recent (2024–2025)
-   studies… often-cited rates in the range of… must be verified against the specific dated study and cited as a
-   snapshot, never as a constant"). Name the specific study + date or stay flagged. NEVER print as a constant.
-2. **"slopsquatting" / hallucinated-dependency framing** — the coinage and the attacker-registers-the-name
-   mechanism need a named, dated primary source; not a SOURCE-PIN row. Carried in prose as a described risk, not
-   a bare cited statistic.
-3. **CodeScene "three guardrails" (Code Quality / Code Familiarity / Code-Test Coverage)** — wording + attribution
-   to confirm against the CodeScene primary source; CodeScene is not a SOURCE-PIN row.
-4. **"double-bookkeeping" / "don't generate tests from the code" attribution** — the framing is sound and tied
-   to the Ch 39 characterization-trap mechanism, but the specific phrasing/attribution is not pinned; carry as an
-   attributed principle, not as a sourced quotation, unless a §7 row is added.
-5. **AI productivity gains** ("most organizations report meaningful productivity gains") — routed to Ch 42 (keys
-   100/98), where the same figures are flagged in `09-flags/100_ai_governance_stats_sources_verify_at_pin.md`;
-   any number is survey/vendor-sourced, dated-at-use, never a constant.
-6. **"Java fares relatively well vs C/C++ (fewer memory-safety bugs)"** — a comparative claim; needs the dated
-   study that makes it. Prose keeps "relatively well is not safe"; the comparison stays attributed/dated.
-7. **Quoted span attributed to "the studies"** — prose (How-it-works CONCEPT box) quotes
-   `"cannot be fully fixed by prompt-tweaking or post-hoc checking."` attributed to the vulnerability-inheritance
-   research. The source (the arXiv papers, item 1) is NOT pinned, so the quote cannot be confirmed verbatim or
-   in-context against a pinned authority. Until the source is pinned/dated, treat as an attributed, unverified
-   quotation (LEGAL-IP §2 prose-quote rule + the quoted-span verbatim check): confirm character-for-character
-   against the named study at Step 5, trim to a paraphrase, or cut. Do not assert it as a verified verbatim.
+## ✅ Resolved by web-verify (2026-06-28) — each verified verbatim against its dated primary; resolved in the draft.
+
+> The items below were the residue. All but item 5 are now closed; the original wording is preserved
+> after each "WAS:" for the audit trail, followed by the verified resolution.
+
+1. **AI-generated-code vuln/defect figures** — "~40%", "XSS 86%". **VERIFIED — but the dossier
+   mis-attributed them, now corrected.** Neither arXiv 2502.01853 nor 2409.19182 carries these percentages
+   (both abstracts + the 2502.01853 HTML confirmed qualitative). Correct primaries:
+   - **"~40% vulnerable"** → Pearce et al., *Asleep at the Keyboard?*, **arXiv 2108.09293 (2021-08-20; IEEE S&P
+     2022)**: *"In total, we produce 89 different scenarios for Copilot to complete, producing 1,689 programs.
+     Of these, we found approximately 40% to be vulnerable."*
+   - **"XSS 86%" + "45% overall" + "Java 72%"** → **Veracode *2025 GenAI Code Security Report* (2025-07-30)**,
+     >100 LLMs: *"45% of code samples failed security tests …"*; XSS/CWE-80 *"failed to defend against it in 86%
+     of relevant code samples"*; *"Java was the riskiest language, with a 72% security failure rate."*
+   Draft now cites both, dated; the two arXiv papers are re-cast as the MECHANISM source, not the figure source.
+2. **"slopsquatting" / hallucinated-dependency framing** — **VERIFIED.** Coined by **Seth Larson (PSF
+   Developer-in-Residence), April 2025**; popularized by Andrew Nesbitt. Scale: **Spracklen et al., *We Have a
+   Package for You!*, USENIX Security 2025 (arXiv 2406.10279)** — 19.7% of LLM-recommended packages did not exist.
+   Draft limitations bullet now carries the coinage + dated 19.7% figure + arXiv id.
+3. **CodeScene "three guardrails"** — **VERIFIED.** Adam Tornhill, *Succeed with AI-assisted Coding…*,
+   **CodeScene, 2025-03-03**: *"These guardrails need to come in three shapes: code quality, code familiarity, and
+   strong test coverage to ensure correctness."* Draft attributes the verbatim triad to Tornhill/CodeScene (Mar 2025).
+4. **"double-bookkeeping" / "don't generate tests from the code"** — **VERIFIED VERBATIM in the same article.**
+   Tornhill: *"the tests shouldn't be AI generated from the code. Doing that misses the point of the double
+   bookkeeping aspect of tests."* Draft CONCEPT box now quotes this with attribution — promoted to a sourced quotation.
+5. **AI productivity gains** — **STILL ROUTED (the one residual).** Unchanged: routed to Ch 42 (keys 100/98),
+   `09-flags/100_ai_governance_stats_sources_verify_at_pin.md`; survey/vendor-sourced, dated-at-use, never a constant.
+   The draft makes no bare productivity figure here. Not closed by this pass.
+6. **"Java fares relatively well vs C/C++"** — **VERIFIED.** Kharma et al., **arXiv 2502.01853 (2025)**: *"Python
+   and Java … produce fewer security findings than C and C++, where more memory safety issues, hard-coded secrets,
+   and cryptographic misuses are observed."* Draft scopes the comparison to C/C++ exactly (no contradiction with
+   Veracode's Java-vs-managed-languages 72% ranking — different comparison axis, now both noted in the draft).
+7. **Quoted span "cannot be fully fixed by prompt-tweaking or post-hoc checking"** — **NOT confirmable verbatim →
+   CONVERTED to an attributed paraphrase (resolved per LEGAL-IP §2).** String absent from both arXiv abstracts.
+   Replaced with 2409.19182's actual verified finding: the regeneration loop *"fails to eliminate such issues
+   consistently"* and prompting *"can introduce issues in files that were issues-free before"* — now quoted +
+   attributed to Chong et al. (arXiv 2409.19182, 2024). No unverified verbatim quote remains in the draft.
 
 ## Rule
 Per SOURCE-PIN moving-target policy + LEGAL-IP §1/§3 + the CRITICAL AI-statistic standing rule: an atom that

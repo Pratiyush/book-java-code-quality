@@ -52,7 +52,7 @@ Dependencies are most of a modern Java application, and an unmanaged dependency 
         <scope>import</scope>                        </dependency>
 ```
 
-- **Convergence.** Transitive dependencies can pull conflicting versions of the same library, and Maven's "nearest-wins" resolution can silently *downgrade* one, a subtle source of runtime bugs. The `maven-enforcer-plugin` rules `dependencyConvergence` and `requireUpperBoundDeps` make a conflict fail the build; `mvn dependency:tree` and `dependency:analyze` expose the conflict for inspection (Gradle has resolution strategies and `dependencyInsight`). The two rules are one line each in the Enforcer:
+- **Convergence.** Transitive dependencies can pull conflicting versions of the same library, and Maven's *dependency mediation* resolves the clash by picking the **"nearest definition"** — the version of the closest dependency to the project in the dependency tree, with the first declaration winning a tie at equal depth (`maven.apache.org`, "Introduction to the Dependency Mechanism"). That rule can silently *downgrade* a library a deeper transitive dependency needed at a higher version, a subtle source of runtime bugs. The `maven-enforcer-plugin` rules `dependencyConvergence` and `requireUpperBoundDeps` make a conflict fail the build; `mvn dependency:tree` and `dependency:analyze` expose the conflict for inspection (Gradle has resolution strategies and a `dependencyInsight` task that surfaces the reason and origin of a version selection). The two rules are one line each in the Enforcer:
 
 ```xml
                 <dependencyConvergence/>   ```

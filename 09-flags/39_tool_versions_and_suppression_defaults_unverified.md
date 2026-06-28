@@ -51,3 +51,17 @@ Same pre-pin caveat as keys 11/12/13/15/16/19/20/23/25: atoms are *flagged*, not
   PMD `--suppress-marker` vs `-suppressmarker` spelling. Resolve only against the pinned plugin doc stating
   them verbatim (not fetched this pass). Stay `⚠ verify-at-pin`. (`EI_EXPOSE_REP`/`EI_EXPOSE_REP2` already
   RESOLVED via the built engine, per the 2026-06-27 note above.)
+
+## Update — 2026-06-28 (web-verify pass, docs.sonarsource.com — Sonar suppression-default atom only)
+- **Sonar `//NOSONAR` behavior + Accepted/FP exclusion: RESOLVED** (companion flag
+  `09-flags/39_sonar_wontfix_accepted_rename_unverified.md` is now `✅ RESOLVED`). The §1 Sonar line
+  ("`//NOSONAR`; False Positive / Accepted transitions") is confirmed against SonarSource's own versioned
+  docs, stated **dated-at-use as of Server 2026.1 LTA**: `//NOSONAR` is line-level + rule-blind ("suppress
+  all issues on the line ... now and in the future", no scoped `<ruleKey>` form); the **Accepted** status
+  replaced **Won't Fix** in **Server 10.4**; accepted + false-positive issues are ignored in ratings/reports.
+  Sources: `www.sonarsource.com/.../whats-new/sonarqube-10-4`,
+  `docs.sonarsource.com/sonarqube-server/2026.1/user-guide/issues/managing`.
+- **FLAG STAYS OPEN** for the remaining non-Sonar plugin DEFAULT atoms listed above (`failOnViolation`/
+  `violationSeverity`/`baselineFiles` name + "since 4.7.1.0"/PMD `--suppress-marker` spelling) — those are
+  Maven-plugin defaults, not on docs.sonarsource.com, and were not fetched this pass. Resolve at the pinned
+  plugin docs. (Tool versions/GAVs already RESOLVED 2026-06-27; SpotBugs engine atoms RESOLVED at build.)

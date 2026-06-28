@@ -41,3 +41,27 @@ against (a) SOURCE-PIN.md (corrected 2026-06-27) and (b) the BUILT module:
   to **BUILT GREEN** per `45_integration_property_based_testing_EXAMPLE.md` (`mvn -B -Pquality verify` =
   BUILD SUCCESS at JDK 21.0.11). This flag stays **OPEN** as the underlying cited-not-built scope decision
   for the human gate.
+
+---
+
+**⚠ @pin TOOL-DOC ATOMS — RESOLVED (2026-06-28, WEB-VERIFY).** The two `⚠ @pin` Testcontainers-doc atoms
+capping ACCURACY on printed Ch 22 are now web-verified against the pinned docs and resolved in the draft;
+`⚠ @pin` markers removed. The cited-not-built **scope decision** above remains OPEN for the human gate.
+- **@Container per-test vs static lifecycle — VERIFIED.** Docs (`java.testcontainers.org/test_framework_integration/junit_5/`,
+  dated-at-use 2026-06-28, rolling): an instance `@Container` field is "started and stopped for every test
+  method"; a static field is "shared between test methods … started only once before any test method is
+  executed and stopped after the last test method has executed." The draft's body wording (instance = fresh
+  per method / static = shared across class) matches verbatim — kept as-is, marker cleared in back-matter.
+- **Container reuse / Ryuk flags — VERIFIED.** Reuse is opt-in via `withReuse(true)` /
+  `testcontainers.reuse.enable=true` (or `TESTCONTAINERS_REUSE_ENABLE`), **experimental and "not suited for CI
+  usage"** (`java.testcontainers.org/features/reuse/`). Ryuk = the resource reaper that removes dead
+  containers at JVM shutdown, disabled via the `TESTCONTAINERS_RYUK_DISABLED` env var
+  (`java.testcontainers.org/features/configuration/`). Draft back-matter updated with the exact flag names + URLs.
+- **GAVs — VERIFIED + CORRECTED on Maven Central (2026-06-28).** `org.testcontainers:testcontainers:2.0.5`
+  resolves (HTTP 200). **Fact error caught:** the 2.0 line renamed the module artifacts with a
+  `testcontainers-` prefix — the draft's pre-2.0 names `:junit-jupiter` and `:postgresql` do **NOT** exist at
+  2.0.5 (metadata `latest/release = 1.21.4`; the 2.0.5 POMs 404). Corrected to
+  `:testcontainers-junit-jupiter:2.0.5` and `:testcontainers-postgresql:2.0.5` (both HTTP 200, metadata
+  `latest = 2.0.5`). Verified via direct `repo1.maven.org` POM resolution + the docs' JUnit 5 quickstart.
+  (Note: search.maven.org's Solr index is stale — it shows 1.21.3 as latest and no 2.0.x; ground truth is the
+  GitHub release tags 2.0.0–2.0.5 + direct Central POM resolution.)
