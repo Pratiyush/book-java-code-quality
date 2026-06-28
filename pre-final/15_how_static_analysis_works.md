@@ -136,7 +136,7 @@ Why every tool in Part IV is read and used the way it is comes down to one fact.
 
 ### Undecidability, soundness, and completeness
 
-Take any non-trivial *semantic* property of programs ("does this ever dereference null?", "does this always terminate?", "can tainted data reach this sink?"). Deciding it in general is **undecidable** (Rice's theorem; the property reduces to the halting problem). A terminating analyzer that must give an answer for every program is therefore forced to *approximate*. There are precisely two directions of error:
+Take any non-trivial *semantic* property of programs ("does this ever dereference null?", "does this always terminate?", "can tainted data reach this sink?"). A *semantic* property is one about the program's behavior rather than its syntax; *non-trivial* means it holds for some programs but not all. Deciding such a property in general is **undecidable** — this is **Rice's theorem**, which generalizes the undecidability of the halting problem, and the standard proof is a reduction from it: an algorithm that decided the property could be used to decide halting. A terminating analyzer that must give an answer for every program is therefore forced to *approximate*. There are precisely two directions of error:
 
 - A **false positive**: the tool reports a problem that is not real.
 - A **false negative**: a real problem the tool fails to report.
@@ -214,7 +214,7 @@ The map of Part IV is now in hand: the four-move ladder every analyzer climbs, a
 - **Semgrep** — AST → "analysis-friendly intermediate language"; constant propagation + taint; intraprocedural; "No path sensitivity," "No pointer or shape analysis," "No soundness guarantees." *(verbatim; OSS-vs-Pro interprocedural boundary ⚠ @pin.)*
 - **Checker Framework** — "values soundness over limiting false positives"; "by default, unsound in a few places where a conservative analysis would issue too many false positive warnings"; suppression voids the guarantee. *(verbatim.)*
 - **False-positive controls** — SpotBugs filter file (`Match`) + `@SuppressFBWarnings(value, justification)`; SonarQube "False positive"/"Won't fix" resolutions (may be "Accept" — verify @pin); baseline / "new code" (policy → Chapter 19).
-- **Theory** — Rice's theorem / halting problem: deciding a non-trivial semantic property is undecidable ⇒ no analyzer both sound and complete. *(⚠ UNVERIFIED — must cite a primary PL/compilers text at draft, not a blog.)*
+- **Theory** — Rice's theorem: every non-trivial semantic (extensional) property of programs is undecidable; it generalizes the undecidability of the halting problem and is proved by reduction from it ⇒ no terminating analyzer can be both sound and complete for such a property. Primary source: H. G. Rice, "Classes of recursively enumerable sets and their decision problems," *Transactions of the American Mathematical Society* **74**(2) (1953), 358–366. *(VERIFIED — primary citation.)*
 - **Routing** — per-tool depth → Ch 16/17; cross-tool "which to choose" verdict → Ch 17 (key 37); false-positive policy/baselines/ratcheting → Ch 19 (key 39); custom-rule authoring → Ch 18; lifecycle placement → Ch 3 (the toolchain map).
 
 ## Next chapter teaser

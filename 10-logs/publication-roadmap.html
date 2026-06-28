@@ -1,0 +1,255 @@
+<!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><title>Java Code Quality — Publication Roadmap</title><style>
+:root{--bg:#f4f6f9;--panel:#fff;--ink:#1f2328;--muted:#5b6675;--line:#e3e8ef;--brand:#3a5bd9;
+--brand2:#6b46c1;--done:#1a7f37;--self:#bf8700;--no:#cf222e;--human:#0969da;
+--shadow:0 1px 2px rgba(16,24,40,.05),0 6px 18px rgba(16,24,40,.06)}
+*{box-sizing:border-box}
+body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;margin:0;
+color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+a{color:var(--brand);text-decoration:none}a:hover{text-decoration:underline}
+.hd{background:linear-gradient(120deg,#1e2a4a,#2b1d52);color:#fff;padding:24px 28px 20px}
+.hd h1{margin:0;font-size:22px;font-weight:750;letter-spacing:.2px}
+.hd .sub{color:#aeb8d4;font-size:13px;margin-top:5px}
+.hd .prog{margin:16px 0 0;max-width:560px}
+.hd .prog .lbl{display:flex;justify-content:space-between;font-size:12px;color:#cdd5ee;margin-bottom:5px;font-weight:600}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#7aa2ff,#b794f6)}
+nav{position:sticky;top:0;z-index:9;background:#1b2440;display:flex;gap:2px;padding:0 16px;flex-wrap:wrap;box-shadow:var(--shadow)}
+nav a{color:#b7c0da;padding:12px 15px;font-size:13.5px;font-weight:600;border-bottom:3px solid transparent}
+nav a:hover{color:#fff;text-decoration:none}nav a.active{color:#fff;border-bottom-color:#7aa2ff}
+main{padding:24px 28px;max-width:1100px;margin:0 auto}
+h2{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:38px 0 6px;padding-top:14px}
+h2 .sec{color:var(--brand2);margin-right:7px}
+.lead{color:var(--muted);font-size:13.5px;margin:0 0 14px;max-width:760px}
+.hero{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 22px;box-shadow:var(--shadow);font-size:15px;line-height:1.65}
+.hero b{color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 17px;box-shadow:var(--shadow)}
+.kpi .n{font-size:28px;font-weight:760;line-height:1}.kpi .n small{font-size:15px;color:var(--muted);font-weight:600}
+.kpi .l{font-size:12.5px;color:var(--muted);margin:6px 0 10px;font-weight:600}
+.kpi .bar{background:#eef1f6;height:7px}.kpi .bar>i{background:linear-gradient(90deg,var(--brand),var(--brand2))}
+.note{border-radius:12px;padding:12px 16px;margin:14px 0;font-size:14px}
+.note.ok{background:#e9f8ee;border:1px solid #abe1bd;color:#0f6a2e}
+.note.bad{background:#fdeceb;border:1px solid #f5b5b1;color:#b42318}
+.note.info{background:#eef2ff;border:1px solid #c2cffc;color:#33409e}
+.note.warn{background:#fff7e6;border:1px solid #f3d699;color:#8a5d00}
+.scroll{overflow-x:auto;border-radius:12px;border:1px solid var(--line);box-shadow:var(--shadow);margin:14px 0}
+table{border-collapse:separate;border-spacing:0;width:100%;background:var(--panel);font-size:13px}
+.scroll table{border:none;box-shadow:none}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#f7f9fc;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+tr:last-child td{border-bottom:none}tbody tr:hover td{background:#f9fbff}
+td.c,th.c{text-align:center}td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+td.k{color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.3px;white-space:nowrap}
+.b-done{background:var(--done)}.b-self{background:var(--self)}.b-no{background:var(--no)}.b-human{background:var(--human)}.b-env{background:#0e7490}.b-brand{background:var(--brand2)}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{position:relative;padding:0 0 18px 26px;border-left:2px solid var(--line);margin-left:8px}
+.tl li:last-child{border-left-color:transparent;padding-bottom:0}
+.tl .dot{position:absolute;left:-11px;top:-1px;width:20px;height:20px;border-radius:50%;background:var(--panel);border:2px solid var(--done);font-size:10px;text-align:center;line-height:17px;font-weight:700;color:var(--done)}
+.tl .when{font-size:11.5px;color:var(--muted);font-family:ui-monospace,monospace;text-transform:uppercase;letter-spacing:.4px}
+.tl .what{font-weight:750;font-size:15px;margin:1px 0 3px}.tl .det{font-size:13.5px;color:var(--muted)}
+.tl .det b{color:var(--ink)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 8px;font-size:15px}.card p{margin:0 0 8px;font-size:13.5px;color:var(--muted)}
+.card ul{margin:6px 0 0;padding-left:18px;font-size:13.5px;color:var(--muted)}.card li{margin:4px 0}
+.chk{list-style:none;margin:0;padding:0}
+.chk li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.chk li:last-child{border-bottom:none}
+.chk .box{flex:0 0 auto;width:18px;height:18px;border:2px solid var(--brand);border-radius:5px;margin-top:1px}
+.chk .ttl{font-weight:650}.chk .meta{color:var(--muted);font-size:12.5px;margin-top:2px}
+.chk .tags{margin-top:5px;display:flex;gap:6px;flex-wrap:wrap}
+.foot{color:var(--muted);font-size:12.5px;margin:40px 0 16px;padding-top:16px;border-top:1px solid var(--line)}
+.foot code{background:#eef1f6;padding:1px 6px;border-radius:5px}
+.src{font-size:12px;color:var(--muted)}.src a{font-size:12px}
+.scn{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:14px 0}
+.scn .col{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+.scn .col h3{margin:0;font-size:13px;text-transform:uppercase;letter-spacing:.5px}
+.scn .lo h3{color:var(--no)}.scn .ba h3{color:var(--brand)}.scn .hi h3{color:var(--done)}
+.scn .big{font-size:26px;font-weight:760;margin:8px 0 2px}.scn .rev{font-size:13px;color:var(--muted);margin-bottom:8px}
+.scn .col ul{margin:6px 0 0;padding-left:16px;font-size:12.5px;color:var(--muted)}.scn .col li{margin:3px 0}
+.pill{display:inline-block;background:#eef1f6;color:var(--muted);border-radius:99px;padding:2px 9px;font-size:11px;font-weight:600;margin:0 4px 4px 0}
+.disc{background:#2b1d52;color:#e7e0ff;border-radius:14px;padding:16px 20px;font-size:13.5px;line-height:1.6;margin:14px 0}
+.disc b{color:#fff}
+@media(max-width:720px){main{padding:16px 14px}.scn{grid-template-columns:1fr}}
+</style>
+<div class=hd><h1>Java Code Quality — Publication Roadmap</h1><div class=sub>From production pipeline to a book on a shelf · single-volume reference · 47 chapters / 14 parts · generated 2026-06-28</div><div class=prog><div class=lbl><span>Production progress (drafting + gates)</span><span>~91%</span></div><div class=bar><i style="width:91%"></i></div></div></div>
+<nav><a href="#journey" class="active">Journey so far</a><a href="#pending">Path to publication</a><a href="#market">Market &amp; sales</a><a href="#setup">Setup &amp; company question</a></nav>
+<main>
+
+<div class=hero>This is a stakeholder view of where the book stands and what remains. The manuscript is <b>functionally complete</b>: all <b>47 of 47</b> chapters are drafted, figured, example-built, code-reviewed, voice-lifted, and <b>independently scored</b> by a separate harsh model. <b>29</b> chapters have already cleared the 88% auto-approval bar into <code>04-approved/</code>; the remaining <b>~18</b> are floor-clean but held behind a networked source-pin pass and the human approval gate. What is left is mostly <b>finishing, assembly, and the business of publishing</b> — not writing.</div>
+
+<div class=kpis>
+<div class=kpi><div class=n>47<small>/47</small></div><div class=l>Chapters drafted</div><div class=bar><i style="width:100%"></i></div></div>
+<div class=kpi><div class=n>67</div><div class=l>Figures (HTML&rarr;PNG)</div><div class=bar><i style="width:100%"></i></div></div>
+<div class=kpi><div class=n>47<small>/47</small></div><div class=l>Independently scored</div><div class=bar><i style="width:100%"></i></div></div>
+<div class=kpi><div class=n>29<small>/47</small></div><div class=l>Auto-approved</div><div class=bar><i style="width:62%"></i></div></div>
+<div class=kpi><div class=n>5<small>/5</small></div><div class=l>Capstone apps green</div><div class=bar><i style="width:100%"></i></div></div>
+<div class=kpi><div class=n>~91</div><div class=l>PRs merged</div><div class=bar><i style="width:100%"></i></div></div>
+</div>
+
+<!-- ============================ SECTION 1 ============================ -->
+<h2 id=journey><span class=sec>1</span> The journey so far — in sequence</h2>
+<p class=lead>Every stage below is actually complete and has evidence on disk (drafts, gate reports, rendered figures, green builds). The pipeline ran largely autonomously through five locked phases; only the whole-book release gate is reserved for a human.</p>
+
+<ol class=tl>
+<li><span class=dot>0</span><div class=when>Phase 0 · Foundation</div><div class=what>Strategy, source pin &amp; candidate pool</div><div class=det>Set the charter (senior Java audience, neutral survey, runnable companion code). Pinned a <b>multi-authority source set</b> in <code>SOURCE-PIN.md</code> (Java 21 + 25 LTS anchor; every tool pinned per row, web-verified). Built <code>CANDIDATE_POOL.md</code> — <b>110 frozen-key topics</b> across 15 parts. Every fact in the book must trace back to this pin.</div></li>
+
+<li><span class=dot>1</span><div class=when>Phase 1 · Research</div><div class=what>Banked a verified dossier per candidate</div><div class=det>All <b>110/110</b> dossiers researched and banked. Keys 07&ndash;40 went through a multi-agent workflow each with its own <code>_VERIFY.md</code>; the rest via a leaner main-loop pass. Global neutrality sweep across the pool returned <b>0 banned phrasings</b>.</div></li>
+
+<li><span class=dot>2</span><div class=when>Phase 2 · Select</div><div class=what>Scored the pool, culled to ONE book — human-confirmed &amp; LOCKED</div><div class=det>The 110 keys consolidated by merge (not by hard cuts) into a tight <b>47-chapter / 14-part</b> volume. <code>FINAL_INDEX.md</code> was <b>confirmed and LOCKED by the author on 2026-06-20</b>; it now gates all drafting. A re-cull requires a deliberate human re-latch.</div></li>
+
+<li><span class=dot>3</span><div class=when>Phase 3 · Draft</div><div class=what>Drafted all 47 chapters in the locked voice</div><div class=det>Every chapter drafted from its banked dossier in the one locked third-person voice, then <b>voice-lifted</b> chapter by chapter for consistency. Each claim is bound to a pinned source; untraceable atoms were flagged, never invented.</div></li>
+
+<li><span class=dot>4</span><div class=when>Phase 3 · Figures</div><div class=what>Designed &amp; rendered 67 figures (HTML&rarr;PNG, never image-generated)</div><div class=det>Load-bearing diagrams authored as HTML then rendered to cropped PNGs via the <code>render.mjs</code> + <code>figures.css</code> asset chain; tool/IDE screenshots captured per the figure guide. All <b>67/67</b> figures pass the 20-parameter figure review.</div></li>
+
+<li><span class=dot>5</span><div class=when>Phase 3 · Companion code</div><div class=what>Built runnable companion modules + 5 capstone apps</div><div class=det>A single Maven reactor (<code>08-companion-code/</code>) with <b>45 chapter modules + 2 honest N/A</b> (pure-concept chapters), plus <b>5 enterprise capstone apps</b> (shared platform + commerce, fintech ledger, logistics saga, quality-operations). The whole reactor builds <code>mvn -Pquality verify</code> &rarr; <b>BUILD SUCCESS, 0 Checkstyle / 0 SpotBugs</b>.</div></li>
+
+<li><span class=dot>6</span><div class=when>Phase 3 · EXAMPLE-BUILD &amp; CODE-REVIEW</div><div class=what>FLOOR-C closed book-wide (compile + code-review)</div><div class=det>Every displayed snippet is a <code>// tag::</code> region inside a file that <b>compiles green</b>. The CODE-REVIEW half ran on all 45 modules &rarr; <b>45 <code>_CODEREVIEW.md</code> reports, 45 PASS / 0 FAIL</b>. FLOOR-C is the first content floor fully closed for every chapter that ships code.</div></li>
+
+<li><span class=dot>7</span><div class=when>Phase 3 · Source-verify</div><div class=what>Traced facts to the pin; flagged what needs a network</div><div class=det>Bounded web source-verify of public-spec residuals (JEP/ISO/OWASP). Roughly <b>182 <code>@pin</code> residuals</b> (copyrighted-book verbatims and live-SaaS rows) remain legitimately flagged and dated-at-use, awaiting a networked <code>/pin-source</code> pass.</div></li>
+
+<li><span class=dot>8</span><div class=when>Phase 3 · Independent scoring</div><div class=what>Harsh, independent Opus score on all 47 chapters</div><div class=det>Each chapter scored by a separate model against the 5-cluster rubric + the A/B/C content floors. Routing: an independent score <b>&ge;88%</b> with floors PASS &rarr; <b>auto-approve</b> into <code>04-approved/</code>; below the bar &rarr; a bounded lift loop (&le;3 passes). To date <b>29 chapters auto-approved</b>; the remainder are floor-clean but capped on flagged source atoms or held for the human gate.</div></li>
+
+<li><span class=dot>9</span><div class=when>Phase 3 · Pre-final QA</div><div class=what>Clean review copy + manuscript-gate dry-runs</div><div class=det>Assembled a clean <code>pre-final/</code> review copy and ran <b>four manuscript-level dry-runs</b> (independent model): ORIGINALITY <b>PASS</b> (0 regurgitation), PROOF + REDTEAM <b>PASS-WITH-FIXES</b>, READERSIM <b>FIX</b>. Findings folded into a <code>REVIEW-FINDINGS.md</code> prefinal-edit worklist (figure-number normalization, metadata leaks, a handful of factual reconciliations).</div></li>
+</ol>
+
+<div class=grid2>
+<div class=card><h3>Tooling built along the way</h3>
+<p>The pipeline runs on purpose-built tooling, not by hand:</p>
+<ul>
+<li><code>status.py</code> — rewrites the status matrix + scoring/approval pages + <b>5 HTML dashboards</b>, runs the anti-drift guard, and applies auto-approval at the 88% bar.</li>
+<li><code>build_prefinal.py</code> — assembles the clean external-review copy.</li>
+<li><code>review_figures.py</code> — the 20-parameter figure-review gate &rarr; <code>figures.html</code>.</li>
+<li>The <b>5 dashboards</b>: dashboard, chapters, scoring, figures, capstones, + an audit log.</li>
+<li>An <b>audit hook / trail</b> (<code>audit.jsonl</code>) recording every gate at its real date.</li>
+</ul></div>
+
+<div class=card><h3>QA catches that mattered</h3>
+<p>The gates earned their keep by catching real defects:</p>
+<ul>
+<li><b>FLOOR-C / source-trace fixes</b> (~14): two NEUTRALITY ("beats" / "better than") catches — one <i>inside a shipped code comment</i>, not just prose — plus broken snippet tags, a wrong boundary operator, and an off-pin JaCoCo version.</li>
+<li><b>The false-approval parser bug:</b> <code>status.py</code> was mis-reading gate verdicts (PASS-while-counting-failures, FAIL&rarr;upgraded lines), which under-credited FLOOR-C and risked mis-routing. Fixed to follow upgrades and take the last decisive verdict.</li>
+<li><b>Book-wide cross-reference renumber</b> (54 fixes; 0 in-prose refs &gt; 47 remain).</li>
+</ul></div>
+</div>
+
+<!-- ============================ SECTION 2 ============================ -->
+<h2 id=pending><span class=sec>2</span> Pending items — until real publication &amp; sales</h2>
+<p class=lead>The remaining path is finite and mostly mechanical. Each item below shows its owner and a rough effort estimate. "Networked env" = a run with internet/Maven access; "Human" = an editorial or business decision only the author can make.</p>
+
+<div class=scroll><table>
+<thead><tr><th style="width:30px">#</th><th>Remaining step</th><th>Owner</th><th>Effort</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td class=c></td><td><b>Networked <code>/pin-source</code> for the ~182 flagged atoms</b></td><td><span class="badge b-env">Networked env</span></td><td>1&ndash;2 days</td><td>Resolve copyrighted-book verbatims + live-SaaS version rows; clears the source-trace caps on the held chapters.</td></tr>
+<tr><td class=c></td><td><b>Finish the last ~18 approvals</b> (re-score lifted chapters &rarr; auto-approve)</td><td><span class="badge b-done">Claude</span></td><td>2&ndash;4 days</td><td>Most are already floor-clean; some need a final lift pass to clear 88%.</td></tr>
+<tr><td class=c></td><td><b>Apply the prefinal-edit worklist</b> (figure-number normalization, metadata-leak strip, factual reconciliations)</td><td><span class="badge b-done">Claude</span></td><td>2&ndash;3 days</td><td>From <code>REVIEW-FINDINGS.md</code> — P0/P1 items before assembly.</td></tr>
+<tr><td class=c></td><td><b>Human approval of the defect-free chapters</b> (Step 12, per-chapter)</td><td><span class="badge b-human">Human</span></td><td>~1 day</td><td>Editorial sign-off; the harness cannot self-approve.</td></tr>
+<tr><td class=c></td><td><b>Assemble <code>06-assembly/</code> manuscript</b> (run <code>/assemble</code>)</td><td><span class="badge b-done">Claude</span></td><td>&lt;1 day</td><td>Machinery + front-matter + AI-disclosure already staged; blocked only on approvals.</td></tr>
+<tr><td class=c></td><td><b>Manuscript-level gates for real</b> (originality / red-team / reader-sim / proof)</td><td><span class="badge b-done">Claude</span></td><td>1&ndash;2 days</td><td>Dry-runs already passed; re-run on the assembled book.</td></tr>
+<tr><td class=c></td><td><b>Step 16 — human MANUSCRIPT-GATE</b> (whole-book release)</td><td><span class="badge b-human">Human</span></td><td>~1 day</td><td>The single hard human release gate.</td></tr>
+<tr><td class=c></td><td><b>Finalize front-matter</b> — author bio, ISBN, license, AI-disclosure</td><td><span class="badge b-human">Human</span></td><td>1&ndash;2 days</td><td>ISBN: free via KDP, or buy your own (Bowker) to be publisher-of-record.</td></tr>
+<tr><td class=c></td><td><b>Copyedit &amp; proofread</b> (human or paid editor)</td><td><span class="badge b-human">Human</span></td><td>1&ndash;3 wks</td><td>An AI-drafted book still benefits from a human copyedit pass before sale.</td></tr>
+<tr><td class=c></td><td><b>Typeset / format</b> &rarr; print PDF + reflowable EPUB</td><td><span class="badge b-done">Claude</span> <span class="badge b-human">Human</span></td><td>3&ndash;7 days</td><td>Code-heavy books need careful code-block formatting in EPUB.</td></tr>
+<tr><td class=c></td><td><b>Cover design</b></td><td><span class="badge b-human">Human</span></td><td>2&ndash;5 days</td><td>DIY, template, or a freelance designer ($100&ndash;$800).</td></tr>
+<tr><td class=c></td><td><b>Choose platform(s)</b> — KDP, Leanpub, or both</td><td><span class="badge b-human">Human</span></td><td>&lt;1 day</td><td>See market section; Leanpub suits in-progress technical books, KDP suits print reach.</td></tr>
+<tr><td class=c></td><td><b>Publish / list</b> (upload, set price, W-9/tax interview)</td><td><span class="badge b-human">Human</span></td><td>&lt;1 day</td><td>Live within 24&ndash;72h on most platforms.</td></tr>
+<tr><td class=c></td><td><b>Marketing &amp; launch</b> — landing page, dev communities, sample chapter</td><td><span class="badge b-human">Human</span></td><td>Ongoing</td><td>The single biggest driver of whether the book sells &gt; 100 copies.</td></tr>
+<tr><td class=c></td><td><b>Sales &amp; iteration</b> — track, gather reviews, update editions</td><td><span class="badge b-human">Human</span></td><td>Ongoing</td><td>Technical books decay; plan a refresh as Java/tools move.</td></tr>
+</tbody>
+</table></div>
+<div class="note info">Bottom line: from here, roughly <b>2&ndash;4 focused weeks of finishing work</b> (plus the human gates) reaches a publishable manuscript; <b>copyedit, typeset, and cover</b> add the longest calendar time. None of it is more writing.</div>
+
+<!-- ============================ SECTION 3 ============================ -->
+<h2 id=market><span class=sec>3</span> Market analysis &amp; approximate sales</h2>
+<p class=lead>An honest, conservative read of the self-published technical-book market. The headline: most self-published books sell modestly — this section deliberately under-promises. Every figure is dated and attributed; do not treat these as guarantees.</p>
+
+<div class=grid2>
+<div class=card><h3>The market reality</h3>
+<ul>
+<li>The often-cited <b>average self-published book sells ~250 copies</b> over its lifetime, and <b>~90% sell fewer than 100 copies</b> — the average is skewed by a few outliers. <span class=src>(WordsRated, "Self-Published Book Sales Statistics," accessed 2026-06-28)</span></li>
+<li>For non-fiction, <b>traditionally</b> published titles have a median around <b>7,100 copies</b> — but that reflects publisher distribution this book will not have. <span class=src>(Mary Adkins / industry summary, accessed 2026-06-28)</span></li>
+<li>A realistic lifetime range for a self-published technical book <b>without heavy marketing is ~100&ndash;500 copies</b>; marketing is the difference-maker. <span class=src>(synthesis of WordsRated + Bernoff, accessed 2026-06-28)</span></li>
+</ul></div>
+
+<div class=card><h3>Platform &amp; royalty models</h3>
+<ul>
+<li><b>Amazon KDP — ebook:</b> 70% royalty only between $2.99&ndash;$9.99 (minus a small per-MB delivery fee); 35% outside that band. <span class=src>(KDP Help / AuthorImprints, accessed 2026-06-28)</span></li>
+<li><b>KDP — print:</b> 60% of list minus print cost ($9.99+); as of <b>Jun 10 2025</b>, titles &le;$9.98 earn 50%. Print cost for a 400+ page code book is substantial. <span class=src>(AuthorImprints / KDP, accessed 2026-06-28)</span></li>
+<li><b>Leanpub:</b> <b>80% royalty</b> ($7.99+; minus $0.50 under that). Variable/reader-set pricing; popular with technical authors and in-progress books. <span class=src>(Leanpub Help Center, accessed 2026-06-28)</span></li>
+<li><b>Traditional publisher:</b> typically ~10% of a ~$32&ndash;$50 list (often less on ebooks) but with editing, distribution, and credibility. <span class=src>(Leanpub blog comparison, accessed 2026-06-28)</span></li>
+</ul></div>
+</div>
+
+<div class="note warn"><b>Genre anchor, not a sales comp:</b> <i>Effective Java</i> (Bloch, 3rd ed., Addison-Wesley, 2017) is the category's reference and ranks high in Amazon's Java sub-category — but it is <b>traditionally published</b> by a famous author with two prior editions. It sets the bar for <i>quality and topic interest</i>, <b>not</b> for what a first-time self-published title should expect to sell. <span class=src>(O'Reilly / Amazon listing, accessed 2026-06-28)</span></div>
+
+<h3 style="font-size:14px;color:var(--muted);margin:22px 0 4px">Honest unit-sales &amp; revenue scenarios (first 12&ndash;24 months)</h3>
+<p class=lead>Assumptions: niche but real audience (senior Java engineers); modest, mostly-organic marketing (dev communities, a landing page, a free sample chapter); a blended ebook price around <b>$24.99</b> on Leanpub (80%) and KDP ebook held at <b>$9.99</b> (70%) with an optional print edition at ~$39.99. Revenue below is <b>net author royalty</b>, blended to a conservative <b>~$13&ndash;$16 per unit</b>. Math is shown; treat as a planning range, not a forecast.</p>
+
+<div class=scn>
+<div class="col lo"><h3>Low / likely</h3><div class=big>~80&ndash;150 units</div><div class=rev>&asymp; <b>$1,000&ndash;$2,400</b> net</div>
+<ul><li>Little active marketing; word-of-mouth only.</li><li>Matches the "&lt;100&ndash;a-few-hundred" reality for most titles.</li><li>~120 units &times; ~$15 &asymp; $1,800.</li></ul></div>
+
+<div class="col ba"><h3>Base case</h3><div class=big>~300&ndash;600 units</div><div class=rev>&asymp; <b>$4,000&ndash;$9,000</b> net</div>
+<ul><li>Sustained but modest marketing; a few community shoutouts.</li><li>Above the self-pub average because the niche pays for quality references.</li><li>~450 units &times; ~$15 &asymp; $6,750.</li></ul></div>
+
+<div class="col hi"><h3>High / upside</h3><div class=big>~1,500&ndash;3,000 units</div><div class=rev>&asymp; <b>$20,000&ndash;$45,000</b> net</div>
+<ul><li>A hit in dev circles, conference mention, or course/bundle tie-in.</li><li>Realistic ceiling for a strong self-pub technical book, not the expectation.</li><li>~2,000 units &times; ~$15 &asymp; $30,000.</li></ul></div>
+</div>
+
+<div class="note bad"><b>Be conservative.</b> Plan around the <b>base case (~300&ndash;600 units, ~$4k&ndash;$9k net over the first 1&ndash;2 years)</b>. The high scenario requires luck and real promotion; do not budget for it. Most of the value of this project is the artifact and the credibility, not near-term royalties.</div>
+
+<div class=card style="margin-top:14px"><h3>The AI-authored angle — marketing <i>and</i> disclosure</h3>
+<p><b>As marketing:</b> a rigorously gated, fully AI-produced technical book is itself a story — it can differentiate the launch and appeal to readers curious about AI-assisted authorship. <b>As disclosure:</b> it must be stated honestly. KDP asks whether content is AI-generated; the book already carries an <code>AI-DISCLOSURE.md</code>. Some readers and reviewers weigh AI authorship negatively, so a visible <b>human review + technical-verification</b> story (every code example compiles; every fact traced to a pinned source) is the right framing — lead with the rigor, disclose the method.</p></div>
+
+<!-- ============================ SECTION 4 ============================ -->
+<h2 id=setup><span class=sec>4</span> Self-publishing setup &amp; the "do I need a company?" question</h2>
+
+<div class=disc><b>GENERAL INFORMATION — NOT LEGAL, TAX, OR HR ADVICE.</b> The author works at <b>Fiserv</b> (a fintech / payments company). The notes below are educational and intentionally caveated. They are <b>not</b> definitive conclusions. Before publishing, <b>consult a qualified attorney and tax professional, and review your own Fiserv employment agreement and code of conduct.</b> Fintech employers commonly have specific outside-activity and IP clauses; only your own documents and advisors can tell you how they apply.</div>
+
+<div class=grid2>
+<div class=card><h3>(a) You can publish as an individual</h3>
+<p>You generally <b>do not need to form a company</b> to self-publish. KDP and Leanpub let you publish as an individual; income is typically reported as <b>self-employment / sole-proprietor</b> income on <b>Schedule C</b>, and you complete a <b>W-9 / tax interview</b> on the platform. <span class=src>(Keeper / TurboTax author guides, accessed 2026-06-28)</span></p></div>
+
+<div class=card><h3>(b) When an LLC starts to make sense</h3>
+<p>Sole-proprietor is simplest and cheapest. An <b>LLC</b> (or other entity) becomes worth considering as the project scales — for <b>liability separation</b>, cleaner <b>IP ownership</b>, potential <b>tax elections</b>, or if you take on co-authors, sell courses, or run paid ads at volume. For a single book it is usually optional, not required. <span class=src>(general small-business / moonlighting guidance, accessed 2026-06-28)</span></p></div>
+</div>
+
+<div class=card style="margin-top:14px;border-left:4px solid var(--brand2)"><h3>(c) The employment angle — the part that matters most here</h3>
+<p>Because the author is at a <b>fintech employer</b>, this deserves the most care. Fintech and large tech employers commonly include <b>outside-activity / moonlighting-disclosure</b> clauses and <b>broad IP-assignment</b> clauses in their agreements. A book written on <b>personal time</b> about <b>general industry knowledge</b> (Java code quality) — <b>not</b> Fiserv work, systems, data, or IP — is <i>typically</i> fine, but "typically" is not "certainly." Reasonable, commonly recommended precautions:</p>
+<ul>
+<li><b>Review the Fiserv employment agreement &amp; code of conduct</b> for outside-activity, moonlighting, non-compete, and invention/IP-assignment language. (Some agreements are broad; some states, e.g. California Labor Code &sect;2870, limit employer claims to work unrelated to the employer's business and done without its assets. <span class=src>(LegalGPS / moonlighting-IP guidance, accessed 2026-06-28)</span>)</li>
+<li><b>Consider a written outside-activity disclosure to HR/manager</b> — a short note that you are writing a general-knowledge technical book on personal time can pre-empt later questions and is often explicitly required.</li>
+<li><b>Keep all work on personal equipment and personal time</b> — no employer laptop, accounts, networks, or work hours. Using employer assets is a classic way to muddy IP ownership.</li>
+<li><b>Use no Fiserv confidential material</b> — no internal systems, code, data, customer info, or anything that could be read as proprietary or payments-specific. Keep the content generic and publicly-sourced (which the source-pin discipline already enforces).</li>
+</ul>
+<p style="margin-top:8px"><b>This is risk-reduction, not a legal clearance.</b> Only your own agreement + an attorney can confirm your situation.</p></div>
+
+<div class=card style="margin-top:14px"><h3>(d) Tax basics</h3>
+<ul>
+<li><b>Royalty income</b> from active self-publishing is generally <b>self-employment income</b> on <b>Schedule C</b>, subject to the ~<b>15.3% SE tax</b> in addition to income tax. <span class=src>(Monaco CPA / TurboTax, accessed 2026-06-28)</span></li>
+<li><b>1099 / W-9:</b> Amazon issues a <b>1099-MISC</b> for as little as $10/yr in royalties; complete the platform's <b>W-9 / tax interview</b> at signup. <span class=src>(Keeper Tax, accessed 2026-06-28)</span></li>
+<li><b>Quarterly estimates:</b> platforms don't withhold, so you may owe <b>quarterly estimated taxes</b> (federal safe harbor: 100% of prior-year tax, 110% if prior-year AGI &gt; $150k). Your <b>W-2 day-job withholding</b> can sometimes absorb modest royalties — ask your tax professional. <span class=src>(Arc &amp; Ledger author tax guide, accessed 2026-06-28)</span></li>
+<li><b>Deductions:</b> ordinary business expenses (cover design, editing, ISBN, ads) reduce net profit on Schedule C — keep records and receipts.</li>
+</ul></div>
+
+<div class="note info" style="margin-top:18px"><b>Short answer to "do I need to register a company?"</b> &nbsp;No — you can publish as an individual / sole-proprietor and report royalties on Schedule C. Form an LLC later only if liability, tax, or scale justifies it. The more pressing item is <b>not</b> entity formation — it is <b>reviewing your Fiserv employment agreement and considering a written outside-activity disclosure</b>, keeping all work on personal time/equipment with no confidential material. Confirm specifics with an attorney and a tax professional.</div>
+
+<!-- ============================ SOURCES ============================ -->
+<h2>Sources</h2>
+<div class=card><p style="font-size:13px">All web figures accessed 2026-06-28. Market and sales numbers are ranges, not guarantees.</p>
+<ul style="font-size:12.5px;line-height:1.7">
+<li><a href="https://wordsrated.com/self-published-book-sales-statistics/">WordsRated — Self-Published Books &amp; Authors Sales Statistics</a></li>
+<li><a href="https://bernoff.com/blog/how-many-copies-will-your-book-sell">Josh Bernoff — How many copies will your book sell?</a></li>
+<li><a href="https://maryadkinswriter.com/blog/numbers-in-publishing">Mary Adkins — All the Numbers in Publishing No One Talks About</a></li>
+<li><a href="https://www.authorimprints.com/amazon-kdp-royalty-pricing/">AuthorImprints — 2025 Guide to Amazon Fees &amp; KDP Royalties</a></li>
+<li><a href="https://kdp.amazon.com/en_US/help/topic/G200644210">Amazon KDP — eBook Royalties (Help)</a> · <a href="https://kdp.amazon.com/en_US/help/topic/G201834330">Paperback Royalty (Help)</a></li>
+<li><a href="https://help.leanpub.com/en/articles/5468013-what-is-leanpub-s-royalty-rate-are-there-any-restrictions-on-where-i-can-self-publish-my-book-and-what-price-i-can-charge">Leanpub Help Center — Royalty rate &amp; pricing</a></li>
+<li><a href="https://www.oreilly.com/library/view/effective-java-3rd/9780134686097/">O'Reilly — Effective Java, 3rd Edition (genre anchor)</a></li>
+<li><a href="https://www.monacocpa.cpa/post/amazon-kdp-self-publishing-taxes">Monaco CPA — Amazon KDP self-publishing taxes</a> · <a href="https://www.keepertax.com/posts/kdp-tax-forms">Keeper Tax — KDP tax forms</a> · <a href="https://turbotax.intuit.com/tax-tips/self-employment-taxes/a-tax-cheat-sheet-for-kindle-ebook-self-publishing/L4chgec1V">TurboTax — Kindle self-publishing tax cheat sheet</a></li>
+<li><a href="https://www.arcandledger.com/author-tax-guide/">Arc &amp; Ledger — Author Tax Guide</a></li>
+<li><a href="https://www.legalgps.com/blogs/four-steps-for-moonlighting-startups-to-protect-their-intellectual-property">LegalGPS — Protecting IP While Moonlighting</a> · <a href="https://odinlaw.com/moonlighting-who-owns-what/">Odin Law — Moonlighting: who owns what?</a></li>
+</ul></div>
+
+<div class=foot>Static report · generated 2026-06-28 for the book <b>Java Code Quality</b> · production state grounded in <code>LEDGER.md &sect;1</code>, <code>01-index/STATUS-MATRIX.md</code>, <code>01-index/FINAL_INDEX.md</code>, <code>09-flags/external-review/REVIEW-FINDINGS.md</code>, and git history. Market &amp; legal content is general information dated 2026-06-28 — <b>not</b> legal, tax, or HR advice.</div>
+</main></html>
