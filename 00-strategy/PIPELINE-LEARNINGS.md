@@ -34,6 +34,70 @@
 
 ## Changelog
 
+## 2026-06-28 — A11Y (Step 9c) authoring pass, Chs 1–8 (keys 01, 03, 05, 06, 07, 08, 09, 10) — 14 figures
+
+- **Scope.** Authored the `## Accessibility` block (alt-text ≤125 chars + full long-description, in the
+  locked voice) into all 14 figure sidecars for the eight printed chapters, plus grayscale / contrast /
+  code-legibility lines. Verdict per chapter: PASS, except Ch 4 (key 06) **PASS / FIX** (one soft FIX).
+- **Grayscale rule, sharpened.** Every status/verdict/branch encoded in color in this book is **already**
+  reinforced with a text label — verdict badges (Stands/Served/Reinforced, fig08_1), YES/NO branches
+  (fig08_2), Damage/Tool (fig01_3), cost cells with check-vs-triangle symbols (fig09_1). That redundancy
+  is what makes them grayscale-safe. The **one exception** is fig06_3's strength/cost pills: they differ
+  only by outline color and rely on a nearby section heading. → **FIX-1** routed to the figure-designer
+  (add a + / − glyph or solid-vs-dashed border on the pill itself). **Proposed FIGURE-GUIDE promotion:**
+  any color-coded badge/pill must carry a non-color cue *on the element*, never only via a neighbouring
+  label — so it survives being read in isolation.
+- **Dense-figure small-type is the A11Y risk a screen render hides.** figs 05_1, 05_2, 07_1, 09_1 pack
+  rule IDs / regexes / chapter refs at the smallest type in the book; legible at the 3x PNG but unproven
+  at print trim. Logged a NOTE on each carried to Step 15. **Proposed:** add a "smallest-type legible at
+  final print trim" line to the PRODUCTION-PROOF (Step 15) checklist.
+- **Partial pre-existing A11Y block.** fig10_1 already carried an A11Y block (figure-designer pass) but its
+  alt-text ran ~210 chars (over the ≤125 target) and it lacked the grayscale/contrast/code lines.
+  Confirmed + tightened + completed. **Proposed:** the sidecar A11Y block should always carry all five
+  fields (alt, long-desc, grayscale, contrast, code-legibility) so a partial block is caught before Step 15.
+- **Lane discipline held.** Found one figure-designer-owned residual (fig06_1 PNG/HTML citation lag: baked
+  "2019 State of DevOps / Accelerate 2018" + a Westrum-1988-implying line vs body's 2004). Per its sidecar
+  this is a benign deferred-re-render item, not an A11Y defect — noted in the report, not re-adjudicated.
+  Long-descriptions describe what is **drawn** in the PNG, not the corrected body text, by design.
+
+## 2026-06-28 — A11Y (Step 9c) authoring pass, Chs 9–16 (keys 11, 12, 14, 19, 20, 22, 26, 27) — 12 figures
+
+- **Scope.** Authored the `## Accessibility` block (alt-text ≤125 chars + full long-description + a
+  grayscale/contrast/code-legibility line, in the locked voice) into all 12 figure sidecars for the eight
+  printed chapters 9–16. Verdict per chapter: **PASS / FIX (soft)** across the board — zero blocking FIX,
+  zero figure redesign needed. Coverage 12/12.
+- **Confirms the prior batch's grayscale finding (reinforced cue on the element).** Every status/branch
+  color in this batch is already backed by an on-element non-color cue: ✔/✘ operation glyphs (fig14_1,
+  fig12_2), ✔/!/✘ fact glyphs in circles (fig14_2), filled-vs-hollow soundness dots (fig26_1), heavy-vs-
+  dashed border weight + the word "PINNED"/"Parked" (fig22_1), solid-vs-dashed idiom cards (fig20_1),
+  badge wording on every type/gate badge (fig27_1, fig12_1), and the rendered "Gives:"/"Cannot:" word
+  labels (fig22_2). No fig06_3-style color-only pill appeared here — the proposed FIGURE-GUIDE promotion
+  (a non-color cue must sit *on* the element) holds across this batch with no exception.
+- **Two more partial pre-existing A11Y blocks (same shape as fig10_1).** fig19_1 and fig27_1 already
+  carried a figure-designer A11Y block, but each had a multi-sentence alt-text (over the ≤125 target) and
+  no grayscale/contrast line. Confirmed + tightened + completed. This is now **three** such cases across
+  the two batches → strengthens the standing proposal: the sidecar A11Y block must always carry all five
+  fields (alt / long-desc / grayscale / contrast / code-legibility), and the figure-accuracy gate (9a/9b)
+  should not mark a sidecar "done" with a partial block.
+- **Dense-figure small-type recurs (carry to Step 15).** fig19_1 (12 cards), fig22_2 (the densest in the
+  book), fig26_1 (4 rungs + 2 side blocks + FP strip), and fig27_1 (wide 6-column table) pack rule
+  IDs / Expect grades / bug-pattern names at the smallest type. Legible at the 3× PNG, unproven at print
+  trim — a NOTE on each, routed to PRODUCTION-PROOF. Same recommendation as the Chs 1–8 pass: add a
+  "smallest-type legible at final print trim" line to the Step 15 checklist.
+- **A11Y reading the PNG cold catches prose-vs-figure directionality.** fig26_1: the draft prose
+  (§"How it works") describes the technique ladder running "from parsing … at the bottom to … taint …
+  at the top," but the rendered figure stacks Move 1 (AST) at the TOP and Move 4 (taint) at the BOTTOM
+  (its right-hand power ramp does put more power up). This is a caption/prose-vs-render consistency item
+  (CLARITY / RECONCILE, or the figure-designer if the stack should invert), **not** an A11Y perceivability
+  defect — the alt-text/long-description were written to match the *render*. **Proposed:** the A11Y pass
+  routinely check the prose's spatial words ("top/bottom/left/right/above/below") against the rendered
+  layout, since a text-only draft review misses it.
+- **Lane discipline held.** Where a figure carries version-bound facts (fig22_1: "synchronized pins"
+  on Java 21–23, removed at Java 24 / JEP 491), the long-description inherits the JDK range from the badge
+  text and states it dated, never as a timeless rule — matching the VOICE-GUIDE version-caveat rule
+  without re-adjudicating the fact. Type-system figures (fig14_1/14_2) require verbatim angle-bracket
+  signatures in the long-description; paraphrase would drop the load-bearing variance.
+
 ## 2026-06-28 — Lift loop: an in-bounds prose lift adds NO claim not already verified in the artifact; placement is a UTILITY lever distinct from content (Ch 8, key 10)
 
 - **Trigger.** Ch 8 sat at 43/50 (C9/A9/U8/D8/R9), all floors PASS, 1 below the 88% ship bar. The prior
