@@ -10,7 +10,7 @@
 - **0** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).
 - **0** need EXAMPLE-BUILD (FLOOR-C compile).
 - **FLOOR-C on disk:** 45/47 modules built green; 45 CODE-REVIEW reports (45 PASS, 0 FAIL).
-- **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 7 in lift · 0 need an independent score · 40 approved (in 04-approved/).
+- **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 2 in lift · 0 need an independent score · 45 approved (in 04-approved/).
 - **DRIFT: ✅ none**.
 
 ## Needs-human queue 🔵
@@ -25,14 +25,14 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | 1 | 01 | What is code quality? | 🟢 | 🔴 | 🟢 | ⚪ | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 2 | 03 | Readability, maintainability & measuring | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | | | **Part I — Foundations** |  |  |  |  |  |  |  |  |  |  | |
-| 3 | 05 | The Java quality toolchain map | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 3 | 05 | The Java quality toolchain map | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
 | 4 | 06 | Quality culture, ownership & knowledge | 🟢 | 🟢 | 🟢 | ⚪ | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 5 | 08 | Effective Java & modern Java for quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 6 | 07 | Naming, structure & formatting | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 7 | 09 | Designing clear APIs & method contracts | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 8 | 10 | Immutability & value-based design | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
-| 9 | 11 | Null-safety & Optional discipline | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 9 | 11 | Null-safety & Optional discipline | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 10 | 12 | Error handling & exceptions | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | | | **Part II — Writing Quality Java** |  |  |  |  |  |  |  |  |  |  | |
 | 11 | 14 | Generics & type-safety | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
@@ -57,7 +57,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | 25 | 53 | SOLID, coupling, cohesion & package structure | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 26 | 55 | Enforcing architecture: ArchUnit & fitness f… | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 27 | 62 | The build & dependency hygiene | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
-| 28 | 65 | Dependency scanning, SBOM & supply-chain sec… | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 28 | 65 | Dependency scanning, SBOM & supply-chain sec… | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 29 | 67 | Reproducible builds & license compliance | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 30 | 69 | Secure coding & OWASP for Java | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 31 | 70 | SAST & secrets detection | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
@@ -72,10 +72,10 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
 | 37 | 84 | Code review, coding standards & documentation | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 38 | 85 | Metrics, dashboards & rolling out quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
-| 39 | 91 | Refactoring, legacy code & modernization | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 39 | 91 | Refactoring, legacy code & modernization | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 40 | 96 | Automated change & the remediation playbook | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 41 | 97 | Quality of AI-generated code & AI-assisted d… | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
-| 42 | 100 | AI code review & governing AI in the workflow | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 42 | 100 | AI code review & governing AI in the workflow | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 43 | 101 | Performance as quality: profiling, memory & … | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | | | **Part XIII — Performance & Observability** |  |  |  |  |  |  |  |  |  |  | |
 | 44 | 105 | Performance-regression gates | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
