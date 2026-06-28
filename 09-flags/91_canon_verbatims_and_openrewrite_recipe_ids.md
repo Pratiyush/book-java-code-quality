@@ -22,14 +22,17 @@ marked in the draft (header comment + back-matter source rows):
    - Fowler *StranglerFigApplication* bliki (2004): the pattern wording and the date. This is **NOT** one
      of the six pinned §7 book rows — a canon gap — so both wording and date are verify-at-pin.
 
-2. **OpenRewrite migration recipe IDs (network-gated; REPRO PENDING-RUNTIME):**
+2. **OpenRewrite migration recipe IDs — ☑ IDENTITY RESOLVED 2026-06-28 (recipe RUN still REPRO PENDING-RUNTIME):**
    - `org.openrewrite.java.migrate.UpgradeToJava17 / UpgradeToJava21 / UpgradeToJava25` and the composite
-     relationship (25 ⊇ 21), plus the `rewrite-migrate-java` "does not cover everything" coverage caveat.
+     relationship (25 ⊇ 21 ⊇ 17): **confirmed verbatim** against `docs.openrewrite.org` (each recipe's
+     doc page lists the lower upgrade in its recipe list). The `rewrite-migrate-java` "does not cover
+     everything" coverage caveat is corroborated by the docs and carried as paraphrased prose.
    - SOURCE-PIN §6 pins the OpenRewrite **engine/plugin** (8.81.0 / rewrite-maven-plugin 6.38.0); the
-     **recipe-ID spelling** at that line is verify-at-pin and is **not built** in this chapter's module
-     (the migration scale is scoped out — network-gated). Overlaps and is consistent with
+     **recipe-ID spelling** is now web-verified at that line. The migration scale remains **not built** in
+     this chapter's module (network-gated → REPRO PENDING-RUNTIME). Consistent with
      `09-flags/94_openrewrite_recipe_ids_and_recipe_module_gavs_unverified.md` (keys 94/96), which owns the
-     recipe atoms for the OpenRewrite chapter where they ARE built into a module.
+     recipe atoms (incl. the GAV `rewrite-migrate-java:3.34.0`) for the OpenRewrite chapter where they ARE
+     wired into a module.
 
 3. **AHEAD-OF-PIN (not a gap — correctly out of scope):** Java 25 *preview* features as migration targets.
    Recorded `⚠ AHEAD-OF-PIN` per SOURCE-PIN moving-target policy; never asserted as a settled migration
@@ -68,9 +71,10 @@ marked in the draft (header comment + back-matter source rows):
   Feathers seam definition/taxonomy + "legacy = code without tests" against the pinned editions out-of-band
   (books not in-repo); attribute per LEGAL-IP §2/§5. Confirm the Fowler StranglerFig bliki wording/date, or
   promote it to a pinned §7 row to close the canon gap. Until then these stay `⚠ verify-at-pin`.
-- **OpenRewrite recipe IDs:** re-trace `UpgradeToJava17/21/25` (+ the composite relationship and coverage
-  caveat) against `docs.openrewrite.org` at the 8.81.0 line once the artifacts can be fetched; reserve
-  `☑ @pin` for post-fetch verification. Tracked jointly with flag 94.
+- **OpenRewrite recipe IDs:** ☑ **RESOLVED 2026-06-28** — `UpgradeToJava17/21/25` + the composite
+  relationship web-verified against `docs.openrewrite.org`; the GAV (`rewrite-migrate-java:3.34.0`,
+  aligned to engine 8.81.0) verified on Maven Central. Only the recipe RUN stays network-gated → REPRO
+  PENDING-RUNTIME. Tracked jointly with flag 94 (which owns the GAV correction `3.16.0 → 3.34.0`).
 
 ## Disposition
 

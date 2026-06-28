@@ -40,10 +40,16 @@ and asserts none as a pinned fact:
    as the provenance/attestation mechanism. **None is a SOURCE-PIN row.** The prose stays at the mechanism
    level ("records the build's inputs and steps", "signs the artifact", "keyless signing") — no version, no
    command flags, no API. The companion module does NOT stand up signing/attestation (described, not faked).
-6. **US Executive Order 14028 / EU Cyber Resilience Act** — named as compliance drivers that "make SBOMs a
-   compliance requirement in many sectors". **Not SOURCE-PIN rows; legal instruments.** The prose is a
-   general, factual statement (no quoted legal text, no clause number) and is NOT legal advice. The specific
-   legal requirements/scope remain unverified-at-pin.
+6. ~~**US Executive Order 14028 / EU Cyber Resilience Act**~~ — **✅ RESOLVED 2026-06-28** (web-verified +
+   pinned). Both are now SOURCE-PIN **§4a** rows: **EO 14028** (signed 2021-05-12; 86 FR 26633; §4(e) directs
+   agencies to require vendor SBOMs — federalregister.gov/d/2021-10460 + nist.gov) and the **EU CRA**
+   (Regulation (EU) 2024/2847, in force 2024-12-10, main obligations 2027-12-11; **Annex I, Part II** SBOM
+   "covering at the very least the top-level dependencies", recitals 22 + 77 — eur-lex.europa.eu/eli/reg/2024/2847/oj).
+   The draft now cites both with dated identifiers, **dated-at-use + factual-not-legal-advice** (mirroring
+   Ch 29 / `LEGAL-IP-RULES.md`); scope/obligations/timelines still vary by jurisdiction → counsel, not the book.
+   Also resolved at the same pass: **CycloneDX 1.6** (released 2024-04-09, ECMA-424), **SPDX = ISO/IEC 5962:2021**,
+   and **SLSA v1.0** level definitions (Build L0–L3; "Supply-chain Levels for Software Artifacts") — see §4a +
+   atom #7 below.
 7. **SLSA exact level definitions / per-track level numbers** — SLSA v1.0 and its build/source/dependencies
    tracks are pinned; the chapter describes the ladder qualitatively ("provenance exists" up to "hardened,
    non-falsifiable, hermetic builds") and does NOT assert specific numbered level requirements, which would

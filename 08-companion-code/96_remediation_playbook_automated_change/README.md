@@ -65,8 +65,11 @@ offline by `mvn -Pquality verify`. This is the chapter's point made structural: 
 the tests and the review dispose — the recipe's output is a pull request to confirm, never a blind apply.
 
 The composed recipe ID (`org.openrewrite.java.migrate.UpgradeToJava21`) and the `rewrite-migrate-java`
-module GAV are **verify-at-pin** against `docs.openrewrite.org` at the pinned line — see the chapter's
-`_EXAMPLE.md` and the `09-flags/` note.
+module GAV (`3.34.0`) are **web-verified** (2026-06-28) against `docs.openrewrite.org` (the recipe ID,
+verbatim) and Maven Central (the GAV): `rewrite-recipe-bom 3.30.0` imports `rewrite-bom 8.81.0` — the
+pinned engine — and pins `rewrite-migrate-java 3.34.0`, whose own POM imports `rewrite-bom 8.81.0`, so
+`3.34.0` is the recipe module aligned to this engine line (SOURCE-PIN §6). Only the recipe IDENTITY is
+verified; the recipe RUN stays REPRO PENDING-RUNTIME (network-gated) — see `_EXAMPLE.md`.
 
 ## A module green *because* the past is staged, not because it is empty
 

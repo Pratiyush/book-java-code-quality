@@ -118,7 +118,7 @@ chapter's class; none invented.
 | Maven 3.9.16 | `SOURCE-PIN.md §4` |
 | Checkstyle engine 10.26.1, plugin 3.6.0; SpotBugs plugin 4.9.3.0 / annotations 4.9.3 | the companion-code locally-cached lines (same as peer Ch 27/39 modules) |
 | OpenRewrite 8.81.0; `rewrite-maven-plugin` 6.38.0 | `SOURCE-PIN.md §6` ✅ pinned |
-| Recipe ID `org.openrewrite.java.migrate.UpgradeToJava21`; `rewrite-migrate-java:3.16.0` | dossier 94 (by name, live-line) → **flagged verify-at-pin** `09-flags/94_openrewrite_recipe_ids_and_recipe_module_gavs_unverified.md` |
+| Recipe ID `org.openrewrite.java.migrate.UpgradeToJava21`; `rewrite-migrate-java:3.34.0` (was `3.16.0` — corrected to the engine-8.81.0-aligned version) | ☑ **web-verified 2026-06-28** against docs.openrewrite.org (recipe ID, verbatim) + Maven Central (GAV; via rewrite-recipe-bom 3.30.0 → rewrite-bom 8.81.0); `09-flags/94_…` RESOLVED (identity). Recipe RUN stays REPRO PENDING-RUNTIME. |
 | Playbook order, churn × pain, never-big-bang, baseline-without-paydown=amnesty, automation-proposes-tests-dispose | dossiers 96 + 94 (synthesis of Part XI) |
 
 ---

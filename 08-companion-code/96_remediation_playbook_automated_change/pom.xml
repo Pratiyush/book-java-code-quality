@@ -135,9 +135,13 @@
         Apply the recipe (writes the diff to review as a PR):  mvn -Prewrite rewrite:run
         Preview without writing (dry run):                     mvn -Prewrite rewrite:dryRun
 
-      The recipe module GAV (rewrite-migrate-java) and the recipe IDs named in rewrite.yml are
-      verify-at-pin against docs.openrewrite.org at the pinned line — see the chapter's _EXAMPLE.md and the
-      09-flags/ note. Automation proposes; the tests and the review still dispose.
+      The recipe module GAV (rewrite-migrate-java 3.34.0) and the recipe IDs named in rewrite.yml are
+      web-verified against docs.openrewrite.org + Maven Central (2026-06-28, SOURCE-PIN.md §6):
+      rewrite-recipe-bom 3.30.0 imports rewrite-bom 8.81.0 (the pinned engine) and pins
+      rewrite-migrate-java 3.34.0, whose own POM imports rewrite-bom 8.81.0 — so 3.34.0 is the recipe
+      module aligned to this engine line. The recipe RUN stays REPRO PENDING-RUNTIME (network-gated);
+      only the IDENTITY (recipe ID + GAV) is verified here. Automation proposes; the tests and the
+      review still dispose.
     -->
     <profile>
       <id>rewrite</id>
@@ -157,7 +161,7 @@
               <dependency>
                 <groupId>org.openrewrite.recipe</groupId>
                 <artifactId>rewrite-migrate-java</artifactId>
-                <version>3.16.0</version>
+                <version>3.34.0</version>
               </dependency>
             </dependencies>
           </plugin>
