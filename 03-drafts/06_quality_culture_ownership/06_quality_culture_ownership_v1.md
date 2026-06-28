@@ -3,7 +3,7 @@ Dossier key: 06 (owner) + folds 90 — per 01-index/FINAL_INDEX.md Ch 4
 Slug: 06_quality_culture_ownership
 Part / arc position: Part I — Foundations, Chapter 4 (closes Part I)
 Companion module: none (culture/process chapter) — carries artifacts (sample CODEOWNERS, team quality charter) verified for internal consistency, not compiled. No FLOOR-C compile clause.
-Verified against SOURCE-PIN: 2026-06-28 (web-verify pass on the ACCURACY-capping atoms). RESOLVED at this pass (web-public sources, now pinned §5/§7 rows): Westrum typology re-attributed to *A typology of organisational cultures* (2004, BMJ — the citation DORA/*Accelerate* use; 1988 conference origin noted), the DORA generative-culture + psychological-safety findings confirmed verbatim against the dora.dev capability page + the 2019 *State of DevOps* report, Smith "Shift-Left Testing" confirmed (*Dr. Dobb's Journal*, Sept 2001), and the Boy Scout Rule confirmed (*97 Things Every Programmer Should Know*, 2010). The epigraph was re-set to a confirmed DORA verbatim ("a high-trust, generative culture predicts software delivery and organizational performance") — the earlier "A generative culture is a psychologically safe culture" is NOT a verbatim DORA quote and was removed. STILL FLAGGED (no web-public source — copyrighted-book verbatims): the exact in-book wording of *Accelerate* / the named books (Deming, Vogels "you build it, you run it" ACM Queue 2006) cannot be diffed character-for-character against a fetched clone and remain attributed-and-flagged. See 09-flags/06_culture_named_source_verbatims_verify_at_pin.md.
+Verified against SOURCE-PIN: 2026-06-28 (web-verify pass on the ACCURACY-capping atoms). RESOLVED at this pass (web-public sources, now pinned §5/§7 rows): Westrum typology re-attributed to *A typology of organisational cultures* (2004, BMJ — the citation DORA/*Accelerate* use; 1988 conference origin noted), the DORA generative-culture + psychological-safety findings confirmed verbatim against the dora.dev capability page + the 2019 *State of DevOps* report, Smith "Shift-Left Testing" confirmed (*Dr. Dobb's Journal*, Sept 2001), and the Boy Scout Rule confirmed (*97 Things Every Programmer Should Know*, 2010). The epigraph was re-set to a confirmed DORA verbatim ("a high-trust, generative culture predicts software delivery and organizational performance") — the earlier "A generative culture is a psychologically safe culture" is NOT a verbatim DORA quote and was removed. RESOLVED at the paraphrase pass (2026-06-28): the residual copyrighted-book verbatims were rewritten as faithful attributed paraphrases in our own words (no quotation marks): Broken Windows (Hunt & Thomas, *The Pragmatic Programmer*) and Deming's build-it-in / system-over-individual position (*Out of the Crisis*) are now genuine rewrites asserting no quoted span. Vogels "you build it, you run it" was web-verified against a public source (ACM Queue, "A Conversation with Werner Vogels," 2006, corroborated by the AWS News Blog, Jeff Barr, 2006-05-16) and is now cited dated-at-use rather than flagged. No copyrighted-book verbatim remains in the body. See 09-flags/06_culture_named_source_verbatims_verify_at_pin.md.
 DRAFT v1 — gates manual; EXAMPLE-BUILD = N/A (culture/process chapter; no companion module).
 -->
 
@@ -53,7 +53,7 @@ The **DORA** research program (the research behind the four delivery keys from C
 
 ### Shift-left: build quality in, not inspect it in
 
-The second idea is *when* quality happens. Its intellectual ancestor is **W. Edwards Deming**'s manufacturing principle: **build quality into the process rather than inspecting it at the end.** A model where a separate QA phase finds defects after the fact catches them when they are most expensive (Chapter 1's economics).
+The second idea is *when* quality happens. Its intellectual ancestor is **W. Edwards Deming**, whose work on management (*Out of the Crisis*) argued, as this book reads him, that an organization should stop relying on end-of-line inspection to reach quality and instead make quality part of how the work is produced — and, relatedly, that most defects trace to the system the work runs in rather than to the individuals doing it, so improvement comes from fixing the process and removing the fear that stops people from surfacing problems. A model where a separate QA phase finds defects after the fact catches them when they are most expensive (Chapter 1's economics).
 
 **Larry Smith** named the software version in 2001. *Shift-left testing* moves testing and quality activities *left*, toward inception: it shortens the feedback loop and has developers and QA collaborate from the start. Figure 4.2 plots the reason the direction matters. The cost to fix a defect climbs with each lifecycle stage it survives, so the Ch-3 tool layers sit as far left as they can. In this book's terms, shift-left *is* that lifecycle map from Chapter 3: IDE inspections, then pre-commit hooks, then compile-time checks, then fast CI, each layer catching problems earlier and cheaper than the next. Culture decides whether developers *welcome* that feedback or route around it.
 
@@ -75,7 +75,7 @@ Diffuse responsibility kills quality; someone has to own it. *Code ownership* is
 
 *Figure 4.3 — The three code-ownership models. Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.*
 
-A direct line runs from this table to the tools in this book: **collective ownership only works if the automated standards keep everyone honest**. A team can collectively own code only when the gates (Parts IV–IX) hold the line. Mechanisms make ownership concrete. A `CODEOWNERS` file encodes ownership for review routing (Chapter 37); "you build it, you run it" (a practice popularized at Amazon) pushes operational ownership to the team that wrote the code, aligning incentives with quality.
+A direct line runs from this table to the tools in this book: **collective ownership only works if the automated standards keep everyone honest**. A team can collectively own code only when the gates (Parts IV–IX) hold the line. Mechanisms make ownership concrete. A `CODEOWNERS` file encodes ownership for review routing (Chapter 37); the model Amazon CTO Werner Vogels summed up as *you build it, you run it* (ACM Queue, "A Conversation with Werner Vogels," 2006) pushes operational ownership to the team that wrote the code, on the documented reasoning that putting developers on the operational hook for what they ship raises the quality of the service. It aligns the incentive to write maintainable code with the people who feel the cost when it is not.
 
 ### Knowledge is a quality asset: the bus factor
 
@@ -121,7 +121,7 @@ The honest answer is layered:
 Two well-known heuristics help, stated as heuristics, not laws:
 
 - **The Boy Scout Rule** (Robert C. Martin, *97 Things Every Programmer Should Know*): "Always leave the code cleaner than you found it." Incremental, opt-in improvement that compounds; it is the cultural engine behind ratcheting (Chapter 38) and opportunistic refactoring (Chapter 39).
-- **Broken Windows** (from *The Pragmatic Programmer*): do not tolerate visible decay, because small unrepaired defects signal that quality does not matter and decay accelerates.
+- **Broken Windows** (Hunt and Thomas, *The Pragmatic Programmer*): the idea, in this book's words, is that a single defect left visibly unrepaired quietly resets the standard for everyone who sees it — it reads as permission to let the next one slide too — so the discipline is to fix the small, obvious problems promptly rather than letting a codebase learn that nobody minds them.
 
 > **NOTE** The social-science "Broken Windows" theory is contested in its original (policing) context. This book uses it only as a *code* heuristic, attributed, and flags that the underlying theory is disputed, consistent with the book's rule against repeating folklore as fact.
 
@@ -180,9 +180,10 @@ Part I has built the foundation: quality is a nameable, priceable set of attribu
 - Ron Westrum, "A typology of organisational cultures," *BMJ Quality & Safety* 2004;13(suppl 2):ii22–ii27 (typology first presented at a 1988 World Bank conference; the 2004 paper is the citation DORA/*Accelerate* use).
 - Larry Smith, "Shift-Left Testing," *Dr. Dobb's Journal*, Vol. 26, Issue 9 (September 2001).
 - Martin Fowler, *CodeOwnership* (bliki).
+- Werner Vogels, "A Conversation with Werner Vogels," *ACM Queue* (2006) — the *you build it, you run it* operational-ownership model (corroborated by the AWS News Blog, Jeff Barr, 2006-05-16; verified at use 2026-06-28).
 
 *Tier 2 — Accessible / further reading*
-- W. Edwards Deming on building quality in (manufacturing lineage).
+- W. Edwards Deming, *Out of the Crisis* — building quality in rather than inspecting it in, and improving the system over blaming individuals (paraphrased, attributed).
 - Robert C. Martin, "The Boy Scout Rule," in *97 Things Every Programmer Should Know* (O'Reilly, 2010); Hunt & Thomas, *The Pragmatic Programmer* (Broken Windows; note the original theory is contested).
 - Bus/truck-factor research.
 

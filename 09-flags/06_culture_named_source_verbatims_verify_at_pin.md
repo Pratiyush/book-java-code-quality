@@ -1,4 +1,10 @@
-# FLAG — key 06: culture-chapter named-source verbatims + attributions verify-at-pin
+# FLAG [RESOLVED 2026-06-28] — key 06: culture-chapter named-source verbatims + attributions
+
+> **Resolution:** all atoms cleared. Atoms 1–5 web-verified + pinned (earlier pass); atoms 6 + 8 rewritten as
+> faithful attributed paraphrases (Broken Windows / Hunt & Thomas; Deming / *Out of the Crisis*) — N/A
+> paraphrased, no verbatim in body; atom 7 (Vogels "you build it, you run it") web-verified and cited
+> dated-at-use. No copyrighted-book verbatim remains in the chapter body; the ACCURACY cap is lifted. One
+> non-blocking follow-up: add the Vogels ACM Queue / AWS-blog source to SOURCE-PIN §7 at the next `/pin-source`.
 
 **Chapter:** 06 `quality_culture_ownership` (owner key 06, folds 90 — bus/truck factor) — FINAL_INDEX Ch 4 (CLOSES Part I).
 **Companion module:** **none** — culture/process chapter. EXAMPLE-BUILD = **N/A** (recorded in
@@ -64,33 +70,46 @@ source** and stay flagged.
    Every Programmer Should Know* (O'Reilly, 2010)**; canonical wording "Always leave the code cleaner than you
    found it." Draft line 117 casing matched to source; now a pinned SOURCE-PIN §7 named-article row. CLEARED.
 
-## Atoms that STAY flagged (copyrighted-book verbatims — NO web-public source)
+## Atoms 6–8 — RESOLVED 2026-06-28 (paraphrase pass): verbatims rewritten / Vogels web-verified
 
-These are named-source attributions whose exact in-book wording **cannot be diffed against a fetched clone**
-and have **no web-public primary** to verify a verbatim against (the named books are §7 canon, cited under
-fair use, not redistributed). Each is attributed in-text and crowns nothing; none is invoked by any build.
+The residual copyrighted-book quotes were the ACCURACY cap (printed Ch 4 at 40/50). They are now cleared:
+the two book quotes were **rewritten as faithful attributed paraphrases in our own words** (genuine rewrites,
+no quotation marks, no quoted-span claim), and the Vogels phrase was **web-verified against a public source**
+and cited dated-at-use. No copyrighted-book verbatim remains in the body. Each remains attributed and crowns
+nothing; none is invoked by any build.
 
-6. **Broken Windows — *The Pragmatic Programmer* (Hunt & Thomas)** (draft lines 118–120). Attribution + the
-   contested-social-science note (present and correct). No web-public verbatim asserted; the draft makes no
-   quoted-span claim, only an attributed heuristic. Stays flagged (copyrighted book); the contested-theory
-   caveat stays regardless. No verbatim to verify on the web.
-7. **Vogels / Amazon "you build it, you run it"** (draft line 78). The draft softens to *"a practice
-   popularized at Amazon"* and does **not** name Vogels or assert the 2006 ACM Queue year in-body. The ACM
-   Queue (2006) interview is behind a named publication; no clean web-public verbatim was verified this pass.
-   Current in-body framing asserts no verbatim and no year — safe. Stays flagged: if a future edit names Vogels
-   / the 2006 ACM Queue interview, confirm at `/pin-source`. ≤15-word ceiling: OK (6 words).
-8. **Deming "build quality into the process rather than inspecting it at the end"** (draft line 56) —
-   *paraphrase* of Deming's manufacturing principle (not a quoted span), a §7-adjacent lineage cite with no
-   single web-public primary. Stays flagged as an attributed paraphrase (not a fabrication, not a verbatim).
+6. **Broken Windows — *The Pragmatic Programmer* (Hunt & Thomas)** — **N/A (paraphrased).** Draft line 124
+   rewritten as a genuine reword attributed to "Hunt and Thomas, *The Pragmatic Programmer*": a single defect
+   left visibly unrepaired resets the standard / reads as permission to let the next slide, so fix the small
+   obvious problems promptly. No verbatim span; not a close-paraphrase of the source wording. The contested-
+   social-science note (line 126) and the *Limitations* caveat stay regardless. Nothing left to verify-at-pin.
+7. **Vogels / Amazon "you build it, you run it"** — **RESOLVED (web-verified, dated-at-use).** Verified against
+   a **web-public** source this pass: *ACM Queue*, "A Conversation with Werner Vogels" (Jim Gray, interviewer),
+   2006, corroborated by the official **AWS News Blog** (Jeff Barr, 2006-05-16,
+   aws.amazon.com/blogs/aws/acm_queue_inter/), which carries the documented rationale ("Amazon developers must
+   operate the services that they build"; giving developers operational responsibility "greatly enhanced the
+   quality of the services"). ACM Queue's own page (queue.acm.org/detail.cfm?id=1142065) is 403-gated to the
+   fetcher; the AWS blog is the citable public corroboration. Draft line 78 now attributes the phrase to Vogels
+   with the dated source and the documented quality rationale; a new Tier-1 Sources row (draft line 183) records
+   it "verified at use 2026-06-28." The phrase "you build it, you run it" is a short documented coinage (6 words,
+   ≤15 ceiling OK). **Now a SOURCE-PIN §7 named-article candidate row** (add at next /pin-source).
+8. **Deming — *Out of the Crisis*** — **N/A (paraphrased).** Draft line 56 rewritten from the near-maxim
+   ("build quality into the process rather than inspecting it at the end") into a genuine attributed paraphrase
+   of Deming's well-documented position: stop relying on end-of-line inspection and make quality part of how the
+   work is produced; most defects trace to the system rather than to individuals, so fix the process and drive
+   out the fear that stops people surfacing problems. No quoted span; *Out of the Crisis* now named in-body and
+   in the Sources block (line 185). Nothing left to verify-at-pin.
 
 ## Why a flag, not a silent fix
 
 HARD rule 3 (never invent) + LEGAL-IP §2 (quotes verbatim & attributed; paraphrases are true rewrites) +
-LEGAL-IP §8 (AI-originality / two-corpus closeness). The exact wording, editions, and dates of these named
-culture sources cannot be confirmed against the multi-authority pin from inside the VERIFY gate (no fetched
-clone for DORA; the named books are cited, not redistributed). None is invoked by a build (there is none); none
-is asserted as a clone-verified fact in the body — each is attributed and crowned-nothing. They are recorded
-here rather than guessed or silently promoted to fact.
+LEGAL-IP §8 (AI-originality / two-corpus closeness). Originally these named-source verbatims could not be
+diffed against the multi-authority pin from inside VERIFY (no fetched clone for DORA; the named books are cited,
+not redistributed), so they were recorded here rather than guessed. **Resolved per LEGAL-IP §2's two routes:**
+the book quotes whose exact wording cannot be verified were converted to *true rewrites* (paraphrases in our
+own words, attributed, no quotation marks — so no verbatim claim needs verifying), and the one quote with a
+web-public primary (Vogels) was kept as an attributed short coinage cited dated-at-use. Nothing was invented;
+each is attributed and crowns nothing; none is invoked by a build (there is none).
 
 **`_ref/` close-paraphrase check:** the `_ref/` corpus is **not present/available** in this working tree
 (gitignored) and there is **no `09-flags/REF_do_not_copy.md`** — so the LEGAL-IP §8 `_ref/` structure/wording
@@ -99,15 +118,20 @@ is available; the auditor remains the gate of record for two-corpus closeness at
 
 ## Status
 
-**PARTIALLY RESOLVED 2026-06-28.** Atoms **1–5 CLEARED** via a web-verify pass against web-public sources,
-with dated SOURCE-PIN rows added (§5: DORA generative-culture capability + 2019 *State of DevOps* report +
-Westrum 2004 BMJ; §7 named-article rows: Smith "Shift-Left Testing" *Dr. Dobb's* 2001 + Martin "The Boy Scout
-Rule" *97 Things* 2010). The epigraph was reframed to a confirmed DORA verbatim (the prior epigraph was not a
-real DORA quote). Atoms **6–8 STAY flagged** — copyrighted-book verbatims/paraphrases with no web-public
-primary (Broken Windows / Pragmatic Programmer; Vogels ACM Queue 2006; Deming lineage paraphrase); each is
-attributed, asserts no verbatim, and is honest in-body. Residual: `fig06_1.png` bakes a "2019 State of DevOps"
-caption that is now *correct* (2019 is the verified, pinned psych-safety edition) but should carry "2004" for
-Westrum at the next deliberate re-render — cosmetic, do-not-re-render constraint honored this pass.
+**RESOLVED 2026-06-28.** Atoms **1–5 CLEARED** earlier via a web-verify pass against web-public sources, with
+dated SOURCE-PIN rows added (§5: DORA generative-culture capability + 2019 *State of DevOps* report + Westrum
+2004 BMJ; §7 named-article rows: Smith "Shift-Left Testing" *Dr. Dobb's* 2001 + Martin "The Boy Scout Rule"
+*97 Things* 2010). The epigraph was reframed to a confirmed DORA verbatim (the prior epigraph was not a real
+DORA quote). Atoms **6 + 8 now N/A (paraphrased)** — Broken Windows (Hunt & Thomas) and Deming (*Out of the
+Crisis*) rewritten as faithful attributed paraphrases in our own words, no quotation marks, no quoted-span
+claim; both source titles named in-body and in Sources. Atom **7 RESOLVED (web-verified)** — Vogels "you build
+it, you run it" cited dated-at-use against ACM Queue 2006 + the AWS News Blog corroboration; Tier-1 Sources row
+added. **No copyrighted-book verbatim remains in the body**, so the ACCURACY cap on printed Ch 4 is lifted (the
+residual Broken-Windows / Deming / Vogels item that held it at 40/50 is cleared). Residual (cosmetic only):
+`fig06_1.png` bakes a "2019 State of DevOps" caption that is now *correct* (2019 is the verified, pinned
+psych-safety edition) but should carry "2004" for Westrum at the next deliberate re-render — do-not-re-render
+constraint honored this pass. Open follow-up: add the Vogels ACM Queue / AWS-blog row to SOURCE-PIN §7 at the
+next `/pin-source`.
 
 ## Tooling notes (this gate)
 
