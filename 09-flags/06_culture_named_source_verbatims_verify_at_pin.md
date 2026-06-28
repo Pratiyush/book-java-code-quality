@@ -31,39 +31,57 @@ the VERIFY pass.
 - **Neutrality:** PASS — ownership models and the QA-as-separate-function vs everyone's-job contrast are
   presented as spectrum/trade-off, not a leaderboard; no banned phrasing anywhere in the draft.
 
-## Atoms that STAY `⚠ verify-at-pin` (attributed in the body, NOT asserted as clone-verified fact)
+## RESOLVED 2026-06-28 (web-verify pass — atoms 1–5 cleared against web-public sources)
 
-These are named-source verbatims / attributions that **cannot be diffed character-for-character against the
-multi-authority pin** (DORA is web-hosted, SOURCE-PIN §5, pinned by date 2026-06-27 with no local clone; the
-named books are §7 canon, cited under fair use, not fetched into a pinned clone). Each is attributed in-text
-and crowns nothing; none is invoked by any build (there is none).
+A web-verify pass against **web-public** sources (dora.dev capability + research pages; the archived
+*Dr. Dobb's* article + ACM DL; O'Reilly) resolved the five load-bearing, web-citable atoms and added dated
+SOURCE-PIN rows for each. The remaining atoms (6–8) are **copyrighted-book verbatims with no web-public
+source** and stay flagged.
 
-1. **Epigraph "A generative culture is a psychologically safe culture."** attributed to **DORA, on Westrum's
-   typology** (draft line 14). Verbatim quoted span — confirm character-for-character + exact source (which
-   DORA page / State of DevOps edition) at `/pin-source`. ≤15-word prose-quote ceiling: OK (8 words).
-2. **DORA generative-culture association + psychological-safety "predictive" finding** (draft line 59),
-   attributed to DORA / a "later State of DevOps report" (no bare year asserted in body — good). Pinned canon:
-   §5 (2025 DORA report, dora.dev) + §7 (*Accelerate* 2018). Confirm the exact claim phrasing + which edition
-   carries the psychological-safety result against the pinned DORA edition.
-3. **Westrum (1988) typology wording** — three-type definitions (draft lines 53–57). Pinned via §7
-   (*Accelerate* 2018) / DORA capability page. Confirm Westrum's exact type descriptors + the "bridging"
-   term against Westrum's paper / the pinned edition.
-4. **Larry Smith "shift-left testing" — 2001, Dr. Dobb's** (draft lines 67, 176). Term + date + venue.
-   Smith/Dr. Dobb's is **not a pinned SOURCE-PIN row** (a §7 canon gap). Confirm the citation/date; escalate to
-   the re-pin runbook to add it as a named-article source.
-5. **Boy Scout Rule — "always leave the code cleaner than you found it." (Robert C. Martin)** (draft line 118).
-   Verbatim wording + attribution. Confirm exact wording + source edition (*Clean Code* / *97 Things*) at
-   `/pin-source`. ≤15-word ceiling: OK (8 words).
-6. **Broken Windows — *The Pragmatic Programmer* (Hunt & Thomas)** (draft lines 119–121). Attribution +
-   the contested-social-science note (the note is present and correct). Confirm the book attribution; the
-   contested-theory caveat stays regardless.
-7. **Vogels / Amazon "you build it, you run it"** (draft line 79). The draft softens to *"a practice
-   popularized at Amazon"* and does **not** name Vogels or assert the 2006 ACM Queue year in-body (safer than
-   the dossier's framing). If a future edit names Vogels / the 2006 ACM Queue interview, that source must be
-   confirmed at `/pin-source`. Verbatim quoted span ≤15-word ceiling: OK (6 words).
-8. **Deming "build quality into the process rather than inspecting it at the end"** (draft line 65) —
-   paraphrase of Deming's manufacturing principle (not a quoted span). Deming is a §7-adjacent lineage cite,
-   not a pinned clone; confirm the attribution framing at `/pin-source`. Paraphrase, not a fabrication.
+1. **Epigraph — RESOLVED (reframed).** "A generative culture is a psychologically safe culture." is **NOT a
+   verbatim DORA quote** — the dora.dev capability page presents generative culture and psychological safety
+   as *related/predictive*, never as an identity. The epigraph was **replaced** with a confirmed DORA verbatim:
+   *"A high-trust, generative culture predicts software delivery and organizational performance."* (dora.dev,
+   *Generative organizational culture* capability). Draft line 14 updated. ≤15-word ceiling: OK.
+2. **DORA generative-culture + psychological-safety finding — RESOLVED (pinned).** Web-verified verbatim on
+   the dora.dev capability page: "a high-trust, generative culture predicts software delivery and organizational
+   performance" and "a culture of psychological safety is predictive of software delivery performance,
+   organizational performance, and productivity." The psychological-safety result is the **2019 *Accelerate
+   State of DevOps* Report** (dora.dev/research/2019/dora-report/). **Both are now pinned SOURCE-PIN §5 rows
+   (2026-06-28).** Draft line 50 cites the 2019 report. CLEARED.
+3. **Westrum typology — RESOLVED (pinned, date corrected).** The citation DORA/*Accelerate* use is **Ron
+   Westrum, "A typology of organisational cultures," *BMJ Quality & Safety* 2004;13(suppl 2):ii22–ii27**
+   (doi:10.1136/qshc.2003.009522). The typology was *first presented* as "Organizational and interorganizational
+   thought" at a 1988 World Bank conference, but the bare "1988" in the draft did not match the pinned authority's
+   citation. Draft re-attributed to **2004** (origin noted); now a pinned SOURCE-PIN §5 row. The three type
+   descriptors (pathological/bureaucratic/generative; good information flow, cooperation, bridging, conscious
+   inquiry) are confirmed against dora.dev. CLEARED.
+4. **Larry Smith "shift-left testing" — RESOLVED (pinned).** Confirmed **"Shift-Left Testing," *Dr. Dobb's
+   Journal*, Vol. 26, Issue 9 (September 2001)** (drdobbs.com/shift-left-testing/184404768; ACM DL
+   doi 10.5555/500399.500404; opening def. verified). **Now a pinned SOURCE-PIN §7 named-article row.** Draft
+   lines 58/175 updated, in-body `⚠ verify-at-pin` note removed. CLEARED.
+5. **Boy Scout Rule — RESOLVED (pinned).** Confirmed **Robert C. Martin, "The Boy Scout Rule," in *97 Things
+   Every Programmer Should Know* (O'Reilly, 2010)**; canonical wording "Always leave the code cleaner than you
+   found it." Draft line 117 casing matched to source; now a pinned SOURCE-PIN §7 named-article row. CLEARED.
+
+## Atoms that STAY flagged (copyrighted-book verbatims — NO web-public source)
+
+These are named-source attributions whose exact in-book wording **cannot be diffed against a fetched clone**
+and have **no web-public primary** to verify a verbatim against (the named books are §7 canon, cited under
+fair use, not redistributed). Each is attributed in-text and crowns nothing; none is invoked by any build.
+
+6. **Broken Windows — *The Pragmatic Programmer* (Hunt & Thomas)** (draft lines 118–120). Attribution + the
+   contested-social-science note (present and correct). No web-public verbatim asserted; the draft makes no
+   quoted-span claim, only an attributed heuristic. Stays flagged (copyrighted book); the contested-theory
+   caveat stays regardless. No verbatim to verify on the web.
+7. **Vogels / Amazon "you build it, you run it"** (draft line 78). The draft softens to *"a practice
+   popularized at Amazon"* and does **not** name Vogels or assert the 2006 ACM Queue year in-body. The ACM
+   Queue (2006) interview is behind a named publication; no clean web-public verbatim was verified this pass.
+   Current in-body framing asserts no verbatim and no year — safe. Stays flagged: if a future edit names Vogels
+   / the 2006 ACM Queue interview, confirm at `/pin-source`. ≤15-word ceiling: OK (6 words).
+8. **Deming "build quality into the process rather than inspecting it at the end"** (draft line 56) —
+   *paraphrase* of Deming's manufacturing principle (not a quoted span), a §7-adjacent lineage cite with no
+   single web-public primary. Stays flagged as an attributed paraphrase (not a fabrication, not a verbatim).
 
 ## Why a flag, not a silent fix
 
@@ -81,10 +99,15 @@ is available; the auditor remains the gate of record for two-corpus closeness at
 
 ## Status
 
-`⚠ verify-at-pin` (atoms 1–8). At `/pin-source`: add **DORA / State of DevOps** and **Smith "Shift-Left
-Testing" (Dr. Dobb's 2001)** as explicit SOURCE-PIN rows (§5 / §7 / named-article canon), then re-confirm each
-verbatim and attribution above against the pinned editions; date-and-attribute anything introduced. Append a
-VERIFIED/UNVERIFIED line to **both** this flag and the chapter `_VERIFY.md` when resolved.
+**PARTIALLY RESOLVED 2026-06-28.** Atoms **1–5 CLEARED** via a web-verify pass against web-public sources,
+with dated SOURCE-PIN rows added (§5: DORA generative-culture capability + 2019 *State of DevOps* report +
+Westrum 2004 BMJ; §7 named-article rows: Smith "Shift-Left Testing" *Dr. Dobb's* 2001 + Martin "The Boy Scout
+Rule" *97 Things* 2010). The epigraph was reframed to a confirmed DORA verbatim (the prior epigraph was not a
+real DORA quote). Atoms **6–8 STAY flagged** — copyrighted-book verbatims/paraphrases with no web-public
+primary (Broken Windows / Pragmatic Programmer; Vogels ACM Queue 2006; Deming lineage paraphrase); each is
+attributed, asserts no verbatim, and is honest in-body. Residual: `fig06_1.png` bakes a "2019 State of DevOps"
+caption that is now *correct* (2019 is the verified, pinned psych-safety edition) but should carry "2004" for
+Westrum at the next deliberate re-render — cosmetic, do-not-re-render constraint honored this pass.
 
 ## Tooling notes (this gate)
 

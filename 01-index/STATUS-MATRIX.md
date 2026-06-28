@@ -27,7 +27,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | | | **Part I — Foundations** |  |  |  |  |  |  |  |  |  |  | |
 | 3 | 05 | The Java quality toolchain map | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
-| 4 | 06 | Quality culture, ownership & knowledge | 🟢 | 🔴 | 🟢 | ⚪ | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 4 | 06 | Quality culture, ownership & knowledge | 🟢 | 🟢 | 🟢 | ⚪ | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 5 | 08 | Effective Java & modern Java for quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 6 | 07 | Naming, structure & formatting | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 7 | 09 | Designing clear APIs & method contracts | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |

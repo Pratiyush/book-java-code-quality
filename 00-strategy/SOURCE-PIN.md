@@ -105,6 +105,8 @@ flagged to `09-flags/`.
 | GitLab CI / Jenkins | docs as of **2026-06**; Jenkins = current LTS line | docs.gitlab.com / jenkins.io | ✅ dated |
 | pre-commit / git hooks | **pre-commit** latest (2026-04 release) | pre-commit.com | ✅ pinned |
 | DORA / Accelerate metrics | **2025 DORA report** ("State of AI-assisted Software Development", ~5,000 respondents; renamed from *Accelerate State of DevOps*) + the *Accelerate* book (2018) | dora.dev | ✅ pinned |
+| DORA — generative-culture capability + psychological-safety finding | **DORA "Generative organizational culture" capability page** (dora.dev/capabilities/generative-organizational-culture/): "a high-trust, generative culture predicts software delivery and organizational performance"; "a culture of psychological safety is predictive of software delivery performance, organizational performance, and productivity" — the psychological-safety result is the **2019 *Accelerate State of DevOps* Report** finding | dora.dev/capabilities/generative-organizational-culture/ · dora.dev/research/2019/dora-report/ | ✅ pinned 2026-06-28 (web-verified; Ch 4/key 06) |
+| Ron Westrum — organizational-culture typology (pathological / bureaucratic / generative) | **"A typology of organisational cultures," *BMJ Quality & Safety* 2004;13(suppl 2):ii22–ii27**, doi:10.1136/qshc.2003.009522 — the citation DORA/*Accelerate* use; typology first presented as "Organizational and interorganizational thought," World Bank conference, **1988** (origin) | as cited on dora.dev/capabilities/generative-organizational-culture/ ; pubmed.ncbi.nlm.nih.gov/15576687/ | ✅ pinned 2026-06-28 (web-verified; Ch 4/key 06) |
 
 ### 6. Refactoring & modernization
 | Authority | Pin identifier | Fetch / reference | Status |
@@ -121,6 +123,8 @@ flagged to `09-flags/`.
 | *Refactoring* — Martin Fowler | **2nd ed., 2018** | refactoring catalog |
 | *Accelerate* — Forsgren/Humble/Kim | **2018** | DORA quality/delivery metrics |
 | *Java Concurrency in Practice* — Goetz et al. | **2006** | JMM, thread-safety (updated against modern JMM/JEPs where it has moved) |
+| Larry Smith — "Shift-Left Testing" (named article) | ***Dr. Dobb's Journal*, Vol. 26, Issue 9, September 2001** (def.: "Shift-left testing is how I refer to a better way of integrating the quality assurance (QA) and development parts of a software project.") · ✅ web-verified 2026-06-28 (Ch 4/key 06) | the origin of the "shift-left" term — drdobbs.com/shift-left-testing/184404768 ; dl.acm.org/doi/10.5555/500399.500404 |
+| Robert C. Martin — "The Boy Scout Rule" (named article) | ***97 Things Every Programmer Should Know*, O'Reilly, 2010** ("Always leave the code cleaner than you found it" / "Always check a module in cleaner than when you checked it out") · ✅ web-verified 2026-06-28 (Ch 4/key 06) | oreilly.com/library/view/97-things-every/9780596809515/ch08.html |
 
 > **Canon rule (HARD):** a named book is a *secondary* authority. Where it conflicts with a *primary*
 > source (JLS, JEP, a tool's own docs at its pin) or has been overtaken by a later language version, the
@@ -135,6 +139,9 @@ flagged to `09-flags/`.
 | Veracode — *2025 GenAI Code Security Report* | **Veracode**, 2025-07-30 (>100 LLMs; Java, Python, C#, JavaScript) | veracode.com/resources/ (2025 GenAI Code Security Report) | "45% of samples failed security tests"; XSS/CWE-80 failed in "86% of relevant samples"; "Java … riskiest … 72% failure rate" (Ch 41/key 97). |
 | Spracklen, Wijewickrama, Sakib, Maiti, Viswanath, Nepal — *We Have a Package for You! …* (package-hallucination / "slopsquatting") | **arXiv:2406.10279** (USENIX Security 2025) | arxiv.org/abs/2406.10279 | Scale of hallucinated dependencies: **19.7%** of LLM-recommended packages did not exist (Ch 41/key 99; SCA → Ch 28). |
 | Tornhill (CodeScene) — *Succeed with AI-assisted Coding: 3 Essential Guardrails* | **CodeScene / Adam Tornhill**, 2025-03-03 | codescene.com/blog (Succeed with AI-assisted Coding) | The three guardrails (code quality / code familiarity / strong test coverage) + the verbatim "double-bookkeeping … tests shouldn't be AI generated from the code" (Ch 41/key 99). |
+| Sun, Kuang, Baltes, Zhou, Zhang, Ma, Rong, Shao, Treude — *Does AI Code Review Lead to Code Changes? A Case Study of GitHub Actions* | **arXiv:2508.18771v2**, submitted 2025-08-26, last revised 2026-04-25 (cs.SE; no published venue listed) | arxiv.org/abs/2508.18771 | Scale + variance of AI review: a large-scale study of "16 popular AI-based code review actions … more than 22,000 review comments in 178 repositories"; verbatim finding "effectiveness varies widely" (Ch 42/key 98). Measures whether AI review comments lead to code changes — **not** a bug-catch-rate study (carries no "% of critical defects" figure). |
+| Stellman (O'Reilly Radar) — *AI Code Review Only Catches Half of Your Bugs* | **O'Reilly / Andrew Stellman**, 2026-04-30 | oreilly.com/radar/ai-code-review-only-catches-half-of-your-bugs/ | The ~half ceiling: verbatim "There's a ceiling on what you can find by analyzing code, and it's around half"; "The best static analysis tools plateaued at around 50-60% detection rates for security vulnerabilities"; "Roughly 50% of security defects are implementation bugs, and the other 50% are design flaws"; the intent ceiling — a structural tool "has no way to take into account *what the developer intended it to do*" (Ch 42/key 98). The pinned home for **both** the "half your bugs" and the "50-60% static-tool plateau" figures. |
+| Fox (Sonatype) — *The Last Mile Problem: AI Can Write Code, but Only Policy Can Ship It* | **Sonatype / Brian Fox**, 2025-11-04 | sonatype.com/blog/the-last-mile-problem-ai-can-write-code-but-only-policy-can-ship-it | The chapter thesis attribution — title verbatim; "shipping software is not a syntax problem. It's a policy problem … Governance, not generation, is what separates a demo from a deployment" (Ch 42/key 100). Cited as an attributed industry thesis, not an empirical figure. |
 
 > **AI-era source rule (HARD):** these are **dated primary** sources — every figure cited from them stays
 > **dated + attributed** to the exact study/report and is read as a measurement of named models at a named
@@ -143,6 +150,31 @@ flagged to `09-flags/`.
 > *structural* risk (plausible-but-unverified output → verification mandatory) is what is durable, not the
 > percentage. No AI figure is hard-coded as a fact in companion code. Related AI **productivity** figures are
 > survey/vendor-sourced and routed to Ch 42 (keys 100/98), dated-at-use — not pinned here.
+
+### 9. Observability & runtime telemetry (logging facade, metrics/tracing, SRE canon, error tracking)
+
+> Pins the named standards of Chapter 45's three pillars (keys 106/107/108). The libraries (SLF4J, Micrometer,
+> OpenTelemetry) are versioned authorities pinned like §2–§4; the Google SRE book is a §7-style named canon
+> entry; Sentry is a hosted/SaaS product whose **feature names are dated-at-use** like the §1 OWASP / §5 SaaS
+> rows (`⚠ rolling`). The companion module for key 106 stays JDK-only (it realizes the *facade pattern* on
+> `System.Logger` + `LongAdder` + a `ThreadLocal` MDC stand-in); these rows authorize the **prose** to assert
+> the named facts below — they do not by themselves mandate adding the GAVs to a built module.
+
+| Authority | Pin identifier | Fetch / reference | Status |
+|---|---|---|---|
+| SLF4J (Simple Logging Facade for Java) | **2.0.18** (2026-05-12; `org.slf4j:slf4j-api:2.0.18`) — "a simple facade or abstraction for various logging frameworks" (java.util.logging, log4j, reload4j, logback); plug-in at deployment by swapping the binding; parameterized messages (`{}`); MDC = "a map maintained by the logging framework" of key-value pairs inserted into log messages (only log4j + logback offer MDC) | slf4j.org/manual.html | ✅ pinned 2026-06-28 |
+| Logback / Log4j 2 (SLF4J implementations) | implementation behind the facade (named, not version-asserted in prose) — swappable per the SLF4J binding rule above | logback.qos.ch / logging.apache.org/log4j | ⚠ named-not-versioned (facade impl) |
+| Micrometer (metrics facade + Observation API) | **Observation API since Micrometer 1.10** (docs line 1.17.0) — "a metrics instrumentation library for JVM-based applications" providing "a simple facade over the instrumentation clients for the most popular monitoring systems" ("without vendor lock-in"); meters Counter / Gauge / Timer / DistributionSummary / LongTaskTimer; "Starting with Micrometer 1.10, you can register 'handlers' (`ObservationHandler` instances)" so one observation can "create spans, metrics, logs"; tagline "Instrument code once, and get multiple benefits out of it"; integrated by Spring Framework 6 / Spring Boot 3 (`@Observed` → "a timer, a long task timer, and a span") | docs.micrometer.io ; spring.io/blog/2022/10/12/observability-with-spring-boot-3 | ✅ pinned 2026-06-28 |
+| OpenTelemetry (OTel) | **CNCF project** = "the result of a merger between two prior projects, OpenTracing and OpenCensus"; "An observability framework and toolkit designed to facilitate the Generation, Export, Collection of telemetry data such as **traces, metrics, and logs**"; "vendor- and tool-agnostic"; Java agent "dynamically injects bytecode to capture telemetry from many popular libraries and frameworks" (zero-code, Java 8+) | opentelemetry.io/docs/what-is-opentelemetry ; opentelemetry.io/docs/zero-code/java/agent | ✅ pinned 2026-06-28 |
+| *Site Reliability Engineering* (Google SRE book) | **O'Reilly, 2017** (eds. Beyer/Jones/Petoff/Murphy; Ch 6 "Monitoring Distributed Systems" by Rob Ewaschuk; CC BY-NC-ND 4.0) — the four golden signals **verbatim**: "The four golden signals of monitoring are latency, traffic, errors, and saturation." (latency = time to service a request; traffic = demand on the system; errors = rate of failing requests; saturation = how "full" the service is). SLOs / error budgets are the same canon. | sre.google/sre-book/monitoring-distributed-systems | ✅ pinned 2026-06-28 |
+| Sentry (error tracking) | feature names **dated 2026-06-28** (SaaS, `⚠ rolling`): *Releases* "Determine the issues and regressions introduced in a new release"; *Suspect Commits* "show you the most recent commit to the code in your stack trace … the author of the commit and the pull request in which the commit was made"; *Release health* (crash-free sessions/users). Tool-neutral — alternatives exist; crown none. | docs.sentry.io/product/releases ; docs.sentry.io/product/issues/suspect-commits | ⚠ rolling (dated-at-use) |
+
+> **Observability-pin rule:** the library rows (SLF4J / Micrometer / OpenTelemetry) follow the §2–§4
+> versioned-authority discipline — a fact only true past the pinned line is `⚠ AHEAD-OF-PIN`. The Google
+> SRE book follows the §7 **canon rule** (secondary to a primary; the four-golden-signals wording is quoted
+> verbatim and attributed). Sentry follows the SaaS **dated-at-use** rule (§5): its feature *names* are stamped
+> with the read date, never asserted as permanent, and **no vendor is crowned** (Sentry is one option among
+> error-tracking tools — see `NEUTRALITY.md`).
 
 ## Moving-target policy (HARD)
 
