@@ -34,6 +34,34 @@
 
 ## Changelog
 
+## 2026-06-28 — Lift loop: an in-bounds prose lift adds NO claim not already verified in the artifact; placement is a UTILITY lever distinct from content (Ch 8, key 10)
+
+- **Trigger.** Ch 8 sat at 43/50 (C9/A9/U8/D8/R9), all floors PASS, 1 below the 88% ship bar. The prior
+  independent pass had routed the single point to UTILITY: the four-contracts section read as reference,
+  not do-this-now, and named the exact in-bounds move — one "so, in practice:" takeaway per contract,
+  drawn from already-verified material in §"When to use what" / §"The modern answer". Pass 3 applied it.
+- **Lesson (three parts).** (1) **"In-bounds prose lift" has a concrete, checkable test: every new
+  sentence must already be true somewhere in the draft.** The four takeaways were verifiable one-for-one
+  against existing verified lines (records derive `equals`/`hashCode`/`toString`; `Objects.hash`; records
+  do not derive `Comparable`; `Comparator.comparing` not `int`-subtraction; sign-only `compareTo`;
+  parseable-`toString`-becomes-API), so ACCURACY and FLOOR-C source-trace stayed flat through a UTILITY
+  lift. If a proposed sentence needs a *new* fact, it is out of bounds and routes to a source/verify task
+  instead — this is exactly the line between the legitimate pass-3 lift and the illegitimate 42→44 prose
+  pass the prior scorecard correctly refused. (2) **Placement is a real UTILITY lever, distinct from
+  adding content.** UTILITY rose 8→9 with zero new material — only by moving the applied move *inline at
+  the contract* instead of leaving it solely in §"When to use what". In-context guidance scores higher
+  than a forward reference even when the underlying fact is identical. (3) **The final loop pass is cheap
+  when routing is precise.** Pass 3 was mechanical because pass 2 named the section, the move, AND the
+  already-verified source of the new sentences; a vague "improve utility" would have risked padding or a
+  FLOOR-C invention.
+- **Outcome.** UTILITY 8→9; C/A/D/R held with stated reasons (full five-cluster re-score confirmed the
+  added em-dashes did not push READABILITY off target and the takeaways added no atom). Aggregate 43→44 =
+  the 88% bar, no cluster < 6, all floors PASS → **SHIP**. Bounded loop complete at 3 of 3.
+- **Suggested promotions (to SCORING.md lift-loop section + UTILITY anchor):** (a) state the in-bounds
+  test — "a prose lift adds no claim not already verified elsewhere in the artifact"; (b) standardize the
+  three-part lift-route note (section + move + already-verified source); (c) note in the UTILITY anchor
+  that *placement* of guidance (where the reader meets the rule) is scorable, not only its presence.
+
 ## 2026-06-27 — Reporting: a gate report on disk is NOT credited until the report tool reads it; and reading a verdict off disk is a parser, not a grep
 
 - **Trigger.** The records/docs maintenance pass found `status.py` under-crediting FLOOR-C: 45 `_CODEREVIEW.md` reports (the FLOOR-C 2nd half, a HARD gate) and the green-build evidence had **zero surface** in the matrix/scoring/HTML, and the scoring page still showed FLOOR-C COMPILE as `PENDING` — copied from the (older) `_SCORE.md` floor tables, written *before* EXAMPLE-BUILD/CODE-REVIEW ran. The gate work was committed; the report tool never read those files. The honest "FLOOR-C complete book-wide" state was invisible in the dashboard meant to show it.
