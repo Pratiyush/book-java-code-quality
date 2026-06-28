@@ -252,6 +252,26 @@ runtime below it is out of scope.
 
 ---
 
+## About the author
+
+Pratiyush Kumar Singh is a **[role/title — confirm]** at Fiserv, a global fintech company, where he
+works on enterprise payment platforms and large-scale Java software. Over **[years]** in software
+engineering he has worked across payment technologies — from card processing (debit, credit, and giro)
+to digital wallets and account-to-account schemes — alongside software architecture, engineering
+process, code quality, testing, CI/CD, observability, and developer tooling.
+
+He takes a systems-level view of software engineering: maintainability, measurable quality, automation,
+and evidence-based technical decisions. *Java Code Quality* grew out of that practice — a vendor-neutral
+guide built on runnable examples and pinned, authoritative sources rather than tool advocacy.
+
+Based in **[city, country]**. **[Education — optional.]** Find him at **[GitHub / LinkedIn / website]**.
+
+*(This book is a personal work, independent of his employer.)*
+
+> `[TO BE SET BY HUMAN]` — confirm role/title, years, city, education, and links above before release.
+
+---
+
 # Copyright and colophon
 
 **Java Code Quality**
