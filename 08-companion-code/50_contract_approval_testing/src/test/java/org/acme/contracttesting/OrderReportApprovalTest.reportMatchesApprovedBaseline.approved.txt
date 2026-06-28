@@ -1,0 +1,6 @@
+ORDER REPORT
+generated-at: <timestamp>
+count: 2
+  - 42 [CONFIRMED] 5000
+  - 43 [SHIPPED] 1200
+total: 6200

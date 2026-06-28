@@ -18,11 +18,21 @@
 
 The module is a self-contained child of the one companion-code aggregator, builds **green offline** under
 the exact gate command on the pinned runtime, and every displayed snippet resolves to a real ≤9-line tag
-region inside a compiling file. The OpenRewrite recipe **run** is honestly scoped as opt-in and REPRO
-PENDING-RUNTIME (network-gated); the recipe **config**, the before/after pair, and the prioritization logic
-all verify offline, so the build does not depend on it. No invented atom enters the build: the OpenRewrite
-engine/plugin versions trace to `SOURCE-PIN.md §6`, and the recipe ID + recipe-module GAV are flagged
-verify-at-pin to `09-flags/`.
+region inside a compiling file. The OpenRewrite recipe **run** is honestly scoped as opt-in; the recipe
+**config**, the before/after pair, and the prioritization logic all verify offline, so the build does not
+depend on it. No invented atom enters the build: the OpenRewrite engine/plugin versions trace to
+`SOURCE-PIN.md §6`, and the recipe ID + recipe-module GAV are web-verified at the pin.
+
+**REPRO — UPGRADED 2026-06-28 (network available): `rewrite:dryRun` actually RAN.** The recipe is no
+longer REPRO PENDING-RUNTIME. With Maven Central reachable, the exact opt-in command
+`mvn -B -Prewrite -pl 96_remediation_playbook_automated_change rewrite:dryRun` resolved the pinned engine
++ recipe module from Maven Central (rewrite-bom 8.81.0 transitives; rewrite-migrate-java 3.34.0;
+rewrite-maven-plugin 6.38.0), validated the book's composite recipe
+`org.acme.remediation.ModernizeForJava21`, built the Lossless Semantic Tree over the module's sources, ran
+the recipe, and emitted a real proposed patch — `BUILD SUCCESS`. The recipe IDENTITY is now corroborated by
+execution, not just by web lookup. `dryRun` (not `run`) was used, so **nothing was mutated**: a
+`git status` over `08-companion-code/` is empty afterward. This lifts the UTILITY cap on Ch 39/Ch 40 —
+both can re-score for UTILITY.
 
 ---
 
@@ -118,7 +128,7 @@ chapter's class; none invented.
 | Maven 3.9.16 | `SOURCE-PIN.md §4` |
 | Checkstyle engine 10.26.1, plugin 3.6.0; SpotBugs plugin 4.9.3.0 / annotations 4.9.3 | the companion-code locally-cached lines (same as peer Ch 27/39 modules) |
 | OpenRewrite 8.81.0; `rewrite-maven-plugin` 6.38.0 | `SOURCE-PIN.md §6` ✅ pinned |
-| Recipe ID `org.openrewrite.java.migrate.UpgradeToJava21`; `rewrite-migrate-java:3.34.0` (was `3.16.0` — corrected to the engine-8.81.0-aligned version) | ☑ **web-verified 2026-06-28** against docs.openrewrite.org (recipe ID, verbatim) + Maven Central (GAV; via rewrite-recipe-bom 3.30.0 → rewrite-bom 8.81.0); `09-flags/94_…` RESOLVED (identity). Recipe RUN stays REPRO PENDING-RUNTIME. |
+| Recipe ID `org.openrewrite.java.migrate.UpgradeToJava21`; `rewrite-migrate-java:3.34.0` (was `3.16.0` — corrected to the engine-8.81.0-aligned version) | ☑ **web-verified 2026-06-28** against docs.openrewrite.org (recipe ID, verbatim) + Maven Central (GAV; via rewrite-recipe-bom 3.30.0 → rewrite-bom 8.81.0); `09-flags/94_…` RESOLVED (identity). **Recipe RUN now corroborated by execution 2026-06-28** — `rewrite:dryRun` resolved + validated + ran this recipe over the module (`BUILD SUCCESS`); resolved engine line confirmed in `~/.m2` (`rewrite-core/8.81.0`, `rewrite-migrate-java/3.34.0`, `rewrite-maven-plugin/6.38.0`). |
 | Playbook order, churn × pain, never-big-bang, baseline-without-paydown=amnesty, automation-proposes-tests-dispose | dossiers 96 + 94 (synthesis of Part XI) |
 
 ---
@@ -140,7 +150,7 @@ upstream block requiring attribution.
 
 | # | Item | Severity | Location | Fix |
 |---|---|---|---|---|
-| 1 | OpenRewrite recipe ID + recipe-module GAV not resolvable offline (engine/plugin pinned; recipe atoms live-line) | NOTE | `config/rewrite/rewrite.yml`, `pom.xml` `rewrite` profile | Flagged to `09-flags/94_…`; recipe **run** is opt-in + REPRO PENDING-RUNTIME; re-trace at pin when artifacts are fetchable |
+| 1 | OpenRewrite recipe ID + recipe-module GAV not resolvable offline (engine/plugin pinned; recipe atoms live-line) | NOTE → **RESOLVED 2026-06-28** | `config/rewrite/rewrite.yml`, `pom.xml` `rewrite` profile | Artifacts fetched from Maven Central; `rewrite:dryRun` resolved + validated + RAN the recipe (`BUILD SUCCESS`). Proposed patch: bump `spotbugs-maven-plugin` 4.9.3.0 → 4.9.8.5 via `UpgradeToJava21 → UpgradeToJava17 → org.openrewrite.maven.UpgradePluginVersion` (`target/rewrite/rewrite.patch`). `dryRun` mutated nothing; opt-in `rewrite` profile unchanged. |
 | 2 | SpotBugs/Checkstyle baselines are wired but **inert** (no `<Match>`/`<suppress>` row fires) | NOTE | `config/spotbugs/spotbugs-exclude.xml`, `config/checkstyle/checkstyle-suppressions.xml` | Intentional and documented in both files + README — the before/after pair carries the visible debt; same honest pattern as peer Ch 39 |
 
 ---
@@ -175,6 +185,14 @@ upstream block requiring attribution.
   is the HONEST-LIMITATIONS floor (no big-bang, no amnesty) turned into a constructor that throws under
   test — exactly the EXAMPLES-GUIDE §1.1 intent for a non-HTTP topic (real error response over a domain
   invariant, not a bolted-on fault-tolerance annotation).
+- **REPRO PENDING-RUNTIME is a drainable worklist item, not a permanent state (2026-06-28 update).** When a
+  networked runtime is available, re-run the opt-in profile unchanged: the network-gated `rewrite` profile
+  resolved the pinned engine + recipe module and `rewrite:dryRun` validated and RAN the recipe with no code
+  change. Use `dryRun` (not `run`) to get full resolve+validate+execute proof — recipe tree printed, patch
+  emitted to `target/rewrite/rewrite.patch` — while mutating nothing (`git status` over the module stays
+  empty). Execution corroborates the recipe-ID/GAV identity more strongly than the prior web-lookup. A
+  type-aware migration over an already-modernized module honestly yields a near-empty diff (here: only a
+  stale `spotbugs-maven-plugin` bump), which is the LST working, not a no-op.
 
 ---
 

@@ -11,6 +11,10 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
 import java.util.function.UnaryOperator;
+import org.approvaltests.Approvals;
+import org.approvaltests.core.Options;
+import org.approvaltests.reporters.QuietReporter;
+import org.approvaltests.scrubbers.RegExScrubber;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -18,15 +22,19 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Approval testing: pinning a large, structured output against a reviewed baseline.
  *
- * <p>The {@code OrderReport} is rendered, its non-deterministic timestamp scrubbed, and the result
- * compared to a committed {@code order-report.approved.txt} (under {@code src/test/resources/approvals}).
- * The baseline lives in version control precisely so it shows up in pull-request review, where a second
- * person sees the diff. The committed file is copied into a {@link TempDir} so the comparison runs
- * hermetically while still exercising the real read/write path.
+ * <p>The headline test uses the real {@code ApprovalTests.Java} library (SOURCE-PIN §3): {@link
+ * Approvals#verify} renders the {@code OrderReport}, scrubs its non-deterministic timestamp with a
+ * {@link RegExScrubber}, and compares the result to the committed {@code
+ * OrderReportApprovalTest.reportMatchesApprovedBaseline.approved.txt} next to this test. The baseline
+ * lives in version control precisely so it shows up in pull-request review, where a second person sees
+ * the diff. {@link QuietReporter} keeps the run non-interactive: on a mismatch the library writes a
+ * {@code *.received.txt} and fails the test rather than launching a diff GUI, so the build never hangs.
  *
- * <p>The honest edge is demonstrated, not just stated: a deliberately-wrong baseline is approved without
- * review, and the test then passes against wrong output — the rubber-stamp risk made concrete. The
- * verifier checks "unchanged," never "correct"; reading the diff is the human half.
+ * <p>The remaining tests drive the hand-rolled {@link SnapshotVerifier} to show the same loop step by
+ * step and to make the honest edge concrete: a missing baseline fails by design; a changed output
+ * fails until re-approved; and a deliberately-wrong baseline, approved without review, then lets the
+ * test pass against wrong output — the rubber-stamp risk made concrete. Either way the check is
+ * "unchanged," never "correct"; reading the diff is the human half.
  */
 class OrderReportApprovalTest {
 
@@ -36,21 +44,24 @@ class OrderReportApprovalTest {
 
     /** A scrubber that normalizes the report's generated-at timestamp so the snapshot is stable. */
     // tag::scrubber[]
-    private static final UnaryOperator<String> SCRUB_TIMESTAMP =
-        text -> text.replaceAll("generated-at: .*", "generated-at: <timestamp>");
+    private static final RegExScrubber SCRUB_TIMESTAMP =
+        new RegExScrubber("generated-at: .*", "generated-at: <timestamp>");
     // end::scrubber[]
 
-    @Test
-    @DisplayName("the report matches its committed, reviewed baseline after scrubbing")
-    void reportMatchesApprovedBaseline(@TempDir Path workDir) throws IOException {
-        copyCommittedBaseline("order-report.approved.txt", workDir);
-        SnapshotVerifier verifier = new SnapshotVerifier(workDir);
+    /** The same normalization as a plain function, for the hand-rolled verifier's edge-case tests. */
+    private static final UnaryOperator<String> SCRUB_FN =
+        text -> text.replaceAll("generated-at: .*", "generated-at: <timestamp>");
 
+    @Test
+    @DisplayName("the report matches its committed, reviewed baseline (real ApprovalTests)")
+    void reportMatchesApprovedBaseline() {
         // tag::approval-verify[]
         // Render with a live timestamp; the scrubber normalizes it so it matches the approved baseline.
         String report = OrderReport.render(ORDERS, Instant.now());
-        assertThatNoException()
-            .isThrownBy(() -> verifier.verify("order-report", report, SCRUB_TIMESTAMP));
+        Options options = new Options()
+            .withScrubber(SCRUB_TIMESTAMP)         // remove the non-deterministic timestamp
+            .withReporter(QuietReporter.INSTANCE);  // fail (not launch a diff GUI) on mismatch — CI-safe
+        Approvals.verify(report, options);
         // end::approval-verify[]
     }
 
@@ -61,7 +72,7 @@ class OrderReportApprovalTest {
         String report = OrderReport.render(ORDERS, Instant.now());
 
         assertThatExceptionOfType(SnapshotMismatchException.class)
-            .isThrownBy(() -> verifier.verify("order-report", report, SCRUB_TIMESTAMP));
+            .isThrownBy(() -> verifier.verify("order-report", report, SCRUB_FN));
     }
 
     @Test
@@ -78,7 +89,7 @@ class OrderReportApprovalTest {
         String report = OrderReport.render(changed, Instant.now());
 
         assertThatExceptionOfType(SnapshotMismatchException.class)
-            .isThrownBy(() -> verifier.verify("order-report", report, SCRUB_TIMESTAMP));
+            .isThrownBy(() -> verifier.verify("order-report", report, SCRUB_FN));
     }
 
     @Test
@@ -98,13 +109,13 @@ class OrderReportApprovalTest {
         // stored baseline matches what verify() will compare against, exactly as a real approval would store.
         Files.writeString(
             workDir.resolve("order-report.approved.txt"),
-            SCRUB_TIMESTAMP.apply(wrongReport),
+            SCRUB_FN.apply(wrongReport),
             StandardCharsets.UTF_8);
 
         // Re-running against that same wrong output now passes: a wrong baseline sails through green. From
         // here the suite confirms the wrong output forever — verify() checks "unchanged," never "correct".
         assertThatNoException()
-            .isThrownBy(() -> verifier.verify("order-report", wrongReport, SCRUB_TIMESTAMP));
+            .isThrownBy(() -> verifier.verify("order-report", wrongReport, SCRUB_FN));
 
         // Yet the baked-in baseline is genuinely wrong: it reports total 14999, while the reviewed output is
         // 6200. The green test asserts nothing about correctness — that is why reading the diff is mandatory.
@@ -119,8 +130,8 @@ class OrderReportApprovalTest {
         String second = OrderReport.render(ORDERS, Instant.parse("2026-06-20T12:30:00Z"));
 
         assertThat(first).isNotEqualTo(second);                       // raw output differs by timestamp...
-        assertThat(SCRUB_TIMESTAMP.apply(first))
-            .isEqualTo(SCRUB_TIMESTAMP.apply(second));                // ...scrubbed output is identical
+        assertThat(SCRUB_TIMESTAMP.scrub(first))
+            .isEqualTo(SCRUB_TIMESTAMP.scrub(second));                // ...scrubbed output is identical
     }
 
     private static void copyCommittedBaseline(String fileName, Path workDir) throws IOException {

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   Chapter: 35 — Teeth and Speed (keys 81 + folds 82, Part IX)
-  Figure:  Fig 81.1 — The feedback-latency ladder: fast skippable feedback at the
+  Figure:  Figure 35.1 — The feedback-latency ladder: fast skippable feedback at the
            keyboard, slow unbypassable enforcement at the merge
   Family:  Flow-sequence (five rungs left → right, fastest/cheapest at the left;
            a labelled boundary divides the feedback rungs from the enforcement rungs)
@@ -9,7 +9,7 @@
   Placement: § "Pre-commit hooks and local↔CI parity" → the two CONCEPT callouts
              "The feedback-latency ladder" and "Hooks are feedback, not enforcement"
              (draft v1, lines 55 & 59); unifying figure named at draft line 111 +
-             dossier 82 §6 (Fig 82.1 spec) — folds the teeth/speed deep dive (lines 63–69).
+             dossier 82 §6 (Figure 35.1 spec) — folds the teeth/speed deep dive (lines 63–69).
   One idea: Push each check to the leftmost rung that can catch it — IDE → pre-commit →
             pre-push are fast, SKIPPABLE feedback (git commit --no-verify, install-dependent);
             PR CI → main are slow, UN-bypassable enforcement (required status check +
@@ -23,7 +23,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fig 81.1 — The feedback-latency ladder: feedback at the keyboard, enforcement at the merge</title>
+  <title>Figure 35.1 — The feedback-latency ladder: feedback at the keyboard, enforcement at the merge</title>
   <link rel="stylesheet" href="../_assets/figures.css">
   <style>
     /* ── Figure-local layout — palette + components come from figures.css ── */
@@ -232,7 +232,7 @@
 <body>
 <div id="figure">
 
-  <p class="fig-title">Fig 81.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable enforcement at the merge</p>
+  <p class="fig-title">Figure 35.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable enforcement at the merge</p>
   <p class="fig-subtitle">Push each check to the leftmost rung that can catch it. The left rungs are deliberately skippable feedback; the right rungs are the enforcement that re-runs everything regardless.</p>
 
   <!-- cost gradient axis -->
@@ -382,7 +382,7 @@
   </div>
 
   <p class="fig-caption ladder-caption">
-    Feedback-latency ladder: key 82 dossier §6 (Fig 82.1 spec) + draft v1 § &ldquo;The feedback-latency ladder&rdquo; (line 55) and
+    Feedback-latency ladder: key 82 dossier §6 (Figure 35.1 spec) + draft v1 § &ldquo;The feedback-latency ladder&rdquo; (line 55) and
     § &ldquo;Hooks are feedback, not enforcement&rdquo; (line 59); teeth/speed division from the deep dive (lines 63–69).
     Branch protection / merge queue / trunk-based: key 81 dossier. pre-commit framework: <b>pre-commit.com</b>; DORA: <b>dora.dev</b>
     (both pinned in <b>00-strategy/SOURCE-PIN.md</b>, 2026-06-20). Every label traced in <b>fig81_1.sources.md</b>.

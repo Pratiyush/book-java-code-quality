@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   Chapter:   31 — Catching What You Forgot (dossier keys 70 + 71, Ch 31 in FINAL_INDEX, Part VIII)
-  Figure:    Fig 71.1 — Secrets detection as a ladder of catches, cheapest first
+  Figure:    Figure 31.1 — Secrets detection as a ladder of catches, cheapest first
              (pre-commit → push protection → CI → history scan), and the asymmetry:
              only the first stage PREVENTS the leak; once a secret reaches a remote it is
              COMPROMISED and the only fix is to ROTATE — detection is not remediation.
@@ -18,7 +18,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fig 71.1 — Secrets detection: a ladder of catches, and why finding is too late</title>
+  <title>Figure 31.1 — Secrets detection: a ladder of catches, and why finding is too late</title>
   <link rel="stylesheet" href="../_assets/figures.css">
   <style>
     body { margin: 0; padding: 0; background: transparent; }
@@ -276,7 +276,7 @@
 <body>
 <div id="figure">
 
-  <p class="fig-title">Fig 71.1 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late</p>
+  <p class="fig-title">Figure 31.1 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late</p>
   <p class="fig-subtitle">Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage <em>prevents</em> the leak; past the remote, the secret is compromised &mdash; the fix is to rotate, not delete.</p>
 
   <!-- ── THE LADDER ── -->

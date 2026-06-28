@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <!--
   Chapter: 44 — The Thousand Cuts: performance-regression gates (dossier key 105, Part XIII)
-  Figure:  Fig 105.1 — The performance-regression gate: a fitness function that knows its own noise
+  Figure:  Figure 44.1 — The performance-regression gate: a fitness function that knows its own noise
   Family:  Flow-sequence (four stages left → right: measure → compare-to-baseline → three-outcome
            decision → baseline ratchet), with a noise-handling band threaded across the gate
   Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
   Placement: §"How it works" → the three CONCEPT callouts (the gate; handling noise; flag-then-investigate);
-             realises the dossier figure spec (02-research/105_perf_regression_gates §6 "Fig 105.1")
+             realises the dossier figure spec (02-research/105_perf_regression_gates §6 "Figure 44.1")
   One idea: A performance-regression gate measures a change against a baseline and acts on the result,
             but because the measurement is NOISY it compares relative-to-baseline with statistics and a
             tolerance band, and FLAGS-then-investigates a small diff rather than hard-blocking it — failing
@@ -19,7 +19,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fig 105.1 — The performance-regression gate</title>
+  <title>Figure 44.1 — The performance-regression gate</title>
   <link rel="stylesheet" href="../_assets/figures.css">
   <style>
     /* ── Figure-local layout only — palette + components come from figures.css ── */
@@ -135,7 +135,7 @@
 <body>
 <div id="figure">
 
-  <p class="fig-title">Fig 105.1 — The performance-regression gate: a fitness function that knows its own noise</p>
+  <p class="fig-title">Figure 44.1 — The performance-regression gate: a fitness function that knows its own noise</p>
   <p class="fig-subtitle">Measure against a baseline, compare <em>relative</em> (not absolute) with statistics and a tolerance band, and flag-then-investigate a small diff rather than hard-block — fail safe when the measurement cannot be trusted.</p>
 
   <div class="gate-row">

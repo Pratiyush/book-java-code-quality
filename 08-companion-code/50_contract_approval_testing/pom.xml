@@ -14,14 +14,18 @@
     tools — Pact (Pact-JVM 4.7.0), REST-assured (6.0.0) and ApprovalTests.Java. Pact provider
     verification and the REST-assured endpoint test both need a RUNNING provider (a Testcontainers or
     framework instance); the draft records them as REPRO PENDING-RUNTIME where Docker is absent, so a
-    green standalone build cannot rest on them. ApprovalTests.Java is not pinned in SOURCE-PIN.md at
-    all. So this module realizes the three MECHANISMS in plain JDK + JUnit + AssertJ, in-JVM, with zero
-    runtime dependencies: a consumer-driven contract object both sides verify against; a given/when/then
-    exercise of the provider's response; and a snapshot test that writes a *.received.txt, compares it
-    to a committed *.approved.txt, and scrubs a timestamp — written and read by the test itself. The
-    three named tools are described in the README and the prose for what each adds in production; their
-    prose-only status is recorded in 09-flags/. Nothing here is an upstream sample: every file is
-    original work for this book (LEGAL-IP §5).
+    green standalone build cannot rest on them — their mechanisms stay realized in plain JDK + JUnit +
+    AssertJ, in-JVM: a consumer-driven contract object both sides verify against, and a given/when/then
+    exercise of the provider's response. Their prose-only status is recorded in 09-flags/.
+
+    ApprovalTests.Java IS now pinned (SOURCE-PIN.md §3, com.approvaltests:approvaltests:31.0.0,
+    Apache-2.0) and wired here in test scope: the approval test below is a GENUINE Approvals.verify(...)
+    against a committed *.approved.txt, with a RegExScrubber for the timestamp and the QuietReporter so
+    the build stays non-interactive (no diff GUI on mismatch). The hand-rolled SnapshotVerifier is kept
+    alongside it to illustrate the received/approved mechanism step by step and to demonstrate the honest
+    edge (missing-baseline, changed-output, rubber-stamp) the chapter's spine needs. Its only mandatory
+    transitive is approvaltests-util; all of ApprovalTests' other deps are optional and stay out. Nothing
+    here is an upstream sample: every file is original work for this book (LEGAL-IP §5).
 
     This is a child module of the companion-code reactor. It sets <parent>, carries no groupId or
     version literal of its own, and inherits the runtime pin (Java 21) and the JUnit/AssertJ pins from
@@ -48,6 +52,19 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!--
+      ApprovalTests.Java — the real approval/golden-master library (SOURCE-PIN.md §3). Test scope only.
+      The aggregator's dependencyManagement pins only the universal test stack (JUnit + AssertJ), so this
+      chapter-specific tool carries its pinned version literal here, as agreed for a per-chapter tool not
+      in the shared BOM. Its only mandatory transitive is com.approvaltests:approvaltests-util; every
+      other dependency in its POM is <optional> and is not pulled in.
+    -->
+    <dependency>
+      <groupId>com.approvaltests</groupId>
+      <artifactId>approvaltests</artifactId>
+      <version>31.0.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

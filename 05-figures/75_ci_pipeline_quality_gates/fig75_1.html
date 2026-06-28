@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   Chapter: 33 — A Gate the Team Keeps On (dossier key 75, folds 76 + 79; OPENS Part IX)
-  Figure:  Fig 75.1 — The quality pipeline: a fail-fast fitness-function portfolio,
+  Figure:  Figure 33.1 — The quality pipeline: a fail-fast fitness-function portfolio,
            ordered cheap→expensive and split across PR / main / nightly by feedback latency
   Family:  Flow / pipeline (left-to-right ordered stages, with three feedback-latency
            lanes — PR-fast blocking, main, nightly — and a block-vs-warn policy strip)
@@ -21,7 +21,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fig 75.1 — The quality pipeline: fail-fast, ordered cheap→expensive, split by feedback latency</title>
+  <title>Figure 33.1 — The quality pipeline: fail-fast, ordered cheap→expensive, split by feedback latency</title>
   <link rel="stylesheet" href="../_assets/figures.css">
   <style>
     /* ── Figure-local layout ─────────────────────────────────────────────── */
@@ -241,7 +241,7 @@
 <body>
 <div id="figure">
 
-  <p class="fig-title">Fig 75.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by feedback latency</p>
+  <p class="fig-title">Figure 33.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by feedback latency</p>
   <p class="fig-subtitle">Each stage is one fitness function; the pipeline is the portfolio. Order cheap → expensive so the most-likely-to-fail checks fail first. Keep the blocking PR path short; defer the slow, expensive checks to main and nightly so they never fall on a developer waiting to merge.</p>
 
   <!-- cost axis label sitting over the PR track -->
