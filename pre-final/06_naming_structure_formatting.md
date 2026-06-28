@@ -184,19 +184,9 @@ The same before-state lives in the companion module, kept inside a comment so th
 
 Run the **formatter** (`spotless:apply`) and the typography is gone as a topic: indentation, braces, spacing, import order are now canonical, computed not argued. Run the **linter** and it flags what the formatter does not own: `orderthing` fails `java:S101`/Checkstyle `TypeName` (class is not `UpperCamelCase`), `maxRetries` fails `ConstantName` (a real constant must be `CONSTANT_CASE`), `X` and `calc` and `data` are legal-but-poor. The machine has now done everything it can.
 
-What remains is the part only a person does. `orderthing` → `OutstandingInvoices`. `data` → `invoices`. `calc` → `totalOutstanding`. `X` → `taxRatePercent`. None of those renames is something a regex could have produced; each is a claim about what the code *means*, checked by a human who understands the domain. And the result reads as a sentence:
+What remains is the part only a person does. `orderthing` → `OrderLine`. `data` → the record's real components, `quantity` and `unitPrice`. `calc` → `lineTotal`. `maxRetries` → `MAX_QUANTITY_PER_LINE`, the one field that is genuinely a constant. None of those renames is something a regex could have produced; each is a claim about what the code *means*, checked by a human who understands the domain.
 
-```java
-/** The customer's unsettled invoices. */
-public final class OutstandingInvoices {
-  static final int MAX_RETRIES = 3;
-  private final List<Invoice> invoices;
-  // ...
-  public Money totalOutstanding(BigDecimal taxRatePercent) { ... }
-}
-```
-
-The companion module carries the conventionally-named, conventionally-formatted result. It is an order line whose constant is `static final` *and* deeply immutable (the only kind that earns `CONSTANT_CASE`), and whose method name reads as what it returns:
+The companion module carries that conventionally-named, conventionally-formatted result, and the block below is taken straight from it. It is an order line whose constant is `static final` *and* deeply immutable (the only kind that earns `CONSTANT_CASE`), and whose method name reads as what it returns:
 
 ```java
     /** The largest quantity a single order line accepts (a genuine, deeply-immutable constant). */
