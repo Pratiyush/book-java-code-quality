@@ -2,7 +2,7 @@
 
 *Culture, ownership, shift-left, and the knowledge that leaves when people do · Part I*
 
-> "A generative culture is a psychologically safe culture." — DORA, on Westrum's typology
+> "A high-trust, generative culture predicts software delivery and organizational performance." — DORA, *Generative organizational culture* capability (dora.dev)
 
 ## Hook
 
@@ -28,7 +28,7 @@ The difference is not tooling. It is culture: who owns quality, when they addres
 
 ### Culture is causal
 
-Culture is treated, too often, as the squishy preamble before the real technical content. The data says otherwise. Sociologist **Ron Westrum** (1988) classified organizational cultures into three types, and Figure 4.1 sets them side by side along the two axes that separate them: how information flows, and what happens when something fails.
+Culture is treated, too often, as the squishy preamble before the real technical content. The data says otherwise. Sociologist **Ron Westrum** classified organizational cultures into three types in *A typology of organisational cultures* (2004), the work DORA's research builds on, and Figure 4.1 sets them side by side along the two axes that separate them: how information flows, and what happens when something fails.
 
 ![Figure 4.1 — Westrum's three organizational culture types. Information flow and response to failure distinguish the types; DORA associates the generative type with improved software-delivery performance.](figures/fig06_1.png)
 
@@ -38,7 +38,7 @@ Culture is treated, too often, as the squishy preamble before the real technical
 - **Bureaucratic** — rule-oriented; information moves through silos.
 - **Generative** — performance-oriented: good information flow, high cooperation and trust, "bridging" across teams, conscious inquiry, and the hallmark, **failure leads to inquiry, not blame**.
 
-The **DORA** research program (the research behind the four delivery keys from Chapter 1) found that a **generative culture is associated with improved software-delivery performance** and broader organizational outcomes. A later State of DevOps report found **psychological safety predictive** of delivery performance, organizational performance, and productivity. By the largest dataset in the field, generative culture is a *cause* of the outcomes this book optimizes, not the wrapping paper around them.
+The **DORA** research program (the research behind the four delivery keys from Chapter 1) reports that a **high-trust, generative culture predicts software-delivery and organizational performance**. The 2019 *State of DevOps* report found a culture of **psychological safety predictive** of delivery performance, organizational performance, and productivity. By the largest dataset in the field, generative culture is a *predictor* of the outcomes this book optimizes, not the wrapping paper around them.
 
 > **IMPORTANT** A generative culture cannot be installed. No `mvn` goal builds trust. This chapter gives direction, not a switch, and the results arrive over quarters, not a sprint.
 
@@ -90,7 +90,7 @@ Generative culture is the substrate; the lever a lead actually pulls is **fricti
 
 ## Deep dive
 
-### Whose job is quality? The synthesis
+### The layered answer: a synthesis
 
 The honest answer is layered:
 
@@ -103,7 +103,7 @@ The honest answer is layered:
 
 Two well-known heuristics help, stated as heuristics, not laws:
 
-- **The Boy Scout Rule** (Robert C. Martin): "always leave the code cleaner than you found it." Incremental, opt-in improvement that compounds; it is the cultural engine behind ratcheting (Chapter 38) and opportunistic refactoring (Chapter 39).
+- **The Boy Scout Rule** (Robert C. Martin, *97 Things Every Programmer Should Know*): "Always leave the code cleaner than you found it." Incremental, opt-in improvement that compounds; it is the cultural engine behind ratcheting (Chapter 38) and opportunistic refactoring (Chapter 39).
 - **Broken Windows** (from *The Pragmatic Programmer*): do not tolerate visible decay, because small unrepaired defects signal that quality does not matter and decay accelerates.
 
 > **NOTE** The social-science "Broken Windows" theory is contested in its original (policing) context. This book uses it only as a *code* heuristic, attributed, and flags that the underlying theory is disputed, consistent with the book's rule against repeating folklore as fact.
@@ -144,29 +144,29 @@ Part I has built the foundation: quality is a nameable, priceable set of attribu
 
 **Key concepts**
 
-- *Westrum typology*: pathological / bureaucratic / generative organizational cultures.
+- *Westrum typology*: pathological / bureaucratic / generative organizational cultures (Westrum, 2004).
 - *Generative culture*: high trust, good information flow, failure → inquiry not blame.
-- *Shift-left*: move quality activities toward inception (Smith, 2001; Deming lineage).
+- *Shift-left*: move quality activities toward inception (Smith, *Dr. Dobb's*, 2001; Deming lineage).
 - *Code ownership models*: strong / weak / collective (Fowler).
 - *Bus / truck factor*: how many people's loss would stall the project.
 
 **Reference (traced to the pin)**
 
-- DORA generative-culture capability + psychological-safety finding (dora.dev). Westrum typology (1988, via *Accelerate*).
+- DORA generative-culture capability + psychological-safety finding (dora.dev; the psychological-safety result is the 2019 *State of DevOps* report). Westrum typology — *A typology of organisational cultures*, *BMJ Quality & Safety* (2004), as cited by DORA/*Accelerate*.
 - Fowler, *CodeOwnership* (martinfowler.com/bliki/CodeOwnership.html): the three models.
 - Sample `CODEOWNERS` + a one-page team quality charter ship as chapter artifacts (verified for consistency, not compiled).
 
 **Sources and further reading**
 
 *Tier 1 — Primary / official*
-- DORA, *Generative organizational culture* capability + *State of DevOps* (dora.dev); Forsgren/Humble/Kim, *Accelerate* (2018).
-- Ron Westrum, organizational-culture typology (1988).
-- Larry Smith, "Shift-Left Testing," *Dr. Dobb's* (2001) — *attributed; ⚠ verify-at-pin (no SOURCE-PIN row yet — to be added as a named-article source at `/pin-source`; see `09-flags/06_culture_named_source_verbatims_verify_at_pin.md` atom 4).*
+- DORA, *Generative organizational culture* capability (dora.dev) + the 2019 *Accelerate State of DevOps* Report (psychological-safety finding); Forsgren/Humble/Kim, *Accelerate* (2018).
+- Ron Westrum, "A typology of organisational cultures," *BMJ Quality & Safety* 2004;13(suppl 2):ii22–ii27 (typology first presented at a 1988 World Bank conference; the 2004 paper is the citation DORA/*Accelerate* use).
+- Larry Smith, "Shift-Left Testing," *Dr. Dobb's Journal*, Vol. 26, Issue 9 (September 2001).
 - Martin Fowler, *CodeOwnership* (bliki).
 
 *Tier 2 — Accessible / further reading*
 - W. Edwards Deming on building quality in (manufacturing lineage).
-- Robert C. Martin, the Boy Scout Rule; Hunt & Thomas, *The Pragmatic Programmer* (Broken Windows; note the original theory is contested).
+- Robert C. Martin, "The Boy Scout Rule," in *97 Things Every Programmer Should Know* (O'Reilly, 2010); Hunt & Thomas, *The Pragmatic Programmer* (Broken Windows; note the original theory is contested).
 - Bus/truck-factor research.
 
 ## Next chapter teaser

@@ -17,7 +17,7 @@ assert order.items().size() == 1;   // fails — it's 2
 
 The "immutable" order grew a line item after construction, and nobody called a setter. The record kept its *reference* to the list final (the reference cannot be reassigned), but it never copied or froze the list itself. The object changed its mind, silently, because something else still held the same list.
 
-This chapter is about objects that genuinely do not change their state, and about the related promises Java enforces *in silence* — the `equals`, `hashCode`, `Comparable`, and `toString` contracts that the JDK's own collections depend on, and that silently break without ever raising a compile error. Immutability and these contracts are the same subject from two angles: an immutable value type is only trustworthy if it also answers "are these two equal?" correctly, and a correct `equals`/`hashCode` is only stable if the fields behind it cannot shift under it.
+This chapter is about objects that genuinely do not change their state, and about the related promises Java enforces *in silence*: the `equals`, `hashCode`, `Comparable`, and `toString` contracts that the JDK's own collections depend on, and that silently break without ever raising a compile error. Immutability and these contracts are the same subject from two angles: an immutable value type is only trustworthy if it also answers "are these two equal?" correctly, and a correct `equals`/`hashCode` is only stable if the fields behind it cannot shift under it.
 
 ## Overview
 
@@ -35,15 +35,15 @@ The central idea: *using the feature is not the same as getting the guarantee.* 
 
 ## How it works
 
-Three instruments carry immutability in Java, and each closes a gap the previous one leaves open. Figure 1 lays them out in that order — records, then immutable collections, then defensive copies — and marks the specific gap each one leaves for the next to close.
+Three instruments carry immutability in Java, and each closes a gap the previous one leaves open. Figure 1 lays them out in that order (records, then immutable collections, then defensive copies) and marks the specific gap each one leaves for the next to close.
 
 ![Three instruments of Java immutability — Each instrument closes a specific gap — composed, they satisfy Effective Java](figures/fig10_1.png)
 
 *Three instruments of Java immutability — Each instrument closes a specific gap — composed, they satisfy Effective Java*
 
-### Why immutability is the highest-leverage lever in Part II
+### Why immutability removes a whole category of bug
 
-An immutable object has exactly one state for its entire life. That single property cascades: it is **simple** to reason about (no "what is its state *now*?" question arises), **inherently thread-safe** (no two threads can race on state that never changes; see Chapter 14), and **safe to share, cache, and pass around** without defensive thought. *Effective Java* Item 17 states the default plainly: classes should be immutable unless there is a very good reason to make them mutable. Immutability does not *guard against* a category of bug (shared mutable state changing under code that assumed it would not) — it *removes the category*.
+An immutable object has exactly one state for its entire life. That single property cascades: it is **simple** to reason about (no "what is its state *now*?" question arises), **inherently thread-safe** (no two threads can race on state that never changes; see Chapter 14), and **safe to share, cache, and pass around** without defensive thought. *Effective Java* Item 17 states the default plainly: classes should be immutable unless there is a very good reason to make them mutable. Immutability does not *guard against* a category of bug (shared mutable state changing under code that assumed it would not). It *removes the category*.
 
 Item 17's five rules for an immutable class:
 
@@ -80,7 +80,7 @@ The pitfall the hook showed, stated precisely: a record makes the component *ref
     }
 ```
 
-The fix is a defensive copy in the compact constructor and, if the component type is still mutable, a copying accessor — `copyOf` already returns an unmodifiable list, so the accessor can hand the snapshot straight back:
+The fix is a defensive copy in the compact constructor and, if the component type is still mutable, a copying accessor. Because `copyOf` already returns an unmodifiable list, the accessor can hand the snapshot straight back:
 
 ```java
     public Order {
@@ -117,13 +117,13 @@ The JDK doc's own line is the rule to remember: *an immutable collection of obje
 
 An immutable value type is only trustworthy if it answers "are these equal?" and "how do these order?" correctly. Four `Object`/interface methods carry *machine-checked behavioral contracts*. Break them and the JDK's own collections misbehave silently, with code that compiles cleanly.
 
-`equals(Object)` must implement an equivalence relation (verbatim, JDK 21 `Object` Javadoc): **reflexive** (`x.equals(x)` is true), **symmetric** (`x.equals(y)` iff `y.equals(x)`), **transitive**, **consistent** (repeated calls agree if no field changes), and **null-false** (`x.equals(null)` is false).
+First, `equals` has to behave like a sane notion of "the same". The spec states this as an equivalence relation. `equals(Object)` must be (verbatim, JDK 21 `Object` Javadoc): **reflexive** (`x.equals(x)` is true), **symmetric** (`x.equals(y)` iff `y.equals(x)`), **transitive**, **consistent** (repeated calls agree if no field changes), and **null-false** (`x.equals(null)` is false).
 
-`hashCode()` must satisfy: equal objects have equal hash codes; the value is consistent within a run (need not survive across runs); unequal objects *may* share a hash but distinct hashes help hash-table performance. **Override `equals` ⇒ override `hashCode`** (Item 11), or two value-equal objects can land in different `HashMap` buckets and the map "loses" a key it contains.
+Second, `hashCode` has to agree with `equals` about which objects match. Concretely, `hashCode()` must satisfy: equal objects have equal hash codes; the value is consistent within a run (need not survive across runs); unequal objects *may* share a hash but distinct hashes help hash-table performance. **Override `equals` ⇒ override `hashCode`** (Item 11), or two value-equal objects can land in different `HashMap` buckets and the map "loses" a key it contains.
 
-`Comparable.compareTo(T)` must satisfy (verbatim, JDK 21 `Comparable` Javadoc): **signum anti-symmetry** (`signum(x.compareTo(y)) == -signum(y.compareTo(x))`), **transitivity**, and consistency. Only the *sign* is contractual — never a specific magnitude. Consistency with `equals` is *strongly recommended but not required*; a class that breaks it (like `BigDecimal`, where `compareTo` is 0 for `1.0` and `1.00` but `equals` is false) should document "Note: this class has a natural ordering that is inconsistent with equals."
+Third, ordering is about direction, not distance. `Comparable.compareTo(T)` must satisfy (verbatim, JDK 21 `Comparable` Javadoc): **signum anti-symmetry** (`signum(x.compareTo(y)) == -signum(y.compareTo(x))`), **transitivity**, and consistency. Only the *sign* is contractual, never a specific magnitude. Consistency with `equals` is *strongly recommended but not required*; a class that breaks it (like `BigDecimal`, where `compareTo` is 0 for `1.0` and `1.00` but `equals` is false) should document "Note: this class has a natural ordering that is inconsistent with equals."
 
-`toString()` has a weaker, recommended contract: a concise, informative, human-readable representation (Item 12 recommends overriding it for debuggability), with the caution that committing to a *parseable* format turns it into an API callers depend on.
+Fourth, `toString` is the loosest of the four. It carries a weaker, recommended contract: a concise, informative, human-readable representation (Item 12 recommends overriding it for debuggability), with the caution that committing to a *parseable* format turns it into an API callers depend on.
 
 ### The recurring violations, and the rule that catches each
 
@@ -144,7 +144,7 @@ Tools are named here as *checkers of the same contracts*, not rivals; where two 
 
 ### The modern answer: derive, do not write
 
-The single most reliable way to get `equals`/`hashCode`/`toString` right is to not write them. A record derives all three component-by-component, consistent by construction (JEP 395). For the rare hand-written case, `Objects.hash(a, b, c)` is the recommended `hashCode` body and `Comparator.comparing(...).thenComparing(...)` is the overflow-safe way to implement ordering without manual subtraction. (Records do *not* auto-implement `Comparable`; ordering remains the developer's responsibility.) The module's `Money` is exactly this — a record for the derived contracts, with a `Comparator`-built `compareTo` added by hand:
+The single most reliable way to get `equals`/`hashCode`/`toString` right is to not write them. A record derives all three component-by-component, consistent by construction (JEP 395). For the rare hand-written case, `Objects.hash(a, b, c)` is the recommended `hashCode` body and `Comparator.comparing(...).thenComparing(...)` is the overflow-safe way to implement ordering without manual subtraction. (Records do *not* auto-implement `Comparable`; ordering remains the developer's responsibility.) The module's `Money` is exactly this: a record for the derived contracts, with a `Comparator`-built `compareTo` added by hand:
 
 ```java
 public record Money(long minorUnits, String currency) implements Comparable<Money> {
@@ -157,7 +157,7 @@ public record Money(long minorUnits, String currency) implements Comparable<Mone
     }
 ```
 
-A test confirms the payoff the deriving buys: two value-equal instances are equal, share a hash code, and so resolve correctly as a map key — the property the next section shows a broken type losing.
+A test confirms the payoff the deriving buys: two value-equal instances are equal, share a hash code, and so resolve correctly as a map key. That is the exact property the next section shows a broken type losing.
 
 ```java
     @Test
@@ -198,7 +198,7 @@ map.put(new Money(5, "USD"), "five");
 map.get(new Money(5, "USD"));   // → null. The key is "in" the map, but in a different bucket.
 ```
 
-`get` computes a bucket from the lookup key's identity hash, looks there, finds nothing, returns `null` — even though an `equals`-equal key is sitting in a different bucket. The map did not lose data; it looked in the wrong place, because the inherited `hashCode` signalled that equal objects live in different places. This is why Item 11 is not advice but a contract: `equals` and `hashCode` are two halves of one mechanism, and the analyzer rules above exist to prevent shipping half of it. The module's test asserts exactly this loss — the key is `equals` to one in the map, yet `get` returns `null`:
+`get` computes a bucket from the lookup key's identity hash, looks there, finds nothing, and returns `null`. An `equals`-equal key is sitting in a different bucket the whole time. The map did not lose data; it looked in the wrong place, because the inherited `hashCode` signalled that equal objects live in different places. This is why Item 11 is not advice but a contract: `equals` and `hashCode` are two halves of one mechanism, and the analyzer rules above exist to prevent shipping half of it. The module's test asserts exactly this loss. The key is `equals` to one already in the map, yet `get` returns `null`:
 
 ```java
     @Test
@@ -212,14 +212,14 @@ map.get(new Money(5, "USD"));   // → null. The key is "in" the map, but in a d
     }
 ```
 
-The cleanest fix is to make `Money` a record: derived `equals` and `hashCode` are guaranteed consistent, and the bug cannot occur. Immutability and the contracts converge on the same move — *describe the value once, let the language derive the behavior, and the silent failures disappear.*
+The cleanest fix is to make `Money` a record: derived `equals` and `hashCode` are guaranteed consistent, and the bug cannot occur. Immutability and the contracts converge on the same move: *describe the value once, let the language derive the behavior, and the silent failures disappear.*
 
 ## Limitations & when NOT to reach for it
 
 - **Records are shallow, not deeply immutable.** The central caveat: a mutable component leaks unless the compact constructor and accessor copy it. Reaching for a record is not the same as making the type immutable.
 - **`unmodifiable*` is a view, not a copy.** Wrapping a retained mutable field gives a read-only window that still changes when the source does. Use `copyOf` for a snapshot.
 - **Immutability has an object-churn cost.** Item 17's own stated disadvantage: a separate object per distinct value. Multi-step transformations allocate intermediates (the `String`-concat-in-a-loop class of problem); the mitigation is a mutable companion like `StringBuilder`. Real cost on allocation-sensitive hot paths.
-- **Records are constrained by design.** Records cannot extend a class, cannot add instance fields beyond components, and expose *all* components — wrong tool when hidden/derived state, inheritance, or a non-canonical field set is needed. Derived `equals` also uses array *identity* for array components and ignores nothing, so a record is wrong when array-content equality is required or when `equals` must skip a cache field.
+- **Records are constrained by design.** Records cannot extend a class, cannot add instance fields beyond components, and expose *all* components. They are the wrong tool when hidden/derived state, inheritance, or a non-canonical field set is needed. Derived `equals` also uses array *identity* for array components and ignores nothing, so a record is wrong when array-content equality is required or when `equals` must skip a cache field.
 - **`equals` + inheritance is genuinely unsolved.** No approach exists to extend an instantiable class, add a value component, and preserve the `equals` contract (Item 10). `instanceof` keeps symmetry but can break Liskov; `getClass` keeps subclass distinctness but breaks substitutability. No rule resolves this. Suppress the warning with a documented rationale and prefer composition over inheritance for value types.
 - **`compareTo` consistency with `equals` is recommended, not required.** A rule flagging every inconsistency would false-positive on `BigDecimal`; the contract sanctions the exception with a documented note.
 - **Static checks have false positives and negatives.** Historic gaps with anonymous classes and records (PMD), and a documented SpotBugs case where satisfying a rule can itself break the contract. This is the normal cost of analysis (Chapter 18), not tool failure.
@@ -248,7 +248,7 @@ These layer rather than compete: records for the common value type, immutable co
 
 ## Hand-off to the next chapter
 
-Value types that do not change their state and that answer equality and ordering correctly form the foundation every collection and algorithm in the JDK quietly assumes. The next chapter takes on the other silent failure mode in Java values: *absence*. Null is the value that is not there, and the same move applies — push the fact of possible-absence into the type (`Optional`, nullness annotations, JSpecify) so the compiler and the checker catch the missing case before a `NullPointerException` finds it at runtime.
+Value types that do not change their state and that answer equality and ordering correctly form the foundation every collection and algorithm in the JDK quietly assumes. The next chapter takes on the other silent failure mode in Java values: *absence*. Null is the value that is not there, and the same move applies: push the fact of possible-absence into the type (`Optional`, nullness annotations, JSpecify) so the compiler and the checker catch the missing case before a `NullPointerException` finds it at runtime.
 
 ## Back matter — sources & traceability
 
