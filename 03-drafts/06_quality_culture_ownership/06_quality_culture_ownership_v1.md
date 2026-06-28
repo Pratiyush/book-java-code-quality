@@ -81,13 +81,19 @@ A direct line runs from this table to the tools in this book: **collective owner
 
 Ownership raises a related risk. A codebase only one person understands is a *low-quality asset*, however clean the code. The **bus factor** (or truck factor) is the number of people who would have to be lost before a project stalls. A factor of one (a hero, a silo) is a severe, if invisible, quality risk: when that person leaves, the team's ability to change the code safely collapses (ISO Maintainability, at the *team* level).
 
-The practices that raise the bus factor are the same ones that build quality culture:
+Here the ownership table turns back on itself, because the two risks it lists pull in opposite directions. Strong ownership buys the deep expertise and clear accountability the table credits it with, and pays for them in exactly the bus factor this section warns about: concentrate a module in one head and that head becomes a factor of one. Spread the work the other way — collective or weak ownership, more hands on each area — and the bus factor climbs, but the cost the same table named arrives with it: without strong shared standards, quality drifts. The knob that lowers the bus-factor risk is the knob that raises the drift risk. A team cannot turn it one way for free.
 
-- **Code review** (Chapter 37): its major secondary benefit is spreading understanding across reviewers, not only catching defects.
-- **Collective / weak ownership** over single-owner silos: more people touch and understand each area.
-- **Pairing / mobbing**: real-time knowledge transfer.
-- **Documentation** (Chapter 37): ADRs preserve *why*; a good README shortens time-to-first-commit.
-- **Rotation**: deliberately moving who works where to avoid permanent silos.
+That tension is what the automated gates resolve, and it is why this chapter keeps returning to them. The gates (Parts IV–IX) hold the standard that collective ownership would otherwise leave to discipline, so a team can open a module to many hands — buying down the bus factor — without paying the drift the open model would otherwise cost. Knowledge-spreading stops being a trade *against* quality and becomes affordable: the gate covers the side the spreading leaves exposed. Strong ownership keeps its place for the small, deep, specialist area where one expert is the honest answer; everywhere else, the gate is what makes raising the bus factor safe.
+
+The practices that raise the bus factor are the same ones that build quality culture — and each spends something real to buy the resilience down:
+
+- **Code review** (Chapter 37): its major secondary benefit is spreading understanding across reviewers, not only catching defects. It costs reviewer time on every change; the silo it dissolves is what that time buys.
+- **Collective / weak ownership** over single-owner silos: more people touch and understand each area — affordable, per the argument above, only when the gates hold the standard the silo used to.
+- **Pairing / mobbing**: real-time knowledge transfer, paid for in two people's hours on one task — a deliberate trade of short-term throughput for a higher bus factor.
+- **Documentation** (Chapter 37): ADRs preserve *why*; a good README shortens time-to-first-commit. The cost is the upkeep, and stale docs raise the factor less than they appear to.
+- **Rotation**: deliberately moving who works where to avoid permanent silos, at the near-term cost of moving people off the work they already know.
+
+None of these is free, which is the point. Raising the bus factor is a standing investment a team chooses to make where a factor of one would hurt most, weighed against the throughput it spends — not a setting switched on once.
 
 ### Make the right thing the easy thing
 
