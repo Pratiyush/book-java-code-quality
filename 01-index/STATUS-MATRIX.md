@@ -10,7 +10,7 @@
 - **0** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).
 - **0** need EXAMPLE-BUILD (FLOOR-C compile).
 - **FLOOR-C on disk:** 45/47 modules built green; 45 CODE-REVIEW reports (45 PASS, 0 FAIL).
-- **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 12 in lift · 0 need an independent score · 35 approved (in 04-approved/).
+- **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 11 in lift · 0 need an independent score · 36 approved (in 04-approved/).
 - **DRIFT: ✅ none**.
 
 ## Needs-human queue 🔵
@@ -47,7 +47,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | 17 | 35 | SonarQube, IDE inspections & the layered sta… | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 18 | 38 | Writing custom rules; annotation processors … | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | | | **Part IV — Static Analysis, Linting & Formatting** |  |  |  |  |  |  |  |  |  |  | |
-| 19 | 39 | Living with findings: false positives, basel… | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 19 | 39 | Living with findings: false positives, basel… | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
 | 20 | 41 | The testing landscape & test quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 21 | 42 | Unit testing, assertions & mocking | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
