@@ -256,7 +256,7 @@ runtime below it is out of scope.
 
 **Java Code Quality**
 
-Copyright © **2026** **[Author — draft: Pratiyush]** *(draft, confirm at release)*.
+Copyright © **2026** **Pratiyush Kumar Singh**.
 All rights reserved.
 
 Published by **Self-published (draft)** *(draft, confirm at release)*.
