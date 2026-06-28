@@ -128,6 +128,22 @@ flagged to `09-flags/`.
 > primary confirming it. Contested opinions (e.g. comment style, mocking) are presented neutrally per
 > `NEUTRALITY.md`, attributed, not asserted.
 
+### 8. AI-era empirical sources (dated primaries — cited as a dated snapshot, never as a timeless constant)
+| Authority | Pin identifier (author / title / id / date) | Reference / URL | Use |
+|---|---|---|---|
+| Pearce, Ahmad, Tan, Dolan-Gavitt, Karri — *Asleep at the Keyboard? Assessing the Security of GitHub Copilot's Code Contributions* | **arXiv:2108.09293**, v3 2021-08-20 (publ. IEEE S&P 2022) | arxiv.org/abs/2108.09293 | Empirical "approximately 40% vulnerable" — 89 scenarios / 1,689 programs. The "~40%" figure source (Ch 41/key 97). |
+| Veracode — *2025 GenAI Code Security Report* | **Veracode**, 2025-07-30 (>100 LLMs; Java, Python, C#, JavaScript) | veracode.com/resources/ (2025 GenAI Code Security Report) | "45% of samples failed security tests"; XSS/CWE-80 failed in "86% of relevant samples"; "Java … riskiest … 72% failure rate" (Ch 41/key 97). |
+| Spracklen, Wijewickrama, Sakib, Maiti, Viswanath, Nepal — *We Have a Package for You! …* (package-hallucination / "slopsquatting") | **arXiv:2406.10279** (USENIX Security 2025) | arxiv.org/abs/2406.10279 | Scale of hallucinated dependencies: **19.7%** of LLM-recommended packages did not exist (Ch 41/key 99; SCA → Ch 28). |
+| Tornhill (CodeScene) — *Succeed with AI-assisted Coding: 3 Essential Guardrails* | **CodeScene / Adam Tornhill**, 2025-03-03 | codescene.com/blog (Succeed with AI-assisted Coding) | The three guardrails (code quality / code familiarity / strong test coverage) + the verbatim "double-bookkeeping … tests shouldn't be AI generated from the code" (Ch 41/key 99). |
+
+> **AI-era source rule (HARD):** these are **dated primary** sources — every figure cited from them stays
+> **dated + attributed** to the exact study/report and is read as a measurement of named models at a named
+> time, **never** as a timeless property of "AI" (see `NEUTRALITY.md` + the folklore/date-every-stat
+> discipline, Ch 1–2 key 04). A model generation can move any of these numbers in either direction; the
+> *structural* risk (plausible-but-unverified output → verification mandatory) is what is durable, not the
+> percentage. No AI figure is hard-coded as a fact in companion code. Related AI **productivity** figures are
+> survey/vendor-sourced and routed to Ch 42 (keys 100/98), dated-at-use — not pinned here.
+
 ## Moving-target policy (HARD)
 
 1. **NEVER verify against a development/snapshot stream** (a `-SNAPSHOT`, `main`, an unreleased preview, an

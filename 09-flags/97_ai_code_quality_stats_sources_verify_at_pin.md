@@ -6,6 +6,15 @@
 > *productivity* figure, which was always routed to Ch 42 (09-flags/100). Sources are not yet
 > SOURCE-PIN §7 rows — they are cited inline as dated primaries; promoting any to a §7 row remains
 > the optional, logged path. Resolution detail per item is in the section "✅ Resolved by web-verify" below.
+>
+> **UPDATE 2026-06-28 — PROMOTED to the pin.** The four verified AI-era primaries are now formalized as
+> **SOURCE-PIN §8** rows ("AI-era empirical sources"): Pearce et al. arXiv:2108.09293 (~40%); Veracode
+> *2025 GenAI Code Security Report* 2025-07-30 (45% / XSS 86% / Java 72%); Spracklen et al. arXiv:2406.10279
+> (19.7% hallucinated); CodeScene/Tornhill 2025-03-03 (three guardrails + "double-bookkeeping"). The draft
+> now cites each as `SOURCE-PIN §8`; the front-matter + back-matter "not yet pinned" notes were updated. The
+> two MECHANISM papers (arXiv 2502.01853 / 2409.19182) are deliberately NOT pinned (qualitative, cited inline).
+> The standing rule is unchanged: a §8 pin formalizes the SOURCE — every figure stays dated + attributed,
+> never a timeless constant; no AI number is hard-coded in companion code. This closes the §7/§8-row residual.
 
 - **Chapter / keys:** 97 (leads, Part XII umbrella) + 99 (folded, §B) — "The Draft That Looks Like a Deliverable" (Part XII OPENER; AI-generated code quality + AI-assisted refactoring/test generation)
 - **Draft:** `03-drafts/97_ai_generated_code_quality/97_ai_generated_code_quality_v1.md`

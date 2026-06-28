@@ -1,8 +1,8 @@
 # FLAG (key 39) — Part-IV tool/plugin versions + suppression/baseline defaults unverified
 
-**Type:** `⚠ verify at pin` (mechanism identity verified; versions/defaults deferred)
+**Type:** `✅ RESOLVED` (versions on Central 2026-06-27; plugin defaults + baseline-param name web-verified against the pinned plugin docs 2026-06-28; SpotBugs engine atoms + Sonar atoms resolved earlier)
 **Chapter key:** 39 — Living with findings
-**Filed:** 2026-06-15
+**Filed:** 2026-06-15 · **Resolved:** 2026-06-28
 
 ## Verified now (from each tool's own docs — identity, not version)
 - Checkstyle: `SuppressionFilter`, `SuppressionXpathSingleFilter`, `SuppressionSingleFilter`,
@@ -65,3 +65,39 @@ Same pre-pin caveat as keys 11/12/13/15/16/19/20/23/25: atoms are *flagged*, not
   `violationSeverity`/`baselineFiles` name + "since 4.7.1.0"/PMD `--suppress-marker` spelling) — those are
   Maven-plugin defaults, not on docs.sonarsource.com, and were not fetched this pass. Resolve at the pinned
   plugin docs. (Tool versions/GAVs already RESOLVED 2026-06-27; SpotBugs engine atoms RESOLVED at build.)
+
+## Update — 2026-06-28 (web-verify pass against the pinned PLUGIN docs — FLAG NOW ✅ RESOLVED)
+All four residual plugin-default / baseline atoms verified VERBATIM against the pinned plugin docs and
+resolved in the draft (`03-drafts/39_managing_findings/39_managing_findings_v1.md`):
+
+1. **`maven-checkstyle-plugin` `failOnViolation` Default `true`** — VERIFIED. Source:
+   `https://maven.apache.org/plugins/maven-checkstyle-plugin/check-mojo.html` (page banner: Maven Checkstyle
+   Plugin **3.6.0**, matching the Central-pinned plugin). Default column reads `true`.
+2. **`maven-checkstyle-plugin` `violationSeverity` Default `error`** — VERIFIED, same page. Default column
+   reads `error`. (Both confirmed by raw-HTML grep, not only the summarizer.)
+3. **PMD `--suppress-marker` spelling** — VERIFIED. Source:
+   `https://pmd.github.io/pmd/pmd_userdocs_suppressing_warnings.html` (PMD **7.25.0**). The modern PMD 7.x CLI
+   example uses `--suppress-marker` (`pmd check -d Foo.java -f text -R … --suppress-marker TURN_OFF_WARNINGS`);
+   the prose also references the legacy `-suppressmarker` spelling. Default marker `NOPMD`. Draft now records
+   `--suppress-marker` (legacy `-suppressmarker`) — the exact distinction the atom asked for.
+4. **SpotBugs `baselineFiles` param + "since 4.7.1.0"** — VERIFIED **with a name correction**. The pinned
+   `spotbugs-maven-plugin` **4.10.2.0** has **no parameter named `baselineFiles`**. The real parameters are
+   **`excludeBugsFile`** (`String`, property `spotbugs.excludeBugsFile`) and **`excludeBugsFiles`**
+   (`List<String>`, property `spotbugs.excludeBugsFiles`, **Since: 4.7.1.0**). Verbatim description:
+   *"File names of the baseline files. Bugs found in the baseline files won't be reported. Potential values
+   are a filesystem path, a URL, or a classpath resource."* The plural adds: *"This is an alternative to
+   `<excludeBugsFile>` which allows multiple files to be specified as separate elements in a pom."* So the
+   semantics ("bugs in baseline not reported") and the "multi-file since 4.7.1.0" claim were CORRECT, but the
+   atom's **parameter name was wrong** — corrected throughout the draft to `excludeBugsFile`/`excludeBugsFiles`.
+   Sources (raw-HTML grep, not summarizer): the plugin Groovy gapidocs
+   `https://spotbugs.github.io/spotbugs-maven-plugin/gapidocs/org/codehaus/mojo/spotbugs/SpotBugsMojo.html`
+   (`excludeBugsFile` Since 1.0-beta-1; `excludeBugsFiles` Since 4.7.1.0); cross-checked against
+   `spotbugs-mojo.html`/`check-mojo.html` (4.10.2.0, last published 2026-06-09), which list only
+   `excludeFilterFile`/`excludeBugsFile…` and confirm no `baselineFiles` token.
+
+**All `@pin` markers for these four atoms removed from the draft; cites added.** Residual ⚠ verify-at-pin
+atoms NOT in this flag's scope and still open elsewhere: the SpotBugs `Bug` `code`/`category` attribute forms
++ the `Package` filter element (no matcher asserted in the built filter) and Checkstyle `@SuppressWarnings`
+name-normalization — both doc-identity-only, tracked in the draft's back-matter, not blockers for ACCURACY.
+Engine-vs-pin version delta (SpotBugs 4.9.3 engine vs pin 4.10.2) tracked in
+`09-flags/20_companion_engine_versions_vs_pin.md`.
