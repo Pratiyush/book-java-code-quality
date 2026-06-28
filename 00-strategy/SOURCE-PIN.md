@@ -86,6 +86,7 @@ flagged to `09-flags/`.
 | JaCoCo (coverage) | **0.8.15** (latest stable on Central; 0.8.16 is an unreleased SNAPSHOT) | jacoco.org | ✅ re-pinned 2026-06-27 (was 0.8.16 — not published to Central) |
 | JMH (benchmarking) | **1.37** | github.com/openjdk/jmh | ✅ pinned |
 | REST-assured / Pact (contract) | **REST-assured 6.0.0** (2025-12; Java 17+) / **Pact-JVM 4.7.0** | rest-assured.io / pact.io | ✅ pinned |
+| ApprovalTests.Java (approval / golden-master) | **31.0.0** (`com.approvaltests:approvaltests:31.0.0`, Apache-2.0; mandatory transitive `com.approvaltests:approvaltests-util:31.0.0`, all other deps optional; bytecode target Java 8 → runs on the JDK-21 anchor; `Approvals.verify(String, Options)`, `org.approvaltests.core.Options#withScrubber/#withReporter`, `org.approvaltests.scrubbers.RegExScrubber`, `org.approvaltests.reporters.QuietReporter` for non-interactive CI; approved/received files resolved next to the test source by the default `StackTraceNamer`) | approvaltests.com + github.com/approvals/ApprovalTests.Java | ✅ pinned 2026-06-28 (Central maven-metadata `<release>31.0.0</release>`; web-verified; built green in key-50) |
 
 ### 4. Build, dependencies & supply chain
 | Authority | Pin identifier | Fetch / reference | Status |

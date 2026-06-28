@@ -5767,8 +5767,8 @@ The companion module captures that mechanism in a small verifier: it writes the 
 A scrubber is an ordinary string transform applied before the comparison; here it normalizes the report's timestamp:
 
 ```java
-    private static final UnaryOperator<String> SCRUB_TIMESTAMP =
-        text -> text.replaceAll("generated-at: .*", "generated-at: <timestamp>");
+    private static final RegExScrubber SCRUB_TIMESTAMP =
+        new RegExScrubber("generated-at: .*", "generated-at: <timestamp>");
 ```
 
 The test itself is then a single `verify` call against the reviewed baseline:
@@ -5776,8 +5776,10 @@ The test itself is then a single `verify` call against the reviewed baseline:
 ```java
         // Render with a live timestamp; the scrubber normalizes it so it matches the approved baseline.
         String report = OrderReport.render(ORDERS, Instant.now());
-        assertThatNoException()
-            .isThrownBy(() -> verifier.verify("order-report", report, SCRUB_TIMESTAMP));
+        Options options = new Options()
+            .withScrubber(SCRUB_TIMESTAMP)         // remove the non-deterministic timestamp
+            .withReporter(QuietReporter.INSTANCE);  // fail (not launch a diff GUI) on mismatch — CI-safe
+        Approvals.verify(report, options);
 ```
 
 It shines exactly where inline assertions fail: output that is **large or hard to hand-write** (generated reports, serialized DTOs, rendered text) where dozens of brittle field assertions would be unreadable, replaced by one `verify` call. It is also the classic safety net for **characterizing legacy code** before a refactor (the golden-master technique): capture the current behaviour as the approved baseline, change the structure underneath, and trust the baseline to flag any behavioural drift (a later part goes deeper on legacy work).

@@ -7,11 +7,31 @@
 - **Slug:** `50_contract_approval_testing`
 - **Draft under review:** `03-drafts/50_contract_approval_testing/50_contract_approval_testing_v1.md`
 - **Module built:** `08-companion-code/50_contract_approval_testing/`
-- **Run date:** 2026-06-26
+- **Run date:** 2026-06-26 · **Updated 2026-06-28** (REPRO: real ApprovalTests.Java wired — see Update note)
 - **Reviewer:** `example-builder` + `extract_snippet.sh` + `check_snippets.sh`
 - **Scripts run:** `check_snippets.sh` (PASS, 8/8); `mvn -B -Pquality … clean verify` (BUILD SUCCESS)
 - **Build-state:** `[MANUAL — tooling pending]` (key-01 pilot not yet cleared; built and verified by hand)
 - **Verdict:** **PASS** (Floor C)
+
+> **UPDATE 2026-06-28 — REPRO (lift the UTILITY cap): real ApprovalTests.Java now built, not substituted.**
+> ApprovalTests.Java is now pinned (`com.approvaltests:approvaltests:31.0.0`, Apache-2.0 — SOURCE-PIN §3,
+> verified against Central `maven-metadata.xml` `<release>31.0.0</release>`; bytecode target Java 8, runs on
+> the JDK-21 anchor; only mandatory transitive is `approvaltests-util:31.0.0`, all its other deps `<optional>`).
+> The dependency is wired into the module in **test scope** and the headline approval test
+> (`OrderReportApprovalTest.reportMatchesApprovedBaseline`) is now a **genuine `Approvals.verify(report,
+> Options)`** — `Options.withScrubber(new RegExScrubber("generated-at: .*", "generated-at: <timestamp>"))`
+> plus `withReporter(QuietReporter.INSTANCE)` so the build stays non-interactive (a mismatch fails the test
+> and writes `*.received.txt` instead of launching a diff GUI). The committed baseline
+> `OrderReportApprovalTest.reportMatchesApprovedBaseline.approved.txt` sits next to the test, where the
+> default `StackTraceNamer` resolves it. The displayed tags `scrubber` (2 lines) and `approval-verify`
+> (6 lines) now show the **real library** — closer to the prose's `Approvals.verify(result)` than the
+> earlier substitute. The hand-rolled `SnapshotVerifier` is kept alongside it (its `snapshot-verify` tag
+> unchanged) to walk the received/approved loop step by step and carry the honest-edge tests (missing
+> baseline, changed output, rubber-stamp). Rebuilt green: `mvn -B -Pquality -pl 50_contract_approval_testing
+> verify` → **BUILD SUCCESS**, 12 tests 0 failures, 0 Checkstyle, 0 SpotBugs, JDK 21.0.11; `check_snippets.sh`
+> 8/8. **The chapter can now re-score for UTILITY** (ApprovalTests moves from cited-not-built → built-green;
+> Pact + REST-assured remain runtime-gated/in-JVM, still flagged). LEGAL-IP §5 unaffected — the test is
+> original work calling the library's public API; no upstream sample copied.
 
 ---
 
@@ -87,8 +107,8 @@ CODE-REVIEW is the next gate).
 | 4 | `contract-verify` | `OrderContract.java` | 8 | same section (the contract's presence check over named fields) |
 | 5 | `endpoint-behaviour` | `OrderEndpointTest.java` | 5 | after the REST-assured DSL fence (in-JVM request/response/then) |
 | 6 | `snapshot-verify` | `SnapshotVerifier.java` | 8 | after the `Approvals.verify` mechanism paragraph |
-| 7 | `scrubber` | `OrderReportApprovalTest.java` | 2 | same section (scrubber normalizes the timestamp) |
-| 8 | `approval-verify` | `OrderReportApprovalTest.java` | 4 | same section (the test is one `verify` against the baseline) |
+| 7 | `scrubber` | `OrderReportApprovalTest.java` | 2 | same section (a real `RegExScrubber` normalizes the timestamp) |
+| 8 | `approval-verify` | `OrderReportApprovalTest.java` | 6 | same section (the test is one real `Approvals.verify(report, Options)` against the baseline) |
 
 `check_snippets.sh 03-drafts/50_contract_approval_testing/50_contract_approval_testing_v1.md`
 → **8 marker(s); 8 pass, 0 fail.** Each region verified ≤9 lines by `extract_snippet.sh` (max = 8).
@@ -99,13 +119,19 @@ marker carries a one-line lead-in in the locked voice.
 
 ## Enterprise-grade checklist
 
-- **Pinned dependency set (one inherited parent; zero runtime deps).**
+- **Pinned dependency set (one inherited parent; test-scope tools pinned).**
   - JUnit Jupiter: inherited from parent `junit-bom` → resolves **6.0.3** (no literal in module). *(Same
     aggregator-pin note as key-42: parent pins 6.0.3; SOURCE-PIN §3 row names the JUnit 6 line — both are
     that line.)*
   - AssertJ: inherited (managed) → **3.27.7** ✓ (SOURCE-PIN §3).
-  - No own `<groupId>`/`<version>`; no own BOM; no production runtime dependency at all (the three named
-    tools are prose-only — see flag). `<parent>` = `org.acme.storefront:companion-code`.
+  - **ApprovalTests.Java: `com.approvaltests:approvaltests:31.0.0` (test scope) ✓ (SOURCE-PIN §3).** The
+    aggregator's `dependencyManagement` pins only the universal test stack (JUnit + AssertJ), so this
+    chapter-specific tool carries its pinned version literal in the module (the brief forbids editing the
+    aggregator pom). Footprint is minimal: the only non-`<optional>` transitive is
+    `com.approvaltests:approvaltests-util:31.0.0`; every other ApprovalTests dependency is `<optional>` and
+    is not pulled in. No `<groupId>`/`<version>` of its own and no own BOM. `<parent>` =
+    `org.acme.storefront:companion-code`. No production runtime dependency (the library is test-scope only;
+    Pact + REST-assured remain prose-only — see flag).
 - **Externalized config / profiles.** Static-analysis gate behind the `-Pquality` profile (default build
   stays fast); Checkstyle/SpotBugs config externalized under `config/`. The provider's identifier field
   name is an externalized constructor parameter (`idFieldName`), not hard-coded, so the failure-path
@@ -164,10 +190,12 @@ is taken substantially verbatim from a source file, so no per-file attribution i
 | Consumer-driven contract model (consumer declares what it reads; provider replays) | Pact docs (dossier 50 §1, verbatim "code-first consumer-driven … only communication paths actually used by consumers get tested") — realized in-JVM; tool prose-only (flag) |
 | Provider-verification-replays-against-real-provider; `@State` precondition idea | Pact provider/junit5 docs (dossier 50 §0/§1) — realized in-JVM; tool prose-only (flag) |
 | `given()/when()/then()`, `body(path, matcher)` endpoint-assertion shape | REST-assured wiki (dossier 50 §1, verified DSL) — realized in-JVM request/response/then; tool prose-only (flag) |
-| Approval loop: `*.received.*` vs `*.approved.*`, diff on mismatch, scrubbers, "verifies unchanged not correct" | ApprovalTests.Java repo/site (dossier 52 §2/§4) — realized by `SnapshotVerifier`; tool unpinned, prose-only (flag) |
+| `Approvals.verify(String, Options)`, `Options#withScrubber/#withReporter`, `RegExScrubber`, `QuietReporter` | ApprovalTests.Java **31.0.0** (SOURCE-PIN §3; API decompiled from the pinned jar) — **real library, built green in test scope** |
+| Approval loop: `*.received.*` vs `*.approved.*`, diff on mismatch, scrubbers, "verifies unchanged not correct" | ApprovalTests.Java repo/site (dossier 52 §2/§4) — headline test uses the real library; `SnapshotVerifier` retained to walk the loop + carry the honest-edge tests |
 | Golden-master / characterization framing | Feathers *WELC* (SOURCE-PIN §7 canon; dossier 52 §2.2) — ⚠ §7 canon row, cited not asserted |
 | `Map.copyOf` / `Set.copyOf` defensive copy; record validation; `System.Logger`; `AtomicLong` | JDK 21 API (SOURCE-PIN §1) — same idioms as key-09/key-42 |
-| Pact GAV (4.x), REST-assured 6.0.0, ApprovalTests.Java GAV/version | `⚠ verify at pin` / unpinned — see `09-flags/50_contract_approval_tools_runtime_gated_and_unpinned.md` |
+| ApprovalTests.Java GAV/version | **pinned + built**: `com.approvaltests:approvaltests:31.0.0` (SOURCE-PIN §3; 2026-06-28) |
+| Pact GAV (4.7.0), REST-assured 6.0.0 | `⚠ verify at pin` / runtime-gated — see `09-flags/50_contract_approval_tools_runtime_gated_and_unpinned.md` |
 
 No invented atoms. No tool API/version/GAV presented as fact beyond the dossier + SOURCE-PIN; the three
 runtime/unpinned tools are named in prose only and flagged.
@@ -178,7 +206,8 @@ runtime/unpinned tools are named in prose only and flagged.
 
 | # | Item | Severity | Location | Fix |
 |---|---|---|---|---|
-| 1 | **Pact + REST-assured are runtime-gated** (provider verification / running endpoint; REPRO PENDING-RUNTIME per draft) and **ApprovalTests.Java has no SOURCE-PIN row.** Mechanisms realized in plain JDK+JUnit; tools named in prose/README only. | MATERIAL (flagged) | `09-flags/50_contract_approval_tools_runtime_gated_and_unpinned.md` | Human: provision a Docker/runtime env for a real Pact provider verification + REST-assured test; add a SOURCE-PIN §3 row for ApprovalTests.Java; re-confirm Pact (now 4.7.0) / REST-assured (6.0.0) annotation+GAV at `/pin-source`, then optionally upgrade the tagged regions to real tool forms (prose claims unchanged). |
+| 1 | **Pact + REST-assured remain runtime-gated** (provider verification / running endpoint; REPRO PENDING-RUNTIME per draft). Their mechanisms stay realized in plain JDK+JUnit; tools named in prose/README only. **(ApprovalTests.Java is RESOLVED — pinned + built green, 2026-06-28; see Update note.)** | MATERIAL (flagged, narrowed) | `09-flags/50_contract_approval_tools_runtime_gated_and_unpinned.md` | Human: provision a Docker/runtime env for a real Pact provider verification + REST-assured test; re-confirm Pact (4.7.0) / REST-assured (6.0.0) annotation+GAV at `/pin-source`, then optionally upgrade those tagged regions to real tool forms (prose claims unchanged). |
+| 1b | **ApprovalTests.Java REPRO done** — pinned `com.approvaltests:approvaltests:31.0.0` (Apache-2.0) and wired in test scope; headline approval test now a real `Approvals.verify(...)`; built green. | RESOLVED | module pom + `OrderReportApprovalTest.java` + SOURCE-PIN §3 | Chapter re-scores for UTILITY (cited-not-built → built-green). |
 | 2 | JUnit resolves to **6.0.3** (parent `junit-bom`), not a 6.1.0 literal. Module correctly inherits the parent and adds no literal; both are the pinned JUnit 6 line. | NOTE | `08-companion-code/pom.xml` `junit.version` | Aggregator-level decision (out of scope: "do NOT edit 08-companion-code/pom.xml"). Same note recorded for key-42. |
 
 ---
@@ -219,6 +248,18 @@ builds green and faithfully demonstrates each mechanism without inventing any to
   baseline as a green assertion the prose names as the failure mode (rather than a disabled or red test)
   satisfies both the chapter's centerpiece-risk teaching and the build-must-stay-green floor — the same
   shape as the key-42 over-mock smell.
+- **REPRO 2026-06-28 — a "cited-not-built unpinned tool" can be promoted to built once the GAV is verified
+  on Central and its bytecode target clears the anchor.** ApprovalTests.Java was capped as unpinned; the lift
+  was: (1) read the latest `<release>` from Central `maven-metadata.xml` (31.0.0 — never guessed), (2) inspect
+  the jar's bytecode major version (52 = Java 8 → safe on JDK 21) and the POM's mandatory-vs-`<optional>`
+  transitives (only `approvaltests-util` is mandatory — a tiny footprint), (3) decompile the public API from
+  the pinned jar to write the test against verified signatures, (4) prove it in a throwaway POC before
+  touching the book module. Two ApprovalTests CI gotchas worth promoting to EXAMPLES-GUIDE: use
+  `QuietReporter.INSTANCE` (the default reporter launches a diff GUI → hangs headless CI), and place the
+  `<TestClass>.<method>.approved.txt` baseline next to the test source (the default `StackTraceNamer`
+  convention) so the first run is green, not "fails-by-design" red. Keeping the hand-rolled `SnapshotVerifier`
+  alongside the real call let the honest-edge tests (missing/changed/rubber-stamp) stay without faking library
+  internals.
 
 ---
 
