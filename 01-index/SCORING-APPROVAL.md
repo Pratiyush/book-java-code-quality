@@ -8,7 +8,7 @@
 | 1 | 01 | 45/50 | 90% | PASS | PASS | PASS | NA | NA | yes | **APPROVED** | 90% (independent) ≥88% + floors PASS → auto-approve into 04-approved ★≥90% excellence; example-build pending (separate phase) |
 | 2 | 03 | 43/50 | 86% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 86% (independent) <88% → lift loop (≤3) toward the bar |
 | 3 | 05 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 84% (independent) <88% → lift loop (≤3) toward the bar |
-| 4 | 06 | 39/50 | 78% | PASS | PASS | PASS | NA | NA | yes | **LIFT** | 78% (independent) <88% → lift loop (≤3) toward the bar |
+| 4 | 06 | 40/50 | 80% | PASS | PASS | PASS | NA | NA | yes | **LIFT** | 80% (independent) <88% → lift loop (≤3) toward the bar |
 | 5 | 08 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
 | 6 | 07 | 40/50 | 80% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 80% (independent) <88% → lift loop (≤3) toward the bar |
 | 7 | 09 | 40/50 | 80% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 80% (independent) <88% → lift loop (≤3) toward the bar |
@@ -46,7 +46,7 @@
 | 39 | 91 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 84% (independent) <88% → lift loop (≤3) toward the bar |
 | 40 | 96 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
 | 41 | 97 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
-| 42 | 100 | 41/50 | 82% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 82% (independent) <88% → lift loop (≤3) toward the bar |
+| 42 | 100 | 43/50 | 86% | PASS | PASS | PASS | PASS | PASS | yes | **LIFT** | 86% (independent) <88% → lift loop (≤3) toward the bar |
 | 43 | 101 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
 | 44 | 105 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
 | 45 | 106 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
