@@ -10,7 +10,7 @@
 - **0** await the **independent** gates (source-verify / clarity / audit / score / reconcile — agents on a *different model*).
 - **0** need EXAMPLE-BUILD (FLOOR-C compile).
 - **FLOOR-C on disk:** 45/47 modules built green; 45 CODE-REVIEW reports (45 PASS, 0 FAIL).
-- **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 8 in lift · 0 need an independent score · 39 approved (in 04-approved/).
+- **Routing (auto-approve at 88% + floors):** 0 eligible/at-gate · 7 in lift · 0 need an independent score · 40 approved (in 04-approved/).
 - **DRIFT: ✅ none**.
 
 ## Needs-human queue 🔵
@@ -29,7 +29,7 @@ _None yet — a chapter auto-approves once an INDEPENDENT score reaches 88% + fl
 | | | **Part XIV — Capstone & Synthesis** |  |  |  |  |  |  |  |  |  |  | |
 | 4 | 06 | Quality culture, ownership & knowledge | 🟢 | 🟢 | 🟢 | ⚪ | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
 | 5 | 08 | Effective Java & modern Java for quality | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
-| 6 | 07 | Naming, structure & formatting | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
+| 6 | 07 | Naming, structure & formatting | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 7 | 09 | Designing clear APIs & method contracts | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 8 | 10 | Immutability & value-based design | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟢 | complete |
 | 9 | 11 | Null-safety & Optional discipline | 🟢 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🟡 | approve |
