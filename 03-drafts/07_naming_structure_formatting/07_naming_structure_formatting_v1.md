@@ -61,7 +61,7 @@ Read top to bottom, the column that matters is "how much is mechanical." A *lint
 
 ### Layer 1 — Naming: the settled part and the hard part
 
-The typographical conventions are near-universal. *Effective Java* Item 68 calls the typographical conventions "straightforward and largely unambiguous" while the *grammatical* conventions are "more complex and looser" (Bloch, 2018 — ⚠ verbatim verify @pin). The Google Java Style Guide states them precisely, and they line up with the JLS §6.1 naming guidance (⚠ confirm exact SE 21/25 wording @pin):
+The typographical conventions are near-universal. *Effective Java* Item 68 ("Adhere to generally accepted naming conventions", Bloch, 2018) sorts Java naming into two kinds of rule and is explicit that they are not equally firm: the *typographical* conventions (which case a package, class, method, field, or constant takes) are tight and rarely in dispute, whereas the *grammatical* conventions (the part-of-speech shape of a good name — noun phrases for classes, verb phrases for methods) are softer and admit more judgement. The Google Java Style Guide states the typographical half precisely, and they line up with the JLS §6.1 naming guidance (⚠ confirm exact SE 21/25 wording @pin):
 
 | Element | Convention (Google Java Style §5) | Example |
 |---|---|---|
@@ -93,7 +93,7 @@ In the companion module the naming layer is a curated block of Checkstyle module
 
 The deterministic part of even naming is the **camel-case algorithm** (Google Java Style §5.3): take the prose phrase, transliterate to ASCII, split into words, lowercase everything, then uppercase the first letter of each word. It settles the case that trips everyone: `XMLHTTPRequest` becomes `XmlHttpRequest`, not `XMLHTTPRequest`, by treating an acronym as one word.
 
-The hard part, which no algorithm reaches, is whether the name is *true*. A linter confirms `data` matches `lowerCamelCase`; it cannot flag `data` as a uselessly vague name for the customer's unsettled invoices. The grammatical and semantic part of naming (the part *Effective Java* calls "looser") is where the value is, and it is unenforceable. Enforcing naming with a tool does not give good names.
+The hard part, which no algorithm reaches, is whether the name is *true*. A linter confirms `data` matches `lowerCamelCase`; it cannot flag `data` as a uselessly vague name for the customer's unsettled invoices. The grammatical and semantic part of naming — the softer half Item 68 separates out — is where the value is, and it is unenforceable. Enforcing naming with a tool does not give good names.
 
 ### Layer 2 — Structure: order with a reason
 
@@ -131,7 +131,7 @@ The practice lesson is one sentence: pick one deterministic formatter, run its `
 
 Comments split into two populations that must be reasoned about separately, because the field agrees about one and argues about the other.
 
-**Javadoc as a contract: near-consensus.** For code other people call, an API doc comment is part of the deliverable. *Effective Java* Item 56 states the strong form: precede every exported class, interface, constructor, method, and field with a doc comment describing the *contract* (preconditions often via `@throws`, postconditions, side effects), not the implementation. The JDK 21 doc-comment spec defines the grammar: a `/** … */` block recognized only immediately before a declaration (comments in a method body are ignored), a main description whose first sentence becomes the summary, then block tags (`@param`, `@return`, `@throws`, `@see`, `@since`, `@deprecated`) and inline tags (`{@code}`, `{@link}`, `{@inheritDoc}`).
+**Javadoc as a contract: near-consensus.** For code other people call, an API doc comment is part of the deliverable. *Effective Java* Item 56 ("Write doc comments for all exposed API elements", Bloch, 2018) states the strong form: precede every exported class, interface, constructor, method, and field with a doc comment describing the *contract* (preconditions often via `@throws`, postconditions, side effects), not the implementation. The JDK 21 doc-comment spec defines the grammar: a `/** … */` block recognized only immediately before a declaration (comments in a method body are ignored), a main description whose first sentence becomes the summary, then block tags (`@param`, `@return`, `@throws`, `@see`, `@since`, `@deprecated`) and inline tags (`{@code}`, `{@link}`, `{@inheritDoc}`).
 
 Two platform features make Javadoc more than prose. `{@snippet}` (JEP 413, GA in JDK 18) makes example code *compiler-discoverable and validatable*: an example in a doc comment can be compiled in CI instead of rotting. And `-Xdoclint` (on by default since JDK 8; the maven-javadoc-plugin `<doclint>` element) can fail the build on comment problems across categories `accessibility`, `html`, `missing`, `reference`, `syntax`. The documented middle path is `<doclint>all,-missing</doclint>`, which validates the *shape* of comments without forcing one onto every member.
 
@@ -221,7 +221,7 @@ The readability fundamentals now have clear ownership: a formatter owns typograp
 ## Back matter — sources & traceability
 
 - **Google Java Style Guide** — §3 source-file structure, §4 formatting (+2 indent, 100-col, K&R), §5 naming (the case table, §5.2.4 constant definition, §5.3 camel-case algorithm). *(Living web doc — re-confirm § numbers at pin.)*
-- **Effective Java 3e** (Bloch, 2018) — Item 68 (naming conventions; "straightforward and largely unambiguous" / "more complex and looser"), Item 56 (doc comments as contract). *(⚠ verbatim + page verify @pin.)*
+- **Effective Java 3e** (Bloch, 2018) — Item 68 "Adhere to generally accepted naming conventions" (the typographical-vs-grammatical split: typographical case rules tight, grammatical name-shape rules looser — paraphrased, not quoted), Item 56 "Write doc comments for all exposed API elements" (doc comments as contract). *(Item#+title web-confirmed against the published 3e TOC; positions paraphrased — no verbatim asserted.)*
 - **JLS SE 21 / SE 25 §6.1** — language naming guidance. *(⚠ exact wording/section verify @pin.)*
 - **Checkstyle 13.6.0** — `ConstantName` `^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$`, `MethodName` `^[a-z][a-zA-Z0-9]*$` (verified); `MissingJavadocMethod`, `SummaryJavadoc`, `LineLength` (default 80) ⚠ verify @pin.
 - **PMD 7.25.0** — `ClassNamingConventions.classPattern` `[A-Z][a-zA-Z0-9]*`, `FieldNamingConventions.constantPattern` `[A-Z][A-Z_0-9]*` (verified); `CommentRequired`, `CommentSize`.

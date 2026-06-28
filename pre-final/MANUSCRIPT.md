@@ -844,6 +844,16 @@ Approaches to the same goal (making code understandable and measurable) that sit
 - **Reach for a metric** to start a conversation, never to end one or to rank a person. A number that cannot change a decision is vanity; stop collecting it.
 - **Ease off** chasing metric perfection on throwaway or frozen code (Chapter 1's exception), and never trade real readability for a better number.
 
+The choices above collapse to one reach-for-it table. Read each row as a question the reader actually has, the metric that answers it, and the counter-metric that keeps the answer honest, never as a verdict to rank a person:
+
+| The question | Metric that answers it | Pair it with |
+|---|---|---|
+| How many tests does this method need? | cyclomatic complexity | the cognitive score, so a passable path count does not hide an unreadable body |
+| How hard is this to read? | cognitive complexity (`java:S3776`) | readable naming, since a low score with poor names is still unreadable |
+| Do the tests detect bugs, not just touch lines? | mutation score | line coverage, which is necessary but not sufficient |
+| Is delivery healthy? | throughput | stability (change-failure rate), so speed is not bought with breakage |
+| Is the code base growing in value? | nothing — lines of code is vanity here | outcomes (defects-escaped, lead time); no counter-metric rescues LOC |
+
 ## Hand-off
 
 A metric on a dashboard is downstream of a hundred small decisions a developer makes while typing: naming, structure, the shape of a method. The next chapters drop from "what to measure" to "what to write": the craft of quality Java, starting with the canon that distilled it.
@@ -1154,7 +1164,7 @@ The **DORA** research program (the research behind the four delivery keys from C
 
 ### Shift-left: build quality in, not inspect it in
 
-The second idea is *when* quality happens. Its intellectual ancestor is **W. Edwards Deming**'s manufacturing principle: **build quality into the process rather than inspecting it at the end.** A model where a separate QA phase finds defects after the fact catches them when they are most expensive (Chapter 1's economics).
+The second idea is *when* quality happens. Its intellectual ancestor is **W. Edwards Deming**, whose work on management (*Out of the Crisis*) argued, as this book reads him, that an organization should stop relying on end-of-line inspection to reach quality and instead make quality part of how the work is produced — and, relatedly, that most defects trace to the system the work runs in rather than to the individuals doing it, so improvement comes from fixing the process and removing the fear that stops people from surfacing problems. A model where a separate QA phase finds defects after the fact catches them when they are most expensive (Chapter 1's economics).
 
 **Larry Smith** named the software version in 2001. *Shift-left testing* moves testing and quality activities *left*, toward inception: it shortens the feedback loop and has developers and QA collaborate from the start. Figure 4.2 plots the reason the direction matters. The cost to fix a defect climbs with each lifecycle stage it survives, so the Ch-3 tool layers sit as far left as they can. In this book's terms, shift-left *is* that lifecycle map from Chapter 3: IDE inspections, then pre-commit hooks, then compile-time checks, then fast CI, each layer catching problems earlier and cheaper than the next. Culture decides whether developers *welcome* that feedback or route around it.
 
@@ -1176,7 +1186,7 @@ Diffuse responsibility kills quality; someone has to own it. *Code ownership* is
 
 *Figure 4.3 — The three code-ownership models. Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.*
 
-A direct line runs from this table to the tools in this book: **collective ownership only works if the automated standards keep everyone honest**. A team can collectively own code only when the gates (Parts IV–IX) hold the line. Mechanisms make ownership concrete. A `CODEOWNERS` file encodes ownership for review routing (Chapter 37); "you build it, you run it" (a practice popularized at Amazon) pushes operational ownership to the team that wrote the code, aligning incentives with quality.
+A direct line runs from this table to the tools in this book: **collective ownership only works if the automated standards keep everyone honest**. A team can collectively own code only when the gates (Parts IV–IX) hold the line. Mechanisms make ownership concrete. A `CODEOWNERS` file encodes ownership for review routing (Chapter 37); the model Amazon CTO Werner Vogels summed up as *you build it, you run it* (ACM Queue, "A Conversation with Werner Vogels," 2006) pushes operational ownership to the team that wrote the code, on the documented reasoning that putting developers on the operational hook for what they ship raises the quality of the service. It aligns the incentive to write maintainable code with the people who feel the cost when it is not.
 
 ### Knowledge is a quality asset: the bus factor
 
@@ -1220,7 +1230,7 @@ The honest answer is layered:
 Two well-known heuristics help, stated as heuristics, not laws:
 
 - **The Boy Scout Rule** (Robert C. Martin, *97 Things Every Programmer Should Know*): "Always leave the code cleaner than you found it." Incremental, opt-in improvement that compounds; it is the cultural engine behind ratcheting (Chapter 38) and opportunistic refactoring (Chapter 39).
-- **Broken Windows** (from *The Pragmatic Programmer*): do not tolerate visible decay, because small unrepaired defects signal that quality does not matter and decay accelerates.
+- **Broken Windows** (Hunt and Thomas, *The Pragmatic Programmer*): the idea, in this book's words, is that a single defect left visibly unrepaired quietly resets the standard for everyone who sees it — it reads as permission to let the next one slide too — so the discipline is to fix the small, obvious problems promptly rather than letting a codebase learn that nobody minds them.
 
 > **NOTE** The social-science "Broken Windows" theory is contested in its original (policing) context. This book uses it only as a *code* heuristic, attributed, and flags that the underlying theory is disputed, consistent with the book's rule against repeating folklore as fact.
 
@@ -1279,9 +1289,10 @@ Part I has built the foundation: quality is a nameable, priceable set of attribu
 - Ron Westrum, "A typology of organisational cultures," *BMJ Quality & Safety* 2004;13(suppl 2):ii22–ii27 (typology first presented at a 1988 World Bank conference; the 2004 paper is the citation DORA/*Accelerate* use).
 - Larry Smith, "Shift-Left Testing," *Dr. Dobb's Journal*, Vol. 26, Issue 9 (September 2001).
 - Martin Fowler, *CodeOwnership* (bliki).
+- Werner Vogels, "A Conversation with Werner Vogels," *ACM Queue* (2006) — the *you build it, you run it* operational-ownership model (corroborated by the AWS News Blog, Jeff Barr, 2006-05-16; verified at use 2026-06-28).
 
 *Tier 2 — Accessible / further reading*
-- W. Edwards Deming on building quality in (manufacturing lineage).
+- W. Edwards Deming, *Out of the Crisis* — building quality in rather than inspecting it in, and improving the system over blaming individuals (paraphrased, attributed).
 - Robert C. Martin, "The Boy Scout Rule," in *97 Things Every Programmer Should Know* (O'Reilly, 2010); Hunt & Thomas, *The Pragmatic Programmer* (Broken Windows; note the original theory is contested).
 - Bus/truck-factor research.
 
@@ -1570,7 +1581,7 @@ Read top to bottom, the column that matters is "how much is mechanical." A *lint
 
 ### Layer 1 — Naming: the settled part and the hard part
 
-The typographical conventions are near-universal. *Effective Java* Item 68 calls the typographical conventions "straightforward and largely unambiguous" while the *grammatical* conventions are "more complex and looser" (Bloch, 2018 — ⚠ verbatim verify @pin). The Google Java Style Guide states them precisely, and they line up with the JLS §6.1 naming guidance (⚠ confirm exact SE 21/25 wording @pin):
+The typographical conventions are near-universal. *Effective Java* Item 68 ("Adhere to generally accepted naming conventions", Bloch, 2018) sorts Java naming into two kinds of rule and is explicit that they are not equally firm: the *typographical* conventions (which case a package, class, method, field, or constant takes) are tight and rarely in dispute, whereas the *grammatical* conventions (the part-of-speech shape of a good name — noun phrases for classes, verb phrases for methods) are softer and admit more judgement. The Google Java Style Guide states the typographical half precisely, and they line up with the JLS §6.1 naming guidance (⚠ confirm exact SE 21/25 wording @pin):
 
 | Element | Convention (Google Java Style §5) | Example |
 |---|---|---|
@@ -1604,7 +1615,7 @@ In the companion module the naming layer is a curated block of Checkstyle module
 
 The deterministic part of even naming is the **camel-case algorithm** (Google Java Style §5.3): take the prose phrase, transliterate to ASCII, split into words, lowercase everything, then uppercase the first letter of each word. It settles the case that trips everyone: `XMLHTTPRequest` becomes `XmlHttpRequest`, not `XMLHTTPRequest`, by treating an acronym as one word.
 
-The hard part, which no algorithm reaches, is whether the name is *true*. A linter confirms `data` matches `lowerCamelCase`; it cannot flag `data` as a uselessly vague name for the customer's unsettled invoices. The grammatical and semantic part of naming (the part *Effective Java* calls "looser") is where the value is, and it is unenforceable. Enforcing naming with a tool does not give good names.
+The hard part, which no algorithm reaches, is whether the name is *true*. A linter confirms `data` matches `lowerCamelCase`; it cannot flag `data` as a uselessly vague name for the customer's unsettled invoices. The grammatical and semantic part of naming — the softer half Item 68 separates out — is where the value is, and it is unenforceable. Enforcing naming with a tool does not give good names.
 
 ### Layer 2 — Structure: order with a reason
 
@@ -1660,7 +1671,7 @@ The practice lesson is one sentence: pick one deterministic formatter, run its `
 
 Comments split into two populations that must be reasoned about separately, because the field agrees about one and argues about the other.
 
-**Javadoc as a contract: near-consensus.** For code other people call, an API doc comment is part of the deliverable. *Effective Java* Item 56 states the strong form: precede every exported class, interface, constructor, method, and field with a doc comment describing the *contract* (preconditions often via `@throws`, postconditions, side effects), not the implementation. The JDK 21 doc-comment spec defines the grammar: a `/** … */` block recognized only immediately before a declaration (comments in a method body are ignored), a main description whose first sentence becomes the summary, then block tags (`@param`, `@return`, `@throws`, `@see`, `@since`, `@deprecated`) and inline tags (`{@code}`, `{@link}`, `{@inheritDoc}`).
+**Javadoc as a contract: near-consensus.** For code other people call, an API doc comment is part of the deliverable. *Effective Java* Item 56 ("Write doc comments for all exposed API elements", Bloch, 2018) states the strong form: precede every exported class, interface, constructor, method, and field with a doc comment describing the *contract* (preconditions often via `@throws`, postconditions, side effects), not the implementation. The JDK 21 doc-comment spec defines the grammar: a `/** … */` block recognized only immediately before a declaration (comments in a method body are ignored), a main description whose first sentence becomes the summary, then block tags (`@param`, `@return`, `@throws`, `@see`, `@since`, `@deprecated`) and inline tags (`{@code}`, `{@link}`, `{@inheritDoc}`).
 
 Two platform features make Javadoc more than prose. `{@snippet}` (JEP 413, GA in JDK 18) makes example code *compiler-discoverable and validatable*: an example in a doc comment can be compiled in CI instead of rotting. And `-Xdoclint` (on by default since JDK 8; the maven-javadoc-plugin `<doclint>` element) can fail the build on comment problems across categories `accessibility`, `html`, `missing`, `reference`, `syntax`. The documented middle path is `<doclint>all,-missing</doclint>`, which validates the *shape* of comments without forcing one onto every member.
 
@@ -1764,7 +1775,7 @@ The readability fundamentals now have clear ownership: a formatter owns typograp
 ## Back matter — sources & traceability
 
 - **Google Java Style Guide** — §3 source-file structure, §4 formatting (+2 indent, 100-col, K&R), §5 naming (the case table, §5.2.4 constant definition, §5.3 camel-case algorithm). *(Living web doc — re-confirm § numbers at pin.)*
-- **Effective Java 3e** (Bloch, 2018) — Item 68 (naming conventions; "straightforward and largely unambiguous" / "more complex and looser"), Item 56 (doc comments as contract). *(⚠ verbatim + page verify @pin.)*
+- **Effective Java 3e** (Bloch, 2018) — Item 68 "Adhere to generally accepted naming conventions" (the typographical-vs-grammatical split: typographical case rules tight, grammatical name-shape rules looser — paraphrased, not quoted), Item 56 "Write doc comments for all exposed API elements" (doc comments as contract). *(Item#+title web-confirmed against the published 3e TOC; positions paraphrased — no verbatim asserted.)*
 - **JLS SE 21 / SE 25 §6.1** — language naming guidance. *(⚠ exact wording/section verify @pin.)*
 - **Checkstyle 13.6.0** — `ConstantName` `^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$`, `MethodName` `^[a-z][a-zA-Z0-9]*$` (verified); `MissingJavadocMethod`, `SummaryJavadoc`, `LineLength` (default 80) ⚠ verify @pin.
 - **PMD 7.25.0** — `ClassNamingConventions.classPattern` `[A-Z][a-zA-Z0-9]*`, `FieldNamingConventions.constantPattern` `[A-Z][A-Z_0-9]*` (verified); `CommentRequired`, `CommentSize`.
@@ -1834,7 +1845,7 @@ The whole skill is *moving promises leftward*: from a comment nobody reads, to a
 
 ### Minimize the surface (Items 15–17)
 
-The smallest API carries the lowest maintenance burden, because every `public` or `protected` member is a promise that must be kept *forever* (the binary-compatibility burden covered at the end of this chapter). *Effective Java* Item 15, "Minimize the accessibility of classes and members," makes each member as inaccessible as it can be; a top-level class that can be package-private should be. Item 16 uses accessor methods, not public fields, in public classes. Item 17, "Minimize mutability," gives an immutable type the simplest contract there is: its state never changes, so it is automatically thread-safe and never needs a defensive copy. (Records, JEP 395, GA in Java 16, are the modern shorthand; see Chapter 8.)
+The smallest API carries the lowest maintenance burden, because every `public` or `protected` member is a promise that must be kept *forever* (the binary-compatibility burden covered at the end of this chapter). *Effective Java* Item 15 (on minimizing the accessibility of classes and members) argues for giving every member the narrowest access level it can tolerate; a top-level class that can drop to package-private should. Item 16 (on using accessors rather than public fields in public classes) keeps the field private behind a method so the representation is not frozen into the contract. Item 17 (on minimizing mutability) gives an immutable type the simplest contract there is: its state never changes, so it is automatically thread-safe and never needs a defensive copy. (Records, JEP 395, GA in Java 16, are the modern shorthand; see Chapter 8.)
 
 The mechanism is subtraction: a smaller surface means a smaller contract to maintain.
 
@@ -1919,7 +1930,7 @@ import org.jspecify.annotations.NullMarked;
 
 ### Document the part types cannot carry (Item 56)
 
-For everything the signature cannot express, the doc comment *is* the contract. *Effective Java* Item 56 states the rule: "Write doc comments for all exposed API elements." The conventions: `@param` per parameter (its preconditions), `@return` for every non-void method, `@throws` for each exception with its triggering condition, and a first sentence that stands alone as the summary. `@implSpec` documents the contract a subclass may rely on. (The contested question of *how much* to comment implementation code belongs to the previous chapter; the point here is narrower, that a published API's contract is documented.) A query method in the companion module carries each of those clauses, so the parts the signature cannot state are stated where a reader and a doc generator both find them:
+For everything the signature cannot express, the doc comment *is* the contract. *Effective Java* Item 56 (on writing doc comments for all exposed API elements) puts it directly: anything a caller can reach should carry a doc comment that states its contract, since an undocumented exported element is one the caller has to reverse-engineer. The conventions: `@param` per parameter (its preconditions), `@return` for every non-void method, `@throws` for each exception with its triggering condition, and a first sentence that stands alone as the summary. `@implSpec` documents the contract a subclass may rely on. (The contested question of *how much* to comment implementation code belongs to the previous chapter; the point here is narrower, that a published API's contract is documented.) A query method in the companion module carries each of those clauses, so the parts the signature cannot state are stated where a reader and a doc generator both find them:
 
 ```java
     /**
@@ -1992,7 +2003,7 @@ The contract framing is now in place: a promise with a type-carried half and a d
 ## Back matter — sources & traceability
 
 - **JDK 21 API — `java.util.Objects`** — `requireNonNull` (since 1.7/1.8), `checkIndex`/`checkFromToIndex`/`checkFromIndexSize` (since 9; `long` overloads 16); documented exception conventions. Signatures verified @ JDK 21. **`java.util.Optional`** — return-type contract.
-- **Effective Java 3e** (Bloch, 2018) — Items 15–17 (accessibility, accessors, mutability), 49 (check parameters), 50 (defensive copies), 51–53 (signatures/overloading/varargs), 54–55 (empty-not-null / `Optional`), 56 (doc all exposed API). *(Named-canon secondary source: item numbers/topics confirmed; quoted item titles and any page reference are verified against the physical 3e edition at `/pin-source` — not fetchable in-repo.)*
+- **Effective Java 3e** (Bloch, 2018) — Items 15–17 (accessibility, accessors, mutability), 49 (check parameters), 50 (defensive copies), 51–53 (signatures/overloading/varargs), 54–55 (empty-not-null / `Optional`), 56 (doc all exposed API). *(Named-canon secondary source: item numbers and topics are cited and the Item→title mapping is web-confirmed against the public 3e table of contents; the chapter presents this guidance as paraphrase in its own words, with no verbatim Item-title quotation and no page reference — the physical 3e text is not fetchable in-repo, so no book wording is reproduced.)*
 - **JLS SE 21** — access control §6.6, varargs §8.4.1, overload resolution §15.12.2, binary compatibility ch.13. *(Edition pinned (SE 21); the exact section numbers are confirmed against the JLS SE 21 text at `/pin-source` — standards-edition discipline, not fetchable in-repo.)*
 - **JEPs** — 395 (records, final 16), 409 (sealed, 17), 441 (pattern matching for `switch`, 21) — GA at the Java 21 anchor and exercised in the companion module (records); 467 (`///` Markdown docs, JDK 23) — ⚠ AHEAD-OF-PIN, not available at the anchor (flagged `09-flags/09_jep467_markdown_doccomments_ahead_of_pin.md`).
 - **Error Prone** — `CheckReturnValue` (ERROR), `CanIgnoreReturnValue`, `MissingOverride` (WARNING), `NullArgumentForNonNullParameter`, `InconsistentOverloads`, `ParameterName`. *(Rule IDs verified; default severities and the exact 2.x build are confirmed against the Error Prone release at companion-build/`/pin-source` — SOURCE-PIN §2 pins this line "exact patch at build," and this module's gate runs Checkstyle + SpotBugs rather than Error Prone.)*
@@ -2126,13 +2137,13 @@ The JDK doc's own line is the rule to remember: *an immutable collection of obje
 
 An immutable value type is only trustworthy if it answers "are these equal?" and "how do these order?" correctly. Four `Object`/interface methods carry *machine-checked behavioral contracts*. Break them and the JDK's own collections misbehave silently, with code that compiles cleanly.
 
-First, `equals` has to behave like a sane notion of "the same". The spec states this as an equivalence relation. `equals(Object)` must be (verbatim, JDK 21 `Object` Javadoc): **reflexive** (`x.equals(x)` is true), **symmetric** (`x.equals(y)` iff `y.equals(x)`), **transitive**, **consistent** (repeated calls agree if no field changes), and **null-false** (`x.equals(null)` is false).
+First, `equals` has to behave like a sane notion of "the same". The spec states this as an equivalence relation. `equals(Object)` must be (verbatim, JDK 21 `Object` Javadoc): **reflexive** (`x.equals(x)` is true), **symmetric** (`x.equals(y)` iff `y.equals(x)`), **transitive**, **consistent** (repeated calls agree if no field changes), and **null-false** (`x.equals(null)` is false). So, in practice: do not hand-write `equals` for a value type — make it a record and let the compiler derive an equivalence relation that cannot violate these five.
 
-Second, `hashCode` has to agree with `equals` about which objects match. Concretely, `hashCode()` must satisfy: equal objects have equal hash codes; the value is consistent within a run (need not survive across runs); unequal objects *may* share a hash but distinct hashes help hash-table performance. **Override `equals` ⇒ override `hashCode`** (Item 11), or two value-equal objects can land in different `HashMap` buckets and the map "loses" a key it contains.
+Second, `hashCode` has to agree with `equals` about which objects match. Concretely, `hashCode()` must satisfy: equal objects have equal hash codes; the value is consistent within a run (need not survive across runs); unequal objects *may* share a hash but distinct hashes help hash-table performance. **Override `equals` ⇒ override `hashCode`** (Item 11), or two value-equal objects can land in different `HashMap` buckets and the map "loses" a key it contains. So, in practice: never override one without the other, and where one is hand-written, build the body from `Objects.hash` rather than reaching for a hand-rolled multiplier.
 
-Third, ordering is about direction, not distance. `Comparable.compareTo(T)` must satisfy (verbatim, JDK 21 `Comparable` Javadoc): **signum anti-symmetry** (`signum(x.compareTo(y)) == -signum(y.compareTo(x))`), **transitivity**, and consistency. Only the *sign* is contractual, never a specific magnitude. Consistency with `equals` is *strongly recommended but not required*; a class that breaks it (like `BigDecimal`, where `compareTo` is 0 for `1.0` and `1.00` but `equals` is false) should document "Note: this class has a natural ordering that is inconsistent with equals."
+Third, ordering is about direction, not distance. `Comparable.compareTo(T)` must satisfy (verbatim, JDK 21 `Comparable` Javadoc): **signum anti-symmetry** (`signum(x.compareTo(y)) == -signum(y.compareTo(x))`), **transitivity**, and consistency. Only the *sign* is contractual, never a specific magnitude. Consistency with `equals` is *strongly recommended but not required*; a class that breaks it (like `BigDecimal`, where `compareTo` is 0 for `1.0` and `1.00` but `equals` is false) should document "Note: this class has a natural ordering that is inconsistent with equals." So, in practice: a record does not derive `Comparable`, so write it by hand with `Comparator.comparing(...).thenComparing(...)` — never `int`-subtraction — and check only the *sign* of the result.
 
-Fourth, `toString` is the loosest of the four. It carries a weaker, recommended contract: a concise, informative, human-readable representation (Item 12 recommends overriding it for debuggability), with the caution that committing to a *parseable* format turns it into an API callers depend on.
+Fourth, `toString` is the loosest of the four. It carries a weaker, recommended contract: a concise, informative, human-readable representation (Item 12 recommends overriding it for debuggability), with the caution that committing to a *parseable* format turns it into an API callers depend on. So, in practice: take the record's derived `toString` for debuggability and resist documenting its format, so callers cannot start parsing it as an API you must then keep stable.
 
 ### The recurring violations, and the rule that catches each
 

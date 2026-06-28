@@ -50,16 +50,39 @@ quotations**, which are NOT in the local clone or the companion module and so ca
 here. They stay marked. Atoms (SOURCE-PIN §7 pins the *editions*; the verbatim *wording + page* still needs
 the book text):
 
-1. **Effective Java 3e (Bloch, 2018), Item 68** — quoted spans "straightforward and largely unambiguous"
-   and "more complex and looser" (draft lines 62, 222). Verify verbatim wording + page against the 3e text.
-2. **Effective Java 3e, Item 56** — "doc comments as contract" claim (draft line 132/222). Confirm Item
-   number + the precondition/`@throws`/postcondition framing against the 3e text.
-3. **Clean Code (Martin, 2008)** — quoted span "a comment is an apology" (draft line 142). Verify verbatim
-   wording + locate in the 2008 text (paraphrase-vs-quote risk: confirm it is a quotation, not a gloss).
+1. **Effective Java 3e (Bloch, 2018), Item 68** — ✅ **N/A — RESOLVED 2026-06-28 (PARAPHRASED).** The two
+   verbatim quoted spans "straightforward and largely unambiguous" / "more complex and looser" (formerly draft
+   lines 64, 96, 224) were **rewritten as faithful attributed paraphrases in our own words** of Item 68's
+   documented position: naming conventions split into *typographical* rules (case — tight, rarely disputed) and
+   *grammatical* rules (part-of-speech name shape — softer, more judgement). No quotation marks remain; no exact
+   wording or figure from the quote is asserted. The verbatim-verify atom is therefore N/A (nothing verbatim is
+   presented). **Item#+title web-confirmed** against the published Effective Java 3rd-ed TOC ("Item 68: Adhere to
+   generally accepted naming conventions", Chapter 9 General Programming); the web source also confirms the
+   two-category (typographical/grammatical) framing the paraphrase relies on. *Paraphrased to avoid unverifiable
+   verbatim; Item#+title web-confirmed.*
+2. **Effective Java 3e, Item 56** — ✅ **N/A — RESOLVED 2026-06-28 (already paraphrased; title added).** The
+   "doc comments as contract" claim was already an attributed paraphrase (no quotation marks), so no verbatim is
+   presented — atom N/A. **Item#+title web-confirmed** against the published 3rd-ed TOC ("Item 56: Write doc
+   comments for all exposed API elements", Chapter 8); the title is now stated inline (draft line 134) and in the
+   back matter (draft line 224). The precondition/`@throws`/postcondition/side-effect framing is Item 56's
+   well-documented position. *Paraphrased to avoid unverifiable verbatim; Item#+title web-confirmed.*
+3. **Clean Code (Martin, 2008)** — quoted span "a comment is an apology" (draft line 144). **STILL FLAGGED**
+   (out of scope of the EJ-paraphrase task). Verify verbatim wording + locate in the 2008 text
+   (paraphrase-vs-quote risk: confirm it is a quotation, not a gloss).
 4. **A Philosophy of Software Design (Ousterhout, 2018, ch. 13)** — School-B position is attributed, not
-   quoted; confirm ch. 13 framing. **APoSD is not yet a SOURCE-PIN §7 canon row** — propose adding it.
+   quoted; confirm ch. 13 framing. **APoSD is not yet a SOURCE-PIN §7 canon row** — propose adding it. **STILL
+   FLAGGED.**
 
-**Status:** `⚠ verify at pin` — clear only against the named-book editions (SOURCE-PIN §7). House rule
-(LEGAL-IP §2): prose quotes < 15 words, one quote per source per chapter — all four are within ceiling.
+**Status:** **PARTIALLY RESOLVED 2026-06-28.** Atoms **1–2 (both Effective Java items) cleared to N/A** — the
+unverifiable verbatim quotes were rewritten as faithful attributed paraphrases in our own words; no verbatim is
+presented anywhere, so there is nothing left to verbatim-verify, and the Item#+titles were web-confirmed against
+the published Effective Java 3rd-ed TOC. Atoms **3–4 stay flagged** (Clean Code verbatim + APoSD canon row —
+outside the EJ-paraphrase scope). House rule (LEGAL-IP §2): the two remaining items are within the prose-quote
+ceiling.
 
-**Filed by:** source-verifier, Chapter 07 draft-v1 deferred-marker sweep (2026-06-27).
+**Expected ACCURACY effect:** printed Ch6 ACCURACY was capped (40/50) by presented-verbatim-but-unverifiable
+*Effective Java* book quotes (`_ref/` empty → cannot verbatim-verify). With both EJ quotes converted to faithful
+attributed paraphrases (no verbatim presented) and Item#+titles web-confirmed, that specific cap is lifted; the
+only remaining named-book verbatim is the in-scope-excluded Clean Code span.
+
+**Filed by:** source-verifier, Chapter 07 draft-v1 deferred-marker sweep (2026-06-27); EJ-quote paraphrase pass (2026-06-28).

@@ -180,6 +180,16 @@ Approaches to the same goal (making code understandable and measurable) that sit
 - **Reach for a metric** to start a conversation, never to end one or to rank a person. A number that cannot change a decision is vanity; stop collecting it.
 - **Ease off** chasing metric perfection on throwaway or frozen code (Chapter 1's exception), and never trade real readability for a better number.
 
+The choices above collapse to one reach-for-it table. Read each row as a question the reader actually has, the metric that answers it, and the counter-metric that keeps the answer honest, never as a verdict to rank a person:
+
+| The question | Metric that answers it | Pair it with |
+|---|---|---|
+| How many tests does this method need? | cyclomatic complexity | the cognitive score, so a passable path count does not hide an unreadable body |
+| How hard is this to read? | cognitive complexity (`java:S3776`) | readable naming, since a low score with poor names is still unreadable |
+| Do the tests detect bugs, not just touch lines? | mutation score | line coverage, which is necessary but not sufficient |
+| Is delivery healthy? | throughput | stability (change-failure rate), so speed is not bought with breakage |
+| Is the code base growing in value? | nothing — lines of code is vanity here | outcomes (defects-escaped, lead time); no counter-metric rescues LOC |
+
 ## Hand-off
 
 A metric on a dashboard is downstream of a hundred small decisions a developer makes while typing: naming, structure, the shape of a method. The next chapters drop from "what to measure" to "what to write": the craft of quality Java, starting with the canon that distilled it.
