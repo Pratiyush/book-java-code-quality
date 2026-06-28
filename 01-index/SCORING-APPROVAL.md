@@ -8,7 +8,7 @@
 | 1 | 01 | 45/50 | 90% | PASS | PASS | PASS | NA | NA | yes | **APPROVED** | 90% (independent) ≥88% + floors PASS → auto-approve into 04-approved ★≥90% excellence; example-build pending (separate phase) |
 | 2 | 03 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
 | 3 | 05 | 42/50 | 84% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 84% (independent) <88% → lift loop (≤3) toward the bar |
-| 4 | 06 | 40/50 | 80% | PASS | PASS | PASS | NA | NA | yes | **LIFT** | 80% (independent) <88% → lift loop (≤3) toward the bar |
+| 4 | 06 | 41/50 | 82% | PASS | PASS | PASS | NA | NA | yes | **LIFT** | 82% (independent) <88% → lift loop (≤3) toward the bar |
 | 5 | 08 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
 | 6 | 07 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
 | 7 | 09 | 44/50 | 88% | PASS | PASS | PASS | PASS | PASS | yes | **APPROVED** | 88% (independent) ≥88% + floors PASS → auto-approve into 04-approved |
