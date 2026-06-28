@@ -1,6 +1,6 @@
 # FLAG — key 31 (NullAway): overhead figures + JSpecify-mode status
 
-**Status:** ◐ PARTIALLY RESOLVED — FSE'19 atoms VERIFIED & RESOLVED (2026-06-28); README quote + JSpecify-mode wiki status still ⚠ verify at pin.
+**Status:** ◐ PARTIALLY RESOLVED — FSE'19 atoms VERIFIED & RESOLVED (2026-06-28); Checker Framework soundness-sentence quote VERIFIED VERBATIM & RESOLVED (2026-06-28, CF Manual v4.2.0 §3.1). Remaining: NullAway README "<10%" overhead re-quote + JSpecify-mode wiki status — both ⚠ verify-at-pin (pin-deferred, not verbatim-quote ACCURACY caps). No remaining quoted-verbatim atom is unverified.
 
 ## ✅ RESOLVED — FSE'19 overhead figures + breakdown + quote (web-verified 2026-06-28)
 
@@ -32,10 +32,18 @@ the header source/residual lines.
   experimental … may report false positive warnings"* + the generics gap list (jspecify/jdk
   annotations, generic-method inference, wildcards, generic-class validation) — re-confirm at the pinned
   wiki tag (fastest-moving surface).
-- **Checker Framework soundness sentence** (tracked here for cross-reference, but it is a *different*
-  source — the CF manual, NOT the FSE'19 paper): the manual's guarantee sentence quoted at draft
-  line ~121 / reference line ~189 is **out of scope for arXiv:1907.02127** and remains ⚠ verify-at-pin
-  against the Checker Framework 4.2.0 manual.
+- ~~**Checker Framework soundness sentence**~~ — ✅ **RESOLVED (web-verified verbatim 2026-06-28).** It is a
+  *different* source from the FSE'19 paper (the CF manual, NOT arXiv:1907.02127). The guarantee sentence
+  quoted in the draft — *"If the Nullness Checker type-checks your program without errors, then your program
+  will not crash with a NullPointerException that is caused by misuse of null in checked code."* — was
+  confirmed **byte-exact** against **The Checker Framework Manual, version 4.2.0 (2026-06-01), §3.1 "What the
+  Nullness Checker guarantees"** (Nullness Checker chapter), https://checkerframework.org/manual/#nullness-checker
+  (multiple independent fetches agree). The companion §3.1 opener — *"If the Nullness Checker issues no
+  warnings for a given program, then running that program will never throw a null pointer exception."* — was
+  also confirmed present; the draft keeps the more precise "checked code" sentence as it matches the chapter's
+  honest-limits framing. Draft now carries a footnote citation (manual §3.1 + URL + v4.2.0); the reference-list
+  entry and both header lines have the ⚠ verify-at-pin marker removed. No quote-mark change needed (the verbatim
+  quote stands, confirmed).
 
 ## NEUTRALITY note (unchanged)
 The per-tool comparative figures (Eradicate 2.8×, CFNullness 5.1×) are cited to NullAway's **own**
