@@ -94,15 +94,26 @@
       padding: 2px 9px;
       border-radius: 999px;
     }
+    /* Grayscale-safe: strengths vs costs are distinguished by TWO non-color cues —
+       a leading +/− glyph and a solid (strength) vs dashed (cost) border — so the
+       contrast survives black-and-white and color-vision deficiency, not by hue. */
     .pill.strength {
       background: var(--tint-1);
       border: 1px solid var(--ok);
       color: var(--ok);
     }
+    .pill.strength::before {
+      content: "+ ";
+      font-weight: 700;
+    }
     .pill.cost {
       background: var(--tint-1);
-      border: 1px solid var(--stop);
+      border: 1px dashed var(--stop);
       color: var(--stop);
+    }
+    .pill.cost::before {
+      content: "\2212 ";   /* U+2212 MINUS SIGN */
+      font-weight: 700;
     }
 
     /* Collective ownership requires automated gates — call-out */

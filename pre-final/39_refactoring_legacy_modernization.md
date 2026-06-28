@@ -29,7 +29,7 @@ Figure 39.1 shows the safe-change loop at the center (precondition, one small tr
 
 ![The safe-change refactoring loop (precondition → transform → verify green → commit → repeat), and the same invariant at method/legacy/system/platform scale.](figures/fig91_1.png)
 
-*The safe-change refactoring loop (precondition → transform → verify green → commit → repeat), and the same invariant at method/legacy/system/platform scale.*
+*Figure 39.1 — The safe-change loop: one invariant at four scales. The safe-change refactoring loop (precondition → transform → verify green → commit → repeat), and the same invariant at method/legacy/system/platform scale.*
 
 ### Refactoring: small behavior-preserving steps under a green suite
 

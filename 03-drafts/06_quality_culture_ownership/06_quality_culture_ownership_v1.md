@@ -103,7 +103,7 @@ Generative culture is the substrate; the lever a lead actually pulls is **fricti
 - **Automate the boring parts.** Pre-commit hooks and local↔CI parity (Chapter 35) make quality automatic, not heroic; a shared formatter means style is never argued (Chapter 6).
 - **Reward asking.** Psychological safety (the generative hallmark) lets people admit a gap, ask a question, and surface a problem early. That is how knowledge actually spreads.
 
-> **Trace it back.** The claims above trace to the pinned canon in `SOURCE-PIN.md` (§5/§7): Westrum's typology (*A typology of organisational cultures*, 2004) and the DORA generative-culture + psychological-safety findings (dora.dev capability page + the 2019 *State of DevOps* report) are web-verified pinned rows; Smith's "Shift-Left Testing" (*Dr. Dobb's*, Sept 2001) and the Boy Scout Rule (*97 Things Every Programmer Should Know*, 2010) are pinned named-article rows; Deming, Fowler's ownership models, and bus/truck-factor research are attributed to their named sources. The chapter attributes each and crowns nothing. The do-and-verify beat for this process chapter is to read the DORA generative-culture capability page and map the team onto Westrum's three types.
+> **Trace it back.** The claims above trace to the pinned canon in `SOURCE-PIN.md` (§5/§7): Westrum's typology (*A typology of organisational cultures*, 2004) and the DORA generative-culture + psychological-safety findings (dora.dev capability page + the 2019 *State of DevOps* report) are web-verified pinned rows; Smith's "Shift-Left Testing" (*Dr. Dobb's*, Sept 2001), the Boy Scout Rule (*97 Things Every Programmer Should Know*, 2010), Deming's *Out of the Crisis* (MIT Press, 1982/1986), and Vogels's "you build it, you run it" (*ACM Queue*, 2006) are pinned §7 rows; Fowler's ownership models and bus/truck-factor research are attributed to their named sources. The chapter attributes each and crowns nothing. The do-and-verify beat for this process chapter is to read the DORA generative-culture capability page and map the team onto Westrum's three types.
 
 ## Deep dive
 
@@ -180,10 +180,10 @@ Part I has built the foundation: quality is a nameable, priceable set of attribu
 - Ron Westrum, "A typology of organisational cultures," *BMJ Quality & Safety* 2004;13(suppl 2):ii22–ii27 (typology first presented at a 1988 World Bank conference; the 2004 paper is the citation DORA/*Accelerate* use).
 - Larry Smith, "Shift-Left Testing," *Dr. Dobb's Journal*, Vol. 26, Issue 9 (September 2001).
 - Martin Fowler, *CodeOwnership* (bliki).
-- Werner Vogels, "A Conversation with Werner Vogels," *ACM Queue* (2006) — the *you build it, you run it* operational-ownership model (corroborated by the AWS News Blog, Jeff Barr, 2006-05-16; verified at use 2026-06-28).
+- Werner Vogels, "A Conversation with Werner Vogels," *ACM Queue* (2006) — the *you build it, you run it* operational-ownership model (corroborated by the AWS News Blog, Jeff Barr, 2006-05-16; verified at use 2026-06-28; pinned SOURCE-PIN §7 row).
 
 *Tier 2 — Accessible / further reading*
-- W. Edwards Deming, *Out of the Crisis* — building quality in rather than inspecting it in, and improving the system over blaming individuals (paraphrased, attributed).
+- W. Edwards Deming, *Out of the Crisis* (MIT Press, 1982/1986) — building quality in rather than inspecting it in, and improving the system over blaming individuals (paraphrased, attributed; pinned SOURCE-PIN §7 row).
 - Robert C. Martin, "The Boy Scout Rule," in *97 Things Every Programmer Should Know* (O'Reilly, 2010); Hunt & Thomas, *The Pragmatic Programmer* (Broken Windows; note the original theory is contested).
 - Bus/truck-factor research.
 

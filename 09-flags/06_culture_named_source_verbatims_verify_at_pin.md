@@ -4,7 +4,11 @@
 > faithful attributed paraphrases (Broken Windows / Hunt & Thomas; Deming / *Out of the Crisis*) — N/A
 > paraphrased, no verbatim in body; atom 7 (Vogels "you build it, you run it") web-verified and cited
 > dated-at-use. No copyrighted-book verbatim remains in the chapter body; the ACCURACY cap is lifted. One
-> non-blocking follow-up: add the Vogels ACM Queue / AWS-blog source to SOURCE-PIN §7 at the next `/pin-source`.
+> follow-up **now also done (2026-06-28):** dated SOURCE-PIN §7 rows added for **Vogels** ("you build it, you
+> run it" — *ACM Queue* 2006 + AWS News Blog 2006-05-16) and **Deming** (*Out of the Crisis*, MIT Press
+> 1982/1986); the draft's "Trace it back" note + Sources block now cite the §7 rows. The figure label residual
+> (fig06_1.html baked "Westrum, 1988") is also fixed → "Westrum, 2004" (orchestrator re-renders the PNG). All
+> atoms resolved; nothing left pending at the next `/pin-source`.
 
 **Chapter:** 06 `quality_culture_ownership` (owner key 06, folds 90 — bus/truck factor) — FINAL_INDEX Ch 4 (CLOSES Part I).
 **Companion module:** **none** — culture/process chapter. EXAMPLE-BUILD = **N/A** (recorded in
@@ -92,13 +96,16 @@ nothing; none is invoked by any build.
    fetcher; the AWS blog is the citable public corroboration. Draft line 78 now attributes the phrase to Vogels
    with the dated source and the documented quality rationale; a new Tier-1 Sources row (draft line 183) records
    it "verified at use 2026-06-28." The phrase "you build it, you run it" is a short documented coinage (6 words,
-   ≤15 ceiling OK). **Now a SOURCE-PIN §7 named-article candidate row** (add at next /pin-source).
+   ≤15 ceiling OK). **Now a pinned SOURCE-PIN §7 named-article row (added 2026-06-28):** *ACM Queue*, "A
+   Conversation with Werner Vogels," 2006 (queue.acm.org/detail.cfm?id=1142065) + AWS News Blog corroboration
+   (aws.amazon.com/blogs/aws/acm_queue_inter/, 2006-05-16). Draft "Trace it back" note + Sources row cite it. CLEARED.
 8. **Deming — *Out of the Crisis*** — **N/A (paraphrased).** Draft line 56 rewritten from the near-maxim
    ("build quality into the process rather than inspecting it at the end") into a genuine attributed paraphrase
    of Deming's well-documented position: stop relying on end-of-line inspection and make quality part of how the
    work is produced; most defects trace to the system rather than to individuals, so fix the process and drive
    out the fear that stops people surfacing problems. No quoted span; *Out of the Crisis* now named in-body and
-   in the Sources block (line 185). Nothing left to verify-at-pin.
+   in the Sources block. **Also added as a pinned SOURCE-PIN §7 book-canon row (2026-06-28):** W. Edwards Deming,
+   *Out of the Crisis* (MIT Press, 1982/1986); the Sources row now cites the §7 row. Nothing left to verify-at-pin.
 
 ## Why a flag, not a silent fix
 
@@ -127,11 +134,14 @@ Crisis*) rewritten as faithful attributed paraphrases in our own words, no quota
 claim; both source titles named in-body and in Sources. Atom **7 RESOLVED (web-verified)** — Vogels "you build
 it, you run it" cited dated-at-use against ACM Queue 2006 + the AWS News Blog corroboration; Tier-1 Sources row
 added. **No copyrighted-book verbatim remains in the body**, so the ACCURACY cap on printed Ch 4 is lifted (the
-residual Broken-Windows / Deming / Vogels item that held it at 40/50 is cleared). Residual (cosmetic only):
-`fig06_1.png` bakes a "2019 State of DevOps" caption that is now *correct* (2019 is the verified, pinned
-psych-safety edition) but should carry "2004" for Westrum at the next deliberate re-render — do-not-re-render
-constraint honored this pass. Open follow-up: add the Vogels ACM Queue / AWS-blog row to SOURCE-PIN §7 at the
-next `/pin-source`.
+residual Broken-Windows / Deming / Vogels item that held it at 40/50 is cleared). **Figure label fixed
+(2026-06-28):** `fig06_1.html` baked "Westrum, 1988" → corrected to "Westrum, 2004" (the 2004 BMJ paper is the
+citation DORA/*Accelerate* use; 1988 = World Bank conference origin); only that label changed; the orchestrator
+re-renders the PNG, which then matches. The baked "2019 State of DevOps" caption stays — it is *correct* (2019
+is the verified, pinned psych-safety edition). **Pin rows added (2026-06-28):** Vogels ("you build it, you run
+it" — *ACM Queue* 2006 + AWS News Blog 2006-05-16) and Deming (*Out of the Crisis*, MIT Press 1982/1986) are
+now dated SOURCE-PIN §7 rows; the draft's "Trace it back" note + Sources block cite them. **No open follow-ups
+remain** — every atom is resolved and every named source is pin-traced.
 
 ## Tooling notes (this gate)
 
