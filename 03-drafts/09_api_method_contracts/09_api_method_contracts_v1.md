@@ -141,6 +141,22 @@ A published contract must be kept *over time*. That is where API design meets re
 
 A change can recompile cleanly in the local build and still break a consumer who does not recompile, because that consumer links against the shipped `.jar` at runtime. The JLS (ch. 13) defines binary compatibility precisely; the short version is that some changes which look harmless in source (certain signature changes, inlined constants, a method moving up a hierarchy) are binary-*incompatible* for an already-compiled caller. Consumers who do not recompile care about binary compatibility, and `mvn test` in the library's own build will never surface that breakage.
 
+The constant case is the one most teams trip over, so it is worth watching happen. A library publishes a compile-time constant:
+
+```java
+// v1 of the library
+public static final int MAX_RETRIES = 3;
+```
+
+A consumer compiles `if (n < MAX_RETRIES)` against `v1`. The JLS binary-compatibility rules (ch. 13) inline a compile-time constant directly into each caller's bytecode, so the consumer's `.class` now holds the literal `3`, with no reference left to the field. The library then ships `v2`:
+
+```java
+// v2 of the library
+public static final int MAX_RETRIES = 5;
+```
+
+Recompiling the consumer picks up `5`. The consumer who only swaps the new `.jar` in place keeps running the inlined `3`, silently, with no error at link or run time. Source-compatible, binary-incompatible, and invisible to the library's own `mvn test`. That gap between the two columns is precisely what the next tools are built to compute.
+
 **Semantic versioning** is the contract that communicates change: `MAJOR.MINOR.PATCH`, where a breaking change demands a MAJOR bump, additive changes a MINOR, and fixes a PATCH (semver.org). The promise is only as good as the accuracy of what is declared changed, and that is exactly what can be *computed* from the actual API diff rather than left to memory:
 
 - **japicmp** compares two JARs for binary *and* source incompatibilities; its `--semantic-versioning` mode reports which version part requires a bump, and the Maven option `breakBuildBasedOnSemanticVersioning` fails the build when the declared bump does not match the detected changes.

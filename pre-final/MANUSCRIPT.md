@@ -1581,7 +1581,7 @@ Read top to bottom, the column that matters is "how much is mechanical." A *lint
 
 ### Layer 1 — Naming: the settled part and the hard part
 
-The typographical conventions are near-universal. *Effective Java* Item 68 ("Adhere to generally accepted naming conventions", Bloch, 2018) sorts Java naming into two kinds of rule and is explicit that they are not equally firm: the *typographical* conventions (which case a package, class, method, field, or constant takes) are tight and rarely in dispute, whereas the *grammatical* conventions (the part-of-speech shape of a good name — noun phrases for classes, verb phrases for methods) are softer and admit more judgement. The Google Java Style Guide states the typographical half precisely, and they line up with the JLS §6.1 naming guidance (⚠ confirm exact SE 21/25 wording @pin):
+The typographical conventions are near-universal. *Effective Java* Item 68 ("Adhere to generally accepted naming conventions", Bloch, 2018) sorts Java naming into two kinds of rule and is explicit that they are not equally firm: the *typographical* conventions (which case a package, class, method, field, or constant takes) are tight and rarely in dispute, whereas the *grammatical* conventions (the part-of-speech shape of a good name — noun phrases for classes, verb phrases for methods) are softer and admit more judgement. The Google Java Style Guide states the typographical half precisely, and they line up with the language's own naming guidance: the *Naming Conventions* subsection of **JLS SE 21 §6.1 (Declarations)** recommends type names "in mixed case with the first letter of each word capitalized" (`UpperCamelCase`), method names "in mixed case, with the first letter lowercase" (`lowerCamelCase`), constant names "all uppercase, with components separated by underscore" (`CONSTANT_CASE`), and type variable names that are "pithy (single character if possible) … and should not include lower case letters" — the same shapes Google's table fixes:
 
 | Element | Convention (Google Java Style §5) | Example |
 |---|---|---|
@@ -1603,7 +1603,11 @@ These are encoded as regexes by every major linter, and the regexes are *not ide
 | Checkstyle | `MethodName` | `^[a-z][a-zA-Z0-9]*$` | verified |
 | PMD | `ClassNamingConventions.classPattern` | `[A-Z][a-zA-Z0-9]*` | verified |
 | PMD | `FieldNamingConventions.constantPattern` | `[A-Z][A-Z_0-9]*` | verified |
-| SonarQube | `java:S101` (class), `java:S100` (method), `java:S115` (constant), `java:S116` (field), `java:S117` (local/param) | per-rule regex | ⚠ default @pin |
+| SonarQube | `java:S101` (class) | `^[A-Z][a-zA-Z0-9]*$` | verified |
+| SonarQube | `java:S100` (method) | `^[a-z][a-zA-Z0-9]*$` | verified |
+| SonarQube | `java:S115` (constant) | `^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$` | verified |
+| SonarQube | `java:S116` (field) | `^[a-z][a-zA-Z0-9]*$` | verified |
+| SonarQube | `java:S117` (local/param) | `^[a-z][a-zA-Z0-9]*$` | verified |
 
 Checkstyle, PMD, and SonarQube each ship their *own* naming defaults; they overlap heavily but the exact regexes differ. State each from its own source; do not present one as *the* canonical default. (Which to run, and how to stop them fighting, is Chapter 17.)
 
@@ -1681,7 +1685,7 @@ Two platform features make Javadoc more than prose. `{@snippet}` (JEP 413, GA in
 
 | School | Position | Hardest objection against it |
 |---|---|---|
-| **A — *Clean Code*** (Martin, 2008) | A comment is at best a necessary evil and usually a *failure* to express intent in code — "a comment is an apology" (⚠ verbatim verify @pin). Prefer self-documenting code: good names, small functions. | Critics (e.g. qntm, "stop recommending *Clean Code*") argue the prescription is dogmatic and over-fragments code; suppressing comments can lose the *why*. |
+| **A — *Clean Code*** (Martin, 2008) | A comment is at best a necessary evil and most often a *failure* — an admission that the code could not be made to express its own intent (paraphrased, not quoted). Prefer self-documenting code: good names, small functions. | Critics (e.g. qntm, "stop recommending *Clean Code*") argue the prescription is dogmatic and over-fragments code; suppressing comments can lose the *why*. |
 | **B — *A Philosophy of Software Design*** (Ousterhout, 2018, ch. 13) | Comments capture information that was in the designer's mind but cannot be represented in code; "self-documenting code" is a myth for design rationale. Document *what* and *why*, not *how*. | More comments means more to maintain and more that can rot; over-commenting obvious code adds noise. |
 
 The trade-off axis has no winner: names and structure express *what* cheaply and stay in sync with the code; comments express the *why*, the contract, the non-obvious constraint that code structurally cannot, at a maintenance cost. A team chooses where to sit on that axis *per surface*: a public API earns Javadoc, a private helper is often self-documenting, a subtle algorithm earns a `// why` comment. Both schools agree on the real core: a comment that *restates* the code is bad, and the right order is to rename before commenting.
@@ -1747,7 +1751,7 @@ Adoption cost is real: introducing a formatter to an existing codebase rewrites 
 - **Style values are choices, not truths.** Two-space vs four-space, 80 vs 100 vs 120 columns: Google uses 2/100, AOSP 4, palantir 120, Checkstyle `LineLength` defaults to 80. There is no *correct* value; the value is in picking one. Stating any single value as "right" is the neutrality landmine of this whole topic.
 - **Over-strict naming regexes cause false positives.** `java:S101`'s default can reject legitimate names; a rigid `ShortVariable` flags idiomatic `i`/`x` loop and lambda names. Naming rules need per-project tuning and suppression discipline (Chapter 18), or developers learn to ignore the linter. (The unnamed variable `_` interacts directly with short-name rules: Java 21 *previewed* it as JEP 443 ("Unnamed Patterns and Variables (Preview)"), and it was finalized in Java 22 as JEP 456 ("Unnamed Variables & Patterns") — past the anchor, so treat `_` as a Java 22-era delta, not anchor fact, and configure naming rules to exempt it only once on 22+.)
 - **Over-enforced Javadoc breeds vacuous comments.** Forcing `@param`/`@return` on every no-logic getter (`-Xdoclint:all` with `missing`, or PMD `CommentRequired` everywhere) produces `@param name the name`, which satisfies the linter and informs no one. Use `all,-missing`.
-- **Formatter output shifts between versions, and couples to the JDK.** A formatter's rendering can change across its own versions, so pin the formatter GAV (do not float it). Because the engines parse Java source, a given formatter version is coupled to a JDK range: the *same* `spotless:check` can pass on one JDK and fail to launch on another (⚠ exact version↔JDK matrix and any `--add-exports` args verify @pin). 
+- **Formatter output shifts between versions, and couples to the JDK.** A formatter's rendering can change across its own versions, so pin the formatter GAV (do not float it). Because the engines parse Java source through the JDK's own compiler internals, a given formatter version is coupled to a JDK range, and the *same* `spotless:check` can pass on one JDK and fail to launch on another. Two concrete coupling facts at this pin: google-java-format 1.35.0 **requires JDK 21 or newer to run** (it still formats older language levels, but the formatter process itself needs 21+); and because it reaches into `jdk.compiler` internals that the module system closed off in JDK 16+, it needs `--add-exports`/`--add-opens` for packages such as `jdk.compiler/com.sun.tools.javac.parser` (google-java-format added these to its own launch from 1.15.0 onward, and Spotless surfaces the same requirement when driving it). Pin the engine version *and* run it on a JDK in its supported range. *(Version↔JDK facts dated-at-use, web-confirmed against the google-java-format and Spotless project docs, 2026-06-28.)*
 - **`.editorconfig` is a baseline, not a formatter.** It carries whitespace settings to editors but has no concept of line-wrapping or import order, and `max_line_length` is widely supported but not in the core spec's listed properties. Do not rely on it as a hard column gate.
 - **When not to invest at all.** A throwaway script, a spike, a two-week prototype slated for deletion does not earn a formatter plus three linters' naming rules in CI. The investment pays back over a file's *lifetime*; short-lived code has none.
 
@@ -1776,16 +1780,16 @@ The readability fundamentals now have clear ownership: a formatter owns typograp
 
 - **Google Java Style Guide** — §3 source-file structure, §4 formatting (+2 indent, 100-col, K&R), §5 naming (the case table, §5.2.4 constant definition, §5.3 camel-case algorithm). *(Living web doc — re-confirm § numbers at pin.)*
 - **Effective Java 3e** (Bloch, 2018) — Item 68 "Adhere to generally accepted naming conventions" (the typographical-vs-grammatical split: typographical case rules tight, grammatical name-shape rules looser — paraphrased, not quoted), Item 56 "Write doc comments for all exposed API elements" (doc comments as contract). *(Item#+title web-confirmed against the published 3e TOC; positions paraphrased — no verbatim asserted.)*
-- **JLS SE 21 / SE 25 §6.1** — language naming guidance. *(⚠ exact wording/section verify @pin.)*
-- **Checkstyle 13.6.0** — `ConstantName` `^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$`, `MethodName` `^[a-z][a-zA-Z0-9]*$` (verified); `MissingJavadocMethod`, `SummaryJavadoc`, `LineLength` (default 80) ⚠ verify @pin.
+- **JLS SE 21 §6.1 (Declarations)** — the *Naming Conventions* subsection: type names `UpperCamelCase`, method/field/variable names `lowerCamelCase`, constants all-uppercase underscore-separated, type variables single uppercase letters. *(Web-confirmed against the Java SE 21 JLS text, docs.oracle.com/javase/specs/jls/se21/html/jls-6.html, 2026-06-28; SE 25 edition carries the same guidance.)*
+- **Checkstyle 13.6.0** — `ConstantName` `^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$`, `MethodName` `^[a-z][a-zA-Z0-9]*$`, `LineLength` default `max = 80` (all verified against the Checkstyle source, 2026-06-28); `MissingJavadocMethod`, `SummaryJavadoc`.
 - **PMD 7.25.0** — `ClassNamingConventions.classPattern` `[A-Z][a-zA-Z0-9]*`, `FieldNamingConventions.constantPattern` `[A-Z][A-Z_0-9]*` (verified); `CommentRequired`, `CommentSize`.
-- **SonarQube 2026.1 LTA** — `java:S100/S101/S115/S116/S117` (naming), `java:S125` (commented-out code). *(⚠ default regexes verify @pin.)*
+- **SonarQube 2026.1 LTA** — naming defaults (verified against the `sonar-java` analyzer rule descriptions, 2026-06-28): `java:S101` class `^[A-Z][a-zA-Z0-9]*$`, `java:S100` method `^[a-z][a-zA-Z0-9]*$`, `java:S115` constant `^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$`, `java:S116` field `^[a-z][a-zA-Z0-9]*$`, `java:S117` local/param `^[a-z][a-zA-Z0-9]*$`; `java:S125` (commented-out code).
 - **Spotless** (`spotless-maven-plugin` 3.6.0) — `spotless:check`/`apply`, `<googleJavaFormat>`/`<palantirJavaFormat>` steps, `<ratchetFrom>` (verbatim "only format files which have changed since origin/main").
 - **google-java-format 1.35.0** — "no configurability… deliberate design decision" (verbatim README); `--aosp`.
 - **palantir-java-format** — "modern, lambda-friendly, 120 character Java formatter," "based on the excellent google-java-format" (verbatim README).
-- **EditorConfig spec** — `root`, `indent_style`, `indent_size`, `end_of_line`, `charset`, `trim_trailing_whitespace`, `insert_final_newline`; "closer files take precedence." *(⚠ EditorConfig not yet a SOURCE-PIN row; `max_line_length` not in core spec list.)*
+- **EditorConfig spec** — `root`, `indent_style`, `indent_size`, `end_of_line`, `charset`, `trim_trailing_whitespace`, `insert_final_newline`; "closer files take precedence." *(Note: EditorConfig is pending addition as a SOURCE-PIN row; `max_line_length` is widely supported but not in the core spec's listed properties.)*
 - **JDK 21 doc-comment spec** — `/** */` grammar, summary sentence, block/inline tags. **JEP 413** — `{@snippet}`, GA JDK 18 (available at the anchor). **JEP 467** — `///` Markdown comments, JDK 23 (past the Java 21 anchor; see 09-flags/09_jep467_markdown_doccomments_ahead_of_pin.md). `-Xdoclint` categories; maven-javadoc-plugin `<doclint>all,-missing>`.
-- **Clean Code** (Martin, 2008) — School A on comments. **A Philosophy of Software Design** (Ousterhout, 2018, ch. 13) — School B. *(⚠ verbatim verify @pin; APoSD to be added as a SOURCE-PIN canon row.)*
+- **Clean Code** (Martin, 2008) — School A on comments (positions paraphrased in our own words, not quoted). **A Philosophy of Software Design** (Ousterhout, 2018, ch. 13) — School B (attributed, not quoted). *(Note: APoSD is pending addition as a SOURCE-PIN §7 canon row.)*
 
 ## Next chapter teaser
 
@@ -1966,6 +1970,22 @@ These tools are *enforcers of the same design rules*, not rivals; where two cove
 A published contract must be kept *over time*. That is where API design meets release discipline, and where Java has a trap that catches even careful teams: **source compatibility and binary compatibility are not the same thing.**
 
 A change can recompile cleanly in the local build and still break a consumer who does not recompile, because that consumer links against the shipped `.jar` at runtime. The JLS (ch. 13) defines binary compatibility precisely; the short version is that some changes which look harmless in source (certain signature changes, inlined constants, a method moving up a hierarchy) are binary-*incompatible* for an already-compiled caller. Consumers who do not recompile care about binary compatibility, and `mvn test` in the library's own build will never surface that breakage.
+
+The constant case is the one most teams trip over, so it is worth watching happen. A library publishes a compile-time constant:
+
+```java
+// v1 of the library
+public static final int MAX_RETRIES = 3;
+```
+
+A consumer compiles `if (n < MAX_RETRIES)` against `v1`. The JLS binary-compatibility rules (ch. 13) inline a compile-time constant directly into each caller's bytecode, so the consumer's `.class` now holds the literal `3`, with no reference left to the field. The library then ships `v2`:
+
+```java
+// v2 of the library
+public static final int MAX_RETRIES = 5;
+```
+
+Recompiling the consumer picks up `5`. The consumer who only swaps the new `.jar` in place keeps running the inlined `3`, silently, with no error at link or run time. Source-compatible, binary-incompatible, and invisible to the library's own `mvn test`. That gap between the two columns is precisely what the next tools are built to compute.
 
 **Semantic versioning** is the contract that communicates change: `MAJOR.MINOR.PATCH`, where a breaking change demands a MAJOR bump, additive changes a MINOR, and fixes a PATCH (semver.org). The promise is only as good as the accuracy of what is declared changed, and that is exactly what can be *computed* from the actual API diff rather than left to memory:
 
