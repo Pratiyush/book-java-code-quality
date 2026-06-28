@@ -94,16 +94,18 @@
       line-height: 1.35;
       vertical-align: top;
     }
-    .mx-cell:last-child { border-right: none; }
+    /* Last column in each row (the ArchUnit column) — no trailing border.
+       Cells are flat grid siblings, so a per-cell class marks the row end. */
+    .mx-cell.mx-col-last { border-right: none; }
 
     /* Header row */
-    .mx-row-header .mx-cell {
+    .mx-cell.mx-hd {
       background: var(--tint-3);
       font-weight: 700;
       font-size: 12px;
       border-bottom: 1.5px solid var(--ink);
     }
-    .mx-row-header .mx-cell.row-label-hd {
+    .mx-cell.mx-hd.row-label-hd {
       background: var(--tint-2);
       color: var(--ink-soft);
       font-size: 11px;
@@ -111,7 +113,7 @@
     }
 
     /* Dimension label column */
-    .mx-row .mx-cell.row-label {
+    .mx-cell.row-label {
       background: var(--tint-1);
       font-weight: 700;
       font-size: 11px;
@@ -120,7 +122,7 @@
     }
 
     /* Last data row — no bottom border */
-    .mx-row:last-child .mx-cell {
+    .mx-cell.mx-row-last {
       border-bottom: none;
     }
 
@@ -216,103 +218,91 @@
     </div>
   </div>
 
-  <!-- ── Five-tool matrix ── -->
+  <!-- ── Five-tool matrix ──
+       Cells are DIRECT children of the .matrix grid (no row-wrapper divs): each
+       .mx-cell auto-places into the 5-column grid, so the fifth column (ArchUnit) and
+       the row-label column stay aligned in every renderer. Per-row classes
+       (row-header / last-row) are applied to the cells themselves. -->
   <div class="matrix">
 
     <!-- Header row -->
-    <div class="mx-row mx-row-header" style="display:contents;">
-      <div class="mx-cell row-label-hd">Dimension</div>
-      <div class="mx-cell tool-hd">
-        <span class="tool-name">Checkstyle</span>
-        <span class="tool-sub">13.6.0</span>
-      </div>
-      <div class="mx-cell tool-hd">
-        <span class="tool-name">PMD</span>
-        <span class="tool-sub">7.25.0 (Java + XPath)</span>
-      </div>
-      <div class="mx-cell tool-hd">
-        <span class="tool-name">Error Prone</span>
-        <span class="tool-sub">latest 2.x + Refaster</span>
-      </div>
-      <div class="mx-cell tool-hd">
-        <span class="tool-name">SpotBugs</span>
-        <span class="tool-sub">4.10.2</span>
-      </div>
-      <div class="mx-cell tool-hd" style="border-right:none;">
-        <span class="tool-name">ArchUnit</span>
-        <span class="tool-sub">1.4.2</span>
-      </div>
+    <div class="mx-cell mx-hd row-label-hd">Dimension</div>
+    <div class="mx-cell mx-hd tool-hd">
+      <span class="tool-name">Checkstyle</span>
+      <span class="tool-sub">13.6.0</span>
+    </div>
+    <div class="mx-cell mx-hd tool-hd">
+      <span class="tool-name">PMD</span>
+      <span class="tool-sub">7.25.0 (Java + XPath)</span>
+    </div>
+    <div class="mx-cell mx-hd tool-hd">
+      <span class="tool-name">Error Prone</span>
+      <span class="tool-sub">latest 2.x + Refaster</span>
+    </div>
+    <div class="mx-cell mx-hd tool-hd">
+      <span class="tool-name">SpotBugs</span>
+      <span class="tool-sub">4.10.2</span>
+    </div>
+    <div class="mx-cell mx-hd tool-hd mx-col-last">
+      <span class="tool-name">ArchUnit</span>
+      <span class="tool-sub">1.4.2</span>
     </div>
 
     <!-- Row: Artifact -->
-    <div class="mx-row" style="display:contents;">
-      <div class="mx-cell row-label">Artifact<br>reasoned over</div>
-      <div class="mx-cell">source token AST</div>
-      <div class="mx-cell">source node AST</div>
-      <div class="mx-cell">typed <span class="m">javac</span> AST (compile-time)</div>
-      <div class="mx-cell">compiled bytecode (<span class="m">.class</span>)</div>
-      <div class="mx-cell" style="border-right:none;">imported class graph</div>
-    </div>
+    <div class="mx-cell row-label">Artifact<br>reasoned over</div>
+    <div class="mx-cell">source token AST</div>
+    <div class="mx-cell">source node AST</div>
+    <div class="mx-cell">typed <span class="m">javac</span> AST (compile-time)</div>
+    <div class="mx-cell">compiled bytecode (<span class="m">.class</span>)</div>
+    <div class="mx-cell mx-col-last">imported class graph</div>
 
     <!-- Row: Runs at -->
-    <div class="mx-row" style="display:contents;">
-      <div class="mx-cell row-label">Runs at</div>
-      <div class="mx-cell">source pass</div>
-      <div class="mx-cell">source pass</div>
-      <div class="mx-cell">compile</div>
-      <div class="mx-cell">post-compile</div>
-      <div class="mx-cell" style="border-right:none;">test phase (JUnit)</div>
-    </div>
+    <div class="mx-cell row-label">Runs at</div>
+    <div class="mx-cell">source pass</div>
+    <div class="mx-cell">source pass</div>
+    <div class="mx-cell">compile</div>
+    <div class="mx-cell">post-compile</div>
+    <div class="mx-cell mx-col-last">test phase (JUnit)</div>
 
     <!-- Row: Select API -->
-    <div class="mx-row" style="display:contents;">
-      <div class="mx-cell row-label">&ldquo;Select&rdquo; API</div>
-      <div class="mx-cell"><span class="m">getDefaultTokens()</span> /<br><span class="m">TokenTypes.*</span></div>
-      <div class="mx-cell"><span class="m">visit(ASTNode, data)</span><br><span style="font-size:10.5px;color:var(--ink-soft);">or XPath expression</span></div>
-      <div class="mx-cell">matcher interface<br>e.g. <span class="m">matchMethodInvocation(tree, state)</span></div>
-      <div class="mx-cell"><span class="m">OpcodeStackDetector</span><br><span class="m">.sawOpcode(int)</span></div>
-      <div class="mx-cell" style="border-right:none;"><span class="m">classes().that(</span><br><span class="m">&nbsp;&nbsp;DescribedPredicate)</span></div>
-    </div>
+    <div class="mx-cell row-label">&ldquo;Select&rdquo; API</div>
+    <div class="mx-cell"><span class="m">getDefaultTokens()</span> /<br><span class="m">TokenTypes.*</span></div>
+    <div class="mx-cell"><span class="m">visit(ASTNode, data)</span><br><span style="font-size:10.5px;color:var(--ink-soft);">or XPath expression</span></div>
+    <div class="mx-cell">matcher interface<br>e.g. <span class="m">matchMethodInvocation(tree, state)</span></div>
+    <div class="mx-cell"><span class="m">OpcodeStackDetector</span><br><span class="m">.sawOpcode(int)</span></div>
+    <div class="mx-cell mx-col-last"><span class="m">classes().that(</span><br><span class="m">&nbsp;&nbsp;DescribedPredicate)</span></div>
 
     <!-- Row: Report API -->
-    <div class="mx-row" style="display:contents;">
-      <div class="mx-cell row-label">&ldquo;Report&rdquo; API</div>
-      <div class="mx-cell"><span class="m">log(DetailAST, key, &hellip;)</span><br><span style="font-size:10.5px;color:var(--ink-soft);">key resolves in <span class="m">messages.properties</span></span></div>
-      <div class="mx-cell"><span class="m">asCtx(data)</span><br><span class="m">&nbsp;.addViolation(node)</span></div>
-      <div class="mx-cell"><span class="m">describeMatch(tree,</span><br><span class="m">&nbsp;SuggestedFix)</span></div>
-      <div class="mx-cell"><span class="m">BugInstance</span> &rarr;<br><span class="m">bugReporter.reportBug()</span></div>
-      <div class="mx-cell" style="border-right:none;"><span class="m">ArchCondition.check(</span><br><span class="m">&nbsp;item, events)</span> &rarr;<br><span class="m">SimpleConditionEvent</span><br><span class="m">&nbsp;.violated(&hellip;)</span></div>
-    </div>
+    <div class="mx-cell row-label">&ldquo;Report&rdquo; API</div>
+    <div class="mx-cell"><span class="m">log(DetailAST, key, &hellip;)</span><br><span style="font-size:10.5px;color:var(--ink-soft);">key resolves in <span class="m">messages.properties</span></span></div>
+    <div class="mx-cell"><span class="m">asCtx(data)</span><br><span class="m">&nbsp;.addViolation(node)</span></div>
+    <div class="mx-cell"><span class="m">describeMatch(tree,</span><br><span class="m">&nbsp;SuggestedFix)</span></div>
+    <div class="mx-cell"><span class="m">BugInstance</span> &rarr;<br><span class="m">bugReporter.reportBug()</span></div>
+    <div class="mx-cell mx-col-last"><span class="m">ArchCondition.check(</span><br><span class="m">&nbsp;item, events)</span> &rarr;<br><span class="m">SimpleConditionEvent</span><br><span class="m">&nbsp;.violated(&hellip;)</span></div>
 
     <!-- Row: Register -->
-    <div class="mx-row" style="display:contents;">
-      <div class="mx-cell row-label">&ldquo;Register&rdquo;</div>
-      <div class="mx-cell">JAR on Checkstyle classpath; FQN under <span class="m">Checker &rarr; TreeWalker</span></div>
-      <div class="mx-cell">ruleset XML <span class="m">&lt;rule class=&quot;&hellip;&quot;&gt;</span></div>
-      <div class="mx-cell"><span class="m">@AutoService(BugChecker</span><span class="m">.class)</span>; annotation-processor path</div>
-      <div class="mx-cell"><span class="m">findbugs.xml</span> <span class="m">&lt;Detector&gt;</span> + <span class="m">messages.xml</span></div>
-      <div class="mx-cell" style="border-right:none;"><span class="m">@AnalyzeClasses</span> +<br><span class="m">@ArchTest</span> (JUnit 5);<br>throws <span class="m">AssertionError</span></div>
-    </div>
+    <div class="mx-cell row-label">&ldquo;Register&rdquo;</div>
+    <div class="mx-cell">JAR on Checkstyle classpath; FQN under <span class="m">Checker &rarr; TreeWalker</span></div>
+    <div class="mx-cell">ruleset XML <span class="m">&lt;rule class=&quot;&hellip;&quot;&gt;</span></div>
+    <div class="mx-cell"><span class="m">@AutoService(BugChecker</span><span class="m">.class)</span>; annotation-processor path</div>
+    <div class="mx-cell"><span class="m">findbugs.xml</span> <span class="m">&lt;Detector&gt;</span> + <span class="m">messages.xml</span></div>
+    <div class="mx-cell mx-col-last"><span class="m">@AnalyzeClasses</span> +<br><span class="m">@ArchTest</span> (JUnit 5);<br>throws <span class="m">AssertionError</span></div>
 
     <!-- Row: Auto-fix -->
-    <div class="mx-row" style="display:contents;">
-      <div class="mx-cell row-label">Auto-fix?</div>
-      <div class="mx-cell">no</div>
-      <div class="mx-cell">no</div>
-      <div class="mx-cell"><span class="autofix-yes">yes</span> &mdash; <span class="m">SuggestedFix</span>;<br>Refaster <span class="m">@BeforeTemplate</span><br>&rarr; <span class="m">@AfterTemplate</span></div>
-      <div class="mx-cell">no</div>
-      <div class="mx-cell" style="border-right:none;">no</div>
-    </div>
+    <div class="mx-cell row-label">Auto-fix?</div>
+    <div class="mx-cell">no</div>
+    <div class="mx-cell">no</div>
+    <div class="mx-cell"><span class="autofix-yes">yes</span> &mdash; <span class="m">SuggestedFix</span>;<br>Refaster <span class="m">@BeforeTemplate</span><br>&rarr; <span class="m">@AfterTemplate</span></div>
+    <div class="mx-cell">no</div>
+    <div class="mx-cell mx-col-last">no</div>
 
-    <!-- Row: Characteristic limit -->
-    <div class="mx-row" style="display:contents;">
-      <div class="mx-cell row-label">Characteristic<br>limitation</div>
-      <div class="mx-cell">limited type resolution; sees source shape, not behavior</div>
-      <div class="mx-cell">source-only; PMD 7.x reworked AST node names (upgrade-sensitive)</div>
-      <div class="mx-cell">requires compile step; <span class="m">@BugPattern</span> zero-arg ctor mandatory</div>
-      <div class="mx-cell">distance from source; no source-only constructs</div>
-      <div class="mx-cell" style="border-right:none;">type-level only; needs compiled classes + test run</div>
-    </div>
+    <!-- Row: Characteristic limit (last row — no bottom border) -->
+    <div class="mx-cell row-label mx-row-last">Characteristic<br>limitation</div>
+    <div class="mx-cell mx-row-last">limited type resolution; sees source shape, not behavior</div>
+    <div class="mx-cell mx-row-last">source-only; PMD 7.x reworked AST node names (upgrade-sensitive)</div>
+    <div class="mx-cell mx-row-last">requires compile step; <span class="m">@BugPattern</span> zero-arg ctor mandatory</div>
+    <div class="mx-cell mx-row-last">distance from source; no source-only constructs</div>
+    <div class="mx-cell mx-col-last mx-row-last">type-level only; needs compiled classes + test run</div>
 
   </div><!-- .matrix -->
 

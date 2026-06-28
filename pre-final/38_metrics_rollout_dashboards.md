@@ -27,7 +27,7 @@ Figure 38.1 lays out the three columns of the measurement discipline: the DORA a
 
 ![DORA and SPACE outcome measures to adopt, versus vanity metrics to refuse — anchored by Goodhart's law.](figures/fig85_1.png)
 
-*DORA and SPACE outcome measures to adopt, versus vanity metrics to refuse — anchored by Goodhart's law.*
+*Figure 38.1 — Outcome metrics vs. vanity metrics: DORA and SPACE outcome measures to adopt, versus vanity metrics to refuse — anchored by Goodhart's law.*
 
 ### Metrics that matter: outcomes, not vanity
 

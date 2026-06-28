@@ -1,5 +1,5 @@
 {
- "generated": "2026-06-28 12:24",
+ "generated": "2026-06-28 12:35",
  "count": 67,
  "results": [
   {
@@ -782,7 +782,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 654 KB"
+     "valid PNG, 657 KB"
     ],
     "sidecar": [
      "PASS",
@@ -5684,7 +5684,7 @@
    "params": {
     "png_integrity": [
      "PASS",
-     "valid PNG, 490 KB"
+     "valid PNG, 489 KB"
     ],
     "sidecar": [
      "PASS",

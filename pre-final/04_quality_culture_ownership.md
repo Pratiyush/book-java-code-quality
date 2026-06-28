@@ -169,10 +169,10 @@ Part I has built the foundation: quality is a nameable, priceable set of attribu
 - Ron Westrum, "A typology of organisational cultures," *BMJ Quality & Safety* 2004;13(suppl 2):ii22–ii27 (typology first presented at a 1988 World Bank conference; the 2004 paper is the citation DORA/*Accelerate* use).
 - Larry Smith, "Shift-Left Testing," *Dr. Dobb's Journal*, Vol. 26, Issue 9 (September 2001).
 - Martin Fowler, *CodeOwnership* (bliki).
-- Werner Vogels, "A Conversation with Werner Vogels," *ACM Queue* (2006) — the *you build it, you run it* operational-ownership model (corroborated by the AWS News Blog, Jeff Barr, 2006-05-16; verified at use 2026-06-28).
+- Werner Vogels, "A Conversation with Werner Vogels," *ACM Queue* (2006) — the *you build it, you run it* operational-ownership model (corroborated by the AWS News Blog, Jeff Barr, 2006-05-16; verified at use 2026-06-28; pinned SOURCE-PIN §7 row).
 
 *Tier 2 — Accessible / further reading*
-- W. Edwards Deming, *Out of the Crisis* — building quality in rather than inspecting it in, and improving the system over blaming individuals (paraphrased, attributed).
+- W. Edwards Deming, *Out of the Crisis* (MIT Press, 1982/1986) — building quality in rather than inspecting it in, and improving the system over blaming individuals (paraphrased, attributed; pinned SOURCE-PIN §7 row).
 - Robert C. Martin, "The Boy Scout Rule," in *97 Things Every Programmer Should Know* (O'Reilly, 2010); Hunt & Thomas, *The Pragmatic Programmer* (Broken Windows; note the original theory is contested).
 - Bus/truck-factor research.
 

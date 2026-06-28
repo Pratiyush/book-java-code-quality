@@ -1309,10 +1309,10 @@ Part I has built the foundation: quality is a nameable, priceable set of attribu
 - Ron Westrum, "A typology of organisational cultures," *BMJ Quality & Safety* 2004;13(suppl 2):ii22–ii27 (typology first presented at a 1988 World Bank conference; the 2004 paper is the citation DORA/*Accelerate* use).
 - Larry Smith, "Shift-Left Testing," *Dr. Dobb's Journal*, Vol. 26, Issue 9 (September 2001).
 - Martin Fowler, *CodeOwnership* (bliki).
-- Werner Vogels, "A Conversation with Werner Vogels," *ACM Queue* (2006) — the *you build it, you run it* operational-ownership model (corroborated by the AWS News Blog, Jeff Barr, 2006-05-16; verified at use 2026-06-28).
+- Werner Vogels, "A Conversation with Werner Vogels," *ACM Queue* (2006) — the *you build it, you run it* operational-ownership model (corroborated by the AWS News Blog, Jeff Barr, 2006-05-16; verified at use 2026-06-28; pinned SOURCE-PIN §7 row).
 
 *Tier 2 — Accessible / further reading*
-- W. Edwards Deming, *Out of the Crisis* — building quality in rather than inspecting it in, and improving the system over blaming individuals (paraphrased, attributed).
+- W. Edwards Deming, *Out of the Crisis* (MIT Press, 1982/1986) — building quality in rather than inspecting it in, and improving the system over blaming individuals (paraphrased, attributed; pinned SOURCE-PIN §7 row).
 - Robert C. Martin, "The Boy Scout Rule," in *97 Things Every Programmer Should Know* (O'Reilly, 2010); Hunt & Thomas, *The Pragmatic Programmer* (Broken Windows; note the original theory is contested).
 - Bus/truck-factor research.
 
@@ -3776,13 +3776,13 @@ Part IV opens here by lifting the hood. The chapter has two jobs: show *how* ana
 
 ## How it works
 
-Static analysis is four moves, layered. Figure 15.1 sets them out as a ladder, from parsing source into a tree at the bottom to following tainted input to a dangerous sink at the top, with the cost and the characteristic blind spot of each rung.
+Static analysis is four moves, layered. Figure 15.1 sets them out as a ladder, from parsing source into a tree at the top to following tainted input to a dangerous sink at the bottom, with the cost and the characteristic blind spot of each rung.
 
 ![Figure 15.1 — Static-analysis technique ladder — Four moves, each seeing more than the one below — at rising power and cost.](figures/fig26_1.png)
 
 *Figure 15.1 — Static-analysis technique ladder — Four moves, each seeing more than the one below — at rising power and cost.*
 
-Each rung sees more than the one below it, and costs more to climb.
+Each rung sees more than the one above it, and costs more as you descend.
 
 ### Move 1 — Parse to an AST (matching shapes)
 
@@ -5660,7 +5660,7 @@ Contract testing runs as a sequence, and the guarantee holds only when every ste
 
 *Figure 24.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.*
 
-That pipeline is one of three techniques this chapter covers, and they divide one boundary and its output between them. Before walking each in turn, it helps to see how they split the work. Figure 24.2 maps each technique to the question it answers (do the sides agree, does the endpoint behave, does the output still match the baseline) and to the reference whose failure breaks it.
+That pipeline is one of three techniques this chapter covers, and they divide one boundary and its output between them. Each answers a question the other two cannot. Figure 24.2 maps each technique to its question (do the sides agree, does the endpoint behave, does the output still match the baseline) and to the reference whose failure breaks it. The three sections that follow then walk each in turn.
 
 ![Figure 24.2 — Three techniques, three questions on the service boundary and its output — Each answers what the others cannot; each fails when its own reference goes wrong.](figures/fig50_2.png)
 
@@ -5788,11 +5788,19 @@ It shines exactly where inline assertions fail: output that is **large or hard t
 
 The power of all three techniques is that the assertion lives in an external reference; the danger is the same fact. An inward `assertThat(x).isEqualTo(2)` is wrong only if the author miswrote `2`. A reference-based test is wrong if the *reference* is wrong, and the reference can go wrong silently.
 
-**Approval testing's central risk: it verifies "unchanged," not "correct."** When a test fails because the output changed, the developer reviews the diff and approves the new `received` file as the baseline. If they actually *read* the diff, this is a genuine human-in-the-loop check. If they rubber-stamp it (promote `received` to `approved` without scrutiny because the build is red), they bake the bug into the baseline, and every future run happily confirms the wrong output forever. An approval suite where no one reads the diffs is pure theatre: it asserts that the output has not changed since someone stopped paying attention. The discipline is therefore mandatory: approval testing is only worth running where the diffs will genuinely be scrutinized, and approved files belong in version control precisely so they surface in pull-request review where a second person sees them. The secondary costs follow from the same root: large approved files create noisy diffs and merge conflicts (right-size the snapshot), and any un-scrubbed non-determinism makes the test flake (Chapter 20).
+**Approval testing's central risk: it verifies "unchanged," not "correct."** When a test fails because the output changed, the developer reviews the diff and approves the new `received` file as the baseline. If they actually *read* the diff, this is a genuine human-in-the-loop check. If they rubber-stamp it (promote `received` to `approved` without scrutiny because the build is red), they bake the bug into the baseline. Every future run then happily confirms the wrong output forever. An approval suite where no one reads the diffs is pure theatre: it asserts that the output has not changed since someone stopped paying attention.
 
-**Contract testing has the analogous failure**, already named: a consumer pact whose mock expects data the real provider would never produce satisfies the contract while being wrong, until the provider verification catches it. Skip the provider half and the "contract" is the consumer's untested assumption with a broker behind it. Contract testing also carries hard scope limits stated by Pact itself: it is **not suitable for public or third-party APIs** (no team can identify or coordinate with every consumer), and it is **not a functional, performance, or load test**. A green contract proves the two sides agree on *message shape*, not that the provider's business logic is correct, that auth is enforced, or that the system survives load. Treating a green contract as proof of correctness is the central Pact anti-pattern. It also requires real operational discipline: a broker, `record-deployment`/`record-release` so `can-i-deploy` is meaningful, and `@State` handlers. A two-service shop may find the overhead exceeds the value.
+The discipline is therefore mandatory. Approval testing is only worth running where the diffs will genuinely be scrutinized, and approved files belong in version control precisely so they surface in pull-request review where a second person sees them. The secondary costs follow from the same root. Large approved files create noisy diffs and merge conflicts, so right-size the snapshot. Any un-scrubbed non-determinism makes the test flake (Chapter 20).
 
-The unifying caveat, and the honest close to Part V: every reference-based test is only as good as its reference, and every test in the part has been only as good as something (an assertion an author wrote, a contract a consumer recorded, a baseline a human approved, a mutation a tool seeded). None proves correctness; each is a signal that must be kept honest. These techniques sit in the middle and boundary of the pyramid. They do not replace the unit tests below that check business logic, the effectiveness measures of the last chapter, or a small number of end-to-end tests above. A green contract, a green API test, and a green approval are evidence of a healthy boundary and stable outputs, not of a correct product. That humility (a test is a signal, not a proof) is the thread through the whole of Part V.
+**Contract testing has the analogous failure**, already named: a consumer pact whose mock expects data the real provider would never produce satisfies the contract while being wrong, until the provider verification catches it. Skip the provider half and the "contract" is the consumer's untested assumption with a broker behind it.
+
+Contract testing also carries hard scope limits stated by Pact itself. It is **not suitable for public or third-party APIs**, because no team can identify or coordinate with every consumer. It is **not a functional, performance, or load test**. A green contract proves the two sides agree on *message shape*, not that the provider's business logic is correct, that auth is enforced, or that the system survives load. Treating a green contract as proof of correctness is the central Pact anti-pattern.
+
+The pipeline also requires real operational discipline: a broker, `record-deployment`/`record-release` so `can-i-deploy` is meaningful, and `@State` handlers. A two-service shop may find the overhead exceeds the value.
+
+The unifying caveat is the honest close to Part V. Every reference-based test is only as good as its reference, and every test in the part has been only as good as something: an assertion an author wrote, a contract a consumer recorded, a baseline a human approved, a mutation a tool seeded. None proves correctness; each is a signal that must be kept honest.
+
+These techniques sit in the middle and boundary of the pyramid. They do not replace the unit tests below that check business logic, the effectiveness measures of the last chapter, or a small number of end-to-end tests above. A green contract, a green API test, and a green approval are evidence of a healthy boundary and stable outputs, not of a correct product. That humility (a test is a signal, not a proof) is the thread through the whole of Part V.
 
 ## Limitations & when NOT to reach for it
 
@@ -8353,7 +8361,7 @@ Figure 38.1 lays out the three columns of the measurement discipline: the DORA a
 
 ![DORA and SPACE outcome measures to adopt, versus vanity metrics to refuse — anchored by Goodhart's law.](figures/fig85_1.png)
 
-*DORA and SPACE outcome measures to adopt, versus vanity metrics to refuse — anchored by Goodhart's law.*
+*Figure 38.1 — Outcome metrics vs. vanity metrics: DORA and SPACE outcome measures to adopt, versus vanity metrics to refuse — anchored by Goodhart's law.*
 
 ### Metrics that matter: outcomes, not vanity
 
@@ -8524,7 +8532,7 @@ Figure 39.1 shows the safe-change loop at the center (precondition, one small tr
 
 ![The safe-change refactoring loop (precondition → transform → verify green → commit → repeat), and the same invariant at method/legacy/system/platform scale.](figures/fig91_1.png)
 
-*The safe-change refactoring loop (precondition → transform → verify green → commit → repeat), and the same invariant at method/legacy/system/platform scale.*
+*Figure 39.1 — The safe-change loop: one invariant at four scales. The safe-change refactoring loop (precondition → transform → verify green → commit → repeat), and the same invariant at method/legacy/system/platform scale.*
 
 ### Refactoring: small behavior-preserving steps under a green suite
 
