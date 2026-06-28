@@ -98,6 +98,170 @@
   without re-adjudicating the fact. Type-system figures (fig14_1/14_2) require verbatim angle-bracket
   signatures in the long-description; paraphrase would drop the load-bearing variance.
 
+## 2026-06-28 — A11Y (Step 9c) authoring pass, Chs 25–32 (keys 53, 55, 62, 65, 67, 69, 70/71, 73) — 11 figures
+
+- **Scope.** Authored / completed the `## Accessibility` block (alt-text + full long-description + a
+  grayscale/contrast/code-legibility line, in the locked voice) into all 11 figure sidecars for printed
+  chapters 25–32 (Part VI close, Part VII, Part VIII). Verdict per chapter: **PASS / FIX (soft)** across
+  the board — zero blocking FIX, zero figure redesign needed. Coverage 11/11. Caption-before-figure
+  confirmed for every figure (the prose names "Figure NN.x" before the embed in all eight drafts).
+- **Three more partial pre-existing A11Y blocks (now SIX across four batches — a clear pattern).** fig67_1,
+  fig67_2, and fig73_1 already carried a figure-designer-authored alt-text + long-description but **no**
+  grayscale/contrast/code-legibility line. Confirmed accurate, left the prior alt/long-desc intact
+  (rewriting correct prior work risks regression), and **added** the missing grayscale line to each.
+  Combined with fig10_1 / fig19_1 / fig27_1 from the earlier batches this is six partial blocks → the
+  standing proposal is now well-evidenced: the sidecar A11Y block must carry all required fields
+  (alt / long-desc / grayscale-contrast-legibility), and the figure-accuracy gate (9a/9b) should not mark
+  a sidecar "done" with a partial block. **Proposed FIGURE-GUIDE/agent promotion:** make the five-field
+  A11Y block a 9a/9b completion criterion so the 9c pass never inherits a half-authored block.
+- **Grayscale finding holds — heavy color use, but every cue is reinforced on the element.** This batch is
+  the most color-heavy so far: ok/warn/stop cost badges (fig62_1), green/red "catches well / blind spots"
+  (fig70_1), warn-bordered Detect tier (fig69_1), a red remote-marker + red rotate panel (fig71_1),
+  red/amber BLOCK-vs-WARN policy strips (fig73_1), warn-toned risk + trap text (fig53_1/53_2/65_1/67_2).
+  In every case the meaning is carried independently by a text label, border style, or the word in the
+  cell — cost badges print their tier word ("fast/mid/heaviest"), the lens cards print "CATCHES WELL /
+  BLIND SPOTS", the secrets ladder prints "prevents/blocks/catches/finds" + a strike-through on
+  delete/rewrite + the word ROTATE, and the license matrix prints "Low/Review/High" with a fill-weight
+  ramp. fig67_2 is the model: risk reads by cell weight + the word, with the single accent reserved for
+  the "not legal advice" caution. No fig06_3-style color-only element appeared in this batch.
+- **Dense-figure small-type recurs (carry to Step 15).** fig55_1 (two-column spectrum with two embedded
+  code blocks + a four-cell fitness-function strip), fig65_1 (5 stages + 3 question brackets + two
+  sidebars + a four-cell limits strip), and fig73_1 (four stages each with tool-version lists) pack the
+  smallest type in this batch. Legible at the 3× PNG, unproven at print trim — a NOTE on each, routed to
+  PRODUCTION-PROOF. Same recommendation as prior batches: add a "smallest-type legible at final print
+  trim" line to the Step 15 checklist.
+- **Lane discipline held (figure-title vs printed-chapter-number is the established convention, not a
+  defect).** Every figure bakes its dossier-key title into the raster (e.g. "Fig 62.1", "Fig 65.1") while
+  the prose and caption use the printed chapter ordinal ("Figure 27.1", "Figure 28.1"). This is consistent
+  across all 11 figures and is the project's filename=dossier-key / printed=chapter-ordinal convention;
+  both point to the same figure, so it is noted as an observation for the figure-designer, **not** an A11Y
+  FIX. The alt-text states the figure's takeaway, not the in-raster "Fig NN.x" label, per the FIGURE-GUIDE
+  ("not 'Figure 1.1'"). Source-trace ⚠ caveats already flagged by the figure-designer (OWASP A02/A03/A08
+  numbers in fig69_1; SLSA L1–L3 / in-toto / cosign GAVs and EO-14028 / EU-CRA specifics in fig65_1; JPMS
+  exports semantics in fig53_2/55_1; named-canon rows for Martin/North/Liskov in fig53_1 and Ford et al. in
+  fig55_1) are the figure-designer's lane — noted, not re-adjudicated.
+
+## 2026-06-28 — A11Y (Step 9c) authoring pass, Chs 33–40 (keys 75, 80, 81, 83, 84, 85, 91, 96) — 10 figures
+
+- **Scope.** Authored / completed the `## Accessibility` block (alt-text ≤125 chars + full long-description
+  + a grayscale/contrast/code-legibility line, in the locked voice) into all 10 figure sidecars for printed
+  chapters 33–40 (Part IX CI/CD & gates, Part X opener, Part XI refactoring/remediation). Verdict per
+  chapter: **PASS / FIX (soft)** across the board — zero blocking FIX, zero figure redesign needed.
+  Coverage 10/10. Caption-before-figure confirmed for all 10 (the prose names "Figure NN.x" before the
+  embed in every draft).
+- **THREE figures shipped to 9c with NO A11Y block at all (not merely partial).** fig81_1, fig85_1, and
+  fig91_1 had sidecars that ended at "Source-trace status" with no `## Accessibility` section — a full
+  block (alt + long-desc + grayscale/contrast/legibility) was authored from scratch for each. This is a
+  step up in severity from the earlier batches' *partial* blocks: combined with the six partial blocks
+  logged across the Chs 1–32 passes, the figure pipeline is leaving the A11Y layer unauthored or
+  half-authored at a material rate. **Strengthens the standing proposal to a recommendation:** make the
+  five-field A11Y block a hard 9a/9b completion criterion (a rendered figure is not "done" until its
+  sidecar carries the block), so 9c never inherits a missing or partial block.
+- **Five partial pre-existing blocks completed (long alt-text, no grayscale line).** fig75_1, fig80_1,
+  fig83_1, fig84_1, fig84_2, fig96_1, fig96_2 each carried a figure-designer alt-text that doubled as a
+  long-description (ranging ~310 to ~1.6k chars) but exceeded the ≤125 alt-text target and lacked the
+  grayscale/contrast/legibility line. Tightened the alt-text to a true one-sentence equivalent, retained
+  the accurate long-description, and added the missing line. Confirms the prior batches' fix: the alt-text
+  field must be the SHORT equivalent and the long-description the full one — a single over-long "alt-text"
+  is a defect even when its content is correct.
+- **Grayscale finding holds — every status/branch cue is reinforced on the element.** This batch encodes
+  pass/fail and block/warn heavily in color (fig75_1 block-vs-warn lanes; fig80_1 whole-repo-vs-diff
+  verdict pills; fig85_1 vanity column; fig91_1 / fig96_1 "Never" boxes), and in every case the meaning is
+  carried independently of hue: solid-vs-dashed borders + the words "blocks"/"Warn → triage"; worded
+  verdict pills ("unreachable / gamed", "per-PR verdict", "muted noise", "gets fixed"); an "✕" glyph + the
+  word "Never" on every rejection box; "✕"-prefixed vanity rows; numbered steps + left-to-right arrows for
+  every ordered flow; and accents realized as a left-edge bar + lighter fill (a lightness/position cue, not
+  a color swatch). No fig06_3-style color-only element appeared. The standing FIGURE-GUIDE promotion (a
+  non-color cue must sit *on* the element) holds with no exception across these 10 figures.
+- **NEW: two chapters embed the figure with no italic caption line under the image.** Ch 85 (fig85_1) and
+  Ch 91 (fig91_1) place only the short markdown alt attribute and omit the `*Figure NN.x — …*` italic
+  caption line that the other six chapters (80/81/83/84/96, and 75) carry below the embed. The prose
+  reference precedes the figure in both, so caption-before-figure PASSES and the A11Y *sidecar* block is
+  complete; this is a drafting/caption-consistency gap routed to the figure-designer/drafter as a soft FIX
+  (finding #2 in each report), not an A11Y-block defect. **Proposed:** the figure/draft step (or
+  RECONCILE) should enforce that every embed carries BOTH the italic caption line and the sidecar block,
+  since the alt attribute and the printed caption are both part of the non-visual read.
+- **Lane discipline held.** (1) Both Ch 84 figures are **FLAGGED** in source-trace (Cohen/SmartBear,
+  Google eng-practices, Nygard ADR are SOURCE-PIN §7 named-canon gaps); the A11Y text describes only what
+  the figure draws and carries the same "the figures are the study's" attribution the caption/prose use —
+  the FLAG is the source-verifier/figure-designer's lane, recorded as a NOTE, not re-adjudicated.
+  (2) fig85_1 correctly omits the DORA performance bands (elite/high/medium/low — verify-at-pin), so the
+  long-description names no band number. (3) Within-chapter figure cross-references (fig96_2 sits under
+  step 5 of fig96_1) are kept in the long-description so a non-visual reader follows the same pointer a
+  sighted reader does. (4) The filename=dossier-key vs printed=chapter-ordinal title convention recurs
+  (sidecars titled "Fig 75.1"/raster vs caption "Figure 33.1") and is the established project convention,
+  noted not flagged.
+
+## 2026-06-28 — A11Y (Step 9c) authoring pass, Chs 17–24 (keys 35, 38, 39, 41, 42, 45, 48, 50) — 12 figures
+
+- **Scope.** Authored / completed the `## Accessibility` block (alt-text ≤125 chars + full long-description
+  + a grayscale/contrast/code-legibility line, in the locked voice) into all 12 figure sidecars for printed
+  chapters 17–24 (Part IV close: layering / custom rules / managing findings; Part V testing: pyramid &
+  quality, unit testing & mocking, integration & property-based, coverage & mutation, contract & approval).
+  Coverage 12/12. Caption-before-figure confirmed for every figure (the prose names "Figure NN.x" before the
+  embed in all eight drafts). Verdict per chapter: Ch 35 / 39 / 41 / 42 / 45 **PASS**; Ch 38 / 48 / 50
+  **PASS / FIX (soft)**.
+- **THREE concrete FIX findings routed to the figure-designer (a step up from the all-NOTE Chs 9–16 batch).**
+  (1) **fig38_1 rendered grid misalignment (MAJOR).** The five-tool matrix uses CSS `display:contents` on its
+  row wrappers; under headless-Chrome render the 5th column (ArchUnit) and the "Artifact reasoned over" row
+  label shift into the body, so the grid does not read as five aligned columns — a low-vision reader cannot
+  map ArchUnit's cells to its header. The source-trace and the data are correct; only the layout is broken,
+  which is exactly why a draft-only review missed it and the PNG-reading A11Y pass caught it. Fix: avoid
+  `display:contents` on grid row wrappers (use explicit grid placement) and re-render. (2)+(3) **Figure-title
+  number mismatch on fig48_1, fig50_1, fig50_2 (MAJOR each).** Unlike the Chs 25–40 batches — where every
+  figure baked the dossier-key number into the raster while the prose used the chapter ordinal, consistently,
+  and it was logged as the established benign convention — these three render the dossier-key form ("Fig 48.1",
+  "Fig 50.1", "Fig 50.2") while **the other figures in this same batch render the chapter-number form**
+  ("Fig 17.1", "Fig 18.1", "Fig 19.1", "Fig 20.x", "Fig 21.x", "Fig 22.1"). So within one batch the title
+  scheme is inconsistent: a sighted reader of ch 48/50 meets "Fig 48.1" in the image and "Figure 23.1/24.x"
+  in the caption. Treated as a real FIX (re-title to the chapter-number form + re-render), not the benign
+  convention. **Proposed:** a Step 9b render-time (or Step 13 RECONCILE) check that the rendered `fig-title`
+  chapter number equals the FINAL_INDEX chapter number, not the dossier key — would have caught all three.
+- **First in-figure CODE block in the A11Y passes so far — code-legibility actively exercised, PASS.**
+  fig48_1 carries two typeset test snippets (a weak `assertNotNull` test, a strong AssertJ `isCloseTo`
+  test) side by side. They are real HTML monospace text (not code screenshots, per the ban), short and
+  copyable-in-principle, and emphasis on the load-bearing literals (10 / 90.0 / 9 / 100.0) is carried by
+  **bold weight + a light highlight background, not syntax color** — so the code is understandable in
+  grayscale. This is the figure the FIGURE-GUIDE code-legibility clause was written for, and it passes.
+- **Grayscale finding holds across a very color-heavy testing batch.** Every status/branch color is
+  reinforced on the element by a word or non-hue cue: mutant tables print "SURVIVED"/"KILLED" (fig48_1);
+  metric/verdict cells print "PASS"/"FAIL gate" and the verdict banners' red/green bars only reinforce the
+  worded verdict; the coverage×mutation danger quadrant (fig41_2) carries THREE non-hue cues — a heavier
+  border, an inset bar, and the "▲ chapter hook" text — plus the worded "coverage lies here" badge; the
+  fidelity×input grid (fig45_1) prints corner labels + "two blind spots"/"closes gap"/"both gaps closed"
+  badges and names the "target zone" in text; killed/lived chips (fig41_2) are worded; the Pact pipeline
+  (fig50_1) and the three-technique grid (fig50_2) distinguish shared-infra / output techniques by
+  dashed-vs-solid borders + worded legends + labelled brackets. No color-only element appeared — the
+  standing FIGURE-GUIDE promotion (a non-color cue must sit *on* the element) holds with no exception.
+- **Neutrality must survive into the alt-text layer.** Three figures rank/place options
+  (fig45_1's "target zone" = real + generated inputs; fig41_2's "target state" quadrant; fig48_1's
+  "run both, crown neither"). The long-descriptions state each target's COST (highest cost / highest
+  coverage at highest cost) and reproduce the "crown neither" / "two jobs, not rivals" framing, so the text
+  equivalent does not read as crowning a winner. Recorded as a working rule: when a figure marks a
+  target/best zone, the alt/long-desc must carry its trade-off, not just its name.
+- **Two pre-existing complete blocks confirmed, four sidecars needed the grayscale line, six needed the
+  full block.** fig38_1 and fig38_2 already carried a complete alt + long-desc (figure-designer pass); this
+  run confirmed them and **added the missing grayscale/contrast/legibility line** to each (so even a
+  "complete-looking" prior block was missing the fifth field). The other ten sidecars (fig35_1, fig39_1,
+  fig41_1/2, fig42_1/2, fig45_1, fig48_1, fig50_1/2) ended at "Source-trace status" with **no**
+  `## Accessibility` section and were authored from scratch. Combined with the prior batches this keeps
+  evidencing the standing proposal: make the five-field A11Y block a hard 9a/9b completion criterion so 9c
+  never inherits a missing or partial block.
+- **Dense-figure small-type recurs (carry to Step 15).** fig39_1 (triage tree + 4-lever ladder + 5-tool
+  strip), fig48_1 (two code blocks + two mutant tables + a full DEFAULTS mutator routing line — the densest
+  in this batch), and fig35_1 (matrix + lane diagram + 3 notes + legend) pack rule IDs / mutator names /
+  GAV tokens at the smallest type. Legible at the 3× PNG, unproven at print trim — a NOTE on each, routed to
+  PRODUCTION-PROOF. Same recommendation as every prior batch: add a "smallest-type legible at final print
+  trim" line to the Step 15 checklist.
+- **Lane discipline held.** ⚠ verify-at-pin / dated atoms already flagged by the figure-designer are
+  inherited as flagged in the long-descriptions, never upgraded to asserted fact: Lenarduzzi 2021 (DATED,
+  includes FindBugs) in fig35_1; Lombok/AutoValue/Immutables/MapStruct GAVs not-yet-§2 in fig38_2; the
+  Sonar Won't Fix→Accepted rename + baselineFiles multi-file version boundary in fig39_1; jqwik "⚠
+  maintenance mode" in fig45_1; Pact/REST-assured/ApprovalTests GAVs ⚠-at-pin in fig50_1/2; the Fowler
+  TestCoverage bliki as Bucket-i secondary in fig48_1. The five verbatim Fowler test-double definitions
+  (fig42_2) and the Vocke pyramid quotes (fig41_1) are reproduced exactly in the long-descriptions (they
+  are the figure's labels and licensed attributed fair-use excerpts), not paraphrased.
+
 ## 2026-06-28 — Lift loop: an in-bounds prose lift adds NO claim not already verified in the artifact; placement is a UTILITY lever distinct from content (Ch 8, key 10)
 
 - **Trigger.** Ch 8 sat at 43/50 (C9/A9/U8/D8/R9), all floors PASS, 1 below the 88% ship bar. The prior
