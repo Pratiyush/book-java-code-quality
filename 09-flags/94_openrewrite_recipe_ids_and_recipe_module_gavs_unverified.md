@@ -1,6 +1,11 @@
-# FLAG — keys 94 + 96 (OpenRewrite): recipe IDs & recipe-module GAVs `⚠ verify at pin`
+# FLAG — keys 94 + 96 (OpenRewrite): recipe IDs & recipe-module GAVs
 
-**Filed:** 2026-06-27 · **Dossiers:** `02-research/94_automated_refactoring_openrewrite/…RESEARCH.md`,
+**Status: recipe-ID + GAV IDENTITY RESOLVED** (atoms 1–2, web-verified 2026-06-28). Atoms 4–6 (Refaster
+prose, the LST mechanism claim, the big-bang/Fowler–Spolsky attribution) remain `⚠ verify-at-pin` as
+attributed-and-paraphrased prose; the recipe RUN (REPRO) stays network-gated → PENDING-RUNTIME.
+
+**Filed:** 2026-06-27 · **Atoms 1–2 resolved:** 2026-06-28 (web-verify against docs.openrewrite.org +
+Maven Central) · **Dossiers:** `02-research/94_automated_refactoring_openrewrite/…RESEARCH.md`,
 `02-research/96_remediation_playbook/…RESEARCH.md` · **Companion module:**
 `08-companion-code/96_remediation_playbook_automated_change/`
 
@@ -18,15 +23,26 @@ not in the local Maven cache; the recipe **run** is network-gated → REPRO PEND
 
 1. **Recipe ID** referenced by `config/rewrite/rewrite.yml` and the `rewrite` Maven profile:
    - `org.openrewrite.java.migrate.UpgradeToJava21`
-   - Dossier (key 94) attests by name that `UpgradeToJava25 ⊇ UpgradeToJava21` exist as composite migration
-     recipes (live-line), but the **exact recipe-ID spelling** is verify-at-pin against
-     `docs.openrewrite.org` at the 8.81.0 line.
+   - ☑ **RESOLVED 2026-06-28** — confirmed verbatim against
+     `https://docs.openrewrite.org/recipes/java/migrate/upgradetojava21`. The composite chain is also
+     confirmed: `UpgradeToJava25` (docs page `…/upgradetojava25`) lists `UpgradeToJava21` in its recipe
+     list, and `UpgradeToJava21` lists `UpgradeToJava17`, so `25 ⊇ 21 ⊇ 17` holds. No change to the
+     recipe ID; the spelling in `rewrite.yml` and the draft prose is correct.
 
 2. **Recipe-module GAV** wired into the `rewrite` profile to supply that recipe:
-   - `org.openrewrite.recipe:rewrite-migrate-java:3.16.0`
-   - The artifactId is the well-known migration module name, but the **3.16.0 version** is the version
-     compatible with OpenRewrite 8.81.0 per the OpenRewrite recipe-BOM and is verify-at-pin (the
-     `rewrite-recipe-bom` aligns recipe-module versions to the engine line; confirm 3.16.0 ↔ 8.81.0).
+   - was `org.openrewrite.recipe:rewrite-migrate-java:3.16.0` → **corrected to `:3.34.0`**
+   - ☑ **RESOLVED 2026-06-28** — the artifactId is correct, but the **version was off-pin**. `3.16.0`'s
+     own POM imports `rewrite-bom 8.61.1` (NOT the pinned 8.81.0). The version aligned to the pinned
+     engine is **3.34.0**: `rewrite-recipe-bom 3.30.0` (the recipe-BOM release that incorporates
+     OpenRewrite 8.81.0 + rewrite-maven-plugin 6.38.0 + rewrite-gradle-plugin 7.32.0 — the exact
+     SOURCE-PIN §6 trio) imports `rewrite-bom 8.81.0` and pins `rewrite-migrate-java 3.34.0`; and
+     `rewrite-migrate-java 3.34.0`'s own POM imports `rewrite-bom 8.81.0` (confirmed on
+     `central.sonatype.com`, both artifacts present on Maven Central). The `pom.xml` GAV, the
+     `rewrite.yml`/README comments, the draft, and SOURCE-PIN §6 are updated to `3.34.0`.
+   - **Caution recorded:** the version `3.16.0` collides by coincidence across two different artifacts —
+     `rewrite-recipe-bom:3.16.0` (engine 8.63.0, pins migrate-java 3.19.0) and
+     `rewrite-migrate-java:3.16.0` (engine 8.61.1). Neither aligns to engine 8.81.0; that collision is
+     exactly what the original flag suspected.
 
 3. **The custom composite recipe name** `org.acme.remediation.ModernizeForJava21` is ORIGINAL-FOR-THIS-BOOK
    (this module's own recipe, not an upstream fact) — not flagged, recorded here for completeness.
@@ -63,12 +79,22 @@ not in the local Maven cache; the recipe **run** is network-gated → REPRO PEND
 
 ## Resolution
 
-Re-trace the recipe ID (`org.openrewrite.java.migrate.UpgradeToJava21`) and the recipe-module GAV
-(`org.openrewrite.recipe:rewrite-migrate-java:3.16.0`) against `docs.openrewrite.org` and the
-`rewrite-recipe-bom` at the **8.81.0** line once the OpenRewrite artifacts can be fetched. If the recipe ID
-or the compatible recipe-module version differs at the pin, update `config/rewrite/rewrite.yml` and the
-`rewrite` profile in `pom.xml`, then re-confirm `mvn -Prewrite rewrite:dryRun` resolves (clears the REPRO
-PENDING-RUNTIME caveat). Reserve `☑ @pin` for post-fetch verification.
+**Atoms 1–2 (recipe ID + recipe-module GAV IDENTITY): ☑ RESOLVED 2026-06-28** by web-verify against
+`docs.openrewrite.org` (recipe IDs, verbatim) and `central.sonatype.com` / Maven Central (the GAVs and
+their `rewrite-bom` engine imports). Recipe ID unchanged; GAV corrected `3.16.0 → 3.34.0` to match the
+pinned engine 8.81.0 (alignment proven via `rewrite-recipe-bom 3.30.0`). Edits applied:
+`08-companion-code/96_remediation_playbook_automated_change/pom.xml`,
+`…/config/rewrite/rewrite.yml`, `…/README.md`,
+`03-drafts/91_refactoring_legacy_modernization/91_refactoring_legacy_modernization_v1.md`, and
+`00-strategy/SOURCE-PIN.md §6`.
+
+**Still open — the recipe RUN (REPRO), not the identity.** `mvn -Prewrite rewrite:dryRun` / `rewrite:run`
+remains network-gated → **REPRO PENDING-RUNTIME**: only the recipe ID + GAV are verified here, not a live
+recipe execution. Run the dry-run once the OpenRewrite artifacts can be fetched to clear that caveat.
+
+**Atoms 4–6 remain `⚠ verify-at-pin`** (see below): they are carried as attributed-and-paraphrased prose
+(Refaster `@BeforeTemplate`/`@AfterTemplate`; the LST mechanism claim; the big-bang/Fowler–Spolsky
+attribution), never asserted verbatim, so no unverifiable text is stated as fact.
 
 For atoms 5–6: confirm the **LST mechanism** wording (type-info per node, formatting preservation,
 finds-every-reference, composite `25 ⊇ 21`) against `docs.openrewrite.org` at the 8.81.0 line; and confirm

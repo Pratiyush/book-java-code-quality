@@ -94,9 +94,24 @@ flagged to `09-flags/`.
 | Gradle (+ version catalogs) | **9.6.0** (2026-06) | docs.gradle.org | ✅ pinned |
 | OWASP Dependency-Check | **12.2.2** | owasp.org/www-project-dependency-check | ✅ pinned |
 | CycloneDX / SPDX (SBOM) | **CycloneDX 1.6** (2024; +CBOM/attestations) / **SPDX = ISO/IEC 5962:2021** (3.x current) | cyclonedx.org / spdx.dev | ✅ pinned |
-| SLSA (supply-chain framework) | **v1.0** (2023; build/source/dependencies tracks) | slsa.dev/spec/v1.0 | ✅ pinned |
+| SLSA (supply-chain framework) | **v1.0** (2023; Build track: Build L0–L3 — L1 provenance exists, L2 hosted build platform + signed provenance, L3 hardened builds; "Supply-chain Levels for Software Artifacts," pron. "salsa"). v1.2 = AHEAD-OF-PIN (current, not asserted) | slsa.dev/spec/v1.0/levels · slsa.dev/spec/v1.0/about | ✅ pinned (web-verified 2026-06-28) |
 | Renovate / Dependabot | **rolling/continuous** (hosted; no fixed version — pin config schema at use) | docs.renovatebot.com / GitHub docs | ⚠ rolling |
 | Grype / Trivy / Snyk | **Grype ~0.108–0.110** / **Trivy 0.71.0** / Snyk (SaaS, rolling) | anchore/grype, aquasecurity/trivy, snyk.io | ✅ pinned (Snyk rolling) |
+
+#### 4a. Supply-chain regulatory / SBOM-standard sources (Ch 28 / keys 65+66 — web-public official texts; dated-at-use, factual not legal advice)
+
+> These are the standards/regulatory authorities the supply-chain chapter cites. Spec rows follow the §2–§4
+> versioned discipline (a fact true only past the pin is `⚠ AHEAD-OF-PIN`). The two **regulatory** rows (EO 14028,
+> EU CRA) are **legal instruments**: cited **dated-at-use** as a factual signal of direction, **never as legal
+> advice** — mirroring the Ch 29 license treatment (`LEGAL-IP-RULES.md`); scope/obligations/timelines vary by
+> jurisdiction, are still settling, and are for counsel, not this book.
+
+| Authority | Pin identifier (web-verified 2026-06-28) | Fetch / reference | Status |
+|---|---|---|---|
+| CycloneDX spec (SBOM, security-focused) | **1.6** (released 2024-04-09, OWASP; added CBOM + CycloneDX Attestations/CDXA; ratified **ECMA-424** 1st ed. June 2024). v1.7 (2025-10) = AHEAD-OF-PIN, not asserted | cyclonedx.org/specification/overview · owasp.org/blog/2024/04/09/CycloneDX-v1.6-Released | ✅ pinned (web-verified 2026-06-28) |
+| SPDX spec (SBOM, licensing/provenance) | **ISO/IEC 5962:2021** (Linux Foundation; international standard since Aug 2021). SPDX 3.0.0 (2024-04, +Security/Build/Dataset/AI profiles) = AHEAD-OF-PIN | spdx.dev/about/overview · iso.org/standard/81870 (cited, not redistributed) | ✅ pinned (web-verified 2026-06-28) |
+| US Executive Order 14028 — *Improving the Nation's Cybersecurity* | signed **2021-05-12** (Pres. Biden); Fed. Reg. **86 FR 26633** (publ. 2021-05-17). **§4** "Enhancing Software Supply Chain Security"; **§4(e)** directs agencies to require an **SBOM** from software vendors; §4(f)/4(g) → NTIA "minimum elements for an SBOM" (publ. 2021-06-02 / 86 FR 29489). Cited as a **dated compliance-direction signal, NOT legal advice** | federalregister.gov/d/2021-10460 · nist.gov/itl/executive-order-14028-improving-nations-cybersecurity | ✅ pinned (web-verified 2026-06-28) |
+| EU Cyber Resilience Act (CRA) | **Regulation (EU) 2024/2847** of 23 Oct 2024 (OJ 2024-11-20); in force **2024-12-10**; main obligations apply **2027-12-11** (reporting obligations from 2026-09-11). **SBOM** obligation: **Annex I, Part II(1)** — manufacturers shall identify/document components incl. **"drawing up a software bill of materials … in a commonly used and machine-readable format covering at the very least the top-level dependencies"**; recitals 22 + 77 (market-surveillance may request the SBOM; no specific standard mandated → CycloneDX or SPDX). Cited **dated, factual, NOT legal advice** | eur-lex.europa.eu/eli/reg/2024/2847/oj · digital-strategy.ec.europa.eu/en/policies/cyber-resilience-act | ✅ pinned (web-verified 2026-06-28) |
 
 ### 5. CI/CD & process platforms
 | Authority | Pin identifier | Fetch / reference | Status |
@@ -111,7 +126,7 @@ flagged to `09-flags/`.
 ### 6. Refactoring & modernization
 | Authority | Pin identifier | Fetch / reference | Status |
 |---|---|---|---|
-| OpenRewrite | **8.81.0** (rewrite-maven-plugin 6.38.0; rewrite-gradle-plugin 7.32.0) | docs.openrewrite.org + github.com/openrewrite | ✅ pinned 2026-06-20 |
+| OpenRewrite | **8.81.0** (rewrite-maven-plugin 6.38.0; rewrite-gradle-plugin 7.32.0) — engine line aligned by **rewrite-recipe-bom 3.30.0**, which imports rewrite-bom 8.81.0 and pins **rewrite-migrate-java 3.34.0** (the recipe module compatible with this engine); recipe IDs `org.openrewrite.java.migrate.UpgradeToJava17/21/25` (composite: 25 ⊇ 21 ⊇ 17) | docs.openrewrite.org + github.com/openrewrite | ✅ pinned 2026-06-20; recipe module + IDs web-verified 2026-06-28 (Ch 39/40; keys 94/95/96) |
 | revapi / japicmp (API compat) | **revapi 0.15.1** / **japicmp 0.25.6** | revapi.org / siom79.github.io/japicmp | ✅ pinned |
 
 ### 7. Named book canon (cited as authority, never redistributed beyond fair-use quotation)

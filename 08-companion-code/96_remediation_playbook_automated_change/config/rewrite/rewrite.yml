@@ -15,9 +15,11 @@
 # Automation proposes; the tests and the review dispose. The recipe's output is a pull request to verify,
 # never a blind apply — and large auto-diffs are reviewed per-recipe, incrementally.
 #
-# SOURCE-PIN.md §6: OpenRewrite 8.81.0; rewrite-maven-plugin 6.38.0. The composed recipe ID
-# (org.openrewrite.java.migrate.UpgradeToJava21) and the rewrite-migrate-java module are verify-at-pin
-# against docs.openrewrite.org at the pinned line — flagged in 09-flags/.
+# SOURCE-PIN.md §6: OpenRewrite 8.81.0; rewrite-maven-plugin 6.38.0; recipe module
+# rewrite-migrate-java 3.34.0 (aligned to engine 8.81.0 via rewrite-recipe-bom 3.30.0). The composed
+# recipe ID (org.openrewrite.java.migrate.UpgradeToJava21) is web-verified verbatim against
+# docs.openrewrite.org and the GAV against Maven Central (2026-06-28). Recipe RUN remains REPRO
+# PENDING-RUNTIME (network-gated); only the recipe IDENTITY is verified.
 #
 # tag::rewrite-recipe[]
 type: specs.openrewrite.org/v1beta/recipe

@@ -1,8 +1,8 @@
 # FLAG (key 39) — Part-IV tool/plugin versions + suppression/baseline defaults unverified
 
-**Type:** `✅ RESOLVED` (versions on Central 2026-06-27; plugin defaults + baseline-param name web-verified against the pinned plugin docs 2026-06-28; SpotBugs engine atoms + Sonar atoms resolved earlier)
+**Type:** `✅ RESOLVED — FULLY` (versions on Central 2026-06-27; plugin defaults + baseline-param name web-verified against the pinned plugin docs 2026-06-28; SpotBugs engine atoms + Sonar atoms resolved earlier; the two residual doc-identity atoms — SpotBugs `Bug` `code`/`category` + `Package` element, and Checkstyle `@SuppressWarnings` name-normalization — web-verified against the pinned tool docs 2026-06-28)
 **Chapter key:** 39 — Living with findings
-**Filed:** 2026-06-15 · **Resolved:** 2026-06-28
+**Filed:** 2026-06-15 · **Resolved:** 2026-06-28 (final two atoms closed 2026-06-28)
 
 ## Verified now (from each tool's own docs — identity, not version)
 - Checkstyle: `SuppressionFilter`, `SuppressionXpathSingleFilter`, `SuppressionSingleFilter`,
@@ -31,8 +31,9 @@
   build (`08-companion-code/39_managing_findings/`, green). The `FindBugsFilter` leaf set
   (`Match`/`Bug`(pattern)/`Class`/`Method`/`Field`/`Local`/`Confidence`/`Rank`/`Source`/`And`/`Or`/`Not`)
   is also confirmed present in the engine jar; the `Bug` `code`/`category` attribute forms and the `Package`
-  filter element remain doc-identity-only (no matcher in the engine jar / not asserted in the built filter)
-  and stay `⚠ verify at pin`. Engine-vs-pin version delta (SpotBugs 4.9.3 engine vs pin 4.10.2) tracked
+  filter element are doc-identity-only (no matcher in the engine jar / not asserted in the built filter) and
+  were `⚠ verify at pin` here — **now RESOLVED via the pinned filter docs, see the 2026-06-28 update below.**
+  Engine-vs-pin version delta (SpotBugs 4.9.3 engine vs pin 4.10.2) tracked
   book-wide in `09-flags/20_companion_engine_versions_vs_pin.md` — not duplicated here.
 
 ## Action at `/pin-source`
@@ -95,9 +96,32 @@ resolved in the draft (`03-drafts/39_managing_findings/39_managing_findings_v1.m
    `spotbugs-mojo.html`/`check-mojo.html` (4.10.2.0, last published 2026-06-09), which list only
    `excludeFilterFile`/`excludeBugsFile…` and confirm no `baselineFiles` token.
 
-**All `@pin` markers for these four atoms removed from the draft; cites added.** Residual ⚠ verify-at-pin
-atoms NOT in this flag's scope and still open elsewhere: the SpotBugs `Bug` `code`/`category` attribute forms
-+ the `Package` filter element (no matcher asserted in the built filter) and Checkstyle `@SuppressWarnings`
-name-normalization — both doc-identity-only, tracked in the draft's back-matter, not blockers for ACCURACY.
+**All `@pin` markers for these four atoms removed from the draft; cites added.**
 Engine-vs-pin version delta (SpotBugs 4.9.3 engine vs pin 4.10.2) tracked in
 `09-flags/20_companion_engine_versions_vs_pin.md`.
+
+## Update — 2026-06-28 (web-verify pass against the pinned TOOL docs — the final two doc-identity atoms — FLAG NOW FULLY ✅ RESOLVED)
+The two residual doc-identity atoms (which had no artifact in the built module, so they could not be
+confirmed at FLOOR-C build) are now verified VERBATIM against the pinned tool docs and the `@pin` markers
+are removed from the draft:
+
+1. **SpotBugs `Bug` element `code`/`category` attributes (alongside `pattern`) + the `Package` filter
+   element** — VERIFIED. Source: `https://spotbugs.readthedocs.io/en/stable/filter.html` (SpotBugs **4.10.2**
+   pin). Verbatim: `code` = *"a comma-separated list of bug abbreviations"*; `category` = *"a comma separated
+   list of bug category names: `CORRECTNESS`, `MT_CORRECTNESS`, `BAD_PRACTICE`, `PERFORMANCE`, `STYLE`"*;
+   and *"If more than one of the attributes … are specified on the same `<Bug>` element, all bug patterns that
+   match either one of specified pattern names, or abbreviations, or categories will be matched."* The
+   `<Package>` match clause takes `name`: *"used to specify the package name. Nested packages are not included
+   … matching multiple packages can be achieved easily using regex name match."* (Confirmed by raw-HTML grep —
+   literal `&lt;Bug` / `&lt;Package` markup present — not only the summarizer.)
+2. **Checkstyle `@SuppressWarnings` name-normalization** — VERIFIED. Source:
+   `https://checkstyle.org/filters/suppresswarningsfilter.html` (page footer **Version: 13.6.0**, matching the
+   pinned Checkstyle 13.6.0). Verbatim: *"Name of check in annotation is case-insensitive and should be written
+   with any dotted prefix or 'Check' suffix removed."* Module `SuppressWarningsFilter` requires the companion
+   `SuppressWarningsHolder` on the `TreeWalker` (both confirmed present on the page). (Raw-HTML grep confirmed
+   the normalization sentence and the version footer, not only the summarizer.)
+
+**Both `@pin`/`verify-at-pin` markers removed from `03-drafts/39_managing_findings/39_managing_findings_v1.md`;
+cites added at the trace block (front matter) and the back-matter Sources block. No residual atoms remain for
+this flag — every Ch 19/key-39 atom is source-traced. Engine-vs-pin version delta still tracked in
+`09-flags/20_companion_engine_versions_vs_pin.md` (book-wide, not this flag).**
