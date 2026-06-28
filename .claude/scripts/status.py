@@ -76,7 +76,8 @@ BUB = {"done": "🟢", "self": "🟡", "no": "🔴", "human": "🔵", "na": "⚪
 HTML_COLOR = {"🟢": "#1a7f37", "🟡": "#bf8700", "🔴": "#cf222e", "🔵": "#0969da", "⚪": "#8c959f"}
 PAGES = [("dashboard.html", "Overview"), ("chapters.html", "Chapters"),
          ("scoring.html", "Scoring & approval"), ("figures.html", "Figures"),
-         ("capstones.html", "Capstones"), ("audit.html", "Audit log")]
+         ("capstones.html", "Capstones"), ("audit.html", "Audit log"),
+         ("publication-roadmap.html", "Roadmap")]   # externally authored (market-analyst); nav-linked, not generated here
 
 
 # ----------------------------------------------------------------------------- bubbles

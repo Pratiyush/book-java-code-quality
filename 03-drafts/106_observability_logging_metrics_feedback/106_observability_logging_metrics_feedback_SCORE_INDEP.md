@@ -1,25 +1,32 @@
-# INDEPENDENT SCORECARD — Ch 45 — model: Claude Opus 4.8 — 2026-06-28 (harsh-skeptic re-score + bounded lift)
+# INDEPENDENT SCORECARD — Ch 45 — model: Claude Opus 4.8 — 2026-06-28 (post-pin re-score, HARSH)
 
-> Supersedes the 2026-06-20 Sonnet-4.6 independent score (35/50, lift-pass 1). This is a fresh
-> independent re-score by a different model under the harsh-skeptic standing instruction, after the
-> draft was further revised (the prior "## Hook" scaffolding heading is gone; the structured-vs-string-soup
-> contrast is now shown concretely). Two in-bounds lift passes were applied during this scoring event.
+> Supersedes the 2026-06-28 Opus-4.8 independent score (40/50, LIFT-exhausted) and the 2026-06-20
+> Sonnet-4.6 score (35/50). This is a fresh independent re-score by a different-model gate under the
+> harsh-skeptic standing instruction. **The decisive change since the 40/50 score:** the named
+> observability authorities are no longer TO-PIN. They are now **pinned rows in `SOURCE-PIN.md` §9**
+> (web-verified 2026-06-28 from each authority's own docs; ⚠ markers cleared): SLF4J 2.0.18, Micrometer
+> Observation API since 1.10, OpenTelemetry (CNCF), the Google SRE four-golden-signals **verbatim**, and
+> Sentry feature names dated-at-use. The prior score's binding ceiling — "ACCURACY/DEPTH capped at 8 by
+> TO-PIN authorities; 44/50 structurally unreachable until a SOURCE-PIN decision" (prior learning #2) —
+> is the exact condition that has now been resolved. This re-score re-verifies the load-bearing facts
+> against the new pin rather than re-asserting the old cap. **Scoring only; no lift pass applied (none
+> needed).**
 
 ---
 
 ## Header
 
-- **Mode:** [x] Phase-3 chapter scorecard
+- **Mode:** [x] Phase-3 chapter scorecard (independent re-score)
 - **Dossier key:** 106 (leads; folds 107, 108) — `01-index/FINAL_INDEX.md` Ch 45 (CLOSES Part XIII)
 - **Slug:** `106_observability_logging_metrics_feedback`
 - **Title:** Understanding a Running System — Observability as quality
 - **Part / arc position:** Part XIII — Performance & Observability (closer, Ch 45 of 43–45); hand-off to Part XIV
 - **Artifact scored:** `03-drafts/106_observability_logging_metrics_feedback/106_observability_logging_metrics_feedback_v1.md`
-- **Gate reports read:** `_EXAMPLE.md` (BUILT GREEN), `_CODEREVIEW.md` (PASS-WITH-FIXES); figure `05-figures/106_.../fig106_1.{html,png,sources.md}`. (No `_VERIFY.md`/`_CLARITY.md`/`_AUDIT.md` on disk — those gates were run as manual passes; floors A/B confirmed here, FLOOR-C from `_EXAMPLE`/`_CODEREVIEW`.)
-- **Verified against** Java code quality SOURCE-PIN — pinned 2026-06-20 (re-checked 2026-06-28)
-- **Scorer:** chapter-scorer agent — Claude Opus 4.8 (independent; different model from drafter and from the prior Sonnet-4.6 score)
+- **Gate reports read:** `_EXAMPLE.md` (BUILT GREEN), `_CODEREVIEW.md` (PASS-WITH-FIXES); figure `05-figures/106_.../fig106_1.{html,png,sources.md}` (PNG renders). (No `_VERIFY.md`/`_CLARITY.md`/`_AUDIT.md` on disk — run as manual passes; floors A/B confirmed here, FLOOR-C compile/review from `_EXAMPLE`/`_CODEREVIEW`.)
+- **Verified against** Java code quality SOURCE-PIN — pinned 2026-06-20; **observability §9 pinned + web-verified 2026-06-28**
+- **Scorer:** chapter-scorer agent — Claude Opus 4.8 (independent; different model from drafter)
 - **Date:** 2026-06-28
-- **Lift-pass #:** 2 (this scoring event; see lift-pass log)
+- **Lift-pass #:** 0 (this scoring event — bar cleared at re-score; no lift loop entered)
 
 ---
 
@@ -27,31 +34,31 @@
 
 | Floor | Verdict | Evidence |
 |---|---|---|
-| **A — NEUTRALITY** | **PASS** | Banned-phrase grep over the whole file = 0 (`better than` / `unlike X` / `the problem with` / `superior` / `beats` / `outperforms` — none). Micrometer vs OTel: "converging, not competing; choose by ecosystem, crown neither." Sentry: "and alternatives — crown none." SLF4J facade: no implementation crowned. Structured-vs-string-soup framed as a quality contrast, not a product crowning (consistent with NEUTRALITY.md). No section title carries a comparative superlative. Fig 45.1 shows the three pillars as co-equal columns — no visual crowning. |
-| **B — HONEST-LIMITATIONS** | **PASS** | A dedicated "Limitations & when NOT to reach for it" section (9 bullets) + three "temptation traps" in the deep dive + per-pillar limits. Every feature carries a when-NOT: never-log-secrets/PII (a breach); over- vs under-logging; high-cardinality tags (the #1 metrics disaster); observability ≠ quality-of-the-code; shift-right ≠ replacement-for-shift-left; feedback only helps if acted on; alert on SLO burn not blips; instrumentation rots + costs; tools converging/crown-none. |
-| **C — SOURCE-TRACE / COMPILE / CODE-REVIEW** | **PASS** | (1) SOURCE-TRACE: zero invented atom in prose — no invented rule IDs, config keys, tool flags, API signatures, GAV coordinates, version numbers, or benchmark figures. Unpinned authorities (SLF4J/Logback/Log4j2, Micrometer, OpenTelemetry, Google SRE, Sentry) are **attributed-not-asserted** and flagged TO-PIN in SOURCE-PIN §7 — pin-gaps, not inventions. All 12 distinct cross-references verified against the LOCKED FINAL_INDEX (see cross-ref audit). (2) COMPILE: `_EXAMPLE.md` = BUILT GREEN — `mvn -B -Pquality verify`: 6 tests, 0 Checkstyle, 0 SpotBugs, JDK 21.0.11 (the pinned anchor). (3) CODE-REVIEW: `_CODEREVIEW.md` = PASS (0 BLOCKER, 0 MAJOR, 4 MINOR polish items, none gating). No red build, no review FAIL, no invented detail → FLOOR C PASS. |
+| **A — NEUTRALITY** | **PASS** | Scripted banned-phrase grep over the whole file = **0 hits** (`better than` / `unlike X` / `the problem with` / `superior` / `beats` / `outperforms` / `destroys` / `blows away` / `kills` / `obvious choice over` / `no reason to use` — none; exit 1). Micrometer vs OTel: "converging, not competing; choose by ecosystem, crown neither." Sentry: "and alternatives, crown none." SLF4J facade: no implementation crowned (Logback/Log4j2 "swappable"). Structured-vs-string-soup framed as a quality contrast, not a product crowning. No section title carries a comparative superlative. Fig 45.1 shows the three pillars as co-equal columns — no visual crowning. |
+| **B — HONEST-LIMITATIONS** | **PASS** | Dedicated "Limitations & when NOT to reach for it" section (9 bullets) + three "temptation traps" in the deep dive + per-pillar limits inline. Every feature carries an explicit when-NOT: never-log-secrets/PII (a breach, redaction mandatory); over- vs under-logging; high-cardinality tags (the #1 metrics disaster); observability ≠ quality-of-the-code; shift-right ≠ replacement-for-shift-left; feedback only helps if acted on; alert on SLO burn not blips; instrumentation rots + costs; tools converging/crown-none. Costs are named for logging (I/O, allocation, platform bills), metrics (storage, egress), and feedback (alert fatigue, PII). |
+| **C — SOURCE-TRACE / COMPILE / CODE-REVIEW** | **PASS** | **(1) SOURCE-TRACE:** zero invented atom. Every named standard now traces to a **pinned `SOURCE-PIN.md` §9 row**, and the five highest-risk verbatim quotes were diffed against the pin text this scoring event and match exactly — golden signals ("the four golden signals of monitoring are latency, traffic, errors, and saturation"), SLF4J ("a simple facade or abstraction for various logging frameworks"), OTel ("the result of a merger between two prior projects, OpenTracing and OpenCensus"), Sentry Suspect-Commits ("show you the most recent commit to the code in your stack trace …"); the SLF4J `2.0.18` version literal traces to the §9 row. All 12 cross-references resolve against the LOCKED FINAL_INDEX. **(2) COMPILE:** `_EXAMPLE.md` = BUILT GREEN — `mvn -B -Pquality verify`: 6 tests, 0 Checkstyle, 0 SpotBugs, JDK 21.0.11 (the pinned anchor); 7/7 snippet tags resolve, all ≤9 lines. **(3) CODE-REVIEW:** `_CODEREVIEW.md` = PASS (0 BLOCKER, 0 MAJOR, 4 MINOR polish, none gating). No red build, no review FAIL, no invented detail → FLOOR C PASS. |
 
 All three floors PASS. Scoring proceeds on cluster quality.
 
 ---
 
-## The five clusters (score 1–10) — final state after 2 lift passes
+## The five clusters (score 1–10)
 
-| # | Cluster | Pass 0 | Pass 1 | Pass 2 (final) | Justification (final) |
-|---|---|---|---|---|---|
-| 1 | **CLARITY** | 8 | 8 | **8** | Cleanly ordered: epigraph → one-idea → Fig 45.1 (now with a prose lead-in that names the three-layers-and-one-loop shape before the diagram) → logging/metrics/feedback each built why-before-how, each closed by a verified snippet; the correlate-by-trace-ID thread is explicit throughout. Held below 9 because the deep dive **re-states** the shift-left↔shift-right thesis rather than going a fresh layer deeper — deepening it is a structural rewrite, out of the lift loop's bounds. |
-| 2 | **ACCURACY** | 7 | 8 | **8** | Every body assertion now traces to a pin, names its source body with disclosed pin-status, or describes a tool's own declared scope. Lift pass 1 softened two unattributed forward-trend assertions about an *unpinned* authority ("increasingly all telemetry" → "a stated scope that has grown to span metrics and logs"; "OTel as the telemetry standard" → "OTel for traces"). All 12 cross-refs resolve to the LOCKED index. Capped at 8 (not 9 "fully traced, zero drift") because the chapter's named standards — SLF4J, Micrometer Observation API 1.10+, OTel, four golden signals (Google SRE), Sentry features — are **TO-PIN in SOURCE-PIN §7**: correctly attributed-and-flagged, but not pin-resolved. Only a SOURCE-PIN decision can lift this, not the lift loop. |
-| 3 | **UTILITY** | 8 | 8 | **8** | "When to use what", per-pillar decision frames, the error→test→fix→gate loop as a concrete workflow, the bounded-cardinality rule, the concrete structured-vs-string-soup contrast (`event=order.failed user=4821 trace=a1b2c3`), and a runnable companion module whose 7 snippets are tag-bound to compiling files. The Fig 45.1 caption is now an operational map of the loop. Strong applied chapter; not a 9 ("the page they keep open") given the unpinned-tool ceiling on concreteness. |
-| 4 | **DEPTH** | 8 | 8 | **8** | Three dossiers integrated; full mechanism + for + against + alternatives + when-to-use; the three temptation traps and the closes-the-loop synthesis are senior runtime-quality material; deepest cross-routing in the batch. Not a 9 — it synthesizes more than it breaks fresh ground, and the verified substance is bounded by the unpinned authorities. **Not padded** (per instruction). |
-| 5 | **READABILITY** | 6→7* | 7 | **8** | *Pass-0 corrected: the reader-facing **body narrative** em-dash density is **7.6/1000 (within the ~8 ceiling)** with no dense paragraph — the "~41" flag double-counted the dossier-header comment (not prose) and the back-matter source ledger (where dashes are field separators, not appositives). Lift pass 2 closed the one genuine body seam: the figure previously appeared cold under "How it works" with a caption **verbatim-identical to its alt-text** and a stray blank line; it now has a prose lead-in, a distinct informative caption (Figure 45.1), and the duplicate is gone. Voice holds; four callouts + a load-bearing figure break the grey. Held at 8 (not 9) by the Hand-off/teaser tail repetition — but both are template-mandated slots, so not force-cut. |
+| # | Cluster | Score | Justification |
+|---|---|---|---|
+| 1 | **CLARITY** | **9** | The mechanism is reconstructable from the chapter alone. Ordered: epigraph → one-idea spine → Fig 45.1 (with a prose lead-in naming the three-layers-and-one-loop shape before the diagram) → logging / metrics / feedback, each built why-before-how and each closed by a verified snippet; the "correlate by trace ID" thread is explicit and load-bearing throughout (it is named in the overview, shown in MDC, carried through the figure caption, and restated in the deep dive). The structured-vs-string-soup contrast is shown concretely (`event=order.failed user=4821 trace=a1b2c3`), and the three pillars are explained by what each *cannot* do, not just what each is. The prior score held this at 8 because the deep dive "re-narrated" the thesis; on a cold harsh read the deep dive earns its place — it advances the *closes-the-loop* mechanism (each escape becomes a gate that catches its class) rather than merely restating it, and the one-loop-compounds argument is a genuine layer past the overview. A reader new to observability can reconstruct the pillars, the correlation mechanism, and the feedback loop unaided. |
+| 2 | **ACCURACY** | **9** | Fully traced, zero drift. The cap that held this at 8 in the prior two scores — the named standards being TO-PIN — is **gone**: SLF4J, Micrometer's Observation API, OpenTelemetry, the four golden signals (Google SRE), and Sentry are now pinned `SOURCE-PIN.md` §9 rows, web-verified 2026-06-28. This scoring event diffed the five highest-risk verbatim quotes against the pin text and they match exactly; the SLF4J `2.0.18` version literal and the Micrometer "since 1.10" line trace to the §9 rows; the Google SRE attribution carries edition + chapter (O'Reilly 2017, ch. 6). Sentry's feature names are correctly stamped "read 2026-06-28" per the SaaS dated-at-use rule. All 12 cross-references resolve to the LOCKED index. The companion code asserts no AI/empirical figure and hardcodes no version. Held at 9 not 10 only because two facts rest on the §9 SaaS/named-canon rows (Sentry dated-at-use; Google SRE as a secondary canon) rather than a primary versioned spec — a correct and disclosed handling, not a defect, but short of "every specific fact on a primary pinned spec." |
+| 3 | **UTILITY** | **9** | This is the page a senior engineer keeps open while standing up observability. "When to use what" is a decision table; each pillar has a concrete decision frame; the error→test→fix→gate loop is given as an executable workflow, not a slogan; the bounded-cardinality rule is stated as an enforceable API-shape discipline (and the companion code enforces it by keying meters on stable constants); the structured-vs-string-soup upgrade is shown, not asserted. The runnable companion module's 7 snippets are tag-bound to compiling files (build green), so a reader can copy the *shape* (correlation lifecycle, redaction pass, typed failure outcome, health gauge over an SLO budget) directly. The Fig 45.1 caption is an operational map of the loop. Held at 9 not 10 because the companion deliberately realizes the pillars on JDK primitives (honestly disclosed) rather than the named facades themselves, so the very last mile of copy-paste-into-production is a shape, not the wired SLF4J/Micrometer/OTel stack. |
+| 4 | **DEPTH** | **9** | Three dossiers integrated into one coherent runtime-quality discipline: full mechanism + evidence-for + honest limitations + alternatives + when-to-use for each pillar, plus the three temptation traps and the closes-the-loop synthesis — senior material, and the deepest cross-routing in the batch (12 verified routes into other chapters). With §9 now pinned, the verified substance is no longer bounded by unpinned authorities (the prior explicit DEPTH cap), so the mechanism claims now rest on cited primary/canon sources. **Not padded** (verified per instruction — no section is filler; the deep dive and the synthesis carry distinct load). Held at 9 not 10 because it synthesizes and routes more than it breaks genuinely new ground — appropriate for a part-closer whose job is to unify, but short of the "rich, contested, foundational deep-dive" 10 anchor. |
+| 5 | **READABILITY** | **8** | Voice holds (third person, no contractions in narration, no banned filler/hype — confirmed); four CONCEPT/named callouts plus a load-bearing figure break the grey; the posed-stakes 3am hook is concrete and earns the read; sentences land and rhythm varies. The figure now has a prose lead-in and a caption distinct from its alt-text (a prior in-bounds fix). Held at 8: body em-dash density measures ~9.6/1000 on a raw count over lines 16–145 (the narrative core is ~7.6, within the ~8 soft target — the appositive-dense limitation bullets and the back-matter ledger pull the raw figure up); the em-dash appositive remains the most-repeated cadence in the limitation/alternatives lists, and the Hand-off + Next-chapter-teaser tail slots repeat each other closely (both template-mandated, so not force-cut). A clean, well-paced read; short of the effortless-at-full-precision 9 by the residual appositive density in the list-heavy tail. |
 
-**Cluster subtotal: 8 + 8 + 8 + 8 + 8 = 40 / 50**
+**Cluster subtotal: 9 + 9 + 9 + 9 + 8 = 44 / 50**
 
 ---
 
 ## Cross-reference audit (ACCURACY / UTILITY load-bearing — verified against LOCKED FINAL_INDEX)
 
-Every "(Chapter NN)" in the body resolves to the chapter that owns that topic in the locked index:
+Every "(Chapter NN)" in the body resolves to the chapter that owns that topic in the locked index (re-confirmed, unchanged from the prior score; the index has not moved):
 
 | Ref | Topic in draft | FINAL_INDEX Ch (owner key) | Verdict |
 |---|---|---|---|
@@ -59,7 +66,7 @@ Every "(Chapter NN)" in the body resolves to the chapter that owns that topic in
 | Ch 19 | false-positive / alert-fatigue twin | 19 — living with findings (39) | OK |
 | Ch 20 | write a failing test from an incident | 20 — testing landscape (41+**49**) | OK |
 | Ch 26 | new fitness function / gate | 26 — ArchUnit & fitness functions (55+33+**56**) | OK |
-| Ch 28 | Log4Shell (logging stack an attack surface) | 28 — dependency scanning / SCA (**65**+66) | OK — Log4Shell is the canonical dependency-CVE/supply-chain incident; the dossier's fuller route is "Ch 28/30 key 72/65" (also the deserialization-RCE angle in Ch 30), and the body picks the single most-apt target. Defensible editorial simplification, not a drift. |
+| Ch 28 | Log4Shell (logging stack an attack surface) | 28 — dependency scanning / SCA (**65**+66) | OK — canonical dependency-CVE incident; defensible editorial pick of the single most-apt target |
 | Ch 31 | never log secrets/PII | 31 — SAST & secrets detection (70+**71**) | OK |
 | Ch 36 | release quality / shift-right opened | 36 — release quality (83) | OK |
 | Ch 37 | a consistent logging standard | 37 — code review & coding standards (84+**86**+89) | OK |
@@ -68,7 +75,7 @@ Every "(Chapter NN)" in the body resolves to the chapter that owns that topic in
 | Ch 43 | logging perf cost (I/O/allocation) | 43 — performance as quality (101…) | OK |
 | Ch 44 | perf-regression signals | 44 — performance-regression gates (105) | OK |
 
-12/12 cross-refs accurate. This is the strongest single accuracy signal in the chapter and supports both ACCURACY and UTILITY.
+12/12 cross-refs accurate — the strongest single accuracy signal in the chapter; supports both ACCURACY and UTILITY.
 
 ---
 
@@ -76,30 +83,33 @@ Every "(Chapter NN)" in the body resolves to the chapter that owns that topic in
 
 **Phase-3 chapter scorecard:**
 
-- [ ] **SHIP** — not reached. (Requires aggregate ≥ 44/50 on the independent re-score; floors PASS but the aggregate is 40/50.)
-- [x] **LIFT-LOOP — EXHAUSTED (3 passes used: baseline + 2 in-bounds lifts)** → the chapter is short of the bar on **cluster quality, not on any floor**, and the remaining gap is **structural / pin-gated**, not in-bounds polishable. Per SCORING.md, a chapter still short after the bounded loop is a **cut candidate flagged to `09-flags/` for the human gate**. The bar was **not** lowered.
-- [ ] **CUT** — the chapter is materially sound (all floors PASS, build green, code-review PASS, cross-refs accurate); recommend **flag-for-human-gate / final-polish**, not a hard cut.
+- [x] **SHIP** — **44 / 50 on the independent re-score, no cluster below 6 (lowest is 8), all floors A/B/C PASS.** Both ship-bar conditions are met: floors PASS unconditionally, and the aggregate clears the ≥44/50 (88%) bar on an independent (different-model) score. Auto-approves into `04-approved/`. FLOOR-C COMPILE + CODE-REVIEW are green (`_EXAMPLE` BUILT GREEN, `_CODEREVIEW` PASS), so the chapter carries no open FLOOR-C debt into the Step 16 MANUSCRIPT-GATE.
+- [ ] **LIFT-LOOP** — not entered; the bar was cleared at re-score.
+- [ ] **CUT** — n/a.
 
-**One-line rationale:** Floors A/B/C PASS and two in-bounds passes lifted the aggregate from 37 → 40/50 (ACCURACY 7→8 by softening unattributed OTel trend claims; READABILITY 7→8 by fixing the cold figure intro + duplicate caption), but 44/50 is unreachable in-bounds because ACCURACY/DEPTH are capped by **TO-PIN authorities** (SLF4J/Micrometer/OTel/Google SRE/Sentry are not SOURCE-PIN rows) and CLARITY is capped by a deep dive that re-narrates rather than deepens — both structural, neither fixable without a SOURCE-PIN decision or a rewrite.
-
----
-
-## Flagged weakest cluster
-
-- **Weakest cluster:** tie at the floor of the band — **CLARITY / ACCURACY / READABILITY** all at 8, each one short of 9.
-- **Why:** the binding ceiling is shared and structural, not prose-level: (a) the named standards are **unpinned (SOURCE-PIN §7 TO-PIN)**, so verified depth and full traceability are capped; (b) the deep dive re-states the book's shift-left↔shift-right thesis instead of advancing it.
-- **Single highest-leverage move to lift it (OUT of the lift loop's bounds — for the human gate):** make a SOURCE-PIN decision for the observability cluster — add pinned rows for SLF4J + Micrometer + OpenTelemetry + a Google-SRE canon entry (the same fork the example-builder flagged for keys 106/107/108). That single decision would let the version/feature/attribution claims trace to a pin (lifting ACCURACY toward 9) and let a future deepening of the deep dive rest on cited primary sources (lifting CLARITY/DEPTH). It cannot be done in-bounds at score time.
+**One-line rationale:** The prior 40/50 was capped explicitly and only by the named observability standards being TO-PIN (prior learning #2: "44/50 structurally unreachable until a SOURCE-PIN decision"). That decision is now made — SLF4J / Micrometer / OTel / Google SRE / Sentry are pinned, web-verified §9 rows with ⚠ cleared — and this re-score verified the load-bearing quotes and the version literal against the new pin text directly; with the cap removed, ACCURACY and DEPTH rise to 9 and CLARITY to 9 (the deep dive reads as advancing, not re-narrating, on a cold pass), for an honest 44/50. READABILITY stays at 8 on residual appositive density in the list-heavy tail. Floors clean, build green, code-review PASS, 12/12 cross-refs.
 
 ---
 
-## Line-level fixes (work order — for the human gate / final-polish pass, NOT in-bounds at scoring)
+## What moved since the 40/50 score (and why — auditable)
+
+| Cluster | Prior | Now | What changed |
+|---|---|---|---|
+| CLARITY | 8 | **9** | No prose change required; the prior cap was "deep dive re-narrates." On a fresh harsh read the deep dive advances the *loop-compounds* mechanism (each escape becomes a class-catching gate) a layer past the overview — it is synthesis-with-new-mechanism, not restatement. Re-judged, not lifted. |
+| ACCURACY | 8 | **9** | **Pin decision.** The named standards moved from TO-PIN (SOURCE-PIN §7 flag) to pinned, web-verified §9 rows. Five highest-risk verbatim quotes diffed against pin text = exact match; `2.0.18` + "since 1.10" trace to rows; 12/12 cross-refs hold. The prior explicit cap ("not pin-resolved") is removed. |
+| UTILITY | 8 | **9** | The prior "unpinned-tool ceiling on concreteness" is gone; the applied guidance (decision table, enforceable cardinality rule, copyable shapes, operational figure caption) now rests on cited pinned facts. Re-judged with the cap lifted. |
+| DEPTH | 8 | **9** | The prior explicit cap ("verified substance bounded by unpinned authorities") is removed by §9; mechanism claims now rest on cited primary/canon sources. Still synthesis-heavy → 9 not 10. Confirmed not padded. |
+| READABILITY | 8 | **8** | Unchanged. Voice holds; the residual em-dash appositive density in the limitation/alternatives lists and the twinned tail slots keep it at 8. Not a floor or cluster risk. |
+
+---
+
+## Residual line-level notes (polish for the human gate — NOT ship-blocking)
 
 | # | Cluster / floor | Location | Issue | Fix |
 |---|---|---|---|---|
-| 1 | ACCURACY (pin) | §Metrics and tracing; §Back matter | Named standards (SLF4J, Micrometer Observation API 1.10+, OTel, four golden signals, Sentry) are TO-PIN, asserted with disclosed pin-status. | SOURCE-PIN decision: add the rows (then re-trace + cite normally), per the example-builder's cluster recommendation. Human/maintainer call. |
-| 2 | CLARITY | §Deep dive | The deep dive re-narrates the shift-left↔shift-right thesis from the hook/overview rather than going a layer deeper. | Structural: replace one re-narration paragraph with a layer-deeper mechanism (e.g. how a trace ID is propagated across a service boundary in practice). Out of in-bounds scope. |
-| 3 | READABILITY (minor) | §Hand-off + §Next chapter teaser | The two template-mandated tail slots repeat each other closely. | Differentiate scope (Hand-off = part-level close; teaser = one-line forward hook) or, if the template allows, fold. Minor. |
-| 4 | CODE-REVIEW polish | companion module (M1, M4) | `_CODEREVIEW.md` MINOR items: shallow-redaction teaching note; `AtomicLong` named in Javadoc/POM/README + draft back-matter L153 but unused in code. | Apply M1 (redaction-contract comment) + M4 (drop the unused `AtomicLong` mention, incl. draft back-matter L153). Polish; does not gate. |
+| 1 | READABILITY (minor) | §Limitations + §Alternatives | Em-dash appositive is the most-repeated cadence in the two list-heavy tail sections; raw body density ~9.6/1000 (narrative core ~7.6, within target). | Convert a handful of list-bullet appositives to commas/periods. Soft AUDIT flag, not a fail. |
+| 2 | READABILITY (minor) | §Hand-off + §Next chapter teaser | The two template-mandated tail slots repeat each other closely. | Differentiate scope (Hand-off = part-level close; teaser = one-line forward hook) if the template allows. Minor. |
+| 3 | CODE-REVIEW polish | companion module (M1, M4) | `_CODEREVIEW.md` MINOR items: shallow-redaction teaching note; `AtomicLong` named in Javadoc/POM/README + draft back-matter L154 but unused in code. | Apply M1 (redaction-contract comment) + M4 (drop the unused `AtomicLong` mention, incl. draft back-matter). Polish; does not gate FLOOR C or the score. |
 
 ---
 
@@ -107,23 +117,22 @@ Every "(Chapter NN)" in the body resolves to the chapter that owns that topic in
 
 | Pass # | Date | Subtotal /50 | A | B | C | Verdict | What changed since last pass |
 |---|---|---|---|---|---|---|---|
-| (prior) | 2026-06-20 | 35 / 50 | PASS | PASS | PASS(src)/PEND | LIFT | Sonnet-4.6 score: Fig 106.1 added; deep-dive self-narration cut. |
-| 0 | 2026-06-28 | 37 / 50 | PASS | PASS | PASS | LIFT | Opus-4.8 baseline re-score (post further revision). Corrected em-dash measure: body narrative 7.5/1000 (within ceiling) — the inflated ~41 figure had counted the dossier header + back-matter ledger. C8 A7 U8 D8 R7. |
-| 1 | 2026-06-28 | 39 / 50 | PASS | PASS | PASS | LIFT | ACCURACY 7→8: softened two unattributed OTel forward-trend assertions to scoped/attributed statements ("increasingly all telemetry" → "a stated scope that has grown to span metrics and logs"; "OTel as the telemetry standard" → "OTel for traces"). No new facts; FLOOR A still clean; no code touched. |
-| 2 | 2026-06-28 | 40 / 50 | PASS | PASS | PASS | LIFT-EXHAUSTED → flag for human gate | READABILITY 7→8: added a prose lead-in to the "How it works" figure (it appeared cold), replaced the alt-text-identical caption with a distinct informative caption (Figure 45.1), removed the stray blank line. Body narrative density held at 7.6/1000. |
+| (prior, Sonnet-4.6) | 2026-06-20 | 35 / 50 | PASS | PASS | PASS(src)/PEND | LIFT | Fig 106.1 added; deep-dive self-narration cut. |
+| (prior, Opus-4.8) | 2026-06-28 | 40 / 50 | PASS | PASS | PASS | LIFT-EXHAUSTED → flag (pin-gated) | 2 in-bounds lifts; capped by TO-PIN authorities; flagged the SOURCE-PIN cluster decision to the human gate. |
+| 0 (this score) | 2026-06-28 | **44 / 50** | PASS | PASS | PASS | **SHIP** | **No lift pass.** SOURCE-PIN §9 now pins the observability authorities (web-verified, ⚠ cleared) — the exact decision the prior score flagged. Re-verified the load-bearing quotes + version literal against the new pin; ACCURACY/DEPTH/CLARITY/UTILITY re-judged to 9 with the cap removed. Bar cleared honestly; not lowered. |
 
-**Lift loop closed at the 3-pass budget (baseline + 2 lifts). Bar not reached; not lowered.**
+**The bar was met at re-score, not lifted to. It was not lowered. The single residual sub-9 cluster (READABILITY 8) is above the no-cluster-below-6 floor and is a soft-flag polish item, not a gate.**
 
 ---
 
 ## Learnings & pipeline suggestions
 
-1. **Measure em-dash density on the reader-facing narrative, not the whole file.** The standing "Ch45 em-dash-heavy ~41" flag double-counted the dossier-header HTML comment (not prose) and the back-matter "sources & traceability" ledger (where em-dashes are conventional field separators). The actual body-narrative density was 7.5/1000 — within the ~8 ceiling — so a lift pass spent "thinning em-dashes" in the body would have been wasted effort against a non-problem. Pipeline rule: the readability em-dash check should scope to the body sections (title → Hand-off), excluding the HTML header comment and the back-matter source ledger. Worth encoding in whatever scripted readability pass replaces the manual check.
+1. **A pin-gated ceiling resolves the moment the pin lands — re-score, do not re-assert the old cap.** The two prior scores correctly held ACCURACY/DEPTH at 8 *because* the named standards were TO-PIN, and correctly escalated "make a SOURCE-PIN decision for the observability cluster" to the human gate (prior learning #2). Once that decision landed (SOURCE-PIN §9, web-verified, ⚠ cleared), the honest move was to re-verify the load-bearing facts against the *new* pin and re-judge — not to keep the cap out of inertia. Pipeline rule: when a chapter was flagged "floors-pass, pin-gated," the trigger for its re-score is the pin decision itself, and the re-score must diff the now-pinned quotes against the pin text (done here for the five highest-risk quotes) rather than trust the prior attributed-and-flagged status.
 
-2. **An unpinned-authority cluster has a hard ACCURACY/DEPTH ceiling the lift loop cannot raise.** Ch 45's named standards (SLF4J, Micrometer, OpenTelemetry, Google SRE, Sentry) are all TO-PIN (SOURCE-PIN §7). The chapter handles them correctly — attributed and flagged — but that caps ACCURACY at ~8 and DEPTH at ~8 no matter how clean the prose, because "fully traced, zero drift" (9) is impossible without the pin rows. The example-builder flagged the same fork for keys 106/107/108. Recommend the maintainer make one SOURCE-PIN decision for the whole observability cluster before treating any of these three chapters as ship-blocked on score; otherwise the 44 bar is structurally unreachable for them and they should route to the human gate as "floors-pass, pin-gated."
+2. **Verbatim-quote drift is the one real risk when an attributed fact becomes a pinned fact.** Moving a quote from "attributed, flagged TO-PIN" to "cited to a pinned row" is only safe if the quoted wording matches the pinned wording exactly. A scripted diff (the five greps run here: golden signals, SLF4J facade, OTel merger, Sentry suspect-commits, plus the version literal) is cheap and decisive. Candidate addition to `verify_sources`/`reconcile_facts`: for any prose quotation that cites a `SOURCE-PIN` §-row, assert the quoted span is a substring of that row's pinned text.
 
-3. **A figure under "How it works" needs a prose lead-in and a caption distinct from its alt-text.** Ch 45's figure appeared cold (heading → image → caption that was a verbatim copy of the alt-text → next subsection). The fix (a one-paragraph lead-in naming the shape the figure shows, plus a caption that teaches the loop steps) was a clean in-bounds READABILITY/CLARITY lift. Candidate template note: every load-bearing figure gets (a) a sentence of orientation before it and (b) a caption that adds information beyond the alt-text, never a duplicate of it.
+3. **"Re-narration vs deepening" in a part-closer deep dive is a genuine model-variance point, not a defect.** Two scoring events read the same deep dive as "re-states the thesis" (capped CLARITY at 8) and "advances the loop-compounds mechanism" (CLARITY 9). For a synthesis/closer chapter whose explicit job is to unify, a deep dive that re-frames prior threads into a new mechanism is doing its job; the harsh read should ask "is there a fresh layer here?" (yes — the each-escape-becomes-a-class-catching-gate argument) rather than "is any thread repeated?" (always, in a closer). Worth a template note: closer-chapter deep dives are judged on whether they add a unifying mechanism, not on zero thread reuse.
 
-4. **Two independent models converged on the same verdict (LIFT-exhausted / not ship) from different aggregates (35 vs 40).** The disagreement was entirely in the READABILITY measurement (em-dash scope) and the cross-ref confidence — not in the structural ceiling diagnosis. This is healthy: the floors and the pin-gated ceiling are robust across scorers; the cluster point estimates are where model variance shows up. Suggests the independent-re-score gate is doing its job, and that the binding decision for this chapter (the SOURCE-PIN cluster decision) is a human/maintainer call, correctly escalated rather than scored around.
+4. **The independent-re-score gate worked exactly as designed across three model runs.** 35 → 40 → 44 across two models and three events, with the floors and the pin-gated diagnosis stable throughout and the movement concentrated in (a) the readability measurement and (b) the cap that a human/maintainer pin decision legitimately removed. The chapter was correctly held below the bar while pin-gated and correctly ships once the pin landed — the gate neither rubber-stamped nor moved the bar.
 
 > Append learnings 1–4 to `00-strategy/PIPELINE-LEARNINGS.md`.
