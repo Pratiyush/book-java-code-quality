@@ -47,7 +47,7 @@ The central idea: *using the feature is not the same as getting the guarantee.* 
 
 Three instruments carry immutability in Java, and each closes a gap the previous one leaves open. Figure 1 lays them out in that order (records, then immutable collections, then defensive copies) and marks the specific gap each one leaves for the next to close.
 
-![Three instruments of Java immutability — Each instrument closes a specific gap — composed, they satisfy Effective Java](../../05-figures/10_immutability_value_design/fig10_1.png)
+![Three instruments of Java immutability — Each instrument closes a specific gap — composed, they satisfy Effective Java](../05-figures/10_immutability_value_design/fig10_1.png)
 
 *Three instruments of Java immutability — Each instrument closes a specific gap — composed, they satisfy Effective Java*
 

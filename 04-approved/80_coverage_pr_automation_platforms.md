@@ -41,7 +41,7 @@ The last chapter set the pipeline's shape and left two things as promises: clean
 
 One discipline runs through all three sections, and Figure 34.1 shows it in one frame: the same diff-scoping focus applied to the coverage metric, the platform's required check, and the PR feedback alike, each narrowed to the code this change actually touches.
 
-![Figure 34.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback — Focus everything on the code this change](../../05-figures/80_coverage_pr_automation_platforms/fig80_1.png)
+![Figure 34.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback — Focus everything on the code this change](../05-figures/80_coverage_pr_automation_platforms/fig80_1.png)
 
 *Figure 34.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback — Focus everything on the code this change*
 

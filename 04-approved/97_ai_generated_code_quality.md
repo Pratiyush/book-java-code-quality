@@ -40,7 +40,7 @@ This chapter is the umbrella over Part XII, and it establishes the single stance
 
 The whole stance fits in one picture. AI output enters as an untrusted draft and reaches production only by passing the same gate every other contribution passes — static analysis and dependency scanning, the test suite and mutation testing, human review, and the CI gate — with a handful of AI-specific checks added along the way.
 
-![AI output as an untrusted draft, flowing through the full quality gate (SAST/SCA/secrets → tests/mutation → review → CI gate) before it can ship.](../../05-figures/97_ai_generated_code_quality/fig97_1.png)
+![AI output as an untrusted draft, flowing through the full quality gate (SAST/SCA/secrets → tests/mutation → review → CI gate) before it can ship.](../05-figures/97_ai_generated_code_quality/fig97_1.png)
 
 *The draft enters untrusted on the left and earns the right to ship only at the far end of the gate. No stage knows or cares who wrote the code.*
 

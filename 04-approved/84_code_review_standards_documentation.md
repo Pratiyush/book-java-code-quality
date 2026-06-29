@@ -42,13 +42,13 @@ That is the territory of Part X: the human side of quality that automation canno
 
 The evidence on when review works at all fits one picture. Figure 37.1 plots the review-effectiveness curve from the Cohen / SmartBear study: defect detection holds inside a small effective zone and collapses past it as reviewer fatigue sets in.
 
-![Figure 37.1 &mdash; The review-effectiveness curve: small and fast, or it does not work — Defect detection holds in a small effective zone and collapses past it as reviewer fatigue sets in &mdash; figures are the Cohen / SmartBear study's.](../../05-figures/84_code_review_standards_documentation/fig84_1.png)
+![Figure 37.1 &mdash; The review-effectiveness curve: small and fast, or it does not work — Defect detection holds in a small effective zone and collapses past it as reviewer fatigue sets in &mdash; figures are the Cohen / SmartBear study's.](../05-figures/84_code_review_standards_documentation/fig84_1.png)
 
 *Figure 37.1 &mdash; The review-effectiveness curve: small and fast, or it does not work — Defect detection holds in a small effective zone and collapses past it as reviewer fatigue sets in &mdash; figures are the Cohen / SmartBear study's.*
 
 The three practices in this chapter are one move applied three times. Figure 37.2 sets them side by side: review, standards, and documentation each take a category of mechanical work off the human's plate, so scarce human attention goes only to what only a human can do.
 
-![Figure 37.2 &mdash; One move, three practices: automate the mechanical, reserve humans for the substantive — Review, standards, and documentation each take a category of mechanical work off the human&rsquo;s plate &mdash; so scarce human attention goes only to what only a human can do.](../../05-figures/84_code_review_standards_documentation/fig84_2.png)
+![Figure 37.2 &mdash; One move, three practices: automate the mechanical, reserve humans for the substantive — Review, standards, and documentation each take a category of mechanical work off the human&rsquo;s plate &mdash; so scarce human attention goes only to what only a human can do.](../05-figures/84_code_review_standards_documentation/fig84_2.png)
 
 *Figure 37.2 &mdash; One move, three practices: automate the mechanical, reserve humans for the substantive — Review, standards, and documentation each take a category of mechanical work off the human&rsquo;s plate &mdash; so scarce human attention goes only to what only a human can do.*
 

@@ -37,13 +37,13 @@ The dashboard was not lying about coverage. It was lying about *quality*, becaus
 
 Two figures anchor this chapter. Figure 2.1 sets two methods side by side: the same branch count, opposite nesting, an equal cyclomatic score, and a very different cognitive one. It is the measurement distinction the chapter turns on.
 
-![Figure 2.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting. Two methods, identical branch count, opposite nesting structure, equal cyclomatic score, very different cognitive score.](../../05-figures/03_readability_maintainability/fig03_1.png)
+![Figure 2.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting. Two methods, identical branch count, opposite nesting structure, equal cyclomatic score, very different cognitive score.](../05-figures/03_readability_maintainability/fig03_1.png)
 
 *Figure 2.1 — Cyclomatic vs. cognitive complexity: same paths, different nesting. Two methods, identical branch count, opposite nesting structure, equal cyclomatic score, very different cognitive score.*
 
 Figure 2.2 maps the contested zone the chapter closes on: two reputable schools holding opposed positions on function size and comments, with the trade-off axis between them and no winner marked.
 
-![Figure 2.2 — Contested prescriptions: function size &amp; comments. Two reputable schools hold opposed positions; neither is universally correct, so a team chooses deliberately and applies consistently.](../../05-figures/03_readability_maintainability/fig03_2.png)
+![Figure 2.2 — Contested prescriptions: function size &amp; comments. Two reputable schools hold opposed positions; neither is universally correct, so a team chooses deliberately and applies consistently.](../05-figures/03_readability_maintainability/fig03_2.png)
 
 *Figure 2.2 — Contested prescriptions: function size and comments. Two reputable schools hold opposed positions; neither is universally correct, so a team chooses deliberately and applies consistently.*
 

@@ -42,7 +42,7 @@ The argument runs through two lenses and one cost picture. The first section set
 
 The reason "improve quality" is unarguable is that *quality* is an umbrella over many distinct properties. The international standard for software quality, **ISO/IEC 25010**, makes the decomposition explicit. Its **product quality model** breaks quality into top-level *characteristics*, each with sub-characteristics. Figure 1.1 lays out the whole model, with Maintainability, this book's territory, highlighted.
 
-![Figure 1.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.](../../05-figures/01_what_is_code_quality/fig01_1.png)
+![Figure 1.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.](../05-figures/01_what_is_code_quality/fig01_1.png)
 
 *Figure 1.1 — ISO/IEC 25010 product quality model — 9 top-level characteristics (2023 edition); Maintainability is this book's territory.*
 
@@ -86,7 +86,7 @@ The cost of that invisible half shows up over time, not on any one day. Figure 1
             expensive ─────────────┴───────────────────────────────▶ time
 ```
 
-![Figure 1.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).](../../05-figures/01_what_is_code_quality/fig01_2.png)
+![Figure 1.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).](../05-figures/01_what_is_code_quality/fig01_2.png)
 
 *Figure 1.2 — The cruft-tax curve — Cost per new feature over time: high vs low internal quality (qualitative illustration).*
 
@@ -120,7 +120,7 @@ Martin Fowler sharpens the misuse into a quadrant: debt is **deliberate or inadv
 | **Deliberate** | "We don't have time for design." | "We must ship now and will deal with the consequences — knowingly." |
 | **Inadvertent** | "What's layering?" | "Now we know how we should have done it." |
 
-![Figure 1.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.](../../05-figures/01_what_is_code_quality/fig01_3.png)
+![Figure 1.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.](../05-figures/01_what_is_code_quality/fig01_3.png)
 
 *Figure 1.3 — Fowler's technical-debt quadrant — Deliberate vs inadvertent · Reckless vs prudent — not all debt is the same.*
 

@@ -40,7 +40,7 @@ That gap is the subject of this chapter, the security half of Part VII. The last
 
 The three questions form a pipeline, not a checklist: each stage answers one of them and feeds the next. Figure 28.1 lays out that chain, from inventorying the components, to scanning the inventory, to attesting how the whole thing was built. The sections that follow walk it one stage at a time.
 
-![Figure 28.1 — Supply-chain pipeline: three questions, one chain — each stage answers one question and enables the next](../../05-figures/65_dependency_scanning_sbom_supply_chain/fig65_1.png)
+![Figure 28.1 — Supply-chain pipeline: three questions, one chain — each stage answers one question and enables the next](../05-figures/65_dependency_scanning_sbom_supply_chain/fig65_1.png)
 
 *Figure 28.1 — Supply-chain pipeline: three questions, one chain — each stage answers one question and enables the next*
 

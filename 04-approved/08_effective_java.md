@@ -45,13 +45,13 @@ A principle can be timeless while the *idiom that expresses it* becomes obsolete
 
 The method has one shape, applied to every principle. Figure 5.1 traces it: a principle from the canon, the modern Java feature that changed how to apply it, and one of three verdicts. The principle is kept; the idiom is updated.
 
-![Figure 5.1: Canon-dating. Effective Java principle to modern Java feature to verdict. The principle is kept; the idiom is updated. Three verdicts: Stands, Served by a feature, Reinforced-and-dated.](../../05-figures/08_effective_java/fig08_1.png)
+![Figure 5.1: Canon-dating. Effective Java principle to modern Java feature to verdict. The principle is kept; the idiom is updated. Three verdicts: Stands, Served by a feature, Reinforced-and-dated.](../05-figures/08_effective_java/fig08_1.png)
 
 *Figure 5.1: Canon-dating. Effective Java principle to modern Java feature to verdict. The principle is kept; the idiom is updated. Three verdicts: Stands, Served by a feature, Reinforced-and-dated.*
 
 The most-cited application of the method is the record. Figure 5.2 shows where it fits: a record covers the common case of transparent immutable data, while the principle behind it (EJ Items 15–17) still governs every form a value class can take.
 
-![Figure 5.2: Records serve, not retire, the immutability principle. Records cover the common case; the principle (EJ Items 15–17) applies to every form.](../../05-figures/08_effective_java/fig08_2.png)
+![Figure 5.2: Records serve, not retire, the immutability principle. Records cover the common case; the principle (EJ Items 15–17) applies to every form.](../05-figures/08_effective_java/fig08_2.png)
 
 *Figure 5.2: Records serve, not retire, the immutability principle. Records cover the common case; the principle (EJ Items 15–17) applies to every form.*
 

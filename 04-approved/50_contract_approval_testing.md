@@ -40,13 +40,13 @@ That is the gap this final chapter of Part V closes, and it generalizes. Everyth
 
 Contract testing runs as a sequence, and the guarantee holds only when every step runs. Figure 24.1 lays out that sequence as Pact's four-stage pipeline, from the consumer test that records the contract to the `can-i-deploy` gate that reads the results, and marks why any half-pipeline gives false confidence.
 
-![Figure 24.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.](../../05-figures/50_contract_approval_testing/fig50_1.png)
+![Figure 24.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.](../05-figures/50_contract_approval_testing/fig50_1.png)
 
 *Figure 24.1 — Pact four-stage pipeline — Consumer-driven contract guarantee requires all four stages; any half-pipeline delivers false confidence.*
 
 That pipeline is one of three techniques this chapter covers, and they divide one boundary and its output between them. Each answers a question the other two cannot. Figure 24.2 maps each technique to its question (do the sides agree, does the endpoint behave, does the output still match the baseline) and to the reference whose failure breaks it. The three sections that follow then walk each in turn.
 
-![Figure 24.2 — Three techniques, three questions on the service boundary and its output — Each answers what the others cannot; each fails when its own reference goes wrong.](../../05-figures/50_contract_approval_testing/fig50_2.png)
+![Figure 24.2 — Three techniques, three questions on the service boundary and its output — Each answers what the others cannot; each fails when its own reference goes wrong.](../05-figures/50_contract_approval_testing/fig50_2.png)
 
 *Figure 24.2 — Three techniques, three questions on the service boundary and its output — Each answers what the others cannot; each fails when its own reference goes wrong.*
 
