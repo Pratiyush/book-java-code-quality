@@ -91,7 +91,24 @@ def strip_internal_comments(text):
         re.IGNORECASE)
     blocks = re.split(r"\n\s*\n", text)
     kept = [b for b in blocks if not INTERNAL.search(b)]
-    return "\n\n".join(kept)
+    text = "\n\n".join(kept)
+    # 3) drop individual reader-facing lines that are pure pipeline scaffolding even inside a
+    #    kept block: back-matter "**Routing**" dossier-key navigation bullets (the reader gets
+    #    chapter cross-references inline in the prose), and any line led by the ⚠/✅ audit-status
+    #    glyphs (verify-at-pin / deferred / verified-at-pin headers). The HYBRID back-matter
+    #    "Sources" bullets start with "**<Topic>**" (⚠ appears mid-line) and are PRESERVED —
+    #    their citations + honest-LIMITS are reader content; de-jargoning them (stripping the
+    #    "key NN" / "09-flags" / "@pin" tokens while keeping citation + LIMITS) is the two-tier
+    #    Sources reformat, an editorial per-chapter pass — NOT a mechanical strip.
+    out = []
+    for ln in text.split("\n"):
+        head = re.sub(r"^[\s>]*(?:[-*]\s+)?", "", ln)   # peel one list/quote prefix
+        if head.startswith("**Routing"):
+            continue
+        if head[:1] in ("⚠", "✅"):            # ⚠  ✅  audit-status line
+            continue
+        out.append(ln)
+    return "\n".join(out)
 
 README = """# PRE-FINAL review copy — Java Code Quality
 
