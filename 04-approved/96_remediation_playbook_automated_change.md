@@ -40,11 +40,11 @@ Two answers follow. The **remediation playbook** is an ordered, incremental, val
 
 Two figures carry the shape of this chapter. Figure 40.1 lays out the playbook as an ordered program: the inherited codebase enters at the top, each step gates the next, and the codebase stays improving and never blocked. Figure 40.2 shows the automation engine beneath step 5, scaling one method's worth of change to ten thousand files without removing the safety net the craft requires.
 
-![Figure 40.1 — The remediation playbook: an ordered, incremental program — Inherited low-quality codebase &middot; the order is the strategy &middot; the codebase is always improving and never blocked](../../05-figures/96_remediation_playbook_automated_change/fig96_1.png)
+![Figure 40.1 — The remediation playbook: an ordered, incremental program — Inherited low-quality codebase &middot; the order is the strategy &middot; the codebase is always improving and never blocked](../05-figures/96_remediation_playbook_automated_change/fig96_1.png)
 
 *Figure 40.1 — The remediation playbook: an ordered, incremental program — Inherited low-quality codebase &middot; the order is the strategy &middot; the codebase is always improving and never blocked*
 
-![Figure 40.2 — The automation engine: type-aware change at scale — Scaling the manual craft from one method to ten thousand files across hundreds of repositories &mdash; without removing the safety net the craft requires](../../05-figures/96_remediation_playbook_automated_change/fig96_2.png)
+![Figure 40.2 — The automation engine: type-aware change at scale — Scaling the manual craft from one method to ten thousand files across hundreds of repositories &mdash; without removing the safety net the craft requires](../05-figures/96_remediation_playbook_automated_change/fig96_2.png)
 
 *Figure 40.2 — The automation engine: type-aware change at scale — Scaling the manual craft from one method to ten thousand files across hundreds of repositories &mdash; without removing the safety net the craft requires*
 

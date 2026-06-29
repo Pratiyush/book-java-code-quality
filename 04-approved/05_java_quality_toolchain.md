@@ -34,13 +34,13 @@ This chapter is the map. It does not cover configuring any single tool; that is 
 
 Two figures carry the territory before the prose unpacks it. Figure 3.1 lays the toolchain over the development lifecycle, placing each category of tool at the moment it runs, from the IDE through to production feedback.
 
-![Figure 3.1 — The Java quality toolchain: lifecycle map — Seven moments · tool categories placed at the moment they run · earlier = cheaper to fix](../../05-figures/05_java_quality_toolchain/fig05_1.png)
+![Figure 3.1 — The Java quality toolchain: lifecycle map — Seven moments · tool categories placed at the moment they run · earlier = cheaper to fix](../05-figures/05_java_quality_toolchain/fig05_1.png)
 
 *Figure 3.1 — The Java quality toolchain lifecycle map. Seven moments, with each tool category placed at the moment it runs; earlier is cheaper to fix.*
 
 Figure 3.2 turns the same landscape sideways into a lookup: a routing matrix from any quality concern to the kind of tool that addresses it, the moment it runs, and the chapter that goes deep.
 
-![Figure 3.2 — Concern × tool routing matrix — Any quality concern → which tool kind → when it runs → deep chapter · (not the order — the menu)](../../05-figures/05_java_quality_toolchain/fig05_2.png)
+![Figure 3.2 — Concern × tool routing matrix — Any quality concern → which tool kind → when it runs → deep chapter · (not the order — the menu)](../05-figures/05_java_quality_toolchain/fig05_2.png)
 
 *Figure 3.2 — The concern-by-tool routing matrix. Any quality concern maps to a tool kind, the moment it runs, and the deep chapter. The matrix is the menu, not the order.*
 

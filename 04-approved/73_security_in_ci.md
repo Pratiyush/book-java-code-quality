@@ -39,7 +39,7 @@ That failure, and how to avoid it, is this closing chapter of Part VIII. The too
 
 The whole gate fits one picture: the five testing types laid out left-to-right in the order they run, the fast static checks at pre-commit and the pull request, the slow dynamic checks deferred to a stage against staging, and one block-versus-warn line drawn through all of them. Figure 32.1 is that map; the sections below walk it lens by lens.
 
-![Figure 32.1 — The security gate: five testing types ordered fast-to-slow. Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.](../../05-figures/73_security_in_ci/fig73_1.png)
+![Figure 32.1 — The security gate: five testing types ordered fast-to-slow. Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.](../05-figures/73_security_in_ci/fig73_1.png)
 
 *Figure 32.1 — The security gate: five testing types ordered fast-to-slow. Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.*
 

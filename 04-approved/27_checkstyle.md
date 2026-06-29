@@ -43,7 +43,7 @@ That is the organizing fact of this chapter, and the reason teams run several an
 
 The whole chapter hangs on one axis: the moment in the build at which each tool reads the program. Figure 16.1 places the four analyzers on that axis, from source text through the type-attributed tree inside the compiler to the emitted bytecode, and names the distinctive reach each position grants.
 
-![Figure 16.1: the detection-time axis, placing four analyzers from source text to bytecode and naming the distinctive reach each position grants](../../05-figures/27_checkstyle/fig27_1.png)
+![Figure 16.1: the detection-time axis, placing four analyzers from source text to bytecode and naming the distinctive reach each position grants](../05-figures/27_checkstyle/fig27_1.png)
 
 *Figure 16.1 — The detection-time axis: where each analyzer reads the program, and the distinctive reach each vantage point grants.*
 

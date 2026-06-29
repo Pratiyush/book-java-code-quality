@@ -40,7 +40,7 @@ This closing chapter of Part XIII is about the quality of being able to *underst
 
 Three layers and one loop make up the chapter, and they fit together before the prose unpacks them one at a time. Logs, metrics, and traces are the three pillars; a shared trace ID is what lets a reader move between them; and the production-feedback loop is what turns what they reveal back into a test and a gate. The figure lays out that shape, and the sections that follow build each piece in turn.
 
-![The three pillars (logs, metrics, traces) correlated by trace id, feeding the production-feedback loop back into tests and gates.](../../05-figures/106_observability_logging_metrics_feedback/fig106_1.png)
+![The three pillars (logs, metrics, traces) correlated by trace id, feeding the production-feedback loop back into tests and gates.](../05-figures/106_observability_logging_metrics_feedback/fig106_1.png)
 
 *Figure 45.1 — Logs, metrics, and traces stand as co-equal pillars, joined by a shared trace ID; an escaped failure flows through the loop on the right (capture → reproduce → failing test → fix → strengthened gate) and back into the build-time gates.*
 

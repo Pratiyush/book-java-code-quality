@@ -52,7 +52,7 @@ The companion module makes the roadmap a runnable view: the five stages in their
 
 <!-- include: 110_maturity_model_roadmap/src/main/java/org/acme/maturity/Roadmap.java#roadmap-stages -->
 
-![Figure 47.1 — the staged adoption roadmap: five stages from Foundations through Sustain & evolve, each card listing its practices and the chapter that covers them, with Stage 0 marked as the Monday default.](../../05-figures/110_maturity_model_roadmap/fig110_1.png)
+![Figure 47.1 — the staged adoption roadmap: five stages from Foundations through Sustain & evolve, each card listing its practices and the chapter that covers them, with Stage 0 marked as the Monday default.](../05-figures/110_maturity_model_roadmap/fig110_1.png)
 
 *Figure 47.1 — The staged adoption roadmap: five stages, each with its practices and the chapter that covers them. A guide to outcomes, not a ladder; any stage can be the real starting point.*
 

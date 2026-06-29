@@ -42,7 +42,7 @@ Both failures live in the **build**, and the build is the subject of this openin
 
 Every quality gate runs inside the build, so the shape of the build decides the shape of the gating. Figure 27.1 lays out that shape: the build lifecycle as the host the gates hang off, with Maven's phases on one side and Gradle's `check` task on the other, and the checks bound cheapest-first so the build fails on the smallest offense before it spends time on the expensive ones. The diagram crowns neither tool; it shows the same gate-host role expressed two ways.
 
-![Figure 27.1 — The build lifecycle as quality-gate host — Maven phases and Gradle check task · bind checks cheapest-first · no winner between the two tools](../../05-figures/62_build_dependency_hygiene/fig62_1.png)
+![Figure 27.1 — The build lifecycle as quality-gate host — Maven phases and Gradle check task · bind checks cheapest-first · no winner between the two tools](../05-figures/62_build_dependency_hygiene/fig62_1.png)
 
 *Figure 27.1 — The build lifecycle as quality-gate host — Maven phases and Gradle check task · bind checks cheapest-first · no winner between the two tools*
 
