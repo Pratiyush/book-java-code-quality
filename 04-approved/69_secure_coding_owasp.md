@@ -48,7 +48,7 @@ The chapter's three sections share one method, and Figure 30.1 lays it out as a 
 
 ### Secure coding: design out the class
 
-Security is not a separate discipline bolted onto quality. It *is* quality, one of the characteristics in the same ISO 25010 model that gives maintainability and reliability (Chapter 1). The vast majority of exploited vulnerabilities are not clever novel attacks; they are instances of a small set of well-understood *classes*. That changes the goal from "find every bug" to "design out the class." The highest-quality fix is not a mitigation that makes a vulnerability harder to exploit; it is a construction that makes the class *impossible*. A `PreparedStatement` does not make SQL injection harder; it eliminates it. Avoiding native deserialization of untrusted data does not reduce gadget-chain risk; it removes the attack surface entirely.
+Security is not a separate discipline bolted onto quality. It *is* quality, one of the characteristics in the same ISO 25010 model that gives maintainability and reliability (Chapter 1). The vast majority of exploited vulnerabilities are not clever novel attacks; they are instances of a small set of well-understood *classes*. That changes the goal from "find every bug" to "design out the class." The highest-quality fix is not a mitigation that makes a vulnerability harder to exploit; it is a construction that makes the class *impossible*. A `PreparedStatement` does not make value-based SQL injection harder; it eliminates it — the bound parameter is data the database never parses as SQL. (The residue is dynamic *identifiers* — a table or column name, a sort direction — which cannot be bound and still need an allow-list.) Avoiding native deserialization of untrusted data does not reduce its gadget-chain risk; it removes that attack surface — which is not a promise that every data format is safe, since a JSON or XML parser left to instantiate arbitrary types relocates the same class.
 
 The shared map of which classes matter is the **OWASP Top 10**, the consensus list of top web-application risk categories.
 
@@ -64,7 +64,7 @@ The two most dangerous Java vulnerability classes share one root cause: **untrus
 
 For **injection**, the principle is *parameterize, do not concatenate*:
 
-- **SQL** → a `PreparedStatement` with bind parameters, never a string-concatenated query; JPA/criteria parameter binding does the same. The bound parameter is *data*, never parsed as SQL, so the class is eliminated.
+- **SQL** → a `PreparedStatement` with bind parameters, never a string-concatenated query; JPA/criteria parameter binding does the same. The bound parameter is *data*, never parsed as SQL, so the class is eliminated for query values — the one exception is a dynamic identifier (a table or column name, a sort direction), which cannot be bound and must instead be checked against an allow-list.
 - **Command** → avoid `Runtime.exec` with user input entirely; use an allow-list and `ProcessBuilder` with fixed arguments.
 - **LDAP, XPath, expression languages** (EL/SpEL/OGNL) → encode and parameterize; OGNL and EL injection have caused some of Java's most severe remote-code-execution CVEs.
 
