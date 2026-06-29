@@ -215,7 +215,6 @@ The map of Part IV is now in hand: the four-move ladder every analyzer climbs, a
 - **Checker Framework** — "values soundness over limiting false positives"; "by default, unsound in a few places where a conservative analysis would issue too many false positive warnings"; suppression voids the guarantee. *(verbatim.)*
 - **False-positive controls** — SpotBugs filter file (`Match`) + `@SuppressFBWarnings(value, justification)`; SonarQube "False positive"/"Won't fix" resolutions (may be "Accept" — verify @pin); baseline / "new code" (policy → Chapter 19).
 - **Theory** — Rice's theorem: every non-trivial semantic (extensional) property of programs is undecidable; it generalizes the undecidability of the halting problem and is proved by reduction from it ⇒ no terminating analyzer can be both sound and complete for such a property. Primary source: H. G. Rice, "Classes of recursively enumerable sets and their decision problems," *Transactions of the American Mathematical Society* **74**(2) (1953), 358–366. *(VERIFIED — primary citation.)*
-- **Routing** — per-tool depth → Ch 16/17; cross-tool "which to choose" verdict → Ch 17 (key 37); false-positive policy/baselines/ratcheting → Ch 19 (key 39); custom-rule authoring → Ch 18; lifecycle placement → Ch 3 (the toolchain map).
 
 ## Next chapter teaser
 
