@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 25 — Principles, Measures, and Where the Lines Fall (dossier key 53, folds 54+57)
+  Figure:  Figure 25.2 — The module-strength ladder: five rungs from convention to build module
+  Family:  Flow / ladder (bottom-to-top escalation of enforcement strength)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Package structure: where the lines fall" — after the module-strength ladder CONCEPT callout
+  One idea: Encapsulation is a ladder of increasing enforcement; climb only as far as the boundary
+             warrants — each rung trades ceremony for stronger guarantees.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 25.2 — The module-strength ladder</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 900px;
+    }
+
+    /* ── Ladder container ── */
+    .ladder {
+      display: flex;
+      flex-direction: column-reverse; /* rung 1 (weakest) at bottom, rung 5 (strongest) at top */
+      gap: 0;
+      position: relative;
+      margin: 0 0 16px;
+    }
+
+    /* Each rung */
+    .rung {
+      display: flex;
+      align-items: stretch;
+      border: 1.5px solid var(--ink);
+      border-radius: 0;
+      background: var(--tint-0);
+      position: relative;
+    }
+    /* Round top-most rung corners */
+    .rung:last-child {
+      border-radius: 8px 8px 0 0;
+    }
+    /* Round bottom-most rung corners */
+    .rung:first-child {
+      border-radius: 0 0 8px 8px;
+    }
+    /* Collapse adjacent borders */
+    .rung + .rung {
+      border-bottom: none;
+    }
+
+    /* Rung number badge (left column) */
+    .rung-num {
+      width: 40px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 800;
+      font-family: var(--mono);
+      color: var(--ink-soft);
+      border-right: 1.5px solid var(--tint-3);
+      background: var(--tint-1);
+    }
+
+    /* Main rung content */
+    .rung-body {
+      flex: 1;
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    /* Rung name + mechanism column */
+    .rung-name-col {
+      width: 230px;
+      flex-shrink: 0;
+      padding: 12px 14px;
+      border-right: 1px solid var(--tint-3);
+    }
+    .rung-name {
+      font-weight: 700;
+      font-size: 13.5px;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .rung-mech {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--ink-soft);
+    }
+
+    /* Guarantee column */
+    .rung-guarantee-col {
+      width: 230px;
+      flex-shrink: 0;
+      padding: 12px 14px;
+      border-right: 1px solid var(--tint-3);
+      font-size: 12.5px;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+
+    /* Cost/ceremony column */
+    .rung-cost-col {
+      flex: 1;
+      padding: 12px 14px;
+      font-size: 12.5px;
+      color: var(--ink-soft);
+      line-height: 1.45;
+    }
+
+    /* Strength fills — grayscale ramp from lightest (rung 1) to darkest (rung 5) */
+    .rung-s1 { background: var(--tint-0); }
+    .rung-s1 .rung-num { background: var(--tint-1); }
+
+    .rung-s2 { background: var(--tint-0); }
+    .rung-s2 .rung-num { background: var(--tint-1); }
+
+    .rung-s3 { background: var(--tint-1); }
+    .rung-s3 .rung-num { background: var(--tint-2); }
+
+    .rung-s4 { background: var(--tint-2); }
+    .rung-s4 .rung-num { background: var(--tint-3); }
+    .rung-s4 .rung-name { color: var(--ink); }
+
+    .rung-s5 {
+      background: var(--tint-3);
+      border: 2px solid var(--ink);
+    }
+    .rung-s5 .rung-num {
+      background: var(--accent);
+      color: var(--paper);
+      border-right-color: var(--ink);
+    }
+    .rung-s5 .rung-name { color: var(--ink); font-size: 14px; }
+    .rung-s5 .rung-mech { color: var(--ink); }
+
+    /* Column headers */
+    .ladder-header {
+      display: flex;
+      border-bottom: 2px solid var(--ink);
+      margin-bottom: 0;
+      background: var(--tint-2);
+      border-radius: 8px 8px 0 0;
+      border: 1.5px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+    }
+    .lh-num { width: 40px; flex-shrink: 0; border-right: 1.5px solid var(--tint-3); }
+    .lh-name { width: 230px; flex-shrink: 0; padding: 8px 14px; border-right: 1px solid var(--tint-3); font-weight: 700; font-size: 12px; color: var(--ink); }
+    .lh-guar { width: 230px; flex-shrink: 0; padding: 8px 14px; border-right: 1px solid var(--tint-3); font-weight: 700; font-size: 12px; color: var(--ink); }
+    .lh-cost { flex: 1; padding: 8px 14px; font-weight: 700; font-size: 12px; color: var(--ink); }
+
+    /* Up-arrow axis label */
+    .axis-label {
+      position: absolute;
+      left: -26px;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .axis-line {
+      width: 2px;
+      flex: 1;
+      background: var(--ink);
+      border-radius: 1px;
+    }
+    .axis-arrow {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .axis-text {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    /* Wrapper for axis + ladder */
+    .ladder-wrap {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      padding-left: 34px;
+      position: relative;
+    }
+
+    /* ── Two-strategy note below ladder ── */
+    .strategy-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .strategy-box {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      padding: 10px 14px;
+      background: var(--tint-1);
+    }
+    .strategy-box .sb-head {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+    .strategy-box .sb-strength {
+      font-size: 12px;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .strategy-box .sb-risk {
+      font-size: 12px;
+      color: var(--warn);
+    }
+    .strategy-box.is-vs {
+      flex: 0 0 50px;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 25.2 — The module-strength ladder</p>
+  <p class="fig-subtitle">Encapsulation is not binary — climb only as far as the boundary warrants. Each rung trades ceremony for stronger guarantees.</p>
+
+  <div class="ladder-wrap">
+
+    <!-- Vertical axis arrow -->
+    <div class="axis-label">
+      <div class="axis-arrow">↑</div>
+      <div class="axis-text">Enforcement strength</div>
+      <div class="axis-line"></div>
+    </div>
+
+    <!-- Ladder (column-reverse: rung 1 renders at bottom) -->
+    <div style="flex:1;">
+
+      <!-- Column headers (rendered visually above rung 5, which is at the DOM top due to column-reverse) -->
+      <div class="ladder-header">
+        <div class="lh-num"></div>
+        <div class="lh-name">Rung / mechanism</div>
+        <div class="lh-guar">Guarantee</div>
+        <div class="lh-cost">Cost / ceremony</div>
+      </div>
+
+      <div class="ladder">
+
+        <!-- Rung 1 — weakest: package convention (names only) -->
+        <div class="rung rung-s1">
+          <div class="rung-num">1</div>
+          <div class="rung-body">
+            <div class="rung-name-col">
+              <div class="rung-name">Package convention</div>
+              <div class="rung-mech">names only — discipline</div>
+            </div>
+            <div class="rung-guarantee-col">
+              Agreed naming signals intent; nothing enforces it — any class can reach any other.
+            </div>
+            <div class="rung-cost-col">
+              Zero tooling cost; zero enforcement — breaks silently under deadline pressure.
+            </div>
+          </div>
+        </div>
+
+        <!-- Rung 2: package-private access -->
+        <div class="rung rung-s2">
+          <div class="rung-num">2</div>
+          <div class="rung-body">
+            <div class="rung-name-col">
+              <div class="rung-name">package-private access</div>
+              <div class="rung-mech">Java default visibility</div>
+            </div>
+            <div class="rung-guarantee-col">
+              Compiler hides internals within a package; classes outside the package cannot reach them.
+            </div>
+            <div class="rung-cost-col">
+              No build changes; discipline to omit <span style="font-family:var(--mono);font-size:11px;">public</span> keyword. Java's most under-used encapsulation tool.
+            </div>
+          </div>
+        </div>
+
+        <!-- Rung 3: ArchUnit-enforced slices -->
+        <div class="rung rung-s3">
+          <div class="rung-num">3</div>
+          <div class="rung-body">
+            <div class="rung-name-col">
+              <div class="rung-name">ArchUnit-enforced slices</div>
+              <div class="rung-mech">slices().should().beFreeOfCycles()</div>
+            </div>
+            <div class="rung-guarantee-col">
+              A test fails on a forbidden dependency or cycle — structure is continuously checked in CI.
+            </div>
+            <div class="rung-cost-col">
+              ArchUnit test dependency; rules authored once; catches violations before merge. Enforcement chapter's primary tool.
+            </div>
+          </div>
+        </div>
+
+        <!-- Rung 4: JPMS module-info -->
+        <div class="rung rung-s4">
+          <div class="rung-num">4</div>
+          <div class="rung-body">
+            <div class="rung-name-col">
+              <div class="rung-name">JPMS <span style="font-family:var(--mono);font-size:12px;">module-info</span></div>
+              <div class="rung-mech">JEP 261 · compiler-enforced</div>
+            </div>
+            <div class="rung-guarantee-col">
+              Compiler forbids access across module boundaries; only explicitly <span style="font-family:var(--mono);font-size:11px;">exports</span>-ed packages are visible.
+            </div>
+            <div class="rung-cost-col">
+              <span style="font-family:var(--mono);font-size:11px;">module-info.java</span> per module; dependency graph declared; reflection restrictions. Ceremony meaningful for libraries or large systems.
+            </div>
+          </div>
+        </div>
+
+        <!-- Rung 5 — strongest: separate build modules -->
+        <div class="rung rung-s5">
+          <div class="rung-num">5</div>
+          <div class="rung-body">
+            <div class="rung-name-col">
+              <div class="rung-name">Separate build modules</div>
+              <div class="rung-mech">Maven/Gradle multi-module</div>
+            </div>
+            <div class="rung-guarantee-col">
+              Depending on an undeclared module is physically impossible — the build fails if the dependency is not wired.
+            </div>
+            <div class="rung-cost-col">
+              Separate build unit per module; build aggregator; physical separation. Highest ceremony — right only where the boundary truly warrants it.
+            </div>
+          </div>
+        </div>
+
+      </div><!-- .ladder -->
+    </div>
+  </div><!-- .ladder-wrap -->
+
+  <!-- Package strategy note -->
+  <div class="strategy-row">
+    <div class="strategy-box">
+      <div class="sb-head">By-layer (<span style="font-family:var(--mono);font-size:12px;">controller · service · repository</span>)</div>
+      <div class="sb-strength">Familiar; maps to layered architecture; easy entry point for new teams.</div>
+      <div class="sb-risk">Risk: a feature's code scatters across packages; layer packages become low-cohesion buckets.</div>
+    </div>
+    <div class="strategy-box is-vs">vs</div>
+    <div class="strategy-box">
+      <div class="sb-head">By-feature (<span style="font-family:var(--mono);font-size:12px;">orders · billing</span>)</div>
+      <div class="sb-strength">High cohesion per feature; change stays local; natural fit for modular monoliths.</div>
+      <div class="sb-risk">Risk: cross-feature sharing needs deliberate API packages; more up-front planning.</div>
+    </div>
+  </div>
+
+  <div class="fig-note" style="margin-top:14px;">
+    <b>Rule of thumb:</b> Use package-private by default (rung 2); add ArchUnit slices when cycle discipline matters (rung 3); reach for JPMS or build modules only when the boundary is load-bearing and team-scale warrants the ceremony. Neither by-layer nor by-feature is crowned — context decides.
+  </div>
+
+  <p class="fig-caption">
+    Sources: draft v1 §"Package structure: where the lines fall" — module-strength ladder CONCEPT callout (convention → package-private → ArchUnit slices → JPMS <code>module-info</code> → build modules);
+    ArchUnit <code>slices().should().beFreeOfCycles()</code> — draft v1 §"Coupling and cohesion" (cycles paragraph); JEP 261 (JPMS; ⚠ exports semantics @pin);
+    by-layer vs by-feature trade-off table — draft v1 §"Package structure" table. No structure crowned; context-dependent.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

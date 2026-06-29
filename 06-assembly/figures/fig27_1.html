@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   16 (dossier key 27, folds 28+29+30) — Four Tools, Four Different Bugs
+  Figure:    Figure 16.1 — The detection-time axis: where each analyzer reads the program
+  Family:    Architecture / layering (pipeline rail + four-row tool table)
+  Method:    Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"The organizing axis: where each tool stands" — spatial version of the
+             organizing table in §How it works.
+  One idea:  Each analyzer's vantage point in the build pipeline (source text → source AST
+             → type-attributed AST inside javac → emitted bytecode) determines what it can
+             and cannot see, making the four tools complementary by construction.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 16.1 — Detection-time axis</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 26px;
+      width: 980px;
+    }
+
+    /* ─── Pipeline rail ─────────────────────────────────── */
+    .rail {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 18px 0 6px;
+    }
+    .rail-stage {
+      flex: 1;
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      background: var(--tint-2);
+      padding: 9px 10px 7px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    .rail-stage.is-focus {
+      background: var(--tint-3);
+      border-width: 2.5px;
+    }
+    .rail-stage .rsub {
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      margin-top: 2px;
+      font-family: var(--mono);
+    }
+    .rail-arrow {
+      flex-shrink: 0;
+      width: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ─── Tool rows ─────────────────────────────────────── */
+    .tool-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+    .tool-table thead tr {
+      background: var(--tint-2);
+      border-bottom: 2px solid var(--ink);
+    }
+    .tool-table thead th {
+      padding: 6px 10px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--ink-soft);
+      text-align: left;
+      border-right: 1px solid var(--line);
+    }
+    .tool-table thead th:last-child { border-right: none; }
+
+    .tool-table tbody tr {
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    .tool-table tbody tr:last-child { border-bottom: none; }
+    .tool-table tbody tr.is-focus { background: #fef9f0; }
+
+    .tool-table tbody td {
+      padding: 9px 10px;
+      border-right: 1px solid var(--line);
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--ink);
+    }
+    .tool-table tbody td:last-child { border-right: none; }
+
+    /* col widths */
+    .col-tool    { width: 148px; }
+    .col-reads   { width: 175px; }
+    .col-types   { width: 68px;  }
+    .col-reach   { width: 210px; }
+    .col-blind   { width: 200px; }
+    .col-example { width: 135px; }  /* fills remainder */
+
+    .tool-name {
+      font-weight: 700;
+      font-size: 13px;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .tool-alt {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+    }
+
+    .mono {
+      font-family: var(--mono);
+      font-size: 10.5px;
+    }
+
+    /* outer border on the table */
+    .tool-wrap {
+      border: 1.5px solid var(--ink);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    /* badges */
+    .badge-yes  { display:inline-block; font-size:10px; font-weight:700; padding:1px 6px;
+                  border-radius:3px; border:1px solid var(--ok); color:var(--ok);
+                  background:#f0fdf4; line-height:1.4; }
+    .badge-no   { display:inline-block; font-size:10px; font-weight:700; padding:1px 6px;
+                  border-radius:3px; border:1px solid var(--stop); color:var(--stop);
+                  background:#fff0f0; line-height:1.4; }
+    .badge-part { display:inline-block; font-size:10px; font-weight:700; padding:1px 6px;
+                  border-radius:3px; border:1px solid var(--warn); color:var(--warn);
+                  background:#fffbeb; line-height:1.4; }
+
+    /* note */
+    .axis-note {
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      border-radius: 0 8px 8px 0;
+      padding: 8px 13px;
+      font-size: 11.5px;
+      line-height: 1.5;
+      margin-top: 14px;
+      color: var(--ink);
+    }
+
+    /* legend */
+    .legend {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+      margin-top: 12px;
+    }
+    .leg-item { display:flex; align-items:center; gap:6px; font-size:10.5px; color:var(--ink-soft); }
+    .leg-sq { width:13px; height:13px; border-radius:3px; border:1.5px solid; flex-shrink:0; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 16.1 — The detection-time axis: where each analyzer reads the program</p>
+  <p class="fig-subtitle">Four tools, four vantage points — where a tool stands determines what it can see</p>
+
+  <!-- ═══════════════════ PIPELINE RAIL ═══════════════════ -->
+  <div class="rail">
+
+    <div class="rail-stage">
+      Source text
+      <div class="rsub">.java file as written</div>
+    </div>
+
+    <div class="rail-arrow">
+      <svg width="22" height="14" viewBox="0 0 22 14" fill="none" aria-hidden="true">
+        <line x1="1" y1="7" x2="17" y2="7" stroke="#1f2328" stroke-width="2"/>
+        <polyline points="11,1 17,7 11,13" stroke="#1f2328" stroke-width="2" fill="none" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="rail-stage">
+      Source AST
+      <div class="rsub">build step (before compile)</div>
+    </div>
+
+    <div class="rail-arrow">
+      <svg width="22" height="14" viewBox="0 0 22 14" fill="none" aria-hidden="true">
+        <line x1="1" y1="7" x2="17" y2="7" stroke="#1f2328" stroke-width="2"/>
+        <polyline points="11,1 17,7 11,13" stroke="#1f2328" stroke-width="2" fill="none" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="rail-stage is-focus">
+      Type-attributed AST
+      <div class="rsub">inside javac (during compile)</div>
+    </div>
+
+    <div class="rail-arrow">
+      <svg width="22" height="14" viewBox="0 0 22 14" fill="none" aria-hidden="true">
+        <line x1="1" y1="7" x2="17" y2="7" stroke="#1f2328" stroke-width="2"/>
+        <polyline points="11,1 17,7 11,13" stroke="#1f2328" stroke-width="2" fill="none" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="rail-stage">
+      Emitted bytecode
+      <div class="rsub">.class files (after compile)</div>
+    </div>
+
+  </div><!-- .rail -->
+
+  <!-- ═══════════════════ TOOL TABLE ═══════════════════════ -->
+  <div class="tool-wrap">
+    <table class="tool-table">
+      <colgroup>
+        <col class="col-tool">
+        <col class="col-reads">
+        <col class="col-types">
+        <col class="col-reach">
+        <col class="col-blind">
+        <col class="col-example">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Tool</th>
+          <th>Reads at</th>
+          <th>Has types?</th>
+          <th>Distinctive reach</th>
+          <th>Characteristic blind spot</th>
+          <th>Example rules / patterns</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- Row 1: Checkstyle -->
+        <tr>
+          <td>
+            <span class="tool-name">Checkstyle</span>
+            <span class="tool-alt">13.6.0</span>
+          </td>
+          <td>Source text → AST<br><span style="font-size:10.5px;color:var(--ink-soft);">(one file; build step)</span></td>
+          <td><span class="badge-no">No</span></td>
+          <td>Style, naming, layout, Javadoc presence, size limits</td>
+          <td>Anything needing types, flow, or cross-file facts — "cannot determine the type of an expression"</td>
+          <td class="mono">LineLength<br>ConstantName<br>JavadocMethod</td>
+        </tr>
+
+        <!-- Row 2: PMD + CPD -->
+        <tr>
+          <td>
+            <span class="tool-name">PMD + CPD</span>
+            <span class="tool-alt">7.25.0</span>
+          </td>
+          <td>Source → AST + metrics<br><span style="font-size:10.5px;color:var(--ink-soft);">(build step)</span></td>
+          <td><span class="badge-part">Partial</span></td>
+          <td>Configurable rule catalogue (8 categories); complexity metrics; CPD token-based copy-paste detection</td>
+          <td>Whole-program flow; semantic (non-textual) duplication</td>
+          <td class="mono">CyclomaticComplexity<br>GodClass<br>CPD --minimum-tokens</td>
+        </tr>
+
+        <!-- Row 3: Error Prone (accent — runs inside javac) -->
+        <tr class="is-focus">
+          <td style="border-left:3px solid var(--accent-bar);">
+            <span class="tool-name">Error Prone</span>
+            <span class="tool-alt">2.x (JDK 21+)</span>
+          </td>
+          <td>Type-attributed AST<br><span style="font-size:10.5px;color:var(--ink-soft);">inside javac (during compile)</span></td>
+          <td><span class="badge-yes">Yes (full)</span></td>
+          <td>Type-aware bug patterns as <strong>build-failing errors</strong>; automated fixes; Refaster rewrites</td>
+          <td>Runs on every compile; requires JDK 21+; build-failing defaults need on-ramp on legacy code</td>
+          <td class="mono">CollectionIncompatibleType<br>DeadException<br>ReturnValueIgnored</td>
+        </tr>
+
+        <!-- Row 4: SpotBugs + FindSecBugs -->
+        <tr>
+          <td>
+            <span class="tool-name">SpotBugs</span>
+            <span class="tool-alt">4.10.2 + FindSecBugs 1.14.0</span>
+          </td>
+          <td>Compiled bytecode<br><span style="font-size:10.5px;color:var(--ink-soft);">(.class files; after compile)</span></td>
+          <td><span class="badge-yes">Yes (bytecode)</span></td>
+          <td>Bug patterns in compiled output: impossible casts, null-on-path, volatile misuse, security signatures</td>
+          <td>Formatting/comments gone by bytecode; source-distance in messages; heuristic detectors</td>
+          <td class="mono">EC_UNRELATED_TYPES<br>NP_NULL_ON_SOME_PATH<br>EI_EXPOSE_REP</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div><!-- .tool-wrap -->
+
+  <!-- ═══════════════════ NOTE ═════════════════════════════ -->
+  <div class="axis-note">
+    <strong>Axis rule:</strong> A tool can only catch what its vantage point lets it see — the four are complementary
+    by construction. Checkstyle, reading one file with no type information, cannot know whether a custom exception
+    extends <span class="mono">Exception</span> (its own docs state so). Error Prone, on the type-attributed tree,
+    knows every static type. SpotBugs, on bytecode, sees the impossible cast <span class="mono">javac</span>
+    compiled away into a <span class="mono">checkcast</span>. None stands "smarter" than the others — each stands
+    somewhere different.
+  </div>
+
+  <!-- ═══════════════════ LEGEND ═══════════════════════════ -->
+  <div class="legend">
+    <div class="leg-item">
+      <div class="leg-sq" style="background:#fef9f0; border-color:var(--accent-bar);
+           box-shadow:inset 3px 0 0 var(--accent-bar);"></div>
+      <span>Error Prone — runs <em>inside</em> <span class="mono">javac</span>; type-attributed AST; build-failing by default</span>
+    </div>
+    <div class="leg-item">
+      <div class="leg-sq" style="background:var(--tint-1); border-color:var(--ink);"></div>
+      <span>Source-AST and bytecode analyzers (separate build step)</span>
+    </div>
+    <div class="leg-item">
+      <span class="badge-yes">Yes</span><span style="margin-left:4px;">has type information</span>
+    </div>
+    <div class="leg-item">
+      <span class="badge-no">No</span>
+      <span style="margin:0 2px;">/</span>
+      <span class="badge-part">Partial</span>
+      <span style="margin-left:4px;">limited or no type info</span>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Sources: Checkstyle docs verbatim — "You have access to the content of one file only … You cannot determine the
+    type of an expression … You cannot determine the full inheritance hierarchy of type" (checkstyle.org, pinned
+    13.6.0, 2026-06-20). Error Prone — "must be run on JDK 21 or newer" (errorprone.info). SpotBugs 4.10.2
+    successor to FindBugs (<span class="mono">edu.umd.cs.findbugs.*</span> package names retained); FindSecBugs
+    1.14.0 "144 patterns / 826 signatures" (spotbugs.github.io). PMD 7.25.0 eight categories (pmd.github.io).
+    All four tools cited to their own pinned docs; no tool is crowned.
+    Detection-time descriptions traced to draft v1 §How it works organizing table.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

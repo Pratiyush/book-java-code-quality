@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   31 — Catching What You Forgot (dossier keys 70 + 71, Ch 31 in FINAL_INDEX, Part VIII)
+  Figure:    Figure 31.1 — Secrets detection as a ladder of catches, cheapest first
+             (pre-commit → push protection → CI → history scan), and the asymmetry:
+             only the first stage PREVENTS the leak; once a secret reaches a remote it is
+             COMPROMISED and the only fix is to ROTATE — detection is not remediation.
+  Family:    Flow-sequence (defense-in-depth ladder along the commit→remote timeline)
+  Method:    Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Secrets detection: and why finding is too late" — at the CONCEPT block
+             "A ladder of catches, cheapest first," before the found=compromised=rotate paragraph
+  One idea:  Secrets detection is defense in depth across the lifecycle; each later stage backstops
+             the one before because the earlier ones are bypassable — but only the pre-commit stage
+             actually prevents the leak. Past the remote, the secret is compromised: rotate, do not
+             merely delete (history rewrite is necessary, not sufficient).
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 31.1 — Secrets detection: a ladder of catches, and why finding is too late</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 980px;
+    }
+
+    /* ── The lifecycle baseline ── */
+    .lifeline {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin-top: 30px; /* clearance for the "reaches the remote" label band */
+    }
+
+    /* Each stage of the ladder */
+    .rung {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .rung-card {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--paper);
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    /* grayscale-safe: stages get progressively heavier header tints + the
+       "prevents" stage alone carries the warm accent bar (one accent, used once). */
+    .rung-card .hd {
+      border-bottom: 1.5px solid var(--ink);
+      padding: 7px 11px 6px;
+    }
+    .rung-card .hd .stage-no {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      letter-spacing: .5px;
+    }
+    .rung-card .hd .stage-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-top: 1px;
+    }
+    .rung-card .bd {
+      padding: 8px 11px 9px;
+      font-size: 11.5px;
+      color: var(--ink);
+      line-height: 1.4;
+      flex: 1;
+    }
+    .rung-card .bd code {
+      font-family: var(--mono);
+      font-size: 10.5px;
+    }
+
+    .t1 .hd { background: var(--tint-0); }
+    .t2 .hd { background: var(--tint-1); }
+    .t3 .hd { background: var(--tint-2); }
+    .t4 .hd { background: var(--tint-3); }
+
+    /* the one accent: the only stage that PREVENTS the leak */
+    .rung-card.is-prevent { box-shadow: inset 0 4px 0 var(--accent-bar); }
+
+    /* the effect badge (prevents / blocks / catches / finds) */
+    .effect {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--ink);
+      margin-bottom: 6px;
+    }
+    .effect.prevent { border-color: var(--ok); color: var(--ok); background: var(--tint-0); }
+    .effect.blocks  { border-color: var(--ink); color: var(--ink); background: var(--tint-0); }
+    .effect.catches { border-color: var(--ink-soft); color: var(--ink-soft); background: var(--tint-0); }
+    .effect.finds   { border-color: var(--stop); color: var(--stop); background: var(--tint-0); }
+
+    .bypass {
+      margin-top: 7px;
+      padding-top: 6px;
+      border-top: 1px dotted var(--line);
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    .bypass code { font-style: normal; }
+
+    /* connectors between rungs */
+    .rung-link {
+      width: 26px;
+      flex: 0 0 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    /* the local↔remote divider that sits between push-protection and CI:
+       everything to the LEFT of "the remote" can still prevent; to the RIGHT it's already out. */
+    .remote-marker {
+      width: 2px;
+      flex: 0 0 2px;
+      background: var(--stop);
+      position: relative;
+      margin: 0 13px;
+    }
+    /* the label sits in the clearance band ABOVE the cards (no overlap with Stage 3) */
+    .remote-marker::before {
+      content: "▼ the secret reaches the remote here";
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--stop);
+      background: var(--paper);
+      padding: 0 6px;
+      letter-spacing: .2px;
+    }
+    /* small tick so the 2px divider reads as a deliberate boundary, not an artifact */
+    .remote-marker::after {
+      content: "";
+      position: absolute;
+      top: 0; bottom: 0; left: -1px;
+      width: 4px;
+      border-left: 2px dashed var(--stop);
+    }
+
+    /* the prevent / too-late banner under the ladder */
+    .zone-row {
+      display: flex;
+      margin-top: 8px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+    .zone {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 5px 10px;
+      text-align: center;
+    }
+    .zone.before { color: var(--ok); border-color: var(--ok); background: var(--tint-0); }
+    .zone.after  { color: var(--stop); border-color: var(--stop); background: var(--tint-0); }
+    .zone-gap { width: 2px; flex: 0 0 2px; margin: 0 13px; }
+
+    /* the found=compromised=rotate consequence panel */
+    .rotate-panel {
+      margin-top: 16px;
+      border: 1.5px solid var(--stop);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .rotate-panel .rp-hd {
+      background: var(--tint-1);
+      border-bottom: 1.5px solid var(--stop);
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .rotate-panel .rp-hd .tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      color: var(--stop);
+      margin-right: 8px;
+    }
+    .rotate-body {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      padding: 12px 14px;
+    }
+    .rotate-step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding: 0 12px;
+    }
+    .rotate-step:first-child { padding-left: 0; }
+    .rotate-step:last-child  { padding-right: 0; }
+    .rotate-step .rs-kind {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .rotate-step .rs-text { font-size: 12px; color: var(--ink); line-height: 1.4; }
+    .rotate-step .rs-text code { font-family: var(--mono); font-size: 11px; }
+    .rotate-step.is-required .rs-kind { color: var(--stop); }
+    .rotate-step.is-required {
+      border-left: 3px solid var(--stop);
+      padding-left: 12px;
+      background: var(--tint-1);
+      border-radius: 0 8px 8px 0;
+    }
+    .rotate-link {
+      flex: 0 0 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-soft);
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .struck { text-decoration: line-through; color: var(--ink-soft); }
+
+    /* prevention floor note */
+    .floor-note {
+      margin-top: 14px;
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      padding: 9px 14px;
+      font-size: 12px;
+      border-radius: 0 8px 8px 0;
+      line-height: 1.4;
+    }
+    .floor-note b { color: var(--ink); }
+
+    .how-strip {
+      margin-top: 10px;
+      display: flex;
+      gap: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 9px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .how-strip .hk { font-weight: 700; color: var(--ink); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 31.1 &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and why finding is already too late</p>
+  <p class="fig-subtitle">Each later stage backstops the one before, because the earlier ones are bypassable. Only the first stage <em>prevents</em> the leak; past the remote, the secret is compromised &mdash; the fix is to rotate, not delete.</p>
+
+  <!-- ── THE LADDER ── -->
+  <div class="lifeline">
+
+    <!-- Stage 1: pre-commit -->
+    <div class="rung">
+      <div class="rung-card t1 is-prevent">
+        <div class="hd">
+          <div class="stage-no">STAGE 1 &middot; LOCAL, BEFORE COMMIT</div>
+          <div class="stage-name">Pre-commit hook</div>
+        </div>
+        <div class="bd">
+          <span class="effect prevent">prevents the leak</span>
+          Scans the staged diff; blocks the commit before the secret ever lands. The cheapest catch
+          &mdash; and the only stage that prevents the leak entirely.
+          <div class="bypass">Bypassable: <code>git commit --no-verify</code> skips it &rarr; needs a backstop.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rung-link">&rarr;</div>
+
+    <!-- Stage 2: push protection -->
+    <div class="rung">
+      <div class="rung-card t2">
+        <div class="hd">
+          <div class="stage-no">STAGE 2 &middot; AT THE PLATFORM, ON PUSH</div>
+          <div class="stage-name">Push protection</div>
+        </div>
+        <div class="bd">
+          <span class="effect blocks">blocks at the remote</span>
+          Platform secret scanning rejects the push if it carries a known secret pattern &mdash;
+          the last line before the credential is on the server.
+        </div>
+      </div>
+    </div>
+
+    <!-- the moment the secret crosses to the remote -->
+    <div class="remote-marker"></div>
+
+    <!-- Stage 3: CI gate -->
+    <div class="rung">
+      <div class="rung-card t3">
+        <div class="hd">
+          <div class="stage-no">STAGE 3 &middot; IN CI, AFTER PUSH</div>
+          <div class="stage-name">CI gate</div>
+        </div>
+        <div class="bd">
+          <span class="effect catches">catches what slipped</span>
+          Runs the scanner in the pipeline to catch a secret from a developer who skipped the hook.
+          Already pushed &mdash; this fails the build, it does not un-leak.
+        </div>
+      </div>
+    </div>
+
+    <div class="rung-link">&rarr;</div>
+
+    <!-- Stage 4: history scan -->
+    <div class="rung">
+      <div class="rung-card t4">
+        <div class="hd">
+          <div class="stage-no">STAGE 4 &middot; PERIODIC, OVER HISTORY</div>
+          <div class="stage-name">History scan</div>
+        </div>
+        <div class="bd">
+          <span class="effect finds">finds the already-committed</span>
+          Sweeps past commits for credentials committed long ago. Detection only &mdash; whatever it
+          finds was reachable in the history the whole time.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .lifeline -->
+
+  <!-- prevent / too-late zone banner aligned to the remote marker -->
+  <div class="zone-row">
+    <div class="zone before" style="flex: 0 0 calc(50% - 15px);">&larr;&nbsp;can still prevent the leak&nbsp;(local)</div>
+    <div class="zone-gap"></div>
+    <div class="zone after" style="flex: 1;">already out &mdash; detection, not prevention&nbsp;&rarr;</div>
+  </div>
+
+  <!-- ── THE CONSEQUENCE: found = compromised = rotate ── -->
+  <div class="rotate-panel">
+    <div class="rp-hd"><span class="tag">If it reached a remote</span>A committed secret is a <b>compromised</b> secret &mdash; detection is not remediation</div>
+    <div class="rotate-body">
+
+      <div class="rotate-step">
+        <div class="rs-kind">Assume</div>
+        <div class="rs-text">Once on a remote (especially public), assume it was <b>scraped</b> &mdash; bots pull new commits in seconds.</div>
+      </div>
+
+      <div class="rotate-link">&rarr;</div>
+
+      <div class="rotate-step">
+        <div class="rs-kind">Necessary, not sufficient</div>
+        <div class="rs-text"><span class="struck">Delete from <code>HEAD</code></span> &middot; <span class="struck">rewrite history</span> (<code>git&nbsp;filter-repo</code>, BFG) &mdash; does <b>not</b> un-leak what was already pulled.</div>
+      </div>
+
+      <div class="rotate-link">&rarr;</div>
+
+      <div class="rotate-step is-required">
+        <div class="rs-kind">The only real fix</div>
+        <div class="rs-text"><b>ROTATE</b> the credential &mdash; revoke the exposed one, issue a new one. Non-negotiable; history rewrite is secondary.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- prevention is the floor -->
+  <div class="floor-note">
+    <b>Detection is the net; prevention is the floor.</b> The real fix is to never put secrets in source
+    at all &mdash; externalized config and a secret manager (environment variables, Vault, cloud secret
+    stores). Where one escape is catastrophic, invest in the floor, not only the net. Secrets detection
+    is the safety net under that discipline, not a substitute for it.
+  </div>
+
+  <!-- how detection works + honest edges -->
+  <div class="how-strip">
+    <div><span class="hk">How it detects:</span> regex/rule patterns (AWS keys, tokens, private keys) + entropy analysis (random-looking strings); some tools <em>verify</em> against the provider.</div>
+    <div><span class="hk">Tools (crown none):</span> gitleaks &middot; TruffleHog &middot; platform secret scanning.</div>
+    <div><span class="hk">False positives:</span> entropy flags UUIDs, hashes, test fixtures &rarr; allow-list (Ch&nbsp;19, key&nbsp;39).</div>
+    <div><span class="hk">Backstop chain:</span> pre-commit &amp; CI parity (key&nbsp;82); secret managers &rarr; ops chapters.</div>
+  </div>
+
+  <p class="fig-caption">
+    <b>Sources:</b> Secrets-detection dossier (key&nbsp;71) &amp; draft v1 §&ldquo;Secrets detection.&rdquo;
+    Ladder &mdash; &ldquo;pre-commit hook (blocks before commit, cheapest) &rarr; push protection &rarr; CI gate &rarr; history scan&rdquo;; each stage backstops the prior because the pre-commit hook is bypassable (<code>git commit --no-verify</code>).
+    Detection &mdash; &ldquo;regex/rule patterns (AWS keys/tokens/private keys) + entropy analysis + some tools verify against provider (TruffleHog).&rdquo;
+    Tools cited to their own docs (github.com/gitleaks/gitleaks; github.com/trufflesecurity/trufflehog; platform secret scanning); multi-tool, crown none.
+    Remediation &mdash; &ldquo;a committed secret is COMPROMISED &rarr; ROTATE; delete/history-rewrite (git&nbsp;filter-repo/BFG) necessary NOT sufficient; assume scraped.&rdquo;
+    Prevention &mdash; &ldquo;externalized config / secret managers (env vars, Vault, cloud secret stores), never in source.&rdquo;
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

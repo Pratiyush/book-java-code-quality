@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   31 — Catching What You Forgot (dossier keys 70 + 71, Ch 31 in FINAL_INDEX, Part VIII)
+  Figure:    Figure 31.1 — The three-lens security triad: SAST / SCA / DAST, with the
+             pattern-vs-taint distinction inside the SAST lens
+  Family:    Architecture / concept-map (three-column lenses + internal breakdown)
+  Method:    Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"SAST, SCA, and DAST are three lenses, layered" — after the taint-analysis
+             explanation, before secrets detection
+  One idea:  SAST (your code, static), SCA (your dependencies), and DAST (running app)
+             are three distinct, non-substitutable security lenses; inside SAST,
+             pattern matching and taint/dataflow analysis are two complementary techniques.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 31.1 — SAST / SCA / DAST security triad</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 940px;
+    }
+
+    /* ── Three-column triad layout ── */
+    .triad {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0;
+      align-items: start;
+      margin-top: 10px;
+    }
+
+    /* Vertical separator between lenses */
+    .triad-sep {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 4px;
+      padding-top: 56px;
+      color: var(--ink-soft);
+      font-size: 11.5px;
+      font-style: italic;
+      min-height: 200px;
+      gap: 6px;
+    }
+    .triad-sep-line {
+      width: 1px;
+      flex: 1;
+      background: var(--line);
+    }
+
+    /* Lens column */
+    .lens {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Lens header */
+    .lens-header {
+      border: 2px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--paper);
+    }
+    .lens-header-top {
+      background: var(--tint-2);
+      border-bottom: 1.5px solid var(--ink);
+      padding: 8px 14px 6px;
+    }
+    .lens-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      font-family: var(--mono);
+      margin-bottom: 2px;
+    }
+    .lens-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+    .lens-tagline {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      margin-top: 2px;
+    }
+    .lens-header-body {
+      padding: 8px 14px 10px;
+      font-size: 12px;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+
+    /* The SAST lens gets the accent treatment (it is this chapter's subject) */
+    .lens-header.is-focus {
+      border-color: var(--ink);
+      box-shadow: inset 0 3px 0 var(--accent-bar);
+    }
+    .lens-header.is-focus .lens-header-top {
+      background: var(--tint-1);
+    }
+
+    /* Technique breakdown (inside SAST only) */
+    .technique-block {
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--tint-0);
+    }
+    .technique-hd {
+      background: var(--tint-1);
+      border-bottom: 1px solid var(--line);
+      padding: 5px 12px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .technique-row {
+      display: flex;
+      border-bottom: 1px solid var(--tint-2);
+      font-size: 11.5px;
+    }
+    .technique-row:last-child { border-bottom: none; }
+    .technique-kind {
+      width: 110px;
+      flex-shrink: 0;
+      padding: 7px 10px;
+      font-weight: 700;
+      color: var(--ink);
+      border-right: 1px solid var(--tint-2);
+      background: var(--tint-1);
+    }
+    .technique-detail {
+      flex: 1;
+      padding: 7px 10px;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+    .technique-detail .ex {
+      color: var(--ink-soft);
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    /* Catches / blind spot card */
+    .lens-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      font-size: 11.5px;
+      background: var(--tint-0);
+    }
+    .lens-card-hd {
+      padding: 4px 10px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--tint-2);
+    }
+    .lens-card-hd.catches { color: var(--ok); background: var(--tint-0); }
+    .lens-card-hd.blind   { color: var(--stop); background: var(--tint-0); }
+    .lens-card ul {
+      margin: 0;
+      padding: 6px 10px 6px 22px;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    .lens-card li { margin: 0; }
+
+    /* Tool pills row */
+    .tool-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      padding: 6px 10px 8px;
+      border-top: 1px solid var(--tint-2);
+    }
+    .tool-pill {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--tint-1);
+      color: var(--ink);
+    }
+
+    /* Not-substitutes note at bottom */
+    .layered-note {
+      margin-top: 14px;
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      padding: 9px 14px;
+      font-size: 12px;
+      border-radius: 0 8px 8px 0;
+      line-height: 1.4;
+    }
+    .layered-note b { color: var(--ink); }
+
+    /* Routing strip at very bottom */
+    .routing-strip {
+      margin-top: 10px;
+      display: flex;
+      gap: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .routing-item { display: flex; align-items: baseline; gap: 4px; }
+    .routing-item b { color: var(--ink); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 31.1 &mdash; SAST, SCA, and DAST: three security lenses, layered</p>
+  <p class="fig-subtitle">Each analyzes a distinct surface; none substitutes for the other two. SAST uses two complementary techniques.</p>
+
+  <div class="triad">
+
+    <!-- ══ LENS 1: SAST ══ -->
+    <div class="lens">
+      <div class="lens-header is-focus">
+        <div class="lens-header-top">
+          <div class="lens-label">SAST &nbsp;&mdash;&nbsp; this chapter</div>
+          <div class="lens-name">Static Application<br>Security Testing</div>
+          <div class="lens-tagline">Analyzes <em>your project&rsquo;s own source/bytecode</em> &mdash; without running it</div>
+        </div>
+        <div class="lens-header-body">
+          Finds injection, XSS, path traversal, crypto misuse. Catches the vulnerability classes
+          Chapter&nbsp;30 taught developers to design out.
+        </div>
+      </div>
+
+      <!-- Pattern vs taint breakdown -->
+      <div class="technique-block">
+        <div class="technique-hd">Two detection techniques</div>
+        <div class="technique-row">
+          <div class="technique-kind">Pattern<br>matching</div>
+          <div class="technique-detail">
+            Syntactic rules; flags known-bad API calls and dangerous forms.
+            <div class="ex">e.g. flag <code style="font-family:var(--mono);font-size:10.5px;">Cipher.getInstance(&ldquo;AES&rdquo;)</code>, flag <code style="font-family:var(--mono);font-size:10.5px;">MD5</code></div>
+          </div>
+        </div>
+        <div class="technique-row">
+          <div class="technique-kind">Dataflow /<br>Taint analysis</div>
+          <div class="technique-detail">
+            Traces <em>untrusted source</em> (e.g. request parameter) through the program to a
+            <em>dangerous sink</em> (e.g. SQL string, <code style="font-family:var(--mono);font-size:10.5px;">Runtime.exec</code>).
+            Stronger for injection; catches the flow across multiple method calls.
+            <div class="ex">e.g. user input &rarr; 3 methods &rarr; SQL query string without parameterization</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Catches / blind spot -->
+      <div class="lens-card">
+        <div class="lens-card-hd catches">catches well</div>
+        <ul>
+          <li>SQL injection, XSS, path traversal, crypto misuse</li>
+          <li>Attacker-controlled source &rarr; dangerous sink flows</li>
+          <li>Known-bad API calls (pattern-based)</li>
+        </ul>
+        <div class="lens-card-hd blind">blind spots</div>
+        <ul>
+          <li>Authorization &amp; business-logic flaws (no source&rarr;sink flow)</li>
+          <li>Unreachable sinks may produce false positives</li>
+          <li>Deep dataflow is slow on large codebases</li>
+        </ul>
+        <div class="tool-row">
+          <span class="tool-pill">FindSecBugs</span>
+          <span class="tool-pill">Semgrep</span>
+          <span class="tool-pill">CodeQL</span>
+          <span class="tool-pill">Snyk Code</span>
+          <span class="tool-pill">SonarQube (commercial taint)</span>
+        </div>
+      </div>
+    </div><!-- SAST lens -->
+
+    <!-- separator -->
+    <div class="triad-sep">
+      <div class="triad-sep-line"></div>
+      <span>layered,<br>not<br>substitutes</span>
+      <div class="triad-sep-line"></div>
+    </div>
+
+    <!-- ══ LENS 2: SCA ══ -->
+    <div class="lens">
+      <div class="lens-header">
+        <div class="lens-header-top">
+          <div class="lens-label">SCA &nbsp;&mdash;&nbsp; Part&nbsp;VII (Ch&nbsp;28)</div>
+          <div class="lens-name">Software Composition<br>Analysis</div>
+          <div class="lens-tagline">Analyzes <em>the project&rsquo;s dependencies</em> &mdash; libraries and transitive deps</div>
+        </div>
+        <div class="lens-header-body">
+          Matches dependency GAV coordinates against vulnerability databases (CVE/OSV/GHSA).
+          Finds vulnerable libraries SAST will not flag.
+        </div>
+      </div>
+
+      <div class="lens-card">
+        <div class="lens-card-hd catches">catches well</div>
+        <ul>
+          <li>Known CVEs in third-party libraries</li>
+          <li>Transitive dep vulnerabilities</li>
+          <li>License risks in dependencies</li>
+        </ul>
+        <div class="lens-card-hd blind">blind spots</div>
+        <ul>
+          <li>Code the team wrote (SAST&rsquo;s territory)</li>
+          <li>Reachability of vulnerable code path</li>
+          <li>Runtime configuration flaws</li>
+        </ul>
+        <div class="tool-row">
+          <span class="tool-pill fig-muted">tools &amp; SBOM &rarr; Part&nbsp;VII (Ch&nbsp;28, key&nbsp;65)</span>
+        </div>
+      </div>
+    </div><!-- SCA lens -->
+
+    <!-- separator -->
+    <div class="triad-sep">
+      <div class="triad-sep-line"></div>
+      <span>&nbsp;</span>
+      <div class="triad-sep-line"></div>
+    </div>
+
+    <!-- ══ LENS 3: DAST ══ -->
+    <div class="lens">
+      <div class="lens-header">
+        <div class="lens-header-top">
+          <div class="lens-label">DAST &nbsp;&mdash;&nbsp; Ch&nbsp;32 (key&nbsp;73)</div>
+          <div class="lens-name">Dynamic Application<br>Security Testing</div>
+          <div class="lens-tagline">Probes <em>the running application</em> from outside &mdash; like an attacker</div>
+        </div>
+        <div class="lens-header-body">
+          Sends malformed/attack inputs to a live app and observes responses.
+          Finds runtime misconfigurations neither static tool can see.
+        </div>
+      </div>
+
+      <div class="lens-card">
+        <div class="lens-card-hd catches">catches well</div>
+        <ul>
+          <li>Runtime misconfigurations</li>
+          <li>Auth/session flaws visible at runtime</li>
+          <li>Infrastructure-level exposures</li>
+        </ul>
+        <div class="lens-card-hd blind">blind spots</div>
+        <ul>
+          <li>Requires a running app (not shift-left)</li>
+          <li>Code-level source/sink paths (SAST&rsquo;s territory)</li>
+          <li>Dep vulnerabilities in unprobable paths</li>
+        </ul>
+        <div class="tool-row">
+          <span class="tool-pill fig-muted">tools &amp; DAST &rarr; Ch&nbsp;32 (key&nbsp;73)</span>
+        </div>
+      </div>
+    </div><!-- DAST lens -->
+
+  </div><!-- .triad -->
+
+  <!-- Not-substitutes note -->
+  <div class="layered-note">
+    <b>Layered, not either/or.</b> SAST sees a dangerous sink SCA cannot; SCA sees a vulnerable
+    library SAST will not flag; DAST sees a runtime misconfiguration neither static tool can find.
+    A security program runs all three; no lens substitutes for the other two.
+  </div>
+
+  <!-- Routing strip -->
+  <div class="routing-strip">
+    <div class="routing-item"><b>SAST tools detail:</b> this chapter (key&nbsp;70)</div>
+    <div class="routing-item"><b>FindSecBugs / SpotBugs:</b> Ch&nbsp;16 (key&nbsp;29)</div>
+    <div class="routing-item"><b>SCA:</b> Part&nbsp;VII, Ch&nbsp;28 (key&nbsp;65)</div>
+    <div class="routing-item"><b>Security gate + DAST:</b> Ch&nbsp;32 (key&nbsp;73)</div>
+    <div class="routing-item"><b>Custom security rules:</b> Ch&nbsp;18 (key&nbsp;38)</div>
+    <div class="routing-item"><b>FP triage / suppression:</b> Ch&nbsp;19 (key&nbsp;39)</div>
+    <div class="routing-item"><b>Design review (logic/authz flaws):</b> key&nbsp;84</div>
+  </div>
+
+  <p class="fig-caption">
+    <b>Sources:</b> SAST (key 70 dossier) &mdash; analyzes &ldquo;your source/bytecode for security weaknesses &mdash; injection, XSS, path traversal, crypto misuse &mdash; without running it&rdquo;;
+    &ldquo;pattern matching (syntactic rules) vs dataflow/taint analysis (trace untrusted input &rarr; dangerous sink)&rdquo;;
+    tools cited to their own docs (find-sec-bugs.github.io; semgrep.dev; codeql.github.com; snyk.io; sonarsource.com); multi-tool, crown none.
+    SCA (key 65) &mdash; scans &ldquo;the project&rsquo;s dependencies.&rdquo;
+    DAST (key 73) &mdash; probes the running app.
+    Triad: &ldquo;SAST = your code (static); SCA = deps; DAST = running app. Layered, not substitutes&rdquo; (dossier key 70 §2; draft §&ldquo;SAST, SCA, and DAST are three lenses, layered&rdquo;).
+    Blind-spot on authorization/logic flaws: &ldquo;broken-access-control / authz flaws it can&rsquo;t model&rdquo; (dossier key 70 §4).
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

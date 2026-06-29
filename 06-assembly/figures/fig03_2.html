@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 2 — The Number That Lies (dossier key 03, folds 04, 58)
+  Figure:  Figure 2.2 — Contested prescriptions: Clean Code vs. A Philosophy of Software Design
+  Family:  Concept-map (two-position comparison with trade-off axis; no winner crowned)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"The contested zone — two reputable schools" (CONCEPT callout)
+  One idea: Two reputable schools hold opposed positions on function size and comments;
+            both are coherent, both have costs; the appropriate choice is context-dependent
+            and applied consistently — no winner is crowned.
+  Neutrality: Each school gets its strongest case AND its hardest limitation.
+              Banned phrasings ("better than", "superior", "the problem with X") absent.
+  Sources:  Martin, Clean Code (2008); Ousterhout, A Philosophy of Software Design (2021);
+            qntm critique (qntm.org/clean) cited as named critique only.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 2.2 — Contested prescriptions: function size &amp; comments</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + shared components from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure { padding: 28px 30px 22px; max-width: 940px; }
+
+    /* Three-column layout: School A | vs axis | School B */
+    .debate-grid {
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr;
+      gap: 0;
+      margin-top: 18px;
+      align-items: start;
+    }
+
+    /* Column header */
+    .school-hd {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .school-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      margin: 0 0 2px;
+    }
+    .school-author {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      margin: 0 0 14px;
+      font-style: italic;
+    }
+
+    /* Dimension block within a school */
+    .dim-block {
+      border: 1.5px solid var(--tint-3);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .dim-hd {
+      background: var(--tint-2);
+      border-bottom: 1.5px solid var(--tint-3);
+      padding: 5px 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .dim-bd {
+      padding: 9px 10px;
+      font-size: 12px;
+      color: var(--ink);
+    }
+    .dim-bd b { color: var(--ink); }
+    .dim-cost {
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      font-style: italic;
+      border-top: 1px solid var(--tint-3);
+      padding-top: 5px;
+    }
+
+    /* Centre axis column */
+    .axis-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 48px; /* align with first dim block */
+      gap: 24px;
+    }
+    .axis-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      text-align: center;
+      writing-mode: vertical-lr;
+      transform: rotate(180deg);
+    }
+    .axis-line {
+      width: 2px;
+      background: var(--line);
+      flex: 1;
+      min-height: 40px;
+    }
+    .axis-vs {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      background: var(--tint-2);
+      border: 1.5px solid var(--ink);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Agreed-core strip */
+    .agreed-strip {
+      margin-top: 16px;
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .agreed-hd {
+      background: var(--tint-3);
+      border-bottom: 1.5px solid var(--ink);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .agreed-bd {
+      padding: 8px 14px;
+      font-size: 12px;
+      color: var(--ink);
+      display: flex;
+      gap: 24px;
+    }
+    .agreed-item {
+      flex: 1;
+    }
+    .agreed-item b { display: block; margin-bottom: 2px; }
+    .agreed-item span { font-size: 11.5px; color: var(--ink-soft); }
+
+    /* Guidance strip */
+    .guidance-strip {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 2.2 — Contested prescriptions: function size &amp; comments</p>
+  <p class="fig-subtitle">
+    Two reputable schools hold opposed positions. Neither is universally correct — choose deliberately, apply consistently.
+  </p>
+
+  <div class="debate-grid">
+
+    <!-- ── School A: Clean Code ── -->
+    <div>
+      <div class="school-hd">School A</div>
+      <p class="school-title">Clean Code</p>
+      <p class="school-author">Robert C. Martin (2008)</p>
+
+      <!-- Dimension 1: Function size -->
+      <div class="dim-block">
+        <div class="dim-hd">Function size</div>
+        <div class="dim-bd">
+          <b>Position: very small functions.</b>
+          "Functions should be small… smaller than that." Each function does one thing
+          only. Extraction is always preferred when a piece of logic could be named.
+          <div class="dim-cost">Strongest limitation: fragmentation — following one idea requires
+          jumping across many small methods; adds indirection and naming overhead.</div>
+        </div>
+      </div>
+
+      <!-- Dimension 2: Comments -->
+      <div class="dim-block">
+        <div class="dim-hd">Comments</div>
+        <div class="dim-bd">
+          <b>Position: comments are largely failures.</b>
+          "A comment is an apology for not making the code self-explanatory."
+          Good naming and structure make most comments redundant; comments that
+          explain <em>what</em> code does are a smell.
+          <div class="dim-cost">Strongest limitation: comments that capture <em>why</em>
+          (design intent, rejected alternatives) cannot always be expressed in code alone;
+          without them, rationale is lost.</div>
+        </div>
+      </div>
+
+      <!-- Dimension 3: Common ground -->
+      <div class="dim-block">
+        <div class="dim-hd">Shared commitment</div>
+        <div class="dim-bd">
+          Strong naming, zero side-effects per function, consistency within a codebase.
+          <div class="dim-cost">&nbsp;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Centre axis ── -->
+    <div class="axis-col">
+      <div class="axis-vs">vs</div>
+      <div class="axis-line"></div>
+      <div class="axis-vs">vs</div>
+      <div class="axis-line"></div>
+      <div class="axis-vs">&nbsp;</div>
+    </div>
+
+    <!-- ── School B: A Philosophy of Software Design ── -->
+    <div>
+      <div class="school-hd">School B</div>
+      <p class="school-title">A Philosophy of Software Design</p>
+      <p class="school-author">John Ousterhout (2018; 2nd ed. 2021)</p>
+
+      <!-- Dimension 1: Function size -->
+      <div class="dim-block">
+        <div class="dim-hd">Function size</div>
+        <div class="dim-bd">
+          <b>Position: deep modules preferred.</b>
+          A module with a simple interface over a substantial implementation is
+          "deep" — it hides complexity without forcing callers to understand it.
+          Excessive decomposition makes the interface cost as high as the implementation.
+          <div class="dim-cost">Strongest limitation: deep modules can concentrate complexity
+          in ways that make individual functions difficult to test or understand in isolation.</div>
+        </div>
+      </div>
+
+      <!-- Dimension 2: Comments -->
+      <div class="dim-block">
+        <div class="dim-hd">Comments</div>
+        <div class="dim-bd">
+          <b>Position: comments are essential.</b>
+          Comments capture design intent and the <em>why</em> behind decisions —
+          information the code itself cannot express. Interface comments ("what does
+          this do") and implementation comments ("why this approach") both have value.
+          <div class="dim-cost">Strongest limitation: comments diverge from code over time;
+          a misleading stale comment is worse than no comment.</div>
+        </div>
+      </div>
+
+      <!-- Dimension 3: Common ground -->
+      <div class="dim-block">
+        <div class="dim-hd">Shared commitment</div>
+        <div class="dim-bd">
+          Local reasoning, reducing cognitive load, consistent application of
+          whichever style the team adopts.
+          <div class="dim-cost">&nbsp;</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .debate-grid -->
+
+  <!-- Agreed core -->
+  <div class="agreed-strip">
+    <div class="agreed-hd">Both schools agree on the agreed core (low-controversy)</div>
+    <div class="agreed-bd">
+      <div class="agreed-item">
+        <b>Naming carries most of the load</b>
+        <span>Names are the densest documentation in the code. Neither school disputes this.</span>
+      </div>
+      <div class="agreed-item">
+        <b>Local reasoning lowers cognitive load</b>
+        <span>Code you can understand without holding the whole system in mind is more readable.</span>
+      </div>
+      <div class="agreed-item">
+        <b>Consistency reduces load</b>
+        <span>Whichever style is chosen, apply it consistently — that is why formatters and linters exist.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Guidance -->
+  <div class="guidance-strip">
+    <div class="fig-note">
+      <b>How to use this map:</b> treat the disagreements as <b>context-dependent trade-offs</b>, not winners.
+      Tiny functions aid navigation but can fragment a readable algorithm; comments rot but capture <em>why</em>;
+      <code style="font-family:var(--mono);font-size:11.5px;">var</code> cuts noise but can hide types.
+      A team picks a position deliberately and applies it consistently (Chapters 6, 37).
+      The contested zone does not have a correct answer; it has a correct <em>process</em>.
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    <b>School A:</b> Martin, R.C. (2008). <em>Clean Code: A Handbook of Agile Software Craftsmanship.</em> Prentice Hall.
+    Quotations: "functions should be small… smaller than that"; "a comment is an apology for not making the code self-explanatory."
+    <b>School B:</b> Ousterhout, J. (2021). <em>A Philosophy of Software Design</em>, 2nd ed.
+    "Deep modules" and pro-comments position traced to the book.
+    <b>Named critique layer:</b> qntm, "It's probably time to stop recommending Clean Code" (qntm.org/clean) — cited as a named critique, not as the field's verdict.
+    Full source trace in <b>fig03_2.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

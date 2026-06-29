@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   3 — A Map of the Territory (dossier key 05) · Part I — Foundations
+  Figure:    Figure 3.2 — Concern × tool routing matrix
+  Family:    Concept-map / table (grid: concern rows × moment columns, tool names in cells)
+  Method:    Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: Companion to Figure 3.1 — the reader's "which tool for which problem" lookup.
+             Directly embodies §"The routing table" (draft lines ~44–62).
+  One idea:  Any quality concern can be routed to a tool kind and a deep chapter
+             via two coordinates: the class of problem (rows) and the moment it is caught (columns).
+             Use it to design a stack; do not install the whole table.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 3.2 — Concern × tool routing matrix</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + shared components come from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 1020px;
+    }
+
+    /* ── Matrix table ── */
+    .matrix {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+      font-size: 11.5px;
+    }
+
+    /* Column headers */
+    .matrix thead th {
+      background: var(--tint-3);
+      border: 1.5px solid var(--ink);
+      padding: 7px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      vertical-align: middle;
+      color: var(--ink);
+      line-height: 1.25;
+    }
+    .matrix thead th.col-concern {
+      background: var(--tint-3);
+      text-align: left;
+      width: 160px;
+    }
+    .matrix thead th.col-analyzes {
+      width: 110px;
+    }
+    .matrix thead th.col-moment {
+      width: 130px;
+    }
+    .matrix thead th.col-tools {
+      width: 220px;
+      text-align: left;
+    }
+    .matrix thead th.col-ch {
+      width: 80px;
+    }
+
+    /* Body rows */
+    .matrix tbody tr:nth-child(odd) td {
+      background: var(--tint-0);
+    }
+    .matrix tbody tr:nth-child(even) td {
+      background: var(--tint-1);
+    }
+    .matrix tbody tr:hover td {
+      background: var(--tint-2);
+    }
+
+    .matrix tbody td {
+      border: 1px solid var(--line);
+      padding: 7px 10px;
+      vertical-align: top;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+
+    /* Concern label — left column */
+    .matrix td.cell-concern {
+      font-weight: 700;
+      font-size: 11.5px;
+      border-left: 3px solid var(--ink);
+      white-space: nowrap;
+    }
+
+    /* Moment badge */
+    .matrix td.cell-moment {
+      text-align: center;
+    }
+    .moment-pill {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--ink);
+      background: var(--tint-2);
+      color: var(--ink);
+      white-space: nowrap;
+      line-height: 1.4;
+    }
+    .moment-pill.is-compile {
+      background: var(--tint-3);
+      border-color: var(--ink);
+    }
+
+    /* Tool names */
+    .matrix td.cell-tools {
+      font-family: var(--mono);
+      font-size: 10.5px;
+    }
+    .tool-name {
+      display: inline-block;
+      background: var(--tint-2);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 5px;
+      margin: 1px 2px 1px 0;
+      font-size: 10px;
+      color: var(--ink);
+      font-family: var(--mono);
+      white-space: nowrap;
+    }
+    .tool-name.dead {
+      text-decoration: line-through;
+      color: var(--ink-soft);
+    }
+
+    /* Analyzes cell */
+    .matrix td.cell-analyzes {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+
+    /* Chapter reference cell */
+    .matrix td.cell-ch {
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      white-space: nowrap;
+    }
+    .matrix td.cell-ch b {
+      color: var(--ink);
+    }
+
+    /* ── Section divider rows ── */
+    .matrix tr.section-head td {
+      background: var(--tint-2);
+      border-top: 2px solid var(--ink);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      padding: 3px 10px;
+    }
+
+    /* ── Bottom notes ── */
+    .bottom-strip {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      align-items: flex-start;
+    }
+    .bottom-strip .fig-note {
+      flex: 1;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 3.2 — Concern × tool routing matrix</p>
+  <p class="fig-subtitle">Any quality concern → which tool kind → when it runs → deep chapter · (not the order — the menu)</p>
+
+  <table class="matrix">
+    <thead>
+      <tr>
+        <th class="col-concern">Concern</th>
+        <th class="col-analyzes">Analyzes</th>
+        <th class="col-moment">When it runs</th>
+        <th class="col-tools">Representative Java tools</th>
+        <th class="col-ch">Deep ch.</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- SECTION: Format & Style -->
+      <tr class="section-head">
+        <td colspan="5">Format &amp; style</td>
+      </tr>
+      <tr>
+        <td class="cell-concern">Formatting</td>
+        <td class="cell-analyzes">source text</td>
+        <td class="cell-moment">
+          <span class="moment-pill">author</span>
+          <span class="moment-pill">pre-commit</span>
+          <span class="moment-pill">CI</span>
+        </td>
+        <td class="cell-tools">
+          <span class="tool-name">Spotless</span>
+          <span class="tool-name">google-java-format</span>
+          <span class="tool-name">EditorConfig</span>
+        </td>
+        <td class="cell-ch"><b>6</b></td>
+      </tr>
+      <tr>
+        <td class="cell-concern">Style &amp; conventions</td>
+        <td class="cell-analyzes">source (AST)</td>
+        <td class="cell-moment">
+          <span class="moment-pill">build</span>
+          <span class="moment-pill">CI</span>
+        </td>
+        <td class="cell-tools">
+          <span class="tool-name">Checkstyle</span>
+          <span class="tool-name">PMD</span>
+        </td>
+        <td class="cell-ch"><b>16</b></td>
+      </tr>
+
+      <!-- SECTION: Bug finding -->
+      <tr class="section-head">
+        <td colspan="5">Bug patterns</td>
+      </tr>
+      <tr>
+        <td class="cell-concern">Bug patterns<br><span style="font-size:10px;font-weight:400;">source / AST</span></td>
+        <td class="cell-analyzes">source (AST)</td>
+        <td class="cell-moment">
+          <span class="moment-pill">build</span>
+          <span class="moment-pill">CI</span>
+        </td>
+        <td class="cell-tools">
+          <span class="tool-name">PMD</span>
+        </td>
+        <td class="cell-ch"><b>16</b></td>
+      </tr>
+      <tr>
+        <td class="cell-concern">Bug patterns<br><span style="font-size:10px;font-weight:400;">compile-integrated</span></td>
+        <td class="cell-analyzes">inside <code>javac</code></td>
+        <td class="cell-moment">
+          <span class="moment-pill is-compile">compile-time</span>
+        </td>
+        <td class="cell-tools">
+          <span class="tool-name">Error Prone</span>
+        </td>
+        <td class="cell-ch"><b>16</b></td>
+      </tr>
+      <tr>
+        <td class="cell-concern">Bug patterns<br><span style="font-size:10px;font-weight:400;">bytecode</span></td>
+        <td class="cell-analyzes">compiled bytecode</td>
+        <td class="cell-moment">
+          <span class="moment-pill">after compile</span>
+          <span class="moment-pill">CI</span>
+        </td>
+        <td class="cell-tools">
+          <span class="tool-name">SpotBugs</span>
+          <span class="tool-name dead">FindBugs</span>&#160;<span style="font-size:9.5px;color:var(--ink-soft);">&#8594; SpotBugs</span>
+        </td>
+        <td class="cell-ch"><b>16</b></td>
+      </tr>
+
+      <!-- SECTION: Types & null safety -->
+      <tr class="section-head">
+        <td colspan="5">Type &amp; null safety</td>
+      </tr>
+      <tr>
+        <td class="cell-concern">Null-safety &amp; types</td>
+        <td class="cell-analyzes">source + annotations</td>
+        <td class="cell-moment">
+          <span class="moment-pill is-compile">compile-time</span>
+        </td>
+        <td class="cell-tools">
+          <span class="tool-name">NullAway</span>
+          <span class="tool-name">JSpecify</span>
+          <span class="tool-name">Checker Framework</span>
+        </td>
+        <td class="cell-ch"><b>9</b></td>
+      </tr>
+
+      <!-- SECTION: Architecture -->
+      <tr class="section-head">
+        <td colspan="5">Architecture</td>
+      </tr>
+      <tr>
+        <td class="cell-concern">Architecture /<br>boundaries</td>
+        <td class="cell-analyzes">tests / bytecode graph</td>
+        <td class="cell-moment">
+          <span class="moment-pill">test</span>
+          <span class="moment-pill">CI</span>
+        </td>
+        <td class="cell-tools">
+          <span class="tool-name">ArchUnit</span>
+          <span class="tool-name">JPMS</span>
+        </td>
+        <td class="cell-ch"><b>25, 26</b></td>
+      </tr>
+
+      <!-- SECTION: Test adequacy -->
+      <tr class="section-head">
+        <td colspan="5">Test adequacy</td>
+      </tr>
+      <tr>
+        <td class="cell-concern">Test coverage</td>
+        <td class="cell-analyzes">test runtime</td>
+        <td class="cell-moment">
+          <span class="moment-pill">test</span>
+          <span class="moment-pill">CI gate</span>
+        </td>
+        <td class="cell-tools">
+          <span class="tool-name">JaCoCo</span>
+        </td>
+        <td class="cell-ch"><b>23</b></td>
+      </tr>
+      <tr>
+        <td class="cell-concern">Test adequacy<br><span style="font-size:10px;font-weight:400;">mutation</span></td>
+        <td class="cell-analyzes">test runtime</td>
+        <td class="cell-moment">
+          <span class="moment-pill">test</span>
+          <span class="moment-pill">CI gate</span>
+        </td>
+        <td class="cell-tools">
+          <span class="tool-name">PITest</span>
+        </td>
+        <td class="cell-ch"><b>23</b></td>
+      </tr>
+
+      <!-- SECTION: Security -->
+      <tr class="section-head">
+        <td colspan="5">Security</td>
+      </tr>
+      <tr>
+        <td class="cell-concern">Security — SAST</td>
+        <td class="cell-analyzes">source / bytecode / dataflow</td>
+        <td class="cell-moment">
+          <span class="moment-pill">CI</span>
+        </td>
+        <td class="cell-tools">
+          <span class="tool-name">FindSecBugs</span>
+          <span class="tool-name">Semgrep</span>
+          <span class="tool-name">CodeQL</span>
+        </td>
+        <td class="cell-ch"><b>30, 31</b></td>
+      </tr>
+      <tr>
+        <td class="cell-concern">Security — SCA<br><span style="font-size:10px;font-weight:400;">deps / supply-chain</span></td>
+        <td class="cell-analyzes">dependency tree</td>
+        <td class="cell-moment">
+          <span class="moment-pill">build</span>
+          <span class="moment-pill">CI</span>
+          <span class="moment-pill">scheduled</span>
+        </td>
+        <td class="cell-tools">
+          <span class="tool-name">OWASP Dep-Check</span>
+          <span class="tool-name">Grype</span>
+          <span class="tool-name">Renovate</span>
+        </td>
+        <td class="cell-ch"><b>27, 28</b></td>
+      </tr>
+
+      <!-- SECTION: Platform & trends -->
+      <tr class="section-head">
+        <td colspan="5">Platform · trends · modernization</td>
+      </tr>
+      <tr>
+        <td class="cell-concern">Platform /<br>trend / dashboard</td>
+        <td class="cell-analyzes">aggregates many</td>
+        <td class="cell-moment">
+          <span class="moment-pill">IDE</span>
+          <span class="moment-pill">CI</span>
+          <span class="moment-pill">server</span>
+        </td>
+        <td class="cell-tools">
+          <span class="tool-name">SonarQube</span>
+          <span class="tool-name">SonarLint</span>
+        </td>
+        <td class="cell-ch"><b>17, 38</b></td>
+      </tr>
+      <tr>
+        <td class="cell-concern">Refactoring /<br>modernization</td>
+        <td class="cell-analyzes">source (recipes)</td>
+        <td class="cell-moment">
+          <span class="moment-pill">on-demand</span>
+          <span class="moment-pill">CI</span>
+        </td>
+        <td class="cell-tools">
+          <span class="tool-name">OpenRewrite</span>
+          <span class="tool-name">Refaster</span>
+        </td>
+        <td class="cell-ch"><b>40</b></td>
+      </tr>
+      <tr>
+        <td class="cell-concern">Delivery outcomes</td>
+        <td class="cell-analyzes">CI + VCS data (DORA)</td>
+        <td class="cell-moment">
+          <span class="moment-pill">continuous</span>
+        </td>
+        <td class="cell-tools">
+          <span class="tool-name">CI + VCS</span>
+        </td>
+        <td class="cell-ch"><b>38</b></td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <!-- Bottom notes -->
+  <div class="bottom-strip">
+    <div class="fig-note">
+      <b>This is the menu, not the order.</b> Running every row maximizes noise; independent studies find
+      analyzer findings overlap surprisingly little, which is the empirical case for a few complementary
+      tools — not a wall of redundant ones.
+      Start with one formatter, one or two analyzers, coverage (Ch 17, 46).
+    </div>
+    <div class="fig-note">
+      <b>FindBugs &#8594; SpotBugs:</b> FindBugs is unmaintained; the current successor is SpotBugs
+      (<code style="font-family:var(--mono);font-size:10px;">spotbugs-maven-plugin</code>).
+      Categories (style, bug-finding, SAST, SCA) outlast brands;
+      pin versions and date the landscape (<code>SOURCE-PIN.md</code>, 2026-06-20).
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    <b>Figure 3.2</b> — Routing table · draft <code>05_java_quality_toolchain_v1.md</code> §"The routing table" (table, lines ~48–61).
+    All tool names, analyzes atoms, moments, and chapter references copied verbatim from the draft table.
+    No atom invented. Lifecycle map: <b>Figure 3.1</b>.
+    All tools trace to <code>00-strategy/SOURCE-PIN.md</code> (pin 2026-06-20).
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

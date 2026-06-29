@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   40 — Taming the Inherited Disaster (dossier key 96, leads; folds 94 · Part XI closer)
+  Figure:    Figure 40.1 — The remediation playbook: an ordered, incremental program
+  Family:    Flow-sequence (ordered staged pipeline, left-to-right, with two rejected anti-patterns)
+  Method:    Authored HTML -> rendered to PNG via render.mjs (never image-generated)
+  Placement: §"How it works" -> "The playbook: an ordered, incremental program" (the 7 ordered steps),
+             the CONCEPT callout "Prioritize by churn x pain", and the playbook's two central rejections.
+  One idea:  Tame an inherited disaster with an ordered, incremental program -- baseline the past,
+             gate new code, build a safety net, then pay down hotspots by churn x pain, strangle the
+             unsalvageable, and sustain the trend -- never a big-bang rewrite, never a baseline
+             without a paydown plan.
+  Sources:   Draft v1 (dossier key 96, leads; synthesizes keys 59/87/91/92/93/94/95); Fowler strangler
+             (2004) + Feathers WELC (2004), SOURCE-PIN §7. Every label -> fig96_1.sources.md.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 40.1 — The remediation playbook</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout only — palette + components from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 1180px;
+    }
+
+    /* ── The ordered stage pipeline ── */
+    .play-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin-top: 16px;
+    }
+
+    .stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--paper);
+      overflow: hidden;
+      min-width: 0;
+    }
+    /* the "start here" stage carries the single warm accent */
+    .stage.is-start { box-shadow: inset 0 4px 0 var(--accent-bar); }
+
+    .stage > .st-hd {
+      background: var(--tint-2);
+      border-bottom: 1.5px solid var(--ink);
+      padding: 8px 11px 9px;
+    }
+    .st-num {
+      display: inline-block;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid var(--ink);
+      background: var(--paper);
+      font-size: 11px; font-weight: 700;
+      line-height: 18px; text-align: center;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .stage.is-start .st-num { background: var(--accent-bar); border-color: var(--accent-bar); color: #fff; }
+    .st-name { font-size: 13px; font-weight: 700; color: var(--ink); vertical-align: middle; }
+    .st-tag {
+      display: block;
+      font-size: 10.5px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .3px;
+      color: var(--ink-soft);
+      margin-top: 4px;
+    }
+
+    .stage > .st-bd {
+      padding: 9px 11px 11px;
+      font-size: 11.5px;
+      color: var(--ink);
+      flex: 1;
+      line-height: 1.42;
+    }
+    .st-bd p { margin: 0 0 6px; }
+    .st-bd p:last-child { margin-bottom: 0; }
+    .st-bd .ref {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--ink-soft);
+    }
+    .st-bd b { color: var(--ink); }
+
+    /* connector chevrons between stages */
+    .conn {
+      flex: 0 0 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    /* phase band over the stages */
+    .phase-band {
+      display: flex;
+      margin-top: 14px;
+      gap: 0;
+    }
+    .phase-seg {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--tint-1);
+      font-size: 11px;
+      color: var(--ink-soft);
+    }
+    .phase-seg b { color: var(--ink); font-weight: 700; }
+    .phase-spacer { flex: 1; }
+
+    /* sustain "wrap" note under the whole flow */
+    .sustain-wrap {
+      margin-top: 4px;
+      border: 1.5px dashed var(--ink);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 9px 13px;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .sustain-wrap .sw-back { font-size: 17px; font-weight: 700; color: var(--ink); }
+    .sustain-wrap .sw-text { font-size: 11.5px; color: var(--ink); }
+    .sustain-wrap .sw-text b { color: var(--ink); }
+
+    /* central CONCEPT strip — churn x pain */
+    .concept-strip {
+      margin-top: 16px;
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+    }
+    .concept-strip .cs-head {
+      font-size: 12px; font-weight: 700; color: var(--ink);
+      text-transform: uppercase; letter-spacing: .3px;
+      margin: 0 0 3px;
+    }
+    .concept-strip p { margin: 0; font-size: 11.5px; color: var(--ink); line-height: 1.45; }
+    .concept-strip b { color: var(--ink); }
+
+    /* the two rejections row */
+    .reject-row {
+      display: flex;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .reject {
+      flex: 1;
+      border: 2px solid var(--stop);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 9px 13px;
+    }
+    .reject h4 {
+      margin: 0 0 3px;
+      font-size: 12.5px; font-weight: 700;
+      color: var(--stop);
+      display: flex; align-items: center; gap: 7px;
+    }
+    .reject h4 .x {
+      font-size: 14px; line-height: 1;
+      border: 1.6px solid var(--stop);
+      border-radius: 50%;
+      width: 18px; height: 18px;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .reject p { margin: 0; font-size: 11.5px; color: var(--ink); line-height: 1.45; }
+    .reject p b { color: var(--ink); }
+    .reject .attrib { font-style: italic; color: var(--ink-soft); font-size: 11px; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 40.1 — The remediation playbook: an ordered, incremental program</p>
+  <p class="fig-subtitle">Inherited low-quality codebase &middot; the order is the strategy &middot; the codebase is always improving and never blocked</p>
+
+  <!-- ── The seven ordered stages ── -->
+  <div class="play-row">
+
+    <!-- 1. Assess & baseline -->
+    <div class="stage is-start">
+      <div class="st-hd">
+        <span class="st-num">1</span><span class="st-name">Assess &amp; baseline</span>
+        <span class="st-tag">map the terrain</span>
+      </div>
+      <div class="st-bd">
+        <p>Stand up the toolchain in <b>report-only</b> mode. <b>Baseline</b> existing findings so nothing blocks yet.</p>
+        <p>Measure debt, coverage, complexity, and <b>hotspots</b>.</p>
+        <p class="ref">Ch 3 &middot; Ch 38 &middot; Ch 2 / hotspots</p>
+      </div>
+    </div>
+
+    <div class="conn">&rarr;</div>
+
+    <!-- 2. Stop the bleeding -->
+    <div class="stage">
+      <div class="st-hd">
+        <span class="st-num">2</span><span class="st-name">Stop the bleeding</span>
+        <span class="st-tag">gate new code</span>
+      </div>
+      <div class="st-bd">
+        <p>Turn on <b>new-code gates</b> &mdash; clean-as-you-code. No <b>new</b> debt, even before old debt is paid.</p>
+        <p>This one step <b>bends the curve</b>.</p>
+        <p class="ref">Ch 33&ndash;34</p>
+      </div>
+    </div>
+
+    <div class="conn">&rarr;</div>
+
+    <!-- 3. Safety net -->
+    <div class="stage">
+      <div class="st-hd">
+        <span class="st-num">3</span><span class="st-name">Establish a safety net</span>
+        <span class="st-tag">before any change</span>
+      </div>
+      <div class="st-bd">
+        <p><b>Characterization tests</b> on the areas to be changed; approval testing for opaque output; get the <b>seams</b> in.</p>
+        <p>No safe change without the net.</p>
+        <p class="ref">Ch 39 &middot; Ch 24</p>
+      </div>
+    </div>
+
+    <div class="conn">&rarr;</div>
+
+    <!-- 4. Prioritize by churn x pain -->
+    <div class="stage">
+      <div class="st-hd">
+        <span class="st-num">4</span><span class="st-name">Prioritize by churn &times; pain</span>
+        <span class="st-tag">hotspots first</span>
+      </div>
+      <div class="st-bd">
+        <p>Remediate <b>hotspots</b> &mdash; high-change <b>&times;</b> high-complexity &mdash; first.</p>
+        <p>Explicitly decline to fix everything.</p>
+        <p class="ref">hotspots / debt &middot; Ch 1</p>
+      </div>
+    </div>
+
+    <div class="conn">&rarr;</div>
+
+    <!-- 5. Pay down incrementally -->
+    <div class="stage">
+      <div class="st-hd">
+        <span class="st-num">5</span><span class="st-name">Pay down incrementally</span>
+        <span class="st-tag">the engine drives here</span>
+      </div>
+      <div class="st-bd">
+        <p>Refactor in small green steps; <b>automate the bulk</b> (Figure 40.2); modernize the Java version where it unblocks; <b>ratchet</b> thresholds tighter.</p>
+        <p class="ref">Ch 39 &middot; OpenRewrite &middot; Ch 38</p>
+      </div>
+    </div>
+
+    <div class="conn">&rarr;</div>
+
+    <!-- 6. Replace the unsalvageable -->
+    <div class="stage">
+      <div class="st-hd">
+        <span class="st-num">6</span><span class="st-name">Replace the unsalvageable</span>
+        <span class="st-tag">only what can't be saved</span>
+      </div>
+      <div class="st-bd">
+        <p>For subsystems genuinely beyond refactoring, use the <b>strangler fig</b>.</p>
+        <p class="ref">Ch 39 (Fowler, 2004)</p>
+      </div>
+    </div>
+
+    <div class="conn">&rarr;</div>
+
+    <!-- 7. Sustain -->
+    <div class="stage">
+      <div class="st-hd">
+        <span class="st-num">7</span><span class="st-name">Sustain</span>
+        <span class="st-tag">make it stick</span>
+      </div>
+      <div class="st-bd">
+        <p>Show the <b>trend</b> on dashboards. Build the <b>culture</b> and <b>ownership</b> that keep quality real.</p>
+        <p>A program that loses attention stalls half-done.</p>
+        <p class="ref">Ch 38 &middot; Ch 1</p>
+      </div>
+    </div>
+
+  </div><!-- .play-row -->
+
+  <!-- phase band -->
+  <div class="phase-band">
+    <span class="phase-seg"><b>Steps 1&ndash;3</b> &mdash; stop it getting worse, make change safe</span>
+    <span class="phase-spacer"></span>
+    <span class="phase-seg"><b>Steps 4&ndash;6</b> &mdash; pay down where it hurts</span>
+    <span class="phase-spacer"></span>
+    <span class="phase-seg"><b>Step 7</b> &mdash; sustain over months</span>
+  </div>
+
+  <!-- central CONCEPT — churn x pain -->
+  <div class="concept-strip">
+    <p class="cs-head">Concept &mdash; prioritize by churn &times; pain</p>
+    <p>Debt in <b>frozen</b> code accrues no interest: a horrifically complex class no one has touched in three years
+       costs nothing to leave. The same complexity in a file edited weekly costs every developer every week.
+       Remediate where change <b>actually happens</b> &mdash; the hotspots &mdash; not the worst code by absolute metric.
+       This is what makes remediation finite and defensible.</p>
+  </div>
+
+  <!-- the two rejections -->
+  <div class="reject-row">
+    <div class="reject">
+      <h4><span class="x">&#10007;</span> Never a big-bang rewrite</h4>
+      <p>It overruns, reintroduces a fresh generation of debt, and the old system keeps moving while the rewrite chases it.
+         The playbook rejects it as the default. <span class="attrib">Attributed to Fowler's strangler-fig motivation &mdash; not a universal law.</span></p>
+    </div>
+    <div class="reject">
+      <h4><span class="x">&#10007;</span> Never a baseline without a paydown plan</h4>
+      <p>A baseline buys time to remediate; it is <b>not</b> the remediation. A debt register nobody works is theater &mdash;
+         <b>formalized ignoring</b>. Pair every baseline (step 1) with the hotspot paydown (step 4) and a ratchet.</p>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    The seven ordered steps and their two central rejections trace to the chapter draft (dossier key 96, leads;
+    synthesizing keys 59 / 87 / 91 / 92 / 93 / 94 / 95), each technique verified in its own chapter.
+    &ldquo;Big-bang rewrites fail&rdquo; is <b>attributed</b> to Fowler's strangler-fig motivation (SOURCE-PIN &sect;7),
+    not asserted as universal law. The discipline is the part's invariant scaled up one level: <b>incremental,
+    behavior-preserving, test-backed, value-aligned, never big-bang.</b> Every label traces to <b>fig96_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

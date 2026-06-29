@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 4 (dossier key 06) — Whose Job Is Quality? Culture, Ownership, Shift-Left
+  Figure:  Figure 4.2 — Shift-left: cost-to-fix vs. lifecycle stage
+  Family:  Flow / timeline (left-to-right lifecycle stages; cost arrow rises rightward)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Shift-left: build quality in, not inspect it in" — after Smith/Deming intro
+  One idea: The cost to fix a defect rises with how far right it is caught; shifting quality
+             activities left — into IDE, pre-commit, compile, and fast CI layers — keeps
+             the fix cost low and the feedback loop short.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 4.2 — Shift-left: cost-to-fix vs. lifecycle stage</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + shared components from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 22px;
+      max-width: 960px;
+    }
+
+    /* ── Timeline row of stage boxes ── */
+    .timeline-row {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+      margin-top: 20px;
+      position: relative;
+    }
+
+    /* Connecting line that spans all stages */
+    .stage-connector {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--line);
+      z-index: 0;
+    }
+
+    /* Each stage box */
+    .stage {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      margin: 0 5px;
+      background: var(--paper);
+    }
+    .stage:first-child { margin-left: 0; }
+    .stage:last-child  { margin-right: 0; }
+
+    /* Header strip — fill gets heavier as stages move right (grayscale ramp = cost rising) */
+    .stage-hd {
+      border-bottom: 1.5px solid var(--ink);
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .stage.cost-1 .stage-hd { background: var(--tint-1); }
+    .stage.cost-2 .stage-hd { background: var(--tint-2); }
+    .stage.cost-3 .stage-hd { background: var(--tint-3); }
+    .stage.cost-4 .stage-hd { background: var(--accent); color: var(--paper); }
+    .stage.cost-5 .stage-hd { background: var(--ink);    color: var(--paper); }
+
+    .stage-bd {
+      padding: 9px 10px;
+      font-size: 11.5px;
+    }
+
+    /* Tool layer label inside each stage */
+    .tool-layer {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      background: var(--tint-1);
+      border: 1px solid var(--tint-3);
+      border-radius: 4px;
+      padding: 2px 6px;
+      margin-top: 5px;
+    }
+
+    /* Cost indicator */
+    .cost-indicator {
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-soft);
+    }
+    .stage.cost-4 .cost-indicator,
+    .stage.cost-5 .cost-indicator { color: var(--ink); }
+
+    /* ── Cost arrow below the timeline ── */
+    .cost-arrow-row {
+      display: flex;
+      align-items: center;
+      margin-top: 14px;
+      padding: 0 5px;
+    }
+    .cost-label-left {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      white-space: nowrap;
+      margin-right: 8px;
+    }
+    .cost-bar {
+      flex: 1;
+      height: 10px;
+      background: linear-gradient(to right, var(--tint-1), var(--tint-3), var(--ink));
+      border-radius: 999px;
+      position: relative;
+    }
+    /* Grayscale fallback: the gradient uses lightness only (white → light grey → near-black) */
+    .cost-arrow-tip {
+      position: absolute;
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .cost-label-right {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+      margin-left: 14px;
+    }
+
+    /* Direction label row */
+    .direction-row {
+      display: flex;
+      align-items: center;
+      margin-top: 8px;
+      padding: 0 5px;
+    }
+    .shift-left-label {
+      background: var(--accent-bar);
+      color: var(--paper);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .shift-right-label {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    .direction-arrow {
+      flex: 1;
+      height: 2px;
+      background: var(--line);
+      margin: 0 10px;
+      position: relative;
+    }
+    .direction-arrow::after {
+      content: "←";
+      position: absolute;
+      left: -12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: var(--accent-bar);
+      line-height: 1;
+    }
+
+    /* Lineage note */
+    .lineage-note {
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 4.2 — Shift-left: defect cost rises with lifecycle stage</p>
+  <p class="fig-subtitle">
+    Catching a defect earlier is cheaper; the Ch 3 tool layers place quality activities as far left as possible.
+  </p>
+
+  <!-- Stage boxes -->
+  <div class="timeline-row">
+
+    <!-- Stage 1: IDE -->
+    <div class="stage cost-1">
+      <div class="stage-hd">IDE / local</div>
+      <div class="stage-bd">
+        Inspection at type-time; compiler errors; local formatter
+        <div class="tool-layer">IDE lint, Checkstyle</div>
+        <div class="cost-indicator">Fix cost: lowest</div>
+      </div>
+    </div>
+
+    <!-- Stage 2: Pre-commit -->
+    <div class="stage cost-2">
+      <div class="stage-hd">Pre-commit</div>
+      <div class="stage-bd">
+        Hook runs before code leaves the machine
+        <div class="tool-layer">pre-commit hook, spotless</div>
+        <div class="cost-indicator">Fix cost: low</div>
+      </div>
+    </div>
+
+    <!-- Stage 3: Compile-time -->
+    <div class="stage cost-2">
+      <div class="stage-hd">Compile-time</div>
+      <div class="stage-bd">
+        Annotation processors; null-safety; type errors
+        <div class="tool-layer">Error Prone, NullAway</div>
+        <div class="cost-indicator">Fix cost: low–medium</div>
+      </div>
+    </div>
+
+    <!-- Stage 4: Fast CI -->
+    <div class="stage cost-3">
+      <div class="stage-hd">Fast CI</div>
+      <div class="stage-bd">
+        Unit tests, static analysis, coverage gate
+        <div class="tool-layer">PMD, SpotBugs, JaCoCo</div>
+        <div class="cost-indicator">Fix cost: medium</div>
+      </div>
+    </div>
+
+    <!-- Stage 5: Integration / review -->
+    <div class="stage cost-4">
+      <div class="stage-hd">Integration / review</div>
+      <div class="stage-bd">
+        Integration tests, PR review, quality gate
+        <div class="tool-layer">SonarQube gate, ArchUnit</div>
+        <div class="cost-indicator">Fix cost: high</div>
+      </div>
+    </div>
+
+    <!-- Stage 6: Production -->
+    <div class="stage cost-5">
+      <div class="stage-hd">Production</div>
+      <div class="stage-bd">
+        Defect reaches users; incident; rollback or hotfix
+        <div class="tool-layer">incident / hotfix</div>
+        <div class="cost-indicator">Fix cost: highest</div>
+      </div>
+    </div>
+
+  </div><!-- .timeline-row -->
+
+  <!-- Cost arrow -->
+  <div class="cost-arrow-row">
+    <span class="cost-label-left">Low cost</span>
+    <div class="cost-bar"><span class="cost-arrow-tip">&#9654;</span></div>
+    <span class="cost-label-right">High cost</span>
+  </div>
+
+  <!-- Shift-left direction label -->
+  <div class="direction-row">
+    <span class="shift-left-label">&#8592; Shift left</span>
+    <div class="direction-arrow"></div>
+    <span class="shift-right-label">pre-shift-left: defects found here</span>
+  </div>
+
+  <!-- Lineage note -->
+  <div class="lineage-note">
+    <div class="fig-note">
+      <b>Lineage:</b> W. Edwards Deming — build quality into the process rather than inspecting it at
+      the end (manufacturing quality). Larry Smith — "shift-left testing": move testing and quality
+      activities toward inception, shorten the feedback loop (Dr. Dobb's, 2001).
+      In this book's terms, shift-left is the lifecycle map from Chapter 3: each layer catches
+      problems earlier and cheaper than the next. Culture decides whether developers welcome
+      that feedback or route around it.
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Shift-left lineage: Deming (manufacturing quality, build-in not inspect-in);
+    Larry Smith, "Shift-Left Testing," <em>Dr. Dobb's</em> (2001).
+    Ch 3 tool layers (IDE → pre-commit → compile-time → CI → integration → production):
+    06 dossier §2.2 + draft v1 §"Shift-left".
+    Full source trace in <b>fig06_2.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

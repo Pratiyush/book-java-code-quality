@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 32 — Making the Security Gate Stick (key 73, Part VIII closer)
+  Figure:  Figure 32.1 — The security gate: five testing types ordered fast-to-slow
+  Family:  Flow / pipeline (left-to-right pipeline stages, each stage naming its
+           testing types, policy, and block-vs-warn outcome)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: § "Ordering the gate: fast-to-slow, shift-left" (draft v1, lines 54–61)
+  One idea: A security gate orders its five testing types fast-to-slow across the
+            pipeline — static checks (secrets, SAST, SCA) block high-severity new
+            findings at the PR; dynamic checks (DAST, IAST) gate the release against
+            staging — so cheap feedback arrives in minutes while slow feedback never
+            falls on every commit.
+  NEUTRALITY: Presents all five testing types on equal footing; each stage names its
+              policy and its limit; no tool crowned; balanced block-vs-warn treatment.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 32.1 — The security gate: five testing types ordered fast-to-slow</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout ─────────────────────────────────────────────── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure { padding: 28px 30px 22px; width: 960px; }
+
+    /* ── Pipeline track ─────────────────────────────────────────────────── */
+    .pipeline {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      margin-top: 18px;
+    }
+
+    /* Arrow connector between stages */
+    .pipe-arrow {
+      display: flex;
+      align-items: center;
+      align-self: center;
+      color: var(--ink);
+      font-size: 20px;
+      padding: 0 4px;
+      flex-shrink: 0;
+      margin-top: -18px; /* align with stage body mid-point */
+    }
+
+    /* ── Stage card ──────────────────────────────────────────────────────── */
+    .stage {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--paper);
+      min-width: 0;
+    }
+
+    .stage-hd {
+      background: var(--tint-2);
+      border-bottom: 1.5px solid var(--ink);
+      padding: 7px 11px;
+    }
+    .stage-hd .stage-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+    }
+    .stage-hd .stage-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-top: 1px;
+    }
+
+    /* Accent-bar variant for the PR stage (the shift-left moment) */
+    .stage.is-accent .stage-hd {
+      border-left: 4px solid var(--accent-bar);
+      background: #fff8ee;
+    }
+
+    .stage-bd {
+      padding: 10px 11px;
+    }
+
+    /* Check row inside a stage */
+    .check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      margin-bottom: 7px;
+    }
+    .check-row:last-child { margin-bottom: 0; }
+
+    .check-type {
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--mono);
+      white-space: nowrap;
+      color: var(--ink);
+      min-width: 58px;
+    }
+
+    .check-desc {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+
+    /* Divider inside stage body */
+    .stage-divider {
+      height: 1px;
+      background: var(--tint-2);
+      margin: 8px 0;
+      border: 0;
+    }
+
+    /* Policy strip at the bottom of each stage */
+    .stage-policy {
+      margin-top: 9px;
+      padding: 6px 9px;
+      border-radius: 6px;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+    .stage-policy.policy-block {
+      background: var(--tint-2);
+      border: 1px solid var(--ink);
+    }
+    .stage-policy.policy-warn {
+      background: var(--tint-1);
+      border: 1px dashed var(--ink);
+    }
+    .policy-label {
+      font-weight: 700;
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      margin-bottom: 2px;
+    }
+    .policy-label.is-block { color: var(--stop); }
+    .policy-label.is-warn  { color: var(--warn); }
+
+    /* ── Legend ─────────────────────────────────────────────────────────── */
+    .legend {
+      display: flex;
+      gap: 20px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+    }
+    .legend-swatch {
+      width: 14px; height: 14px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .swatch-block {
+      background: var(--tint-2);
+      border: 1.5px solid var(--ink);
+    }
+    .swatch-warn {
+      background: var(--tint-1);
+      border: 1.5px dashed var(--line);
+    }
+    .swatch-accent {
+      background: #fff8ee;
+      border-left: 4px solid var(--accent-bar);
+      border-top: 1.5px solid var(--ink);
+      border-right: 1.5px solid var(--ink);
+      border-bottom: 1.5px solid var(--ink);
+    }
+
+    /* ── Key limit note ─────────────────────────────────────────────────── */
+    .limit-note {
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 32.1 — The security gate: five testing types ordered fast-to-slow</p>
+  <p class="fig-subtitle">Static checks (secrets, SAST, SCA) run at pre-commit and PR; dynamic checks (DAST, IAST) gate the release against staging. Block only high-severity new findings; warn and triage the rest.</p>
+
+  <div class="pipeline">
+
+    <!-- Stage 1: Pre-commit -->
+    <div class="stage">
+      <div class="stage-hd">
+        <div class="stage-label">Stage 1</div>
+        <div class="stage-name">Pre-commit</div>
+      </div>
+      <div class="stage-bd">
+        <div class="check-row">
+          <span class="check-type">Secrets</span>
+          <span class="check-desc">Scans code, diffs, and history for leaked credentials — the only stage that can <em>prevent</em> a leak</span>
+        </div>
+        <div class="stage-policy policy-block">
+          <div class="policy-label is-block">BLOCK</div>
+          Any detected secret — prevents the credential ever reaching the repo
+        </div>
+      </div>
+    </div>
+
+    <div class="pipe-arrow">→</div>
+
+    <!-- Stage 2: Pull Request (accent — the shift-left moment) -->
+    <div class="stage is-accent">
+      <div class="stage-hd">
+        <div class="stage-label">Stage 2 · shift-left</div>
+        <div class="stage-name">Pull Request / Build</div>
+      </div>
+      <div class="stage-bd">
+        <div class="check-row">
+          <span class="check-type">Secrets</span>
+          <span class="check-desc">CI re-scan of pushed diff and repo history (push-protection layer)</span>
+        </div>
+        <hr class="stage-divider">
+        <div class="check-row">
+          <span class="check-type">SAST</span>
+          <span class="check-desc">Static analysis of application code — injection, crypto misuse, unsafe deserialization (e.g. Semgrep 1.163.0, SpotBugs 4.10.2 + FindSecBugs, CodeQL)</span>
+        </div>
+        <hr class="stage-divider">
+        <div class="check-row">
+          <span class="check-type">SCA</span>
+          <span class="check-desc">Dependency composition scan — known CVEs in libraries + license issues (e.g. OWASP Dependency-Check 12.2.2, Grype 0.108–0.110, Trivy 0.71.0)</span>
+        </div>
+        <div class="stage-policy policy-block">
+          <div class="policy-label is-block">BLOCK on high-severity NEW findings</div>
+          Clean-as-you-code scope: PR is not blocked by pre-existing low-severity debt it did not introduce. Route finding to security reviewer for exploitability judgment.
+        </div>
+      </div>
+    </div>
+
+    <div class="pipe-arrow">→</div>
+
+    <!-- Stage 3: Continuous monitoring (SCA) -->
+    <div class="stage">
+      <div class="stage-hd">
+        <div class="stage-label">Stage 3 · async</div>
+        <div class="stage-name">Continuous monitoring</div>
+      </div>
+      <div class="stage-bd">
+        <div class="check-row">
+          <span class="check-type">SCA</span>
+          <span class="check-desc">Scheduled re-scan for newly disclosed CVEs in unchanged dependencies (Renovate / Dependabot + SBOM CycloneDX 1.6)</span>
+        </div>
+        <div class="stage-policy policy-warn">
+          <div class="policy-label is-warn">WARN → triage</div>
+          New CVE disclosures routed to backlog or security reviewer; does not block the PR pipeline
+        </div>
+      </div>
+    </div>
+
+    <div class="pipe-arrow">→</div>
+
+    <!-- Stage 4: Staging / release gate -->
+    <div class="stage">
+      <div class="stage-hd">
+        <div class="stage-label">Stage 4 · release gate</div>
+        <div class="stage-name">Staging (deployed app)</div>
+      </div>
+      <div class="stage-bd">
+        <div class="check-row">
+          <span class="check-type">DAST</span>
+          <span class="check-desc">Black-box probe of the running app — runtime misconfiguration and environment-specific flaws SAST cannot reach (e.g. OWASP ZAP)</span>
+        </div>
+        <hr class="stage-divider">
+        <div class="check-row">
+          <span class="check-type">IAST</span>
+          <span class="check-desc">Instrumented app under test — runtime context reduces false positives vs pure static; a SAST/DAST hybrid. Needs instrumentation agent.</span>
+        </div>
+        <div class="stage-policy policy-block">
+          <div class="policy-label is-block">BLOCK release on high-severity findings</div>
+          Slow; needs deployed app + test scenarios. Small internal apps may rationally omit — cost and setup are real.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .pipeline -->
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-swatch swatch-accent"></div>
+      Shift-left stage — fast, runs every PR
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch swatch-block"></div>
+      BLOCK — fails the build / merge / release
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch swatch-warn"></div>
+      WARN → triage — routed; does not block
+    </div>
+  </div>
+
+  <!-- Limit note -->
+  <div class="fig-note limit-note">
+    <b>Green gate &ne; secure.</b>
+    A clean scan means "no detected known issue" — tools miss logic and authorization flaws (need threat modeling + design review), CVE databases miss zero-days, and a scan is not a penetration test.
+    Gate fatigue is the primary failure mode: blocking on every finding produces a permanently-red build that teams disable. Block narrowly (high-severity, new code); warn and triage everything else.
+  </div>
+
+  <p class="fig-caption">
+    Security gate ordering: key 73 (Ch 32) draft v1 §§ "Five testing types" and "Ordering the gate: fast-to-slow."
+    Tool versions from <b>00-strategy/SOURCE-PIN.md</b> (pinned 2026-06-20).
+    Clean-as-you-code block policy: Ch 19 (key 39). SBOM/SCA: Ch 28 (key 65). SAST/secrets: Ch 31 (keys 70, 71).
+    Every label traced in <b>fig73_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

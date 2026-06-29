@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 29 — A Build You Can Stand Behind (dossier key 67, folds 68; Ch 29 in FINAL_INDEX; CLOSES Part VII)
+  Figure:  Figure 29.1 — Reproducibility chain: non-determinism sources → the fix → verify by rebuild
+  Family:  Flow-sequence / cause-fix-verify table
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Reproducible builds: the artifact as a pure function of source" — after the non-determinism
+             table, before the hermeticity/limits section.
+  One idea: A Java build hides five sources of non-determinism; each has a specific fix, and the
+            chain closes only when you verify by rebuilding — so provenance can attest a fixed thing.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 29.1 — Reproducibility chain</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 900px;
+    }
+
+    /* ── Three-column layout: sources | fixes | verify ── */
+    .chain {
+      display: grid;
+      grid-template-columns: 1fr 48px 1fr 48px 1fr;
+      gap: 0;
+      margin-top: 14px;
+      align-items: stretch;
+    }
+
+    /* Column headers */
+    .col-hd {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      padding: 0 0 8px 0;
+      text-align: center;
+    }
+
+    /* Connector column header (blank) */
+    .col-hd-spacer { /* empty */ }
+
+    /* Source-of-non-determinism card */
+    .src-col {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nd-row {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--tint-1);
+      padding: 9px 12px;
+      font-size: 12.5px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .nd-row .nd-label {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--ink);
+    }
+    .nd-row .nd-desc {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+    }
+
+    /* Arrow column */
+    .arrow-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
+      gap: 6px;
+    }
+    .arrow-col .arr {
+      font-size: 20px;
+      color: var(--ink);
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    /* Fix card */
+    .fix-col {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .fix-row {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 9px 12px;
+      font-size: 12.5px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex: 1;
+    }
+    .fix-row .fix-key {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .fix-row .fix-desc {
+      font-size: 11px;
+      color: var(--ink-soft);
+    }
+
+    /* Verify panel */
+    .verify-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .verify-box {
+      border: 2px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--tint-2);
+      padding: 14px 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .verify-box .v-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .verify-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--ink);
+    }
+    .verify-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--ink);
+      color: var(--paper);
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .verify-step .vk {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .hermetic-note {
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      border-radius: 0 8px 8px 0;
+      padding: 9px 12px;
+      font-size: 11.5px;
+      color: var(--ink);
+    }
+    .hermetic-note b { color: var(--ink); }
+    .hermetic-note .hm-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--ink-soft);
+      margin-bottom: 3px;
+    }
+
+    /* Limits strip */
+    .limits-strip {
+      margin-top: 14px;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 10px 14px;
+    }
+    .limits-strip .ls-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .limits-grid {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .limit-item {
+      font-size: 11px;
+      color: var(--ink-soft);
+      flex: 1;
+      min-width: 160px;
+    }
+    .limit-item b { color: var(--ink); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 29.1 &mdash; The reproducibility chain</p>
+  <p class="fig-subtitle">Five sources of Java build non-determinism, their fixes, and the verify step that closes the chain.</p>
+
+  <div class="chain">
+
+    <!-- Column headers row -->
+    <div class="col-hd">Source of non-determinism</div>
+    <div></div>
+    <div class="col-hd">The fix</div>
+    <div></div>
+    <div class="col-hd">Verify by rebuild</div>
+
+    <!-- Sources column -->
+    <div class="src-col">
+
+      <div class="nd-row">
+        <span class="nd-label">JAR entry &amp; MANIFEST timestamps</span>
+        <span class="nd-desc">Current build time embedded in every archive entry; differs each run</span>
+      </div>
+
+      <div class="nd-row">
+        <span class="nd-label">Archive file ordering</span>
+        <span class="nd-desc">Non-deterministic filesystem enumeration order inside the ZIP/JAR</span>
+      </div>
+
+      <div class="nd-row">
+        <span class="nd-label">Unpinned dep / plugin versions</span>
+        <span class="nd-desc">Version ranges or SNAPSHOT deps resolve to different releases on different machines (Ch 27)</span>
+      </div>
+
+      <div class="nd-row">
+        <span class="nd-label">Locale / timezone / encoding</span>
+        <span class="nd-desc">LANG, TZ, file.encoding differ between CI and developer machine</span>
+      </div>
+
+      <div class="nd-row">
+        <span class="nd-label">Embedded build-time data</span>
+        <span class="nd-desc">Generated code or resources that include build dates, absolute paths, or random values</span>
+      </div>
+
+    </div><!-- src-col -->
+
+    <!-- Arrow column -->
+    <div class="arrow-col">
+      <span class="arr">&rarr;</span>
+      <span class="arr">&rarr;</span>
+      <span class="arr">&rarr;</span>
+      <span class="arr">&rarr;</span>
+      <span class="arr">&rarr;</span>
+    </div>
+
+    <!-- Fixes column -->
+    <div class="fix-col">
+
+      <div class="fix-row">
+        <span class="fix-key">Maven: &lt;project.build.outputTimestamp&gt;</span>
+        <span class="fix-desc">Set to a fixed ISO-8601 date; reproducible-build-maven-plugin normalises JAR entry metadata</span>
+      </div>
+
+      <div class="fix-row">
+        <span class="fix-key">Gradle: reproducibleFileOrder = true</span>
+        <span class="fix-desc">Also <span style="font-family:var(--mono);font-size:10.5px;">preserveFileTimestamps = false</span> in the archive task block</span>
+      </div>
+
+      <div class="fix-row">
+        <span class="fix-key">Pin exact versions — deps AND plugins</span>
+        <span class="fix-desc">No ranges (<span style="font-family:var(--mono);font-size:10.5px;">[1.0,)</span>), no SNAPSHOT; lock the build tool via the wrapper (Ch 27)</span>
+      </div>
+
+      <div class="fix-row">
+        <span class="fix-key">Fix LANG / TZ / file.encoding in CI env</span>
+        <span class="fix-desc">Declare them explicitly in the CI job environment; match local toolchain setup</span>
+      </div>
+
+      <div class="fix-row">
+        <span class="fix-key">Avoid embedding build-time / env data</span>
+        <span class="fix-desc">Do not write current date, hostname, or random seed into generated artefacts or resources</span>
+      </div>
+
+    </div><!-- fix-col -->
+
+    <!-- Arrow column 2 -->
+    <div class="arrow-col">
+      <span class="arr">&rarr;</span>
+    </div>
+
+    <!-- Verify column -->
+    <div class="verify-col">
+
+      <div class="verify-box">
+        <div class="v-title">Verify by rebuilding</div>
+
+        <div class="verify-step">
+          <div class="verify-num">1</div>
+          <div>Build the artifact <em>twice</em> — different machine, different time, same source tag</div>
+        </div>
+
+        <div class="verify-step">
+          <div class="verify-num">2</div>
+          <div><span class="vk">diff</span> the two outputs byte-for-byte;<br>
+               Maven: <span class="vk">artifact:compare</span> goal automates the comparison</div>
+        </div>
+
+        <div class="verify-step">
+          <div class="verify-num">3</div>
+          <div>Publish checksums + signatures so any third party can repeat the rebuild (link to Ch 28 provenance)</div>
+        </div>
+
+        <div class="verify-step">
+          <div class="verify-num">4</div>
+          <div>Run rebuild-and-diff as a <strong>CI step</strong> — treat a byte difference as a build failure; reproducibility decays silently otherwise</div>
+        </div>
+      </div>
+
+      <div class="hermetic-note">
+        <div class="hm-label">Strong form &mdash; Hermeticity</div>
+        Build depends <em>only</em> on declared, pinned inputs: <strong>no network fetch</strong> of moving deps at build time. Required for higher SLSA levels (Ch 28).
+      </div>
+
+    </div><!-- verify-col -->
+
+  </div><!-- .chain -->
+
+  <!-- Limits strip -->
+  <div class="limits-strip">
+    <div class="ls-title">Honest limits</div>
+    <div class="limits-grid">
+      <div class="limit-item"><b>Last-mile effort.</b> Chasing truly bit-identical output can require hunting obscure non-determinism; diminishing returns for a purely internal app.</div>
+      <div class="limit-item"><b>Toolchain variance.</b> Different JDK builds/vendors can still differ; full reproducibility may require pinning the JDK itself.</div>
+      <div class="limit-item"><b>Integrity, not correctness.</b> A reproducible build of buggy code is reliably, verifiably buggy. Proves determinism and anti-tampering, not quality.</div>
+      <div class="limit-item"><b>Decays silently.</b> One unpinned plugin or new timestamp-embedding tool breaks reproducibility without any test failing &mdash; the CI verify step is mandatory.</div>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Sources: Maven <span style="font-family:var(--mono);font-size:10.5px;">&lt;project.build.outputTimestamp&gt;</span> and the reproducible-build-maven-plugin (maven.apache.org reproducible-builds guide, Maven 3.9.16). Gradle <span style="font-family:var(--mono);font-size:10.5px;">preserveFileTimestamps=false</span>, <span style="font-family:var(--mono);font-size:10.5px;">reproducibleFileOrder=true</span> (docs.gradle.org, Gradle 9.6.0). Maven <span style="font-family:var(--mono);font-size:10.5px;">artifact:compare</span> goal (maven.apache.org). Hermeticity and SLSA-level dependence: SLSA v1.0 (slsa.dev/spec/v1.0). Non-determinism taxonomy and verification method: reproducible-builds.org. Dep/plugin pinning prerequisite: Ch 27 (keys 62/63). SLSA provenance / checksums: Ch 28 (key 66).
+    <b>Factual only; not legal advice.</b>
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>
