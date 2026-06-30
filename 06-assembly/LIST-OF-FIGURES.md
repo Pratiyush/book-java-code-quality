@@ -1,0 +1,59 @@
+# List of Figures
+
+- Figure 1.1 — ISO/IEC 25010 product quality model
+- Figure 1.2 — The cruft-tax curve
+- Figure 1.3 — Fowler's technical-debt quadrant
+- Figure 2.1 — Cyclomatic vs. Cognitive Complexity: same paths, different nesting. Two…
+- Figure 2.2 — Contested prescriptions: function size & comments. Two reputable schools…
+- Figure 3.1 — The Java quality toolchain: lifecycle map
+- Figure 3.2 — Concern × tool routing matrix
+- Figure 4.1 — Westrum's three organizational culture types. Information flow and response…
+- Figure 4.2 — Shift-left: defect cost rises with lifecycle stage. Catching a defect earlier…
+- Figure 4.3 — The three code-ownership models. Each model is a legitimate choice with…
+- Figure 5.1 — Canon-dating. Effective Java principle to modern Java feature to verdict. The…
+- Figure 5.2 — Records serve, not retire, the immutability principle. Records cover the…
+- Figure 6.1 — the typography / meaning axis: what a tool settles once versus what only a…
+- Figure 7.1 — The two halves of a method contract
+- Figure 9.1 — Null-safety: four levers of layered defense. Each lever catches the null the…
+- Figure 10.1 — The Throwable
+- Figure 10.2 — try-with-resources: suppressed vs masked exceptions
+- Figure 11.1 — PECS Variance Ladder
+- Figure 11.2 — Type Erasure: Compile Time vs. Run Time
+- Figure 12.1 — The smell-triple: smell → refactoring → detecting rule
+- Figure 13.1 — Java Memory Model: happens-before edges and safe publication
+- Figure 14.1 — Virtual thread mounting, unmounting, and the pinning trap
+- Figure 14.2 — Three-layer concurrency verification stack
+- Figure 15.1 — Static-analysis technique ladder
+- Figure 16.1 — the detection-time axis, placing four analyzers from source text to bytecode…
+- Figure 17.1 — &mdash; The substrate &times; moment matrix: one owner per concern
+- Figure 18.1 — &mdash; One shape, five artifacts: the custom-rule skeleton
+- Figure 18.2 — &mdash; Codegen approaches by relation to the JSR&nbsp;269 standard contract
+- Figure 19.1 — Finding triage and the four-lever scope ladder
+- Figure 20.1 — &mdash; The test pyramid
+- Figure 20.2 — &mdash; Coverage vs. mutation score: two independent axes of test quality
+- Figure 21.1 — JUnit Platform: three-module architecture
+- Figure 21.2 — The five test-double taxonomy
+- Figure 22.1 — Two blind-spot axes: fidelity &times; input coverage
+- Figure 23.1 — Coverage vs mutation: the assertion gap on the same covered line
+- Figure 24.1 — Pact four-stage pipeline
+- Figure 24.2 — Three techniques, three questions on the service boundary and its output
+- Figure 25.1 — SOLID: intent and over-application trap
+- Figure 25.2 — The module-strength ladder
+- Figure 26.1 — &mdash; Architecture-enforcement spectrum
+- Figure 27.1 — The build lifecycle as quality-gate host
+- Figure 28.1 — Supply-chain pipeline: three questions, one chain
+- Figure 29.1 — &mdash; The reproducibility chain
+- Figure 29.2 — &mdash; The license-obligation spectrum, by distribution mode
+- Figure 30.1 — Three Java vulnerability classes: design-out hierarchy
+- Figure 31.1 — &mdash; SAST, SCA, and DAST: three security lenses, layered
+- Figure 31.2 — &mdash; Secrets detection: a ladder of catches, cheapest first &mdash; and…
+- Figure 32.1 — The security gate: five testing types ordered fast-to-slow. Static checks…
+- Figure 33.1 — The quality pipeline: a fail-fast portfolio of fitness functions, split by…
+- Figure 34.1 — &mdash; Diff-scoping: one discipline across coverage, the platform check, and…
+- Figure 35.1 — The feedback-latency ladder: fast feedback at the keyboard, unbypassable…
+- Figure 36.1 — &mdash; The release-quality loop: shift-left gates &harr; shift-right release…
+- Figure 37.1 — &mdash; The review-effectiveness curve: small and fast, or it does not work
+- Figure 37.2 — &mdash; One move, three practices: automate the mechanical, reserve humans…
+- Figure 40.1 — The remediation playbook: an ordered, incremental program
+- Figure 40.2 — The automation engine: type-aware change at scale
+- Figure 47.1 — the staged adoption roadmap: five stages from Foundations through Sustain &…
