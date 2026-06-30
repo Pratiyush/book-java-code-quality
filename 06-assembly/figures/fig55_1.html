@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 26 — Giving the Diagram Teeth (dossier key 55, folds 33 + 56, Ch 26 in FINAL_INDEX, closes Part VI)
+  Figure:  Figure 26.1 — Architecture-enforcement spectrum: from convention to compiler boundary
+  Family:  Decision / architecture ladder (stacked spectrum rows showing strength × cost trade-off)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Enforcement: from documented to executable" — after the spectrum table, before §ArchUnit
+  One idea: An architecture rule a team merely agrees to erodes; making it executable (ArchUnit test,
+             then JPMS compiler boundary) holds it — each step raises both enforcement strength and
+             adoption cost, so the choice is a deliberate trade-off, not an upgrade path.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 26.1 — Architecture-enforcement spectrum</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 980px;
+    }
+
+    /* ── Main layout: spectrum rows left, trade-off axis right ── */
+    .layout {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      margin-top: 10px;
+    }
+
+    /* ── Spectrum column ── */
+    .spectrum {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* Row = mechanism card */
+    .spec-row {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    /* Connector between rows */
+    .spec-connector {
+      display: flex;
+      align-items: center;
+      padding-left: 24px;
+      height: 26px;
+      gap: 6px;
+    }
+    .conn-line {
+      width: 2px;
+      height: 18px;
+      background: var(--ink);
+      flex-shrink: 0;
+    }
+    .conn-arrow {
+      font-size: 13px;
+      color: var(--ink);
+      font-weight: 700;
+      margin-left: -2px;
+      line-height: 1;
+    }
+    .conn-label {
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-left: 4px;
+    }
+
+    /* Mechanism card */
+    .mech-card {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    /* Left strength bar — grows with position */
+    .strength-bar {
+      width: 10px;
+      flex-shrink: 0;
+    }
+    .mech-card.s0 .strength-bar { background: var(--tint-1); }
+    .mech-card.s1 .strength-bar { background: var(--tint-2); }
+    .mech-card.s2 .strength-bar { background: var(--tint-3); }
+    .mech-card.s3 .strength-bar { background: var(--ink);    }
+
+    /* Top accent bar for "where the team typically starts" */
+    .mech-card.is-start {
+      border-color: var(--accent-bar);
+      box-shadow: inset 0 4px 0 var(--accent-bar);
+    }
+
+    /* Card body */
+    .mech-body {
+      flex: 1;
+      padding: 11px 15px;
+    }
+
+    /* Header line: mechanism name + enforced-by pill */
+    .mech-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .mech-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      flex-shrink: 0;
+    }
+    .mech-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .mech-enforced {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      margin-left: auto;
+    }
+
+    /* Badges row: strength + cost */
+    .mech-badges {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-bottom: 7px;
+    }
+    .badge-strength, .badge-cost {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+    }
+    .badge-strength.none   { background: var(--tint-0); color: var(--ink-soft); border-color: var(--line); }
+    .badge-strength.low    { background: var(--tint-1); }
+    .badge-strength.medium { background: var(--tint-2); }
+    .badge-strength.high   { background: var(--tint-3); }
+    .badge-strength.full   { background: var(--ink); color: var(--paper); }
+    .badge-cost.free       { background: var(--tint-0); color: var(--ink-soft); border-color: var(--line); }
+    .badge-cost.low        { background: var(--tint-1); }
+    .badge-cost.medium     { background: var(--tint-2); }
+    .badge-cost.high       { background: var(--tint-3); }
+
+    /* Detail: what it catches + its honest limit */
+    .mech-detail {
+      display: flex;
+      gap: 12px;
+      font-size: 11.5px;
+    }
+    .detail-catch {
+      flex: 1;
+    }
+    .detail-catch .dlabel {
+      font-weight: 700;
+      color: var(--ok);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .detail-limit {
+      flex: 1;
+    }
+    .detail-limit .dlabel {
+      font-weight: 700;
+      color: var(--warn);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* DSL / API snippet in card */
+    .mech-api {
+      margin-top: 6px;
+      background: var(--tint-1);
+      border-radius: 5px;
+      padding: 5px 9px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    /* ── Right column: trade-off axis ── */
+    .right-col {
+      width: 178px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Ramp axis block */
+    .axis-block {
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 12px;
+    }
+    .axis-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      margin-bottom: 9px;
+      text-align: center;
+    }
+    .ramp-pair {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+    .ramp-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .ramp-col-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+    }
+    .ramp-cells {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 3px;
+    }
+    .ramp-cell {
+      width: 44px;
+      height: 13px;
+      border-radius: 3px;
+      border: 1px solid var(--line);
+    }
+    .ramp-cell.r0 { background: var(--tint-0); }
+    .ramp-cell.r1 { background: var(--tint-1); }
+    .ramp-cell.r2 { background: var(--tint-2); }
+    .ramp-cell.r3 { background: var(--tint-3); }
+    .ramp-cell.r4 { background: var(--ink); }
+    .ramp-arrow-up {
+      font-size: 13px;
+      color: var(--ink);
+      font-weight: 700;
+      text-align: center;
+    }
+    .ramp-arrow-dn {
+      font-size: 13px;
+      color: var(--ink-soft);
+      text-align: center;
+    }
+
+    /* When-to-use guide block */
+    .use-block {
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      padding: 10px 11px;
+      border-radius: 0 8px 8px 0;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .use-block b { color: var(--ink); display: block; margin-bottom: 4px; }
+    .use-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+      margin-bottom: 4px;
+      color: var(--ink-soft);
+    }
+    .use-row .use-dot {
+      font-weight: 700;
+      color: var(--accent-bar);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Alternatives note */
+    .alt-note {
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 9px 11px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.45;
+    }
+    .alt-note b { color: var(--ink); }
+
+    /* Bottom: fitness-function unifying frame */
+    .ff-strip {
+      margin-top: 14px;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 10px 14px;
+    }
+    .ff-strip-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 7px;
+    }
+    .ff-grid {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .ff-cell {
+      flex: 1;
+      min-width: 120px;
+      background: var(--tint-1);
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 7px 10px;
+      font-size: 11px;
+    }
+    .ff-cell .ffc-head {
+      font-weight: 700;
+      color: var(--ink);
+      font-size: 11px;
+      margin-bottom: 2px;
+      font-family: var(--mono);
+    }
+    .ff-cell .ffc-desc {
+      color: var(--ink-soft);
+      font-size: 10.5px;
+      line-height: 1.4;
+    }
+    .ff-eq {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    /* Legend */
+    .legend-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      padding-top: 11px;
+      border-top: 1px solid var(--line);
+      align-items: center;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--ink-soft);
+    }
+    .l-bar {
+      width: 10px;
+      height: 18px;
+      border-radius: 2px;
+      border: 1px solid var(--line);
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 26.1 &mdash; Architecture-enforcement spectrum</p>
+  <p class="fig-subtitle">Convention &rarr; ArchUnit rule &rarr; JPMS compiler boundary: enforcement strength rises with adoption cost. Choice is a trade-off, not an upgrade path.</p>
+
+  <div class="layout">
+
+    <!-- ── SPECTRUM ROWS ── -->
+    <div class="spectrum">
+
+      <!-- Row 0: Naming convention (no enforcement) -->
+      <div class="spec-row">
+        <div class="mech-card s0">
+          <div class="strength-bar"></div>
+          <div class="mech-body">
+            <div class="mech-header">
+              <span class="mech-num">LEVEL 0</span>
+              <span class="mech-name">Naming convention &mdash; agreed in the wiki</span>
+              <span class="mech-enforced">enforced by: discipline (nobody)</span>
+            </div>
+            <div class="mech-badges">
+              <span class="badge-strength none">strength: none</span>
+              <span class="badge-cost free">cost: free</span>
+            </div>
+            <div class="mech-detail">
+              <div class="detail-catch">
+                <span class="dlabel">what holds it</span>
+                Team memory and good intentions; shared agreement recorded in a wiki or ADR.
+              </div>
+              <div class="detail-limit">
+                <span class="dlabel">honest limit</span>
+                Invisible to the compiler and the build &mdash; a single import under deadline pressure violates it silently; the architecture erodes one import at a time.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- row 0 -->
+
+      <!-- Connector 0 → 1 -->
+      <div class="spec-connector">
+        <div class="conn-line"></div>
+        <div class="conn-arrow">&#8595;</div>
+        <span class="conn-label">make the decision executable &rarr; test phase</span>
+      </div>
+
+      <!-- Row 1: ArchUnit rule (test-phase enforcement) -->
+      <div class="spec-row">
+        <div class="mech-card s2 is-start">
+          <div class="strength-bar"></div>
+          <div class="mech-body">
+            <div class="mech-header">
+              <span class="mech-num">LEVEL 1</span>
+              <span class="mech-name">ArchUnit rule &mdash; architecture as a JUnit test</span>
+              <span class="mech-enforced">enforced by: JUnit / CI (test phase)</span>
+            </div>
+            <div class="mech-badges">
+              <span class="badge-strength medium">strength: fails the build on violation</span>
+              <span class="badge-cost low">cost: one test dependency; post-compile</span>
+            </div>
+            <div class="mech-detail">
+              <div class="detail-catch">
+                <span class="dlabel">what it catches</span>
+                Layer-direction violations (<code style="font-family:var(--mono);font-size:10.5px;">domain &rarr; web</code> import); cycles
+                (<code style="font-family:var(--mono);font-size:10.5px;">slices().beFreeOfCycles()</code>);
+                naming, annotation constraints, coding rules
+                (<code style="font-family:var(--mono);font-size:10.5px;">NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS</code>).
+              </div>
+              <div class="detail-limit">
+                <span class="dlabel">honest limit</span>
+                Bytecode-only: dependencies via reflection, <code style="font-family:var(--mono);font-size:10.5px;">Class.forName</code>, DI wiring, or
+                <code style="font-family:var(--mono);font-size:10.5px;">ServiceLoader</code> are not edges ArchUnit sees &mdash; a routed violation passes.
+                Only catches what is encoded; runs post-compile (slower than the compiler).
+              </div>
+            </div>
+            <div class="mech-api">
+              @AnalyzeClasses(packages = "org.acme.storefront", importOptions = DoNotIncludeTests.class)<br>
+              noClasses().that().resideInAPackage("..domain..")<br>
+              &nbsp;&nbsp;.should().dependOnClassesThat().resideInAPackage("..web..")<br>
+              // FreezingArchRule.freeze(rule) &rarr; ratchet for legacy codebases
+            </div>
+          </div>
+        </div>
+      </div><!-- row 1 -->
+
+      <!-- Connector 1 → 2 -->
+      <div class="spec-connector">
+        <div class="conn-line"></div>
+        <div class="conn-arrow">&#8595;</div>
+        <span class="conn-label">move boundary into the compiler &rarr; compile + runtime</span>
+      </div>
+
+      <!-- Row 2: JPMS module-info (compiler + runtime enforcement) -->
+      <div class="spec-row">
+        <div class="mech-card s3">
+          <div class="strength-bar"></div>
+          <div class="mech-body">
+            <div class="mech-header">
+              <span class="mech-num">LEVEL 2</span>
+              <span class="mech-name">JPMS <code style="font-family:var(--mono);font-size:13px;">module-info.java</code> &mdash; compiler-enforced boundary</span>
+              <span class="mech-enforced">enforced by: javac + runtime (Java 9+, JEP 261)</span>
+            </div>
+            <div class="mech-badges">
+              <span class="badge-strength full">strength: javac refuses to compile the violation</span>
+              <span class="badge-cost high">cost: real modularization migration</span>
+            </div>
+            <div class="mech-detail">
+              <div class="detail-catch">
+                <span class="dlabel">what it catches</span>
+                Any access to a package not declared <code style="font-family:var(--mono);font-size:10.5px;">exports</code> in the
+                <code style="font-family:var(--mono);font-size:10.5px;">module-info.java</code> fails <code style="font-family:var(--mono);font-size:10.5px;">javac</code>
+                and the runtime &mdash; structural, not after-the-fact. Strong encapsulation at the module level.
+              </div>
+              <div class="detail-limit">
+                <span class="dlabel">honest limit</span>
+                Modularizing a legacy application with non-modular dependencies is a real migration; many teams rationally stay on the classpath.
+                Coarser-grained than ArchUnit (module boundary, not package/annotation); ArchUnit for fine-grained rules, JPMS for coarse boundaries that warrant the cost.
+              </div>
+            </div>
+            <div class="mech-api">
+              module org.acme.storefront.domain {<br>
+              &nbsp;&nbsp;exports org.acme.storefront.domain.model;  // explicit; web pkg not exported<br>
+              &nbsp;&nbsp;requires org.acme.storefront.persistence;<br>
+              }
+            </div>
+          </div>
+        </div>
+      </div><!-- row 2 -->
+
+    </div><!-- .spectrum -->
+
+    <!-- ── RIGHT COLUMN: trade-off axis + when-to-use guide ── -->
+    <div class="right-col">
+
+      <!-- Strength / cost ramp -->
+      <div class="axis-block">
+        <div class="axis-title">Trade-off axis</div>
+        <div class="ramp-pair">
+          <div class="ramp-col">
+            <div class="ramp-arrow-up">&#8593;</div>
+            <div class="ramp-col-label">strength</div>
+            <div class="ramp-cells">
+              <div class="ramp-cell r0"></div>
+              <div class="ramp-cell r2"></div>
+              <div class="ramp-cell r4"></div>
+            </div>
+            <div class="ramp-arrow-dn">&#8595;</div>
+          </div>
+          <div class="ramp-col">
+            <div class="ramp-arrow-up">&#8593;</div>
+            <div class="ramp-col-label">cost</div>
+            <div class="ramp-cells">
+              <div class="ramp-cell r0"></div>
+              <div class="ramp-cell r2"></div>
+              <div class="ramp-cell r4"></div>
+            </div>
+            <div class="ramp-arrow-dn">&#8595;</div>
+          </div>
+        </div>
+        <hr class="fig-divider" style="margin:8px 0 7px;">
+        <div style="font-size:10.5px;color:var(--ink-soft);text-align:center;line-height:1.4;">
+          Level 0: free &amp; ignored.<br>
+          Level 1: one dependency;<br>runs with CI.<br>
+          Level 2: structural;<br>migration investment.
+        </div>
+        <hr class="fig-divider" style="margin:8px 0 7px;">
+        <div style="font-size:10px;color:var(--ink-soft);text-align:center;line-height:1.4;">
+          A team may run both<br>
+          Level 1 (fine-grained rules)<br>
+          and Level 2 (coarse<br>
+          module boundaries).
+        </div>
+      </div>
+
+      <!-- When-to-use guide -->
+      <div class="use-block">
+        <b>When to reach for each</b>
+        <div class="use-row">
+          <span class="use-dot">&#9658;</span>
+          <span>Stop a documented architecture from eroding: <b>Level 1</b> &mdash; ArchUnit rule in CI.</span>
+        </div>
+        <div class="use-row">
+          <span class="use-dot">&#9658;</span>
+          <span>Cardinal-sin check (no cycles): <code style="font-family:var(--mono);font-size:10px;">slices().beFreeOfCycles()</code> &mdash; cheapest, enable first.</span>
+        </div>
+        <div class="use-row">
+          <span class="use-dot">&#9658;</span>
+          <span>Legacy codebase adoption: <code style="font-family:var(--mono);font-size:10px;">FreezingArchRule.freeze(rule)</code> then drive baseline down.</span>
+        </div>
+        <div class="use-row">
+          <span class="use-dot">&#9658;</span>
+          <span>Coarse structural encapsulation that warrants migration cost: <b>Level 2</b> &mdash; JPMS.</span>
+        </div>
+        <div class="use-row">
+          <span class="use-dot">&#9658;</span>
+          <span>What cannot be expressed as a rule: code review &amp; architectural judgment.</span>
+        </div>
+      </div>
+
+      <!-- Alternatives note -->
+      <div class="alt-note">
+        <b>Alternatives (neutral)</b><br>
+        <b>jQAssistant</b> &mdash; Cypher queries over a Neo4j graph of the codebase; suited to ad-hoc exploration.<br>
+        <b>Spring Modulith</b> &mdash; module verification for Spring apps.<br>
+        <b>Deptective</b> &mdash; compiler plugin.<br>
+        <b>JDepend</b> &mdash; afferent/efferent coupling metrics; measurement, not a gate.<br>
+        Each serves its niche; none crowned.
+      </div>
+
+    </div><!-- .right-col -->
+
+  </div><!-- .layout -->
+
+  <!-- Fitness-function unifying frame strip -->
+  <div class="ff-strip">
+    <div class="ff-strip-title">
+      The fitness-function frame &mdash; these mechanisms, and every gate in this book, are the same thing
+    </div>
+    <div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:9px;">
+      Ford / Parsons / Kua / Sadalage, <em>Building Evolutionary Architectures</em>:
+      &ldquo;any mechanism that provides an objective integrity assessment of some architectural characteristic(s)&rdquo; &mdash;
+      run on every build or deploy to protect properties as the system evolves.
+    </div>
+    <div class="ff-grid">
+      <div class="ff-cell">
+        <div class="ffc-head">ArchUnit cycle rule</div>
+        <div class="ffc-desc">atomic &middot; triggered &middot; static &mdash; guards acyclicity (Ch 26)</div>
+      </div>
+      <div class="ff-eq">=</div>
+      <div class="ff-cell">
+        <div class="ffc-head">Coverage / mutation gate</div>
+        <div class="ffc-desc">atomic &middot; triggered &middot; static &mdash; guards test reach (Ch 23)</div>
+      </div>
+      <div class="ff-eq">=</div>
+      <div class="ff-cell">
+        <div class="ffc-head">JMH perf-regression check</div>
+        <div class="ffc-desc">atomic &middot; triggered &middot; dynamic &mdash; guards latency budget (Ch 44)</div>
+      </div>
+      <div class="ff-eq">=</div>
+      <div class="ff-cell">
+        <div class="ffc-head">SBOM / vulnerability gate</div>
+        <div class="ffc-desc">atomic &middot; triggered &middot; static &mdash; guards supply chain (Parts VII&ndash;VIII)</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--ink-soft);margin-top:8px;">
+      <b>One designed portfolio</b> of atomic/holistic, static/dynamic, triggered/continuous guards for the characteristics a system must protect.
+      Limits: only protects measurable characteristics; too many strict functions ossify (breed ignore-annotations); functions are code that rots &mdash; design deliberately and maintain.
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend-row">
+    <div class="legend-item">
+      <div class="l-bar" style="background:var(--tint-1);"></div>
+      <span>Level 0 &mdash; advisory only; no build signal</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-bar" style="background:var(--tint-2);border-top:3px solid var(--accent-bar);"></div>
+      <span>Level 1 &mdash; ArchUnit / CI gate (typical starting point)</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-bar" style="background:var(--ink);"></div>
+      <span>Level 2 &mdash; JPMS / compiler + runtime (strongest; highest adoption cost)</span>
+    </div>
+    <div class="legend-item" style="margin-left:auto;">
+      <span class="fig-mono fig-muted">ArchUnit DSL &rarr; archunit.org user guide &nbsp;|&nbsp; JPMS &rarr; JEP 261 (Java 9) &nbsp;|&nbsp; Fitness functions &rarr; Ford et al., <em>Building Evolutionary Architectures</em></span>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Sources: ArchUnit DSL (<code style="font-family:var(--mono);font-size:11px;">noClasses().that().resideInAPackage().should().dependOnClassesThat()</code>,
+    <code style="font-family:var(--mono);font-size:11px;">layeredArchitecture()</code>,
+    <code style="font-family:var(--mono);font-size:11px;">slices().should().beFreeOfCycles()</code>,
+    <code style="font-family:var(--mono);font-size:11px;">FreezingArchRule.freeze()</code>,
+    <code style="font-family:var(--mono);font-size:11px;">NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS</code>,
+    <code style="font-family:var(--mono);font-size:11px;">@AnalyzeClasses</code> / <code style="font-family:var(--mono);font-size:11px;">DoNotIncludeTests</code>)
+    &mdash; ArchUnit user guide, archunit.org (key 33, dossier). JPMS: <code style="font-family:var(--mono);font-size:11px;">module-info.java</code>
+    <code style="font-family:var(--mono);font-size:11px;">exports</code>/<code style="font-family:var(--mono);font-size:11px;">requires</code> compile + runtime enforcement &mdash; JEP 261,
+    openjdk.org/jeps/261 (Java 9). Fitness function definition: Ford / Parsons / Kua / Sadalage,
+    <em>Building Evolutionary Architectures</em> (O&rsquo;Reilly, 1e/2e), &ldquo;Automated Software Governance&rdquo; chapter.
+    Categories atomic/holistic, triggered/continuous, static/dynamic: same source.
+    Alternatives (jQAssistant, Spring Modulith, Deptective, JDepend): cited in draft back-matter, key 55 dossier.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

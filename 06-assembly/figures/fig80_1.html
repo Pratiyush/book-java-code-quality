@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 34 — Making the Gate Real for the Developer (dossier key 80, folds 77 + 78; Ch 34 in FINAL_INDEX, Part IX)
+  Figure:  Figure 34.1 — Diff-scoping: one discipline across coverage, the platform check, and PR feedback
+  Family:  Concept-map / comparison-contrast (three facets × two scopes; whole-repo fails, diff-scoped works)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Deep dive: diff-scoping, and the gate the developer actually meets" (draft v1, lines 78–84);
+             restates the chapter's one-idea line (Overview, line 38).
+  One idea: One discipline — DIFF-SCOPING (focus everything on the code this change touches) — runs through
+            all three facets of the developer-facing gate: gate coverage on NEW code (ratchet + mutation
+            backstop), run the platform's required check against the PR's changes, and comment only on the
+            CHANGED lines. Whole-repo scope fails identically in every facet (unreachable / a stale verdict /
+            muted noise → the gate gets disabled); diff scope makes the gate fair, adoptable, and actionable.
+  NEUTRALITY: Platforms (GitHub Actions / GitLab CI / Jenkins) and PR tools (reviewdog / Danger / Sonar PR
+            decoration) are listed on equal footing, each named by its niche; none crowned. No banned
+            comparative wording. The contrast is whole-repo-scope vs diff-scope (a discipline), not tool vs tool.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 34.1 — Diff-scoping: one discipline across coverage, the platform check, and PR feedback</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout only (palette + components come from figures.css) ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure { padding: 28px 32px 24px; width: 1000px; }
+
+    /* ── Column-header band: the two scopes ───────────────────────────────── */
+    .scope-grid {
+      display: grid;
+      grid-template-columns: 184px 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+      align-items: stretch;
+    }
+    .corner {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 4px 8px;
+    }
+    .corner .corner-q {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .corner .corner-sub {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+
+    .scope-head {
+      border: 1.5px solid var(--ink);
+      border-radius: 8px 8px 0 0;
+      padding: 9px 12px;
+      text-align: center;
+    }
+    .scope-head .scope-name {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .scope-head .scope-tag {
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-top: 2px;
+    }
+    /* Whole-repo scope: lighter fill, dashed — the scope that fails */
+    .scope-head.is-whole {
+      background: var(--tint-1);
+      border-style: dashed;
+    }
+    .scope-head.is-whole .scope-tag { color: var(--stop); }
+    /* Diff scope: stronger fill + accent bar — the scope that works */
+    .scope-head.is-diff {
+      background: var(--tint-3);
+      border-left: 4px solid var(--accent-bar);
+    }
+    .scope-head.is-diff .scope-tag { color: var(--ink); }
+
+    /* ── Facet rows ───────────────────────────────────────────────────────── */
+    .facet-label {
+      background: var(--tint-2);
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      padding: 9px 11px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .facet-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--ink-soft);
+      letter-spacing: .5px;
+    }
+    .facet-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-top: 1px;
+    }
+    .facet-where {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+
+    .cell {
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 11px;
+      font-size: 11.5px;
+      line-height: 1.4;
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .cell.is-whole {
+      background: var(--tint-0);
+      border-style: dashed;
+    }
+    .cell.is-diff {
+      background: var(--tint-1);
+      border-left: 4px solid var(--accent-bar);
+    }
+    .cell .cell-what { color: var(--ink); }
+    .cell .cell-what b { font-weight: 700; }
+    .cell .cell-out {
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    .cell .tools {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--ink-soft);
+      letter-spacing: .1px;
+    }
+
+    /* outcome pill at the foot of each cell */
+    .verdict {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      align-self: flex-start;
+      border: 1.5px solid var(--ink);
+    }
+    .verdict.fail { color: var(--stop); border-color: var(--stop); background: var(--tint-0); border-style: dashed; }
+    .verdict.work { color: var(--ok);   border-color: var(--ok);   background: var(--tint-1); }
+
+    /* ── Spanning summary strips under each scope column ──────────────────── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 184px 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+      align-items: stretch;
+    }
+    .summary-stub { }
+    .summary {
+      border-radius: 0 0 8px 8px;
+      padding: 9px 12px;
+      font-size: 11px;
+      line-height: 1.4;
+      border: 1.5px solid var(--ink);
+      border-top: 0;
+    }
+    .summary .s-head {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      margin-bottom: 3px;
+    }
+    .summary.is-whole {
+      background: var(--tint-0);
+      border-style: dashed;
+      border-top: 0;
+    }
+    .summary.is-whole .s-head { color: var(--stop); }
+    .summary.is-diff {
+      background: var(--tint-2);
+      border-left: 4px solid var(--accent-bar);
+    }
+    .summary.is-diff .s-head { color: var(--ink); }
+
+    /* ── Legend + key note ────────────────────────────────────────────────── */
+    .legend {
+      display: flex;
+      gap: 22px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      color: var(--ink-soft);
+    }
+    .legend-swatch { width: 26px; height: 16px; border-radius: 3px; flex-shrink: 0; }
+    .swatch-whole { background: var(--tint-0); border: 1.5px dashed var(--line); }
+    .swatch-diff  { background: var(--tint-1); border: 1.5px solid var(--ink); border-left: 4px solid var(--accent-bar); }
+
+    .floor-note { margin-top: 14px; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 34.1 &mdash; Diff-scoping: one discipline across coverage, the platform check, and PR feedback</p>
+  <p class="fig-subtitle">Focus everything on the code <em>this change</em> touches. Whole-repo scope fails identically in all three facets &mdash; and a failed gate gets disabled. Scope to the diff and the gate becomes fair, adoptable, and actionable.</p>
+
+  <!-- Header band: the two scopes -->
+  <div class="scope-grid">
+    <div class="corner">
+      <div class="corner-q">The three facets the developer meets</div>
+      <div class="corner-sub">Each enforced against one of two scopes &darr;</div>
+    </div>
+    <div class="scope-head is-whole">
+      <div class="scope-name">Whole-repo scope</div>
+      <div class="scope-tag">measures everything &mdash; fails</div>
+    </div>
+    <div class="scope-head is-diff">
+      <div class="scope-name">Diff scope</div>
+      <div class="scope-tag">only what this change touched &mdash; works</div>
+    </div>
+  </div>
+
+  <!-- Facet 1: Coverage -->
+  <div class="scope-grid" style="margin-top:10px;">
+    <div class="facet-label">
+      <div class="facet-num">FACET 1 &middot; the metric</div>
+      <div class="facet-name">Coverage gate</div>
+      <div class="facet-where">JaCoCo 0.8.15 &middot; Sonar gate</div>
+    </div>
+    <div class="cell is-whole">
+      <div class="cell-what"><b>Absolute whole-repo threshold</b> (e.g. 80% of all lines).</div>
+      <div class="cell-out">Unreachable on a legacy codebase (blocks every PR) &mdash; or gamed with assertion-free tests on getters.</div>
+      <span class="verdict fail">unreachable / gamed</span>
+    </div>
+    <div class="cell is-diff">
+      <div class="cell-what"><b>New-code coverage + ratchet</b>: gate new/changed code &ge; bar; overall coverage may only go up. Mutation backstop on new code.</div>
+      <div class="cell-out">Adoptable from day one; improves where work happens; mutation (PITest 1.25.3) kills the assertion-free loophole.</div>
+      <span class="verdict work">adoptable, converges up</span>
+    </div>
+  </div>
+
+  <!-- Facet 2: Platform check -->
+  <div class="scope-grid" style="margin-top:10px;">
+    <div class="facet-label">
+      <div class="facet-num">FACET 2 &middot; the policy</div>
+      <div class="facet-name">Required check</div>
+      <div class="facet-where">runs on the CI platform</div>
+    </div>
+    <div class="cell is-whole">
+      <div class="cell-what"><b>A green check read as &ldquo;the code is good&rdquo;</b>, or re-litigating the whole repo per PR.</div>
+      <div class="cell-out">Green means only that the configured checks passed &mdash; not that the design is sound. Whole-repo work is slow and not the PR&rsquo;s job.</div>
+      <span class="verdict fail">stale verdict</span>
+    </div>
+    <div class="cell is-diff">
+      <div class="cell-what"><b>Required check runs against the PR&rsquo;s changes</b>, JDK 21 + 25 matrix, with caching &mdash; the same gate <em>design</em> on any platform.</div>
+      <div class="tools">GitHub Actions &middot; GitLab CI &middot; Jenkins &mdash; design ports; syntax differs</div>
+      <span class="verdict work">per-PR verdict</span>
+    </div>
+  </div>
+
+  <!-- Facet 3: PR feedback -->
+  <div class="scope-grid" style="margin-top:10px;">
+    <div class="facet-label">
+      <div class="facet-num">FACET 3 &middot; the feedback</div>
+      <div class="facet-name">PR automation</div>
+      <div class="facet-where">Checks API / MR widgets</div>
+    </div>
+    <div class="cell is-whole">
+      <div class="cell-what"><b>Whole-repo findings posted as PR comments</b>, or buried in a CI log nobody reads.</div>
+      <div class="cell-out">Comment overload &rarr; developers mute the bot, and a muted bot is a disabled gate. Buried findings go unfixed.</div>
+      <span class="verdict fail">muted noise</span>
+    </div>
+    <div class="cell is-diff">
+      <div class="cell-what"><b>Inline, only on the changed lines.</b> De-dupe by niche &mdash; each tool owns one job.</div>
+      <div class="tools">reviewdog (lint, diff-filtered) &middot; Sonar PR decoration (the gate) &middot; Danger (process rules)</div>
+      <span class="verdict work">gets fixed</span>
+    </div>
+  </div>
+
+  <!-- Spanning summary strips -->
+  <div class="summary-grid">
+    <div class="summary-stub"></div>
+    <div class="summary is-whole">
+      <div class="s-head">Whole-repo scope &rarr; the gate gets disabled</div>
+      Unreachable, a stale verdict, muted noise &mdash; all three end the same way: a gate developers route around. A gate the team routes around is a net negative.
+    </div>
+    <div class="summary is-diff">
+      <div class="s-head">Diff scope &rarr; fair &middot; adoptable &middot; actionable</div>
+      <b>Fair</b> (judges a developer only on what they wrote), <b>adoptable</b> (works on legacy from day one), <b>actionable</b> (the finding is on the line under review).
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-swatch swatch-whole"></div>
+      Whole-repo scope &mdash; dashed; the scope that fails
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch swatch-diff"></div>
+      Diff scope &mdash; accent bar; the scope that works
+    </div>
+  </div>
+
+  <!-- Leading-honesty note -->
+  <div class="fig-note floor-note">
+    <b>A measure that becomes a target stops being a good measure (Goodhart).</b>
+    Coverage is a <em>floor</em>, not a goal &mdash; gating on the number alone incentivizes bad tests; reach for mutation and human review for quality, never a higher percentage. Bots are not review (they catch the mechanical, not whether it is the right change), and a green check is not good code. The gate is scoped to the diff so it is fair, delivered to the developer so it is actionable, and understood as a floor so it is not gamed &mdash; human judgment (Ch 84) is where quality actually lives.
+  </div>
+
+  <p class="fig-caption">
+    Diff-scoping &mdash; the chapter&rsquo;s one idea: key 80 (Ch 34) draft v1 §&ldquo;Deep dive: diff-scoping&rdquo; and the Overview one-idea line. Folds keys 77 (CI platforms) + 78 (PR automation).
+    Tool versions from <b>00-strategy/SOURCE-PIN.md</b> (pinned 2026-06-20). Mutation/coverage tools: Ch 23 (keys 47, 48). Required checks &amp; merge queue: Ch 35 (key 81). Human review: Ch 84. Goodhart/coverage folklore: Ch 1/23 (keys 04, 48).
+    Every label traced in <b>fig80_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

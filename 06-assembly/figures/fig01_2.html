@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 1 — What Is Code Quality? (key 01)
+  Figure:  Figure 1.2 — Internal quality / cruft-tax curve
+  Family:  Concept chart (qualitative line graph — cost-per-feature over time)
+  Method:  Authored HTML + SVG → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"The half you can see and the half you can't" — after the ASCII sketch
+  One idea: Over time, low internal quality raises the cost of each new feature (cruft tax),
+             while high internal quality keeps it low; the two diverge as cruft accumulates.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 1.2 — Internal quality / cruft-tax curve</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 860px;
+    }
+
+    svg {
+      display: block;
+      margin: 16px auto 0;
+      overflow: visible;
+    }
+
+    .chart-label {
+      font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 13px;
+      fill: #1f2328;
+    }
+    .chart-label-soft {
+      font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 12px;
+      fill: #57606a;
+    }
+    .chart-label-caption {
+      font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 11.5px;
+      fill: #57606a;
+      font-style: italic;
+    }
+    .axis-line {
+      stroke: #1f2328;
+      stroke-width: 2;
+    }
+    .tick-line {
+      stroke: #8c959f;
+      stroke-width: 1;
+      stroke-dasharray: 4 4;
+    }
+
+    /* ── Note strip ── */
+    .cruft-note {
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 1.2 — The cruft-tax curve</p>
+  <p class="fig-subtitle">Cost per new feature over time: high vs low internal quality (qualitative illustration).</p>
+
+  <!--
+    SVG chart: two diverging lines on a cost-vs-time axes.
+    High IQ: nearly flat, slight rise.
+    Low IQ: accelerating upward curve.
+    Axes are qualitative (no invented numbers).
+    Grayscale-safe: high-IQ = thin solid line; low-IQ = thick dashed line.
+    All labels are authored text, not image-baked.
+  -->
+  <!--
+    SVG is 800px wide; chart area x=70..510; labels zone x=520..800.
+    Y range: top=30, bottom=270. Grid ticks at y=50,130,210.
+    High IQ curve: nearly flat, (70,240)→(510,222).
+    Low IQ curve:  accelerating rise, (70,240)→(510,62).
+  -->
+  <svg width="800" height="320" viewBox="0 0 800 320" aria-label="Qualitative chart showing cost per new feature over time. High internal quality stays low; low internal quality rises steeply as cruft accumulates.">
+
+    <!-- Grid reference lines -->
+    <line class="tick-line" x1="70" y1="50"  x2="515" y2="50"/>
+    <line class="tick-line" x1="70" y1="130" x2="515" y2="130"/>
+    <line class="tick-line" x1="70" y1="210" x2="515" y2="210"/>
+
+    <!-- Y-axis -->
+    <line class="axis-line" x1="70" y1="270" x2="70" y2="30"/>
+    <!-- X-axis -->
+    <line class="axis-line" x1="70" y1="270" x2="520" y2="270"/>
+
+    <!-- Arrows -->
+    <polygon points="70,28 65,40 75,40" fill="#1f2328"/>
+    <polygon points="522,270 510,265 510,275" fill="#1f2328"/>
+
+    <!-- Axis labels -->
+    <text class="chart-label" x="60" y="283" text-anchor="middle" font-weight="700">0</text>
+    <text class="chart-label" x="26" y="155" text-anchor="middle" font-weight="600"
+          transform="rotate(-90,26,155)">Cost per feature</text>
+    <text class="chart-label" x="295" y="300" text-anchor="middle" font-weight="600">Time →</text>
+    <text class="chart-label-soft" x="70"  y="300" text-anchor="middle">Start</text>
+    <text class="chart-label-soft" x="510" y="300" text-anchor="middle">Later</text>
+
+    <!-- Y-axis tick labels -->
+    <text class="chart-label-soft" x="64" y="214" text-anchor="end">low</text>
+    <text class="chart-label-soft" x="64" y="134" text-anchor="end">med</text>
+    <text class="chart-label-soft" x="64" y="54"  text-anchor="end">high</text>
+
+    <!-- HIGH internal quality path — solid, thin -->
+    <path d="M80,240 C180,237 320,230 440,226 S490,223 510,222"
+          fill="none" stroke="#1f2328" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- HIGH IQ end label (x=522, well inside viewBox) -->
+    <text class="chart-label" x="522" y="218" font-weight="700" font-size="12.5"
+          dominant-baseline="middle">High internal quality</text>
+    <text class="chart-label-soft" x="522" y="233" font-size="11">(cruft stays low)</text>
+
+    <!-- LOW internal quality path — dashed, slightly thicker -->
+    <path d="M80,240 C150,230 240,208 340,176 S460,110 510,65"
+          fill="none" stroke="#1f2328" stroke-width="3"
+          stroke-dasharray="9 5" stroke-linecap="round"/>
+
+    <!-- LOW IQ end label -->
+    <text class="chart-label" x="522" y="62" font-weight="700" font-size="12.5"
+          dominant-baseline="middle">Low internal quality</text>
+    <text class="chart-label-soft" x="522" y="77" font-size="11">(cruft accumulates →)</text>
+
+    <!-- Divergence annotation at mid-chart -->
+    <text class="chart-label-caption" x="310" y="152" text-anchor="middle">cruft tax widens</text>
+    <line x1="310" y1="157" x2="310" y2="173"
+          stroke="#57606a" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <polygon points="310,177 306,167 314,167" fill="#57606a"/>
+
+    <!-- "Both start here" callout -->
+    <circle cx="80" cy="240" r="5" fill="none" stroke="#1f2328" stroke-width="1.5"/>
+    <text class="chart-label-caption" x="88" y="257">both start here</text>
+
+  </svg>
+
+  <div class="fig-note cruft-note">
+    <b>Cruft tax</b> — Fowler defines <em>cruft</em> as "the difference between the current code and how it would ideally be."
+    As cruft accumulates, every future change pays extra time to understand and work around it.
+    High internal quality keeps the curve flat. <b>This is a qualitative illustration</b>; axes are labelled
+    "low / med / high", not specific minutes. The mechanism is from Fowler (see caption).
+  </div>
+
+  <p class="fig-caption">
+    Shape and mechanism: Martin Fowler, <em>Is High Quality Software Worth the Cost?</em> — martinfowler.com/articles/is-quality-worth-cost.html.
+    The ASCII sketch in §"The half you can see and the half you can't" (draft v1) is the prose source.
+    "Cruft" defined ibid: "the difference between the current code and how it would ideally be."
+    Axes are qualitative; no specific minute-values are depicted or implied.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

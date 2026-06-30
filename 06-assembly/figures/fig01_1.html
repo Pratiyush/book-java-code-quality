@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 1 — What Is Code Quality? (key 01)
+  Figure:  Figure 1.1 — ISO/IEC 25010 product quality model
+  Family:  Concept-map / hierarchy (one top, 9 characteristics, Maintainability expanded)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Quality is not one thing" — after the 2011/2023 characteristics table
+  One idea: ISO/IEC 25010 decomposes product quality into 9 characteristics;
+             Maintainability (with its 5 sub-characteristics) is the territory this book occupies.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 1.1 — ISO/IEC 25010 product quality model</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 1000px;
+    }
+
+    /* ── Tree SVG sits between the title and the cards row ── */
+    .tree-svg {
+      display: block;
+      width: 100%;
+      overflow: visible;
+    }
+
+    /* ── Cards row ── */
+    .cards-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-top: 0;
+    }
+
+    /* Each characteristic column */
+    .char-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Characteristic card */
+    .char-card {
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      background: var(--tint-1);
+      padding: 8px 6px;
+      text-align: center;
+      font-size: 11.5px;
+      font-weight: 600;
+      line-height: 1.3;
+      width: 100%;
+    }
+    .char-card.is-focus {
+      background: var(--tint-3);
+      border-width: 2.5px;
+    }
+
+    /* Edition badge inside card */
+    .ed-badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      border: 1px solid var(--ink-soft);
+      border-radius: 3px;
+      padding: 1px 3px;
+      background: var(--tint-2);
+      color: var(--ink-soft);
+      margin-top: 4px;
+      line-height: 1.2;
+    }
+
+    /* "this book" badge */
+    .book-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      border: 1.5px solid var(--accent-bar);
+      border-radius: 4px;
+      padding: 1px 5px;
+      background: #fff3e0;
+      color: #a05000;
+      margin-top: 5px;
+      line-height: 1.3;
+    }
+
+    /* Sub-connector from Maintainability card down */
+    .sub-connector {
+      width: 2px;
+      height: 10px;
+      background: var(--ink);
+      margin: 0 auto;
+    }
+
+    /* Sub-characteristics panel */
+    .sub-panel {
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      background: var(--paper);
+      padding: 9px 11px;
+      width: 140px;
+      margin-top: 0;
+    }
+    .sub-panel-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 4px;
+      margin-bottom: 5px;
+    }
+    .sub-panel ul {
+      margin: 0;
+      padding-left: 14px;
+      list-style: disc;
+    }
+    .sub-panel li {
+      font-size: 11px;
+      color: var(--ink);
+      line-height: 1.45;
+      margin: 1px 0;
+    }
+    .sub-panel li .ch-ref {
+      font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
+      font-size: 10px;
+      color: var(--ink-soft);
+      margin-left: 3px;
+    }
+
+    /* Legend */
+    .legend-row {
+      display: flex;
+      gap: 16px;
+      margin-top: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+    }
+    .l-swatch {
+      width: 18px; height: 14px;
+      border-radius: 4px;
+      border: 1.5px solid var(--ink);
+      flex-shrink: 0;
+    }
+    .l-swatch.focus { background: var(--tint-3); }
+    .l-swatch.std   { background: var(--tint-1); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 1.1 — ISO/IEC 25010 product quality model</p>
+  <p class="fig-subtitle">9 top-level characteristics (2023 edition); Maintainability is this book's territory.</p>
+
+  <!--
+    SVG tree connector: root box centred, horizontal bar at 56px,
+    9 vertical drops evenly spaced (centres at 1/18, 3/18, 5/18 … 17/18 of 1000px wide figure).
+    Figure inner width ≈ 1000 – 64px padding = 936px.
+    9 cols × (card≈88px + gap≈8px) = 864 + left margin ≈ 36px.
+    Column centres (relative to SVG at full inner width):
+      col widths are equal: 936/9 = 104px each.
+      Centre of col i = 52 + i*104.   i=0..8
+    Root box: centred at 468, half-width ~80px → 388..548.
+    Horizontal bus at y=32; root stem from y=0 to y=32; drops from y=32 to y=48.
+  -->
+  <svg class="tree-svg" height="52" viewBox="0 0 936 52" aria-hidden="true">
+    <!-- Root stem: from top of SVG to horizontal bus -->
+    <line x1="468" y1="0" x2="468" y2="32" stroke="#1f2328" stroke-width="2"/>
+    <!-- Horizontal bus spanning all 9 column centres -->
+    <!-- col centres: 52, 156, 260, 364, 468, 572, 676, 780, 884 -->
+    <line x1="52" y1="32" x2="884" y2="32" stroke="#1f2328" stroke-width="2"/>
+    <!-- Vertical drops from bus to top of cards (y=32 → y=52) -->
+    <line x1="52"  y1="32" x2="52"  y2="52" stroke="#1f2328" stroke-width="2"/>
+    <line x1="156" y1="32" x2="156" y2="52" stroke="#1f2328" stroke-width="2"/>
+    <line x1="260" y1="32" x2="260" y2="52" stroke="#1f2328" stroke-width="2"/>
+    <line x1="364" y1="32" x2="364" y2="52" stroke="#1f2328" stroke-width="2"/>
+    <line x1="468" y1="32" x2="468" y2="52" stroke="#1f2328" stroke-width="2"/>
+    <line x1="572" y1="32" x2="572" y2="52" stroke="#1f2328" stroke-width="2"/>
+    <line x1="676" y1="32" x2="676" y2="52" stroke="#1f2328" stroke-width="2"/>
+    <line x1="780" y1="32" x2="780" y2="52" stroke="#1f2328" stroke-width="2"/>
+    <line x1="884" y1="32" x2="884" y2="52" stroke="#1f2328" stroke-width="2"/>
+  </svg>
+
+  <!-- Root box (positioned above the SVG via negative margin to overlap the top of SVG) -->
+  <!-- Placed before the SVG in DOM flow; use a wrapper to centre it -->
+  <div style="display:flex;justify-content:center;margin-top:-52px;margin-bottom:0;position:relative;z-index:1;pointer-events:none;">
+    <div style="border:2px solid var(--ink);border-radius:var(--radius);background:var(--tint-2);
+                padding:9px 28px;font-weight:700;font-size:14px;text-align:center;
+                box-shadow:0 1px 3px rgba(0,0,0,.08);">
+      Product Quality
+      <div style="font-weight:400;font-size:11.5px;color:var(--ink-soft);margin-top:1px;">ISO/IEC 25010:2023</div>
+    </div>
+  </div>
+
+  <!-- 9 characteristic cards -->
+  <div class="cards-row">
+
+    <!-- 1: Functional Suitability -->
+    <div class="char-col">
+      <div class="char-card">Functional<br>Suitability</div>
+    </div>
+
+    <!-- 2: Performance Efficiency -->
+    <div class="char-col">
+      <div class="char-card">Performance<br>Efficiency</div>
+    </div>
+
+    <!-- 3: Compatibility -->
+    <div class="char-col">
+      <div class="char-card">Compat­ibility</div>
+    </div>
+
+    <!-- 4: Interaction Capability (renamed 2023 from Usability) -->
+    <div class="char-col">
+      <div class="char-card">Interaction<br>Capability
+        <div class="ed-badge">renamed 2023</div>
+      </div>
+    </div>
+
+    <!-- 5: Reliability -->
+    <div class="char-col">
+      <div class="char-card">Reli­ability</div>
+    </div>
+
+    <!-- 6: Security -->
+    <div class="char-col">
+      <div class="char-card">Security</div>
+    </div>
+
+    <!-- 7: Maintainability — focus -->
+    <div class="char-col">
+      <div class="char-card is-focus">
+        <strong>Maintain­ability</strong>
+        <div><span class="book-badge">this book</span></div>
+      </div>
+      <div class="sub-connector"></div>
+      <div class="sub-panel">
+        <div class="sub-panel-title">5 sub-characteristics</div>
+        <ul>
+          <li>Modularity<span class="ch-ref">Ch 25, 26</span></li>
+          <li>Reusability<span class="ch-ref">Ch 7</span></li>
+          <li>Analysability<span class="ch-ref">Ch 2, 3, 6</span></li>
+          <li>Modifiability<span class="ch-ref">Ch 25</span></li>
+          <li>Testability<span class="ch-ref">Ch 21, 23</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 8: Flexibility (renamed 2023 from Portability) -->
+    <div class="char-col">
+      <div class="char-card">Flex­ibility
+        <div class="ed-badge">renamed 2023</div>
+      </div>
+    </div>
+
+    <!-- 9: Safety (new in 2023) -->
+    <div class="char-col">
+      <div class="char-card">Safety
+        <div class="ed-badge" style="border-color:var(--ink);color:var(--ink);background:var(--tint-1);">new 2023</div>
+      </div>
+    </div>
+
+  </div><!-- .cards-row -->
+
+  <!-- Legend -->
+  <div class="legend-row">
+    <div class="legend-item">
+      <div class="l-swatch focus"></div>
+      <span>Maintainability — this book's scope (≈ Fowler's "internal quality")</span>
+    </div>
+    <div class="legend-item">
+      <div class="l-swatch std"></div>
+      <span>Other characteristics</span>
+    </div>
+    <div class="legend-item">
+      <span class="ed-badge" style="font-size:10.5px;">renamed / new 2023</span>
+      <span>Changed from ISO/IEC 25010:2011 (8 characteristics)</span>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Source: ISO/IEC 25010:2023 (iso.org/standard/78176); arc42 "Update on ISO 25010, version 2023" (Starke) for rename/addition detail.
+    2011 edition: 8 characteristics. 2023 adds <b>Safety</b>, renames <b>Usability → Interaction Capability</b>
+    and <b>Portability → Flexibility</b>. Maintainability sub-characteristics are identical in both editions.
+    Chapter references trace to draft v1 §Deep dive table.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

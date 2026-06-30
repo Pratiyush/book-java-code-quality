@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   43 — Measure, Don't Guess (key 101, folds 102, 103, 51, 104)
+  Figure:    Figure 43.1 — The performance discipline loop
+  Family:    Flow / cycle (four sequential steps in a loop + governing constraint)
+  Method:    Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: CONCEPT callout §"Performance as a measured requirement" (draft v1, §"Performance as a measured requirement")
+  One idea:  The complete performance discipline is a four-step loop — set target → profile (real hotspot) →
+             benchmark fix (JMH) → gate against regression — governed by the constraint that most code never
+             enters the loop at all (premature optimization trades readability for imaginary gains).
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 43.1 — The performance discipline loop</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + shared components from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 26px;
+      max-width: 920px;
+    }
+
+    /* ── Governing constraint bar (top of loop) ─────────────────────────── */
+    .constraint-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--tint-1);
+      border: 1.5px solid var(--ink);
+      border-left: 4px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      margin-bottom: 20px;
+    }
+    .constraint-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      white-space: nowrap;
+    }
+    .constraint-text {
+      font-size: 13px;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    .constraint-text b { color: var(--ink); }
+    .constraint-text span.fig-muted { font-size: 12px; }
+
+    /* ── Loop row ─────────────────────────────────────────────────────────── */
+    .loop-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+    }
+
+    /* Each step card */
+    .step-card {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--tint-1);
+      overflow: hidden;
+    }
+    .step-card.step-start {
+      border-color: var(--accent-bar);
+      box-shadow: inset 4px 0 0 var(--accent-bar);
+    }
+
+    .step-hd {
+      background: var(--tint-2);
+      border-bottom: 1.5px solid var(--ink);
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .step-card.step-start .step-hd {
+      background: #fff3e0;
+      border-bottom-color: var(--accent-bar);
+    }
+
+    .step-num {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .step-card.step-start .step-num { color: var(--accent-bar); }
+
+    .step-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.25;
+    }
+
+    .step-bd {
+      padding: 10px 12px 12px;
+    }
+    .step-bd ul {
+      margin: 0;
+      padding-left: 15px;
+      list-style: disc;
+    }
+    .step-bd li {
+      margin: 3px 0;
+      font-size: 11.5px;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+    .step-bd li .key-term {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink);
+      background: var(--tint-2);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+    .step-bd .fig-muted {
+      font-size: 11px;
+      margin-top: 5px;
+      display: block;
+    }
+
+    /* Arrow between steps */
+    .loop-arrow {
+      flex: 0 0 30px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 38px;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      user-select: none;
+    }
+
+    /* ── "Back to target" return arrow under the loop ─────────────────────── */
+    .return-row {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      padding: 0 4px;
+    }
+    .return-line {
+      flex: 1;
+      height: 1.5px;
+      background: var(--line);
+      position: relative;
+    }
+    .return-line::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: -4px;
+      border: 5px solid transparent;
+      border-right-color: var(--line);
+    }
+    .return-label {
+      font-size: 11px;
+      color: var(--ink-soft);
+      padding: 0 8px;
+      white-space: nowrap;
+    }
+
+    /* ── Instrument-lies column: profiler and JMH caveats ─────────────────── */
+    .caveat-row {
+      display: flex;
+      gap: var(--gap);
+      margin-top: 14px;
+    }
+    .caveat-cell {
+      flex: 1;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      padding: 9px 12px;
+      background: var(--tint-0);
+    }
+    .caveat-cell .caveat-head {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--ink-soft);
+      margin-bottom: 4px;
+    }
+    .caveat-cell .caveat-text {
+      font-size: 11.5px;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    .caveat-cell .caveat-text b { color: var(--ink); }
+    .caveat-cell .caveat-text span.fig-muted { font-size: 11px; }
+
+    /* ── Caption ──────────────────────────────────────────────────────────── */
+    .main-caption {
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 43.1 — The performance discipline loop</p>
+  <p class="fig-subtitle">Measure, don't guess — the four-step loop, governed by a standing constraint.</p>
+
+  <!-- Governing constraint: most code never enters the loop -->
+  <div class="constraint-bar">
+    <span class="constraint-label">Governing&nbsp;constraint</span>
+    <span class="constraint-text">
+      <b>Most code does not enter this loop.</b>
+      Premature optimization trades readability for imaginary gains — optimize only where a
+      real target and a profile justify the cost.
+      <span class="fig-muted">(Knuth; draft §"Performance as a measured requirement")</span>
+    </span>
+  </div>
+
+  <!-- Four-step loop -->
+  <div class="loop-row">
+
+    <!-- Step 1 — Set a real target -->
+    <div class="step-card step-start">
+      <div class="step-hd">
+        <span class="step-num">Step 1</span>
+        <span class="step-title">Set a real target</span>
+      </div>
+      <div class="step-bd">
+        <ul>
+          <li>p99 latency</li>
+          <li>Throughput (req/s)</li>
+          <li>Memory / RSS</li>
+          <li>Startup time</li>
+        </ul>
+        <span class="fig-muted">Tied to actual needs, not arbitrary numbers. "Make it fast" is unmeasurable.</span>
+      </div>
+    </div>
+
+    <div class="loop-arrow">&#8594;</div>
+
+    <!-- Step 2 — Profile (find the real hotspot) -->
+    <div class="step-card">
+      <div class="step-hd">
+        <span class="step-num">Step 2</span>
+        <span class="step-title">Profile — find the real hotspot</span>
+      </div>
+      <div class="step-bd">
+        <ul>
+          <li><span class="key-term">JFR</span> — built-in, ~1% overhead, production-safe; CPU/alloc/locks/GC/IO</li>
+          <li><span class="key-term">async-profiler</span> — flame graphs; avoids safepoint bias; JFR-compatible</li>
+          <li>Read flame graph top-down: widest frame = where time actually goes</li>
+        </ul>
+        <span class="fig-muted">Profile under realistic load. Profiling shows where — not why or the fix.</span>
+      </div>
+    </div>
+
+    <div class="loop-arrow">&#8594;</div>
+
+    <!-- Step 3 — Benchmark the fix (JMH) -->
+    <div class="step-card">
+      <div class="step-hd">
+        <span class="step-num">Step 3</span>
+        <span class="step-title">Benchmark the fix — JMH</span>
+      </div>
+      <div class="step-bd">
+        <ul>
+          <li><span class="key-term">@Benchmark</span> + <span class="key-term">@Warmup</span> + <span class="key-term">@Fork</span></li>
+          <li><span class="key-term">@State</span> non-final inputs (defeats constant folding)</li>
+          <li><span class="key-term">Blackhole.consume</span> / return result (defeats DCE)</li>
+          <li>Run offline; report error + environment (JDK, hardware)</li>
+        </ul>
+        <span class="fig-muted">JMH 1.37 (OpenJDK). Naive <span style="font-family:var(--mono);font-size:10.5px">System.nanoTime()</span> loops measure the optimizer, not the code.</span>
+      </div>
+    </div>
+
+    <div class="loop-arrow">&#8594;</div>
+
+    <!-- Step 4 — Gate against regression -->
+    <div class="step-card">
+      <div class="step-hd">
+        <span class="step-num">Step 4</span>
+        <span class="step-title">Gate against regression</span>
+      </div>
+      <div class="step-bd">
+        <ul>
+          <li>Benchmark threshold in CI baseline</li>
+          <li>Load / macro testing for system-level truth</li>
+          <li>Environment control — same JDK + hardware</li>
+        </ul>
+        <span class="fig-muted">Micro is not macro: a faster JMH method may not move real end-to-end performance. Production profiling + load testing are the truth.</span>
+      </div>
+    </div>
+
+  </div><!-- .loop-row -->
+
+  <!-- Return arrow — loop back to Step 1 when a regression is caught -->
+  <div class="return-row">
+    <div class="return-line"></div>
+    <span class="return-label">regression caught → reset target &amp; re-profile</span>
+    <div class="return-line" style="transform: scaleX(-1);"></div>
+  </div>
+
+  <!-- Two instrument-lies caveats -->
+  <div class="caveat-row">
+    <div class="caveat-cell">
+      <div class="caveat-head">Instrument that lies #1 — the guessed hotspot</div>
+      <div class="caveat-text">
+        Developer intuition about where time goes is <b>reliably wrong</b>. A profiler under
+        realistic load shows the truth; optimization before Step 2 wastes the effort.
+        <span class="fig-muted">(Draft §"Profiling: find the real hotspot"; dossier key 102)</span>
+      </div>
+    </div>
+    <div class="caveat-cell">
+      <div class="caveat-head">Instrument that lies #2 — the naive benchmark</div>
+      <div class="caveat-text">
+        JIT <b>dead-code elimination</b>, <b>constant folding</b>, and no warmup make a hand-rolled
+        <span class="key-term" style="font-size:11px">System.nanoTime()</span> loop measure the
+        optimizer. JMH's warmup + fork + Blackhole defeat each lie.
+        <span class="fig-muted">(Draft §"Honest benchmarking"; JMH samples 08/09/10; dossier key 104)</span>
+      </div>
+    </div>
+    <div class="caveat-cell">
+      <div class="caveat-head">Allocation hygiene — where profiling says it matters</div>
+      <div class="caveat-text">
+        Churn in hot paths (autoboxing, string concat in loops, unnecessary stream
+        materialization) creates GC pressure. Escape analysis may already handle it —
+        <b>measure before reducing</b>. Object pooling is usually counterproductive on modern JVMs.
+        <span class="fig-muted">(Draft §"Memory and allocation hygiene"; dossier key 103)</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="fig-caption main-caption">
+    <b>Sources:</b> performance discipline loop — dossier key 101 §Mechanism &amp; draft v1
+    §"Performance as a measured requirement"; JFR (~1% overhead, production) — dossier key 102 / draft §"Profiling";
+    async-profiler (flame graphs, safepoint-bias avoidance) — dossier key 102 / draft §"Profiling";
+    JMH 1.37 (@Benchmark, @Warmup, @Fork, @State, Blackhole, DCE/constant-folding pitfalls,
+    samples 08/09/10) — SOURCE-PIN.md §3 pin "JMH 1.37" / dossier key 104 / draft §"Honest benchmarking";
+    Knuth premature-optimization — dossier key 101 §"Evidence AGAINST" (⚠ verbatim @pin);
+    ISO 25010 Performance Efficiency — SOURCE-PIN.md §1 (2023 edition) / dossier key 101 §"Core definition".
+    Trace: <b>fig101_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 41 — The Draft That Looks Like a Deliverable (key 97, folds 99) · Part XII opener
+  Figure:  Figure 41.1 — AI output as untrusted draft: the verification gate
+  Family:  Flow-sequence / architecture (left-to-right pipeline with a vertical gate column)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: CONCEPT callout § "The stance: AI output is an untrusted contribution;
+             verification is raised, not reduced." (draft v1, §How it works)
+  One idea: AI-generated code is a draft, not a deliverable — it flows through the same
+            quality gate as any human contribution (SAST/SCA/secrets, tests, mutation,
+            review, CI gate), and only exits as shippable after every stage clears.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 41.1 — AI output as untrusted draft: the verification gate</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + components from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 24px;
+      max-width: 960px;
+    }
+
+    /* Top row: SOURCE boxes + arrow → DRAFT box */
+    .top-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 18px;
+    }
+
+    .source-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .source-box {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 9px 14px;
+      min-width: 164px;
+      background: var(--tint-1);
+    }
+    .source-box h4 {
+      margin: 0 0 2px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .source-box p {
+      margin: 0;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+    }
+
+    /* The AI source box gets the accent bar to mark it as the new entrant */
+    .source-box.is-ai {
+      border-color: var(--accent-bar);
+      box-shadow: inset 4px 0 0 var(--accent-bar);
+    }
+
+    .merge-arrow {
+      flex: 0 0 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      padding: 0 4px;
+    }
+
+    /* Draft box — wide, distinct shade */
+    .draft-box {
+      flex: 1;
+      border: 2px dashed var(--ink);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      background: var(--tint-0);
+      min-width: 180px;
+    }
+    .draft-box h4 {
+      margin: 0 0 4px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .draft-box .risk-list {
+      margin: 6px 0 0;
+      padding-left: 16px;
+      list-style: disc;
+    }
+    .draft-box .risk-list li {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      margin: 2px 0;
+    }
+    .draft-box .risk-list li b {
+      color: var(--ink);
+    }
+
+    /* Divider between top and gate section */
+    .section-divider {
+      height: 1px;
+      background: var(--line);
+      margin: 4px 0 18px;
+    }
+
+    /* Gate label */
+    .gate-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 10px;
+    }
+
+    /* Gate stages row */
+    .gate-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .gate-stage {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--paper);
+      min-width: 0;
+    }
+    .gate-stage > .hd {
+      background: var(--tint-2);
+      border-bottom: 1.5px solid var(--ink);
+      padding: 7px 10px;
+    }
+    .gate-stage > .hd .stage-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      display: block;
+      line-height: 1.25;
+    }
+    .gate-stage > .hd .ch-ref {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      display: block;
+      margin-top: 2px;
+    }
+    .gate-stage > .bd {
+      padding: 8px 10px;
+    }
+    .gate-stage > .bd ul {
+      margin: 0;
+      padding-left: 14px;
+      list-style: disc;
+    }
+    .gate-stage > .bd li {
+      font-size: 11px;
+      color: var(--ink);
+      margin: 2px 0;
+      line-height: 1.3;
+    }
+
+    /* Gate connector arrows */
+    .gate-arrow {
+      flex: 0 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* Final outcome box */
+    .outcome-box {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .outcome-arrow {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      flex: 0 0 auto;
+    }
+
+    .outcome-card {
+      border: 2px solid var(--ok);
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      background: var(--tint-0);
+      flex: 1;
+    }
+    .outcome-card h4 {
+      margin: 0 0 2px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ok);
+    }
+    .outcome-card p {
+      margin: 0;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+    }
+
+    .reject-card {
+      border: 2px solid var(--stop);
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      background: var(--tint-0);
+      flex: 0 0 auto;
+    }
+    .reject-card h4 {
+      margin: 0 0 2px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--stop);
+    }
+    .reject-card p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--ink-soft);
+    }
+
+    .or-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      flex: 0 0 auto;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 41.1 — AI output as untrusted draft: the verification gate</p>
+  <p class="fig-subtitle">AI proposes; the deterministic stack disposes. The gate does not care who wrote the code.</p>
+
+  <!-- Top row: sources → UNTRUSTED DRAFT -->
+  <div class="top-row">
+
+    <div class="source-col">
+      <div class="source-box is-ai">
+        <h4>AI assistant output</h4>
+        <p>Plausible by construction;<br>vulnerability inheritance;<br>confident wrongness</p>
+      </div>
+      <div class="source-box">
+        <h4>Human-authored code</h4>
+        <p>Same gate — source-agnostic<br>verification applies to both</p>
+      </div>
+    </div>
+
+    <div class="merge-arrow">&#8594;</div>
+
+    <div class="draft-box">
+      <h4>Untrusted draft contribution</h4>
+      <ul class="risk-list">
+        <li><b>Vulnerability inheritance</b> — insecure training-data patterns reproduced (injection, secrets, crypto misuse)</li>
+        <li><b>Confident wrongness</b> — plausible output, no correctness or security guarantee</li>
+        <li><b>Hallucinated dependencies</b> — invented package names (slopsquatting); supply-chain risk</li>
+        <li><b>Tests from code</b> — if test-generated from implementation, asserts bugs by construction</li>
+        <li><b>Coverage theater</b> — assertion-light tests inflate coverage metric, verified by mutation score</li>
+      </ul>
+    </div>
+
+  </div><!-- .top-row -->
+
+  <hr class="section-divider">
+  <p class="gate-label">Quality gate — unchanged from human code; AI raises the need, does not remove it</p>
+
+  <!-- Gate stages row -->
+  <div class="gate-row">
+
+    <!-- Stage A: SAST / SCA / Secrets -->
+    <div class="gate-stage">
+      <div class="hd">
+        <span class="stage-title">SAST · SCA · Secrets</span>
+        <span class="ch-ref">Ch 30 · Ch 28 · Ch 31</span>
+      </div>
+      <div class="bd">
+        <ul>
+          <li>Injection / deserialization</li>
+          <li>Crypto misuse</li>
+          <li>Dependency audit + SBOM</li>
+          <li>Hardcoded secrets scan</li>
+          <li>Hallucinated-dep check</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="gate-arrow">&#8594;</div>
+
+    <!-- Stage B: Tests + Mutation -->
+    <div class="gate-stage">
+      <div class="hd">
+        <span class="stage-title">Tests · Mutation</span>
+        <span class="ch-ref">Part V · Ch 23</span>
+      </div>
+      <div class="bd">
+        <ul>
+          <li>Spec-derived tests<br>(never from code)</li>
+          <li>Mutation testing verifies<br>tests catch real bugs</li>
+          <li>Mutation score, not<br>coverage %, is the check</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="gate-arrow">&#8594;</div>
+
+    <!-- Stage C: Human review -->
+    <div class="gate-stage">
+      <div class="hd">
+        <span class="stage-title">Human review</span>
+        <span class="ch-ref">Ch 37</span>
+      </div>
+      <div class="bd">
+        <ul>
+          <li>Familiarity check<br>(don't ship what the<br>team doesn't understand)</li>
+          <li>Volume discipline —<br>small-PR size limits</li>
+          <li>Behavior-change check<br>on AI refactoring</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="gate-arrow">&#8594;</div>
+
+    <!-- Stage D: CI gate -->
+    <div class="gate-stage">
+      <div class="hd">
+        <span class="stage-title">CI gate</span>
+        <span class="ch-ref">Ch 33</span>
+      </div>
+      <div class="bd">
+        <ul>
+          <li>Build must be green</li>
+          <li>All prior stages pass</li>
+          <li>Gate enforced on<br>every PR — no bypass</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- .gate-row -->
+
+  <!-- Outcome row -->
+  <div class="outcome-box">
+    <span class="outcome-arrow">&#8595;</span>
+    <div class="outcome-card">
+      <h4>Shippable — gate cleared</h4>
+      <p>Deterministic stack has disposed. Code is verified regardless of its origin.</p>
+    </div>
+    <span class="or-label">or</span>
+    <div class="reject-card">
+      <h4>Rejected / reworked</h4>
+      <p>Gate flags the inherited vulnerability,<br>hollow test, or hallucinated dependency.</p>
+    </div>
+  </div>
+
+  <div class="fig-note" style="margin-top:16px;">
+    <b>AI refactoring:</b> not behavior-preserving by construction (unlike OpenRewrite/Refaster,
+    Ch 40) — requires a green test net before merging.
+    <b>Test generation critical guardrail:</b> generate from the <em>spec</em>, never from the
+    implementation; verify tests fail on broken code via mutation testing (Ch 23).
+    Statistics on AI code defect rates are dated snapshots — verify and attribute to the specific
+    study; the structural gate discipline is durable where any percentage is not.
+  </div>
+
+  <p class="fig-caption">
+    Stance: draft v1 §How it works ("AI output as untrusted contribution; verification is raised,
+    not reduced") · Ch refs trace to dossier key 97 (folds 99) back-matter routes.
+    Every gate stage maps to a chapter verified in <b>fig97_1.sources.md</b>.
+    <b>No AI-code statistics are baked into this diagram</b> — those are dated snapshots; see the
+    prose with source + date.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

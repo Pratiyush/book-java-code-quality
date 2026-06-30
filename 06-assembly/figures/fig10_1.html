@@ -1,0 +1,235 @@
+<!--
+  Chapter 8 (dossier key 10) — "Objects That Don't Change Their Mind"
+  Slug: 10_immutability_value_design
+  Figure: fig10_1
+  Family: Architecture / layering (family 1)
+  Method: HTML → render.mjs → cropped PNG
+  Placement: "The three instruments, and the gap each leaves" section
+  One idea: The three instruments of Java immutability (records, immutable collections,
+             defensive copies) each close a specific gap — composed together they achieve
+             the complete guarantee Item 17 Rule 5 requires.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Figure 8.1 — Three instruments of Java immutability (Ch 8)</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* Figure-local layout only — palette and shared components from figures.css */
+
+    #figure {
+      width: 720px;
+      padding: 28px 30px 24px;
+    }
+
+    /* Three instrument rows — stacked top to bottom */
+    .instrument-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .instrument-row {
+      display: grid;
+      grid-template-columns: 220px 1fr 1fr;
+      gap: 0;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    /* Left cell: instrument name + JEP / Item reference */
+    .instr-name {
+      background: var(--tint-2);
+      border-right: 1.5px solid var(--ink);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .instr-name .label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0 0 3px;
+    }
+    .instr-name .ref {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-soft);
+    }
+
+    /* Middle cell: what it provides (the guarantee) */
+    .instr-provides {
+      background: var(--tint-1);
+      border-right: 1.5px solid var(--line);
+      padding: 11px 14px;
+    }
+    .instr-provides .cell-head {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--ink-soft);
+      margin: 0 0 5px;
+    }
+    .instr-provides .cell-body {
+      font-size: 12.5px;
+      color: var(--ink);
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    /* Right cell: the gap it leaves */
+    .instr-gap {
+      background: var(--tint-0);
+      padding: 11px 14px;
+    }
+    .instr-gap .cell-head {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--ink-soft);
+      margin: 0 0 5px;
+    }
+    .instr-gap .cell-body {
+      font-size: 12.5px;
+      color: var(--ink);
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    /* Accent bar on left for the "complete" composed row */
+    .instrument-row.is-composed {
+      border-color: var(--accent-bar);
+    }
+    .instrument-row.is-composed .instr-name {
+      background: var(--tint-2);
+      border-right-color: var(--accent-bar);
+      box-shadow: inset 4px 0 0 var(--accent-bar);
+    }
+
+    /* Downward connector between rows */
+    .connector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 18px;
+      color: var(--ink-soft);
+      font-size: 18px;
+      line-height: 1;
+      margin: -2px 0;
+    }
+
+    /* Column headers above the grid */
+    .col-heads {
+      display: grid;
+      grid-template-columns: 220px 1fr 1fr;
+      gap: 0;
+      margin-bottom: 4px;
+    }
+    .col-head-cell {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0 14px;
+    }
+
+    /* Bottom note */
+    .bottom-note {
+      margin-top: 16px;
+    }
+    .bottom-note .fig-note {
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Three instruments of Java immutability</p>
+  <p class="fig-subtitle">Each instrument closes a specific gap — composed, they satisfy <em>Effective Java</em> Item&nbsp;17 Rule&nbsp;5</p>
+
+  <!-- Column headers -->
+  <div class="col-heads">
+    <div class="col-head-cell">Instrument</div>
+    <div class="col-head-cell">Guarantee provided</div>
+    <div class="col-head-cell">Gap it leaves</div>
+  </div>
+
+  <div class="instrument-grid">
+
+    <!-- Row 1: Records -->
+    <div class="instrument-row">
+      <div class="instr-name">
+        <span class="label">Records</span>
+        <span class="ref">JEP 395 · GA Java 16</span>
+      </div>
+      <div class="instr-provides">
+        <p class="cell-head">Provides</p>
+        <p class="cell-body">Private <code>final</code> fields per component; compiler-derived canonical constructor, accessors, <code>equals</code>, <code>hashCode</code>, <code>toString</code>; implicitly <code>final</code> class</p>
+      </div>
+      <div class="instr-gap">
+        <p class="cell-head">Gap</p>
+        <p class="cell-body">Makes the component <em>reference</em> final — does not copy or freeze a mutable component (shallow only)</p>
+      </div>
+    </div>
+
+    <div class="connector">↓</div>
+
+    <!-- Row 2: Immutable collections -->
+    <div class="instrument-row">
+      <div class="instr-name">
+        <span class="label">Immutable collections</span>
+        <span class="ref">List/Set/Map.of · copyOf · JDK 9+</span>
+      </div>
+      <div class="instr-provides">
+        <p class="cell-head">Provides</p>
+        <p class="cell-body">Throws <code>UnsupportedOperationException</code> on any structural mutation; <code>copyOf</code> produces a snapshot no caller can reach through</p>
+      </div>
+      <div class="instr-gap">
+        <p class="cell-head">Gap</p>
+        <p class="cell-body">Freezes the <em>collection</em>, not its <em>elements</em>; <code>unmodifiableList(x)</code> is a view — still reflects mutation of the source <code>x</code></p>
+      </div>
+    </div>
+
+    <div class="connector">↓</div>
+
+    <!-- Row 3: Defensive copies (closes Rule 5) -->
+    <div class="instrument-row is-composed">
+      <div class="instr-name">
+        <span class="label">Defensive copies</span>
+        <span class="ref">Effective Java Item 50 · compact constructor</span>
+      </div>
+      <div class="instr-provides">
+        <p class="cell-head">Provides</p>
+        <p class="cell-body">A private snapshot no caller can reach; copy before validate; <code>List.copyOf(items)</code> in the compact constructor seals Rule&nbsp;5</p>
+      </div>
+      <div class="instr-gap">
+        <p class="cell-head">Cost / limit</p>
+        <p class="cell-body">Allocation per construction; avoid <code>clone</code> on subclassable types; not needed if the component is already immutable</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom note: the key insight -->
+  <div class="bottom-note">
+    <div class="fig-note">
+      <b>Using the feature &#x2260; getting the guarantee.</b>
+      A record with a <code>List&lt;LineItem&gt;</code> field satisfies Rules&nbsp;1–4 (Item&nbsp;17) automatically. Rule&nbsp;5 — exclusive access to mutable components — requires the compact constructor to call <code>List.copyOf(items)</code>. Without it, the reference is final; the list is not.
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    <b>Figure 8.1</b> The three Java immutability instruments, each with its exact guarantee and the gap it leaves open; composed in the compact constructor (<code>items&nbsp;=&nbsp;List.copyOf(items)</code>), they satisfy Item&nbsp;17's five rules.
+  </p>
+
+</div>
+</body>
+</html>

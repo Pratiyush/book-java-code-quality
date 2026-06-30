@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 38 — Knowing Whether It Works (keys 85, 87, 88)
+  Figure:  Figure 38.1 — Outcome metrics vs. vanity metrics
+  Family:  Concept-map (two outcome frameworks + refused vanity column + Goodhart anchor)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: "Metrics that matter" section (CONCEPT callout — throughput/stability pair;
+             SPACE multi-dimensional; Goodhart corrupts any single axis)
+  One idea: Choose outcome measures (DORA four keys — throughput + stability; SPACE five
+             dimensions — two or three together, never Activity alone) over vanity metrics
+             (LOC / commits / velocity / individual leaderboards), because the moment a
+             number becomes a target, Goodhart corrupts both the number and the team.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 38.1 — Outcome metrics vs. vanity metrics</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + shared components from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 22px;
+      max-width: 1020px;
+    }
+
+    /* Three-column layout: DORA | SPACE | Vanity */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    /* Column header strip */
+    .col-header {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--ink);
+      margin-bottom: 10px;
+    }
+    .col-header.col-use  { border-color: var(--ink); }
+    .col-header.col-stop { border-color: var(--stop); color: var(--stop); }
+
+    /* Panel title inside a column */
+    .panel-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      margin: 0 0 10px;
+    }
+
+    /* DORA sub-group: throughput pair / stability pair */
+    .dora-group {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .dora-group-hd {
+      background: var(--tint-2);
+      border-bottom: 1.5px solid var(--ink);
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .dora-group-bd {
+      padding: 8px 10px;
+    }
+    .dora-metric {
+      font-size: 12.5px;
+      font-weight: 600;
+      margin: 0 0 2px;
+    }
+    .dora-metric-sub {
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      margin: 0 0 6px;
+    }
+    .dora-metric:last-of-type + .dora-metric-sub { margin-bottom: 0; }
+
+    /* Insight strip below DORA pairs */
+    .dora-insight {
+      font-size: 11.5px;
+      color: var(--ink);
+      background: var(--tint-1);
+      border: 1px solid var(--tint-3);
+      border-radius: 6px;
+      padding: 6px 9px;
+      margin-top: 2px;
+    }
+
+    /* SPACE dimension rows */
+    .space-dim {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 7px;
+      font-size: 12.5px;
+    }
+    .space-letter {
+      flex: 0 0 20px;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1;
+      margin-top: 1px;
+    }
+    .space-label { font-weight: 600; }
+    .space-desc  { font-size: 11.5px; color: var(--ink-soft); margin-top: 1px; }
+
+    .space-rule {
+      font-size: 11.5px;
+      background: var(--tint-1);
+      border: 1px solid var(--tint-3);
+      border-radius: 6px;
+      padding: 6px 9px;
+      margin-top: 6px;
+    }
+
+    /* Vanity column */
+    .vanity-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 7px;
+      font-size: 12.5px;
+    }
+    .vanity-x {
+      flex: 0 0 18px;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--stop);
+      line-height: 1;
+    }
+    .vanity-label { font-weight: 600; }
+    .vanity-why   { font-size: 11.5px; color: var(--ink-soft); margin-top: 1px; }
+
+    .vanity-warn {
+      font-size: 11.5px;
+      background: var(--tint-1);
+      border-left: 3px solid var(--stop);
+      border-radius: 0 6px 6px 0;
+      padding: 7px 10px;
+      margin-top: 8px;
+    }
+    .vanity-warn b { color: var(--ink); }
+
+    /* Goodhart anchor row */
+    .goodhart-row {
+      margin-top: 16px;
+    }
+
+    /* Caption */
+    .fig-caption { margin-top: 14px; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 38.1 — Outcome metrics vs. vanity metrics</p>
+  <p class="fig-subtitle">
+    Use DORA four keys and SPACE together; refuse vanity outputs — Goodhart corrupts any number made a target.
+  </p>
+
+  <div class="metric-grid">
+
+    <!-- ── Column 1: DORA four keys ── -->
+    <div>
+      <div class="col-header col-use">Use — delivery outcome</div>
+      <p class="panel-title">DORA four keys</p>
+
+      <!-- Throughput pair -->
+      <div class="dora-group">
+        <div class="dora-group-hd">Throughput — how fast value reaches users</div>
+        <div class="dora-group-bd">
+          <p class="dora-metric">Deployment frequency</p>
+          <p class="dora-metric-sub">How often code ships to production</p>
+          <p class="dora-metric">Lead time for changes</p>
+          <p class="dora-metric-sub">Commit → production running</p>
+        </div>
+      </div>
+
+      <!-- Stability pair -->
+      <div class="dora-group">
+        <div class="dora-group-hd">Stability — how safely</div>
+        <div class="dora-group-bd">
+          <p class="dora-metric">Change-failure rate</p>
+          <p class="dora-metric-sub">% of deployments causing incidents</p>
+          <p class="dora-metric">Failed-deployment recovery time</p>
+          <p class="dora-metric-sub">Time to restore from failure</p>
+        </div>
+      </div>
+
+      <div class="dora-insight">
+        <b>Throughput and stability correlate — not a trade-off.</b>
+        Elite teams are <em>both</em> fast and stable; the same practices (small batches,
+        automated gates, fast feedback) enable both.<br>
+        <span style="color:var(--ink-soft);font-size:11px;">Source: 2025 DORA report / dora.dev; <em>Accelerate</em> (2018)</span>
+      </div>
+
+      <div class="fig-note" style="margin-top:10px;font-size:11.5px;">
+        <b>Gameable &amp; incomplete:</b> split deploys juice frequency; architecture, debt reduction,
+        and mentoring generate <em>no</em> DORA signal. Metrics measure the system,
+        never individuals. Use as questions, not verdicts.
+      </div>
+    </div>
+
+    <!-- ── Column 2: SPACE dimensions ── -->
+    <div>
+      <div class="col-header col-use">Use — productivity (multi-axis)</div>
+      <p class="panel-title">SPACE framework <span class="fig-chapter" style="font-size:11px;">(Forsgren et al. 2021)</span></p>
+
+      <div class="space-dim">
+        <div class="space-letter">S</div>
+        <div>
+          <div class="space-label">Satisfaction &amp; well-being</div>
+          <div class="space-desc">Developer fulfillment; sustainable pace</div>
+        </div>
+      </div>
+      <div class="space-dim">
+        <div class="space-letter">P</div>
+        <div>
+          <div class="space-label">Performance</div>
+          <div class="space-desc">Outcomes and quality of work delivered</div>
+        </div>
+      </div>
+      <div class="space-dim">
+        <div class="space-letter">A</div>
+        <div>
+          <div class="space-label">Activity</div>
+          <div class="space-desc">Volume of actions (commits, PRs, deploys)</div>
+        </div>
+      </div>
+      <div class="space-dim">
+        <div class="space-letter">C</div>
+        <div>
+          <div class="space-label">Communication &amp; collaboration</div>
+          <div class="space-desc">Knowledge sharing; unblocking teammates</div>
+        </div>
+      </div>
+      <div class="space-dim">
+        <div class="space-letter">E</div>
+        <div>
+          <div class="space-label">Efficiency &amp; flow</div>
+          <div class="space-desc">Uninterrupted work; low friction; fast feedback</div>
+        </div>
+      </div>
+
+      <div class="space-rule">
+        <b>Rule:</b> use 2–3 dimensions together — <b>never Activity alone.</b>
+        Activity is exactly the LOC / commit-count trap: it measures output,
+        not value.
+      </div>
+
+      <div class="fig-note" style="margin-top:10px;font-size:11.5px;">
+        <b>Limitation:</b> no single axis can be gamed because the others expose
+        it; observational / survey-based — needs honest self-report.
+        Never per-individual ranking.
+      </div>
+    </div>
+
+    <!-- ── Column 3: Vanity — refuse ── -->
+    <div>
+      <div class="col-header col-stop">Refuse — vanity outputs</div>
+      <p class="panel-title">Gameable. Value-blind. Morale-harming.</p>
+
+      <div class="vanity-item">
+        <div class="vanity-x">&#x2715;</div>
+        <div>
+          <div class="vanity-label">Lines of code (LOC)</div>
+          <div class="vanity-why">Pad code to score; removing lines is invisible</div>
+        </div>
+      </div>
+      <div class="vanity-item">
+        <div class="vanity-x">&#x2715;</div>
+        <div>
+          <div class="vanity-label">Commit count</div>
+          <div class="vanity-why">Split commits to inflate; measures activity not value</div>
+        </div>
+      </div>
+      <div class="vanity-item">
+        <div class="vanity-x">&#x2715;</div>
+        <div>
+          <div class="vanity-label">PR count</div>
+          <div class="vanity-why">Pressure to merge; discourages large safe changes</div>
+        </div>
+      </div>
+      <div class="vanity-item">
+        <div class="vanity-x">&#x2715;</div>
+        <div>
+          <div class="vanity-label">Velocity / story points as productivity</div>
+          <div class="vanity-why">Estimates inflate; points become the goal, not delivery</div>
+        </div>
+      </div>
+      <div class="vanity-item">
+        <div class="vanity-x">&#x2715;</div>
+        <div>
+          <div class="vanity-label">Individual leaderboards</div>
+          <div class="vanity-why">Architecture, mentoring, debt — generate no score;
+            strongest engineer ranks last</div>
+        </div>
+      </div>
+
+      <div class="vanity-warn">
+        <b>Goodhart's law:</b> when a measure becomes a target, it ceases to be a
+        good measure. Every vanity metric triggers exactly this corruption.
+        The hook's LOC ranking — padded code, no mentoring, strongest engineer
+        ranked last — is Goodhart made flesh.
+      </div>
+    </div>
+
+  </div><!-- .metric-grid -->
+
+  <!-- Goodhart anchor -->
+  <div class="goodhart-row">
+    <div class="fig-note">
+      <b>The unifying rule (applied at team / system level, never individual):</b>
+      measure <b>outcomes not outputs</b> · trends not absolutes · counter-metric everything ·
+      treat every number as a <b>question, not a verdict</b>.
+      Quality trends that complement DORA/SPACE: defect-escape rate · MTTR · flaky-test rate
+      <span class="fig-chapter">(Ch 20)</span> · debt-ratio trend <span class="fig-chapter">(key 59)</span> ·
+      new-code coverage trend <span class="fig-chapter">(Ch 34)</span> — each as a trend with a
+      counter-metric, never a standalone target.
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    DORA four keys: dora.dev / 2025 DORA report / <em>Accelerate</em> (Forsgren/Humble/Kim, 2018).
+    SPACE dimensions: Forsgren et al., ACM Queue 2021. Goodhart's law and vanity metrics:
+    Ch 38 dossier (keys 85, 87, 88); measurement discipline established Ch 1–2 (key 04).
+    Full source trace in <b>fig85_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 46 — So What Do I Actually Set Up? (key 109)
+  Figure:  Figure 46.2 — The gate design: a feedback-latency ladder
+  Family:  Flow-sequence (four stages left → right, each a pipeline phase with
+           latency label, tool list, and enforcement outcome)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: § "The gate design: a feedback-latency ladder" → CONCEPT callout
+             (draft v1, lines 57–63)
+  One idea: The four-stage gate (pre-commit → PR-fast → main/nightly → merge)
+            orders each check at the earliest, fastest stage that can run it,
+            so feedback is instant and enforcement at the merge is un-bypassable.
+  NEUTRALITY: CAPSTONE CARVE-OUT — recommends one defensible gate ordering;
+              the design principle (feedback-latency ladder) is the idea, not
+              a specific platform product.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 46.2 — The gate design: a feedback-latency ladder</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + components come from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 24px;
+      max-width: 1200px;
+    }
+
+    /* Gate row — four stages + three arrows */
+    .gate-row {
+      display: flex;
+      gap: 0;
+      align-items: flex-start;
+      margin-top: 18px;
+    }
+
+    /* Each stage card */
+    .gate-row .fig-stage {
+      min-width: 0;
+      flex: 1;
+    }
+
+    /* Stage header */
+    .gate-row .fig-stage > .hd {
+      padding: 9px 12px 7px;
+      line-height: 1.3;
+    }
+
+    .stage-num {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 2px;
+    }
+    .stage-name {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .stage-latency {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      margin-top: 2px;
+    }
+    .stage-where {
+      display: block;
+      font-size: 10.5px;
+      font-style: italic;
+      color: var(--ink-soft);
+      margin-top: 1px;
+    }
+
+    /* Stage body */
+    .gate-row .fig-stage > .bd {
+      padding: 10px 12px 12px;
+    }
+    .gate-row .fig-stage ul {
+      margin: 0;
+      padding-left: 16px;
+      list-style: disc;
+    }
+    .gate-row .fig-stage li {
+      margin: 3px 0;
+      font-size: 11.5px;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+
+    /* Outcome badge row inside body */
+    .stage-outcome {
+      margin-top: 9px;
+      padding-top: 7px;
+      border-top: 1px solid var(--tint-2);
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+    .stage-outcome .fig-badge {
+      display: block;
+      width: fit-content;
+      margin-top: 2px;
+    }
+
+    /* Stage 0 (pre-commit) — accent-bar start-here treatment */
+    .fig-stage.is-accent > .hd {
+      background: #fff3e0;
+      border-bottom-color: var(--accent-bar);
+    }
+    .fig-stage.is-accent {
+      border-color: var(--accent-bar);
+      box-shadow: inset 4px 0 0 var(--accent-bar);
+    }
+    .fig-stage.is-accent .stage-num {
+      color: var(--accent-bar);
+    }
+
+    /* Stage 3 (merge) — strong / dark header = enforcement */
+    .fig-stage.is-strong > .hd {
+      background: var(--tint-3);
+    }
+
+    /* Arrow connector between stages */
+    .gate-arrow {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      flex: 0 0 32px;
+      color: var(--ink);
+      font-size: 22px;
+      font-weight: 700;
+      padding-top: 40px;
+      user-select: none;
+    }
+
+    /* Design-principle strip below the stages */
+    .design-strip {
+      margin-top: 14px;
+      display: flex;
+      gap: var(--gap);
+    }
+    .design-chip {
+      flex: 1;
+      background: var(--tint-1);
+      border: 1px solid var(--tint-3);
+      border-radius: 8px;
+      padding: 8px 11px;
+      font-size: 11.5px;
+    }
+    .design-chip b {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 12px;
+    }
+
+    /* Chapter ref */
+    .ch-ref {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink-soft);
+      margin-left: 3px;
+    }
+
+    .gate-note {
+      margin-top: 14px;
+    }
+    .gate-caption {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 46.2 — The gate design: a feedback-latency ladder</p>
+  <p class="fig-subtitle">Each check runs at the earliest, fastest stage that can execute it. Enforcement is un-bypassable at the merge.</p>
+
+  <div class="gate-row">
+
+    <!-- Stage 0 — Pre-commit (start-here) -->
+    <div class="fig-stage is-accent">
+      <div class="hd">
+        <span class="stage-num">Stage 0</span>
+        <span class="stage-name">Pre-commit</span>
+        <span class="stage-latency">Seconds</span>
+        <span class="stage-where">Developer's machine</span>
+      </div>
+      <div class="bd">
+        <ul>
+          <li>Spotless format<span class="ch-ref">Ch 6</span></li>
+          <li>gitleaks secrets scan<span class="ch-ref">Ch 31, 35</span></li>
+        </ul>
+        <div class="stage-outcome">
+          Outcome:
+          <span class="fig-badge ok">PASS → commit</span>
+          <span class="fig-badge stop">FAIL → blocked locally</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gate-arrow">&#8594;</div>
+
+    <!-- Stage 1 — PR-fast -->
+    <div class="fig-stage">
+      <div class="hd">
+        <span class="stage-num">Stage 1</span>
+        <span class="stage-name">PR-fast</span>
+        <span class="stage-latency">A few minutes</span>
+        <span class="stage-where">CI — every pull request</span>
+      </div>
+      <div class="bd">
+        <ul>
+          <li>Compile + Error Prone<span class="ch-ref">Ch 18</span></li>
+          <li>Checkstyle (curated ruleset)<span class="ch-ref">Ch 16</span></li>
+          <li>Unit tests (JUnit 6)<span class="ch-ref">Part V</span></li>
+          <li>JaCoCo coverage — new code only<span class="ch-ref">Ch 23, 34</span></li>
+        </ul>
+        <div class="stage-outcome">
+          Outcome:
+          <span class="fig-badge stop">FAIL on new high-severity → PR blocked</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gate-arrow">&#8594;</div>
+
+    <!-- Stage 2 — Main/nightly -->
+    <div class="fig-stage">
+      <div class="hd">
+        <span class="stage-num">Stage 2</span>
+        <span class="stage-name">Main / nightly</span>
+        <span class="stage-latency">Slow — off the fast path</span>
+        <span class="stage-where">CI — scheduled / post-merge</span>
+      </div>
+      <div class="bd">
+        <ul>
+          <li>SpotBugs 4.10.2 + FindSecBugs<span class="ch-ref">Ch 16</span></li>
+          <li>SonarQube full analysis<span class="ch-ref">Ch 17, 33</span></li>
+          <li>OWASP Dependency-Check (SCA)<span class="ch-ref">Ch 28</span></li>
+          <li>PITest mutation (critical modules)<span class="ch-ref">Ch 23</span></li>
+          <li>Integration tests + Testcontainers<span class="ch-ref">Ch 21</span></li>
+        </ul>
+        <div class="stage-outcome">
+          Outcome:
+          <span class="fig-badge warn">Findings → team review; not PR-blocking</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gate-arrow">&#8594;</div>
+
+    <!-- Stage 3 — Merge gate (enforcement) -->
+    <div class="fig-stage is-strong">
+      <div class="hd">
+        <span class="stage-num">Stage 3</span>
+        <span class="stage-name">Merge (enforcement)</span>
+        <span class="stage-latency">PR-fast result</span>
+        <span class="stage-where">Branch protection + merge queue</span>
+      </div>
+      <div class="bd">
+        <ul>
+          <li>PR-fast as required status check<span class="ch-ref">Ch 35</span></li>
+          <li>Branch protection on main<span class="ch-ref">Ch 35</span></li>
+          <li>Merge queue prevents bypass<span class="ch-ref">Ch 35</span></li>
+        </ul>
+        <div class="stage-outcome">
+          Outcome:
+          <span class="fig-badge stop">Gate not passed → merge blocked</span>
+          <span class="fig-badge ok">Gate passed → main stays green</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .gate-row -->
+
+  <!-- Design principles -->
+  <div class="design-strip">
+    <div class="design-chip">
+      <b>Fast feedback first</b>
+      Cheap checks (format, compile, unit) run pre-commit and on every PR. Developers never wait for the slow stage.<span class="ch-ref">Ch 33 key 75/79</span>
+    </div>
+    <div class="design-chip">
+      <b>New-code focus (clean-as-you-code)</b>
+      The PR gate blocks on quality of what the team <em>touches</em> — adoptable on legacy without a wall of existing findings.<span class="ch-ref">Ch 34 key 80</span>
+    </div>
+    <div class="design-chip">
+      <b>Un-bypassable enforcement</b>
+      Required status check + branch protection + merge queue means no path to main that skips the gate.<span class="ch-ref">Ch 35 key 81/82</span>
+    </div>
+    <div class="design-chip">
+      <b>Slow checks off the fast path</b>
+      SpotBugs, Sonar, SCA, and mutation run nightly — full rigor where it is affordable, not blocking every push.<span class="ch-ref">Ch 33 key 79</span>
+    </div>
+  </div>
+
+  <div class="fig-note gate-note">
+    <b>Why four stages, not one?</b> A single gate that runs everything on every PR would be too slow to
+    sustain. A gate that skips the slow checks on every PR would miss the deep findings. The feedback-latency
+    ladder resolves this: fast checks give developers instant signal; slow checks give the team thorough signal
+    on a schedule; enforcement is locked at the merge so neither is optional.
+    The new-code focus (clean-as-you-code) is what makes this adoptable on a legacy codebase that already has
+    thousands of findings — the gate only judges what the team changes.
+  </div>
+
+  <p class="fig-caption gate-caption">
+    Gate design: key 109 (Ch 46); feedback-latency ladder principle from Ch 33 key 75/79 and
+    Ch 35 key 81/82; new-code / clean-as-you-code from Ch 34 key 80; branch-protection/merge-queue
+    from Ch 35 key 81. Version pins from <b>00-strategy/SOURCE-PIN.md</b> (pinned 2026-06-20).
+    Every label traced in <b>fig109_2.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

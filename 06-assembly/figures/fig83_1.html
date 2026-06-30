@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 36 (dossier key 83) — When Quality Meets Reality (CLOSES Part IX — CI/CD & Quality Gates)
+  Figure:  Figure 36.1 — The release-quality loop: shift-left gates ↔ shift-right release quality
+  Family:  Flow / sequence rendered as a closed loop (the cycle the chapter argues is ONE cycle, not two phases)
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Deep dive: shift-right, and the limit of limiting damage" — after the "shift-left and shift-right
+             are one cycle, not two phases" paragraph; referenced earlier from §"How it works".
+  One idea: Release quality is shift-RIGHT closing a single continuous loop with shift-left — green & signed
+             gates ship, progressive delivery shrinks the blast radius of the defect that slips, production
+             monitoring catches it, and the post-release feedback turns each escape into a fix + a test + a
+             new gate that is itself shift-left for the next change. Safe and frequent are produced by the
+             same mechanism; the loop limits damage, it does not prevent defects.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 36.1 — The release-quality loop: shift-left gates ↔ shift-right release quality</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + shared components come from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 32px 24px;
+      width: 1000px;
+    }
+
+    /* Direction band over the two halves of the cycle */
+    .dir-band {
+      display: flex;
+      gap: 0;
+      margin: 14px 0 4px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .dir-half {
+      flex: 1;
+      padding: 7px 13px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--ink-soft);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dir-half.left  { background: var(--tint-1); }
+    .dir-half.right { background: var(--tint-2); border-left: 1px solid var(--line); }
+    .dir-half .dir-arrow { font-size: 14px; color: var(--ink); }
+    .dir-half .dir-sub { font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--ink-soft); }
+
+    /* The pipeline row — four stage cards left→right */
+    .pipe {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 0;
+      align-items: stretch;
+      margin-top: 6px;
+    }
+    .stage {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--paper);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .stage .hd {
+      padding: 8px 12px;
+      border-bottom: 1.5px solid var(--ink);
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+    }
+    .stage .hd .step-n {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--ink-soft);
+    }
+    /* fill-weight ramp (grayscale-safe: each stage a step darker) */
+    .stage.w0 .hd { background: var(--tint-1); }
+    .stage.w1 .hd { background: var(--tint-2); }
+    .stage.w2 .hd { background: var(--tint-3); }
+    .stage.w3 .hd { background: var(--tint-2); }
+    .stage .bd { padding: 10px 12px; font-size: 11.5px; color: var(--ink); flex: 1; }
+    .stage ul { margin: 0; padding-left: 16px; }
+    .stage li { margin: 3px 0; line-height: 1.35; }
+    .stage .k { font-family: var(--mono); font-size: 10.5px; }
+    .stage .xref { color: var(--ink-soft); font-size: 10px; }
+    .stage .lede {
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin: 0 0 6px;
+      line-height: 1.35;
+    }
+
+    /* between-stage forward arrow cells */
+    .arrow-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 46px;
+      flex-shrink: 0;
+    }
+    .arrow-cell .ar { font-size: 24px; color: var(--ink); font-weight: 700; line-height: 1; }
+    .arrow-cell .ar-lab {
+      font-size: 9px;
+      color: var(--ink-soft);
+      text-align: center;
+      margin-top: 4px;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+    }
+    /* wrap pipe + arrows in a flex row instead of grid for the connectors */
+    .pipe-flex { display: flex; align-items: stretch; margin-top: 6px; }
+    .pipe-flex > .stage { flex: 1; }
+
+    /* The "a defect slips" marker — the single warm accent in the figure */
+    .slip-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--accent-bar);
+      color: var(--ink);
+      background: var(--tint-1);
+      box-shadow: inset 3px 0 0 var(--accent-bar);
+    }
+
+    /* CONCEPT strip — deploy ≠ release */
+    .concept-strip {
+      margin-top: 14px;
+      border-left: 3px solid var(--accent-bar);
+      background: var(--tint-1);
+      border-radius: 0 8px 8px 0;
+      padding: 9px 13px;
+      font-size: 11.5px;
+      line-height: 1.4;
+    }
+    .concept-strip b { color: var(--ink); }
+
+    /* The feedback arc band (shift-right → shift-left) */
+    .feedback {
+      margin-top: 12px;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 11px 14px;
+    }
+    .feedback-head {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 9px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .feedback-head .loop-arrow { font-size: 17px; color: var(--ink); }
+    .fb-chain {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      flex-wrap: nowrap;
+    }
+    .fb-cell {
+      flex: 1;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--tint-1);
+      padding: 8px 11px;
+      font-size: 11px;
+    }
+    .fb-cell .fbc-head { font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+    .fb-cell .fbc-desc { color: var(--ink-soft); font-size: 10.5px; line-height: 1.35; }
+    .fb-cell.is-newgate { background: var(--tint-3); border-color: var(--ink); }
+    .fb-plus {
+      display: flex; align-items: center; justify-content: center;
+      width: 30px; flex-shrink: 0;
+      font-size: 17px; font-weight: 700; color: var(--ink-soft);
+    }
+    .fb-foot {
+      font-size: 11px; color: var(--ink-soft); margin-top: 9px; line-height: 1.4;
+    }
+    .fb-foot b { color: var(--ink); }
+    .fb-return {
+      display: inline-block;
+      font-size: 10px; font-weight: 700;
+      padding: 2px 8px; border-radius: 999px;
+      border: 1px solid var(--ink); background: var(--tint-2); color: var(--ink);
+    }
+
+    /* DORA stability measure strip */
+    .dora-strip {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 9px 13px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+    .dora-strip .ds-tag {
+      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+      color: var(--ink); flex-shrink: 0;
+      border: 1px solid var(--ink); border-radius: 6px; padding: 4px 8px; background: var(--tint-1);
+    }
+    .dora-strip b { color: var(--ink); }
+
+    /* Honest-limit strip (the chapter's mandatory honest-limitations floor) */
+    .limit-strip {
+      margin-top: 12px;
+      border: 1.5px dashed var(--line);
+      border-radius: var(--radius);
+      background: var(--tint-0);
+      padding: 10px 14px;
+    }
+    .limit-head {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+      color: var(--warn); margin-bottom: 7px;
+    }
+    .limit-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px 22px;
+      font-size: 10.8px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+    .limit-grid .li-key { color: var(--ink); font-weight: 600; }
+
+    .fig-caption { margin-top: 14px; }
+    .fig-caption .src-mono { font-family: var(--mono); font-size: 11px; }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 36.1 &mdash; The release-quality loop: shift-left gates &harr; shift-right release quality</p>
+  <p class="fig-subtitle">
+    Every gate lowers the odds a defect ships; none reaches zero. Release quality assumes one slips, limits its
+    blast radius, and feeds the lesson back into the gates &mdash; one continuous cycle, not two phases.
+  </p>
+
+  <!-- Direction band over the two halves -->
+  <div class="dir-band">
+    <div class="dir-half left">
+      <span class="dir-arrow">&#8594;</span>
+      SHIFT-LEFT &mdash; catch defects before merge
+      <span class="dir-sub">&nbsp;the gates of Ch&nbsp;33&ndash;35</span>
+    </div>
+    <div class="dir-half right">
+      <span class="dir-arrow">&#8594;</span>
+      SHIFT-RIGHT &mdash; limit damage &amp; learn in production
+      <span class="dir-sub">&nbsp;release quality (this chapter)</span>
+    </div>
+  </div>
+
+  <!-- The four-stage pipeline -->
+  <div class="pipe-flex">
+
+    <!-- Stage 1 — Release gates -->
+    <div class="stage w0">
+      <div class="hd"><span class="step-n">1</span> Release gates</div>
+      <div class="bd">
+        <p class="lede">Final, artifact-level checks &mdash; not re-litigating code quality.</p>
+        <ul>
+          <li>All CI gates green on the <b>release commit</b> <span class="xref">(Ch&nbsp;33&ndash;35)</span></li>
+          <li><b>SBOM</b> generated; artifact <b>signed / attested</b> <span class="xref">(SLSA / cosign, Part&nbsp;VII)</span></li>
+          <li><b>semver</b> bump + changelog <span class="xref">(consumers know what changed)</span></li>
+          <li><b>Smoke tests</b> vs a staged build</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="arrow-cell"><span class="ar">&#8594;</span><span class="ar-lab">green &amp;<br>signed</span></div>
+
+    <!-- Stage 2 — Progressive delivery -->
+    <div class="stage w1">
+      <div class="hd"><span class="step-n">2</span> Progressive delivery</div>
+      <div class="bd">
+        <p class="lede">Limit the <b>blast radius</b> of the change that slips.</p>
+        <ul>
+          <li><b>Canary</b> &mdash; small&nbsp;% of traffic; watch error / latency; promote or roll back</li>
+          <li><b>Blue-green</b> &mdash; two envs; rollback is a traffic switch</li>
+          <li><b>Feature flags</b> &mdash; deploy dark, release gradually, kill-switch <span class="xref">(Ch&nbsp;35)</span></li>
+        </ul>
+        <div style="margin-top:7px;"><span class="slip-badge">a defect slips &rarr; hits 1%, not 100%</span></div>
+      </div>
+    </div>
+
+    <div class="arrow-cell"><span class="ar">&#8594;</span><span class="ar-lab">gradual<br>rollout</span></div>
+
+    <!-- Stage 3 — Production + monitor -->
+    <div class="stage w2">
+      <div class="hd"><span class="step-n">3</span> Production &amp; monitor</div>
+      <div class="bd">
+        <p class="lede">Watch the running release &mdash; the signals progressive delivery promotes on.</p>
+        <ul>
+          <li><b>Error tracking</b> (Sentry-class) surfaces a regression</li>
+          <li><b>Metrics / alerts</b> + <b>SLOs</b> <span class="xref">(Part&nbsp;XIII)</span></li>
+          <li><b>Continuous CVE re-scan</b> of shipped deps <span class="xref">(Dependency-Track, Part&nbsp;VII)</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="arrow-cell"><span class="ar">&#8594;</span><span class="ar-lab">regression<br>found</span></div>
+
+    <!-- Stage 4 — Promote or roll back -->
+    <div class="stage w3">
+      <div class="hd"><span class="step-n">4</span> Promote or roll back</div>
+      <div class="bd">
+        <p class="lede">Decide on the signals &mdash; recovery in seconds, not a panicked redeploy.</p>
+        <ul>
+          <li><b>Healthy</b> &rarr; promote to 100%</li>
+          <li><b>Bad</b> &rarr; flag flip / traffic switch / roll back</li>
+          <li>Stateful change &rarr; <b>backward-compatible (expand&ndash;contract) migration</b>, not raw rollback</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- .pipe-flex -->
+
+  <!-- CONCEPT: deploy ≠ release -->
+  <div class="concept-strip">
+    <b>Decouple deploy from release.</b> <i>Deploying</i> code (the binary in production) and <i>releasing</i> a
+    feature (turning it on for users) are separate acts. Code deploys continuously, dark behind flags; features
+    release gradually via canary or flag rollout &mdash; which is what makes shipping <b>safe</b> and <b>frequent</b>
+    at once. The same practices that make releases frequent (canary, flags, fast rollback) are the ones that make
+    them safe; <b>frequent and safe are produced by the same mechanism, not traded off</b> <span class="xref">(DORA, key&nbsp;02)</span>.
+  </div>
+
+  <!-- The feedback arc: shift-right feeds shift-left -->
+  <div class="feedback">
+    <div class="feedback-head">
+      <span class="loop-arrow">&#8635;</span>
+      Post-release feedback &mdash; a production regression becomes&hellip;
+    </div>
+    <div class="fb-chain">
+      <div class="fb-cell">
+        <div class="fbc-head">FIX the bug</div>
+        <div class="fbc-desc">Resolve the defect that reached production.</div>
+      </div>
+      <div class="fb-plus">+</div>
+      <div class="fb-cell">
+        <div class="fbc-head">ADD a test</div>
+        <div class="fbc-desc">A regression test that would have caught it, so it can never return <span class="xref">(Ch&nbsp;20)</span>.</div>
+      </div>
+      <div class="fb-plus">+</div>
+      <div class="fb-cell is-newgate">
+        <div class="fbc-head">&hellip; sometimes a NEW GATE</div>
+        <div class="fbc-desc">A fitness function that catches the whole <i>class</i> of defect in CI going forward <span class="xref">(Ch&nbsp;26)</span>.</div>
+      </div>
+    </div>
+    <div class="fb-foot">
+      The new gate is itself <b>shift-left</b> for the next change &mdash;
+      <span class="fb-return">&#8617;&nbsp; feeds back into the gates (Stage&nbsp;1)</span>.
+      What production catches becomes a gate, so the pipeline gets better at the failures that <i>actually</i> happen.
+      <b>The quality cycle closes.</b>
+    </div>
+  </div>
+
+  <!-- DORA stability measure -->
+  <div class="dora-strip">
+    <span class="ds-tag">Measured by</span>
+    <span>
+      <b>DORA stability metrics</b> &mdash; <b>change-failure rate</b> and <b>failed-deployment recovery time</b>
+      <i>are</i> release quality; canary, flags, and fast rollback drive them down (a bad change caught at 1% with
+      a flag flip is near-zero impact, seconds of recovery) <span class="xref">(Part&nbsp;X, key&nbsp;85)</span>.
+    </span>
+  </div>
+
+  <!-- Honest-limits strip (HARD rule 2: every claim gets its when-NOT) -->
+  <div class="limit-strip">
+    <div class="limit-head">The honest ceiling &mdash; this loop limits damage; it does not prevent defects</div>
+    <div class="limit-grid">
+      <div><span class="li-key">Safe release &ne; good code.</span> Damage control, not prevention &mdash; prevention is the rest of the book (types, tests, analysis, review).</div>
+      <div><span class="li-key">Needs infra + good metrics.</span> Canary analysis is blind without solid observability (Part&nbsp;XIII); a small internal app may not need it.</div>
+      <div><span class="li-key">Flags become debt.</span> Stale flags &rarr; complexity + test-matrix explosion; they need a removal discipline after rollout.</div>
+      <div><span class="li-key">Rollback isn&rsquo;t always clean.</span> DB / stateful changes can&rsquo;t reverse &mdash; design backward-compatible migrations.</div>
+      <div><span class="li-key">Feedback only helps if acted on.</span> Error-tracking noise nobody triages is theatre (the vanity-metric trap).</div>
+      <div><span class="li-key">Gates verify the artifact, not the design.</span> The logic flaw is caught upstream by review (Ch&nbsp;37), not by smoke tests.</div>
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    <b>Sources.</b> Shift-left / shift-right framing and the release-quality spine (gates &rarr; progressive delivery
+    &rarr; monitor &rarr; promote/roll back &rarr; feedback) &mdash; draft Ch&nbsp;36 (key&nbsp;83) and its dossier.
+    Progressive delivery (canary / blue-green / feature flags) kept general per the pin; SBOM &rarr;
+    <span class="src-mono">CycloneDX&nbsp;1.6</span>, signing / attestation &rarr; <span class="src-mono">SLSA&nbsp;v1.0</span> / cosign (Part&nbsp;VII, key&nbsp;66);
+    semver (key&nbsp;60). DORA <b>change-failure rate</b> + <b>recovery time</b> &mdash; <span class="src-mono">dora.dev</span> / 2025 DORA report
+    + <em>Accelerate</em> (2018), key&nbsp;85. Regression &rarr; fix + test (Ch&nbsp;20, key&nbsp;49) + new gate / fitness function (Ch&nbsp;26, key&nbsp;56).
+    Full source trace in <b>fig83_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

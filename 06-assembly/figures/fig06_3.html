@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<!--
+  Chapter: 4 (dossier key 06) — Whose Job Is Quality? Culture, Ownership, Shift-Left
+  Figure:  Figure 4.3 — The three code-ownership models
+  Family:  Concept-map / side-by-side comparison (strong / weak / collective) with trade-off rows
+  Method:  Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: §"Ownership: who is responsible for a piece of code" — after Fowler models table
+  One idea: Strong, weak, and collective code-ownership are each a legitimate choice with genuine
+             trade-offs; collective ownership becomes viable only when automated gates keep
+             everyone's changes honest.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 4.3 — The three code-ownership models</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + shared components from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 28px 30px 22px;
+      max-width: 960px;
+    }
+
+    /* Three-column grid */
+    .ownership-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    /* Column card */
+    .own-col {
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .own-hd {
+      padding: 9px 13px;
+      border-bottom: 1.5px solid var(--ink);
+      font-size: 13.5px;
+      font-weight: 700;
+      background: var(--tint-2);
+    }
+    .own-hd .own-sub {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .own-bd {
+      padding: 11px 13px;
+    }
+
+    /* Dimension rows */
+    .attr-row {
+      margin-bottom: 9px;
+    }
+    .attr-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--ink-soft);
+      margin-bottom: 3px;
+    }
+    .attr-value {
+      font-size: 12.5px;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+    hr.attr-hr {
+      border: 0;
+      border-top: 1px solid var(--tint-3);
+      margin: 7px 0;
+    }
+
+    /* Strength / cost pills */
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 4px;
+    }
+    .pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 9px;
+      border-radius: 999px;
+    }
+    /* Grayscale-safe: strengths vs costs are distinguished by TWO non-color cues —
+       a leading +/− glyph and a solid (strength) vs dashed (cost) border — so the
+       contrast survives black-and-white and color-vision deficiency, not by hue. */
+    .pill.strength {
+      background: var(--tint-1);
+      border: 1px solid var(--ok);
+      color: var(--ok);
+    }
+    .pill.strength::before {
+      content: "+ ";
+      font-weight: 700;
+    }
+    .pill.cost {
+      background: var(--tint-1);
+      border: 1px dashed var(--stop);
+      color: var(--stop);
+    }
+    .pill.cost::before {
+      content: "\2212 ";   /* U+2212 MINUS SIGN */
+      font-weight: 700;
+    }
+
+    /* Collective ownership requires automated gates — call-out */
+    .gates-link {
+      margin-top: 10px;
+      background: var(--tint-1);
+      border-left: 3px solid var(--accent-bar);
+      border-radius: 0 6px 6px 0;
+      padding: 7px 10px;
+      font-size: 11.5px;
+    }
+    .gates-link b { color: var(--ink); }
+
+    /* Mechanism row (CODEOWNERS etc.) */
+    .mechanism-row {
+      margin-top: 8px;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+    }
+    .mechanism-row b { color: var(--ink); }
+    .mechanism-row code {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--tint-1);
+      border: 1px solid var(--tint-3);
+      border-radius: 3px;
+      padding: 1px 5px;
+    }
+
+    /* Footer note: "choose deliberately" */
+    .choose-note {
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 4.3 — The three code-ownership models</p>
+  <p class="fig-subtitle">
+    Each model is a legitimate choice with genuine trade-offs; collective ownership requires the automated gates to keep quality from drifting.
+  </p>
+
+  <div class="ownership-grid">
+
+    <!-- ── Column 1: Strong ownership ── -->
+    <div class="own-col">
+      <div class="own-hd">
+        Strong ownership
+        <span class="own-sub">Each module has one named owner; only they change it</span>
+      </div>
+      <div class="own-bd">
+
+        <div class="attr-row">
+          <div class="attr-label">How it works</div>
+          <div class="attr-value">
+            One person or team is the designated owner of each module.
+            Others may read but must request changes through the owner.
+          </div>
+        </div>
+        <hr class="attr-hr">
+
+        <div class="attr-row">
+          <div class="attr-label">Strengths</div>
+          <div class="pill-row">
+            <span class="pill strength">Clear accountability</span>
+            <span class="pill strength">Deep expertise</span>
+            <span class="pill strength">Consistent style</span>
+          </div>
+        </div>
+        <hr class="attr-hr">
+
+        <div class="attr-row">
+          <div class="attr-label">Costs</div>
+          <div class="pill-row">
+            <span class="pill cost">Bottlenecks</span>
+            <span class="pill cost">Bus-factor risk</span>
+            <span class="pill cost">Silos</span>
+            <span class="pill cost">Slow cross-team change</span>
+          </div>
+        </div>
+        <hr class="attr-hr">
+
+        <div class="attr-row">
+          <div class="attr-label">When to prefer</div>
+          <div class="attr-value">
+            Small, deep, specialist areas where expertise outweighs flow; long-lived stable APIs.
+          </div>
+        </div>
+
+        <div class="mechanism-row">
+          <b>Mechanism:</b> <code>CODEOWNERS</code> file routes reviews to the designated owner automatically.
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Column 2: Weak ownership ── -->
+    <div class="own-col">
+      <div class="own-hd">
+        Weak ownership
+        <span class="own-sub">Owners exist; others may edit with courtesy</span>
+      </div>
+      <div class="own-bd">
+
+        <div class="attr-row">
+          <div class="attr-label">How it works</div>
+          <div class="attr-value">
+            Modules have an owner on record, but any team member may make changes.
+            The convention is to notify or involve the owner; no hard gate blocks it.
+          </div>
+        </div>
+        <hr class="attr-hr">
+
+        <div class="attr-row">
+          <div class="attr-label">Strengths</div>
+          <div class="pill-row">
+            <span class="pill strength">Retains accountability</span>
+            <span class="pill strength">Enables flow</span>
+            <span class="pill strength">Reduces bottlenecks</span>
+          </div>
+        </div>
+        <hr class="attr-hr">
+
+        <div class="attr-row">
+          <div class="attr-label">Costs</div>
+          <div class="pill-row">
+            <span class="pill cost">Ambiguity at edges</span>
+            <span class="pill cost">Courtesy norms erode under pressure</span>
+          </div>
+        </div>
+        <hr class="attr-hr">
+
+        <div class="attr-row">
+          <div class="attr-label">When to prefer</div>
+          <div class="attr-value">
+            Pragmatic middle ground for teams that need both accountability and development speed.
+          </div>
+        </div>
+
+        <div class="mechanism-row">
+          <b>Mechanism:</b> Lightweight <code>CODEOWNERS</code> for review suggestions, not enforced blocks.
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Column 3: Collective ownership ── -->
+    <div class="own-col">
+      <div class="own-hd">
+        Collective ownership
+        <span class="own-sub">The whole team owns all code</span>
+      </div>
+      <div class="own-bd">
+
+        <div class="attr-row">
+          <div class="attr-label">How it works</div>
+          <div class="attr-value">
+            No single owner; any team member may change any module.
+            Shared standards and automated gates hold the line.
+          </div>
+        </div>
+        <hr class="attr-hr">
+
+        <div class="attr-row">
+          <div class="attr-label">Strengths</div>
+          <div class="pill-row">
+            <span class="pill strength">No bottlenecks</span>
+            <span class="pill strength">Shared knowledge</span>
+            <span class="pill strength">Higher bus factor</span>
+          </div>
+        </div>
+        <hr class="attr-hr">
+
+        <div class="attr-row">
+          <div class="attr-label">Costs</div>
+          <div class="pill-row">
+            <span class="pill cost">Quality drifts without gates</span>
+            <span class="pill cost">Needs strong shared standards</span>
+          </div>
+        </div>
+        <hr class="attr-hr">
+
+        <div class="attr-row">
+          <div class="attr-label">When to prefer</div>
+          <div class="attr-value">
+            Teams that want flow and shared understanding, provided the gates support it.
+          </div>
+        </div>
+
+        <div class="gates-link">
+          <b>Requires automated gates:</b> collective ownership only works if the
+          Checkstyle, PMD, SpotBugs, and quality-gate layers keep every contributor
+          honest. Culture and tooling are inseparable here.
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- .ownership-grid -->
+
+  <!-- "Choose deliberately" footer note -->
+  <div class="choose-note">
+    <div class="fig-note">
+      <b>Choose deliberately by context</b> — strong for a deep specialist area; collective for a team
+      that wants flow and has the gates to support it; weak as a pragmatic middle.
+      "You build it, you run it" (Werner Vogels, Amazon) is a strong-ownership variant that pushes
+      operational accountability to the team that wrote the code, aligning incentives with quality.
+    </div>
+  </div>
+
+  <p class="fig-caption">
+    Ownership models (strong / weak / collective): Martin Fowler, <em>CodeOwnership</em>
+    (martinfowler.com/bliki/CodeOwnership.html).
+    <code>CODEOWNERS</code>: GitHub / GitLab docs (Ch 37 tie).
+    "You build it, you run it": Werner Vogels, ACM Queue interview (2006).
+    Full source trace in <b>fig06_3.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>

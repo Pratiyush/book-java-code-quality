@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<!--
+  Chapter:   45 — Understanding a Running System (key 106 folds 107, 108) · Part XIII closer
+  Figure:    Figure 45.1 — The three pillars of observability and the production feedback loop
+  Family:    Architecture / concept-map (three vertically-oriented pillar columns + a loop row beneath)
+  Method:    Authored HTML → rendered to PNG via render.mjs (never image-generated)
+  Placement: CONCEPT callout §"Metrics and tracing: the three pillars" and
+             §"Production feedback: closing the loop" (draft v1)
+  One idea:  Logs, metrics, and traces — correlated by trace ID — compose into the
+             production feedback loop that turns a production incident into a failing test,
+             a fix, and a gate, closing the shift-left↔shift-right quality loop.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figure 45.1 — The three pillars and the production feedback loop</title>
+  <link rel="stylesheet" href="../_assets/figures.css">
+  <style>
+    /* ── Figure-local layout — palette + shared components from figures.css ── */
+    body { margin: 0; padding: 0; background: transparent; }
+
+    #figure {
+      padding: 26px 28px 22px;
+      max-width: 980px;
+    }
+
+    /* ─── Section dividers ─────────────────────────────────────────────────── */
+    .section-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin: 18px 0 8px;
+    }
+    .section-label:first-of-type { margin-top: 14px; }
+
+    /* ─── Three-pillar row ─────────────────────────────────────────────────── */
+    .pillar-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .pillar {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--paper);
+      min-width: 0;
+    }
+
+    .pillar > .hd {
+      background: var(--tint-2);
+      border-bottom: 1.5px solid var(--ink);
+      padding: 9px 12px 8px;
+    }
+    .pillar > .hd .pillar-num {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 2px;
+    }
+    .pillar > .hd .pillar-name {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .pillar > .hd .pillar-tool {
+      display: block;
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-top: 2px;
+      font-family: var(--mono);
+    }
+
+    .pillar > .bd {
+      padding: 10px 12px 12px;
+    }
+    .pillar > .bd .what {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0 0 5px;
+    }
+    .pillar > .bd ul {
+      margin: 0;
+      padding-left: 16px;
+      list-style: disc;
+    }
+    .pillar > .bd li {
+      font-size: 11.5px;
+      color: var(--ink);
+      margin: 3px 0;
+      line-height: 1.35;
+    }
+    .pillar > .bd .limit {
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-top: 8px;
+      border-top: 1px solid var(--line);
+      padding-top: 7px;
+    }
+
+    /* Pillar 1 (Logs) — slightly stronger tint as anchor */
+    .pillar.is-strong > .hd { background: var(--tint-3); }
+
+    /* ─── Correlation bridge ───────────────────────────────────────────────── */
+    .correlation-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 10px 0 4px;
+      padding: 7px 14px;
+      background: var(--tint-1);
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .correlation-bar .mono-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--tint-3);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 7px;
+      color: var(--ink);
+    }
+
+    /* ─── Feedback loop row ────────────────────────────────────────────────── */
+    .loop-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-top: 6px;
+    }
+
+    .loop-step {
+      flex: 1;
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 9px 10px 10px;
+      background: var(--tint-1);
+      min-width: 0;
+      text-align: center;
+    }
+    .loop-step .step-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 3px;
+    }
+    .loop-step .step-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      display: block;
+    }
+    .loop-step .step-note {
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-top: 3px;
+    }
+    .loop-step.is-accent {
+      border-color: var(--accent-bar);
+      box-shadow: inset 0 3px 0 var(--accent-bar);
+      background: #fff3e0;
+    }
+    .loop-step.is-accent .step-label { color: var(--accent-bar); }
+
+    .loop-arrow {
+      flex: 0 0 22px;
+      text-align: center;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--ink);
+      padding: 0 1px;
+    }
+
+    /* ─── Hard-stop note ───────────────────────────────────────────────────── */
+    .hard-stop {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: var(--tint-1);
+      border: 1.5px solid var(--ink);
+      border-left: 4px solid var(--stop);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      font-size: 11.5px;
+    }
+    .hard-stop .hs-label {
+      font-weight: 700;
+      color: var(--stop);
+      flex: 0 0 auto;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      padding-top: 1px;
+    }
+    .hard-stop .hs-body { color: var(--ink); }
+    .hard-stop .hs-body b { color: var(--ink); }
+  </style>
+</head>
+<body>
+<div id="figure">
+
+  <p class="fig-title">Figure 45.1 — The three pillars of observability and the production feedback loop</p>
+  <p class="fig-subtitle">Logs · Metrics · Traces — correlated by trace ID — feed the loop that turns incidents into tests.</p>
+
+  <!-- ── SECTION A: THE THREE PILLARS ───────────────────────────────────── -->
+  <div class="section-label">The three pillars (§A–§B)</div>
+
+  <div class="pillar-row">
+
+    <!-- Pillar 1: Logs -->
+    <div class="pillar is-strong">
+      <div class="hd">
+        <span class="pillar-num">Pillar 1</span>
+        <span class="pillar-name">Logs</span>
+        <span class="pillar-tool">SLF4J facade → Logback / Log4j2</span>
+      </div>
+      <div class="bd">
+        <p class="what">One event, full context</p>
+        <ul>
+          <li>Parameterized: <span class="fig-mono">log.info("user {} did {}", id, action)</span></li>
+          <li>Structured JSON / key-value — queryable</li>
+          <li>Levels with intent: ERROR / WARN / INFO / DEBUG</li>
+          <li>MDC carries <span class="fig-mono">traceId</span> from OTel span</li>
+        </ul>
+        <p class="limit">Alone: misses aggregate trends, request flow across services</p>
+      </div>
+    </div>
+
+    <!-- Pillar 2: Metrics -->
+    <div class="pillar">
+      <div class="hd">
+        <span class="pillar-num">Pillar 2</span>
+        <span class="pillar-name">Metrics</span>
+        <span class="pillar-tool">Micrometer facade (Observation API 1.10+)</span>
+      </div>
+      <div class="bd">
+        <p class="what">Aggregate behavior over time</p>
+        <ul>
+          <li>Counter · Gauge · Timer · DistributionSummary</li>
+          <li>Tags: bounded cardinality — never a user ID</li>
+          <li>Four golden signals: latency / traffic / errors / saturation</li>
+          <li>Observation API → timer <em>and</em> span in one call</li>
+        </ul>
+        <p class="limit">High-cardinality tag = exploding time-series cost</p>
+      </div>
+    </div>
+
+    <!-- Pillar 3: Traces -->
+    <div class="pillar">
+      <div class="hd">
+        <span class="pillar-num">Pillar 3</span>
+        <span class="pillar-name">Traces</span>
+        <span class="pillar-tool">OpenTelemetry (OTel) — CNCF standard</span>
+      </div>
+      <div class="bd">
+        <p class="what">How one request flowed across services</p>
+        <ul>
+          <li>Spans + W3C context propagation</li>
+          <li>OTel Java agent auto-instruments common libs</li>
+          <li>Populates SLF4J MDC with <span class="fig-mono">traceId</span></li>
+          <li>Micrometer Observations bridge to OTel spans</li>
+        </ul>
+        <p class="limit">Agent adds startup overhead; instrument meaningful spans only</p>
+      </div>
+    </div>
+
+  </div><!-- .pillar-row -->
+
+  <!-- ── Correlation bridge ─────────────────────────────────────────────── -->
+  <div class="correlation-bar">
+    Correlated by
+    <span class="mono-tag">traceId</span>
+    — metric spike &rarr; slow trace &rarr; detailed log events
+  </div>
+
+  <!-- ── SECTION B: PRODUCTION FEEDBACK LOOP ───────────────────────────── -->
+  <div class="section-label">Production feedback loop (§C)</div>
+
+  <div class="loop-row">
+
+    <div class="loop-step is-accent">
+      <div class="step-label">Production</div>
+      <span class="step-name">Exception captured</span>
+      <div class="step-note">Error tracker + introducing commit</div>
+    </div>
+
+    <div class="loop-arrow">&#8594;</div>
+
+    <div class="loop-step">
+      <div class="step-label">Triage</div>
+      <span class="step-name">Reproduce</span>
+      <div class="step-note">Trace + logs support repro</div>
+    </div>
+
+    <div class="loop-arrow">&#8594;</div>
+
+    <div class="loop-step">
+      <div class="step-label">Gate</div>
+      <span class="step-name">Write failing test</span>
+      <div class="step-note">Ch 20 — test-first from incident</div>
+    </div>
+
+    <div class="loop-arrow">&#8594;</div>
+
+    <div class="loop-step">
+      <div class="step-label">Fix</div>
+      <span class="step-name">Fix + merge</span>
+      <div class="step-note">Test prevents recurrence</div>
+    </div>
+
+    <div class="loop-arrow">&#8594;</div>
+
+    <div class="loop-step">
+      <div class="step-label">Harden</div>
+      <span class="step-name">Gate strengthened</span>
+      <div class="step-note">Ch 26 — new fitness function if needed</div>
+    </div>
+
+  </div><!-- .loop-row -->
+
+  <!-- ── Hard-stop callout ──────────────────────────────────────────────── -->
+  <div class="hard-stop">
+    <span class="hs-label">Never</span>
+    <span class="hs-body">
+      <b>Log a secret or PII</b> — a password or token in a log line is a breach and a compliance violation (Ch 31).
+      <b>Put an unbounded value in a metric tag</b> — a user ID as a tag produces one time series per user.
+      <b>Let captured telemetry sit un-acted-upon</b> — capture without the loop is theater; shift-right complements, never replaces, the shift-left gates.
+    </span>
+  </div>
+
+  <p class="fig-caption">
+    Draft v1 (key 106 folds 107, 108) · <b>§A</b> SLF4J facade / structured logging / MDC ·
+    <b>§B</b> Micrometer Observation API 1.10+ / OTel CNCF / four golden signals (Google SRE) ·
+    <b>§C</b> error tracking with introducing commit / fix-test-gate loop.
+    Every label traces to <b>fig106_1.sources.md</b>.
+  </p>
+
+</div><!-- #figure -->
+</body>
+</html>
